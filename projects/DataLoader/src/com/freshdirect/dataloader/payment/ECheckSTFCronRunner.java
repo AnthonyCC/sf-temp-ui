@@ -29,10 +29,14 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpCaptureModel;
+import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.dataloader.DataLoaderProperties;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
@@ -190,11 +194,22 @@ private static FileContext getFileContext(String[] args) {
 					String description = paymentResponse.getDescription();
 					int usageCode = 2;
 					ErpAffiliate aff = ErpAffiliate.getAffiliateByMerchant(EnumCardType.ECP, captureModel.getMerchantId());
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					ReconciliationService.getInstance().addSettlement(getSettlementModel(amount,captureModel.getCcNumLast4(),aff,sequenceNumber,paymentResponse,description), 
+							saleId, 
+							aff, 
+							false);
+					}else{
 					reconciliationSB.addSettlement( getSettlementModel(amount,captureModel.getCcNumLast4(),aff,sequenceNumber,paymentResponse,description), 
 													saleId, 
 													aff, 
 													false);
+					}
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					ReconciliationService.getInstance().processECPReturn(saleId, aff, captureModel.getCcNumLast4(), amount, sequenceNumber, paymentResponse, description, usageCode);
+					}else{
 					reconciliationSB.processECPReturn(saleId, aff, captureModel.getCcNumLast4(), amount, sequenceNumber, paymentResponse, description, usageCode);
+					}
 					FDCustomerManager.sendSettlementFailedEmail(saleId);
 				} catch (Exception e) {
 					LOGGER.error("ECheckSTFCronRunner.processFailedTransactions: Order ID = " +paymentTransaction.getOrderID()  + "-"+ e.getMessage());						

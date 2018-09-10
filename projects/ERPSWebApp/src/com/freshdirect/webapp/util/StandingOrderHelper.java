@@ -1037,12 +1037,34 @@ public class StandingOrderHelper {
 	 *  ADDRESS,PAYMENT ,NO_ADDRESS,MINORDER
 	 */
 	public static void clearSO3ErrorDetails(FDStandingOrder so,String[] userModules){
+		boolean isErrorCleared = false;
 		for( String userModule:userModules){
 			if(userModule.equals(so.getLastErrorCode())){
 				so.clearLastError();
+				isErrorCleared =true;
 			}
 		}
-
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DAY_OF_YEAR, 1);
+																														/* COS17-68 */
+		if (isErrorCleared && so.getNextDeliveryDate() != null && so.getNextDeliveryDate().before(c.getTime() )
+				&&"Y".equalsIgnoreCase(so.getActivate()) ) {		
+			Date dt = so.getNextDeliveryDate();
+			if(DateUtil.getDiffInDays(dt, c.getTime())>7) {
+					int count =0;
+					while(DateUtil.getDiffInDays(so.getNextDeliveryDate(), c.getTime())>7) {
+						so.calculateNextDeliveryDate(so.getNextDeliveryDate());
+						count++;
+						if(count >60) { /* falling in infinity loop while clicking setting's  on SO template. To Avoid this.. */
+							break;
+						}
+					}
+			}
+			if (so.getNextDeliveryDate().before(c.getTime() )) {
+				so.calculateNextDeliveryDate(so.getNextDeliveryDate());
+			}
+			LOGGER.info("SO ID: "+so.getId()+" date is in Past[ "+dt+" ] with frequency ["+ so.getFrequency()+"], updating NEXT_DATE on Template based on DOW to: "+so.getNextDeliveryDate());
+		}
 	}
 	
 	public static void populateSO3TimeslotDetails(FDUserI user, String deliveryTimeSlotId,

@@ -384,7 +384,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		createClientCodes(conn);
 	
 		complaints.create(conn);
-		if(model.hasUsedPromotionCodes()==true) {
+		if(model.hasUsedPromotionCodes()) {
 			ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes(), model.getCurrentOrder().getRequestedDate());
 		}
 		createCroModMaxDate(conn);

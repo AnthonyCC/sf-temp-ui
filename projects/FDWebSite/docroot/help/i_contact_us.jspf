@@ -24,7 +24,7 @@
 	</fd:ErrorHandler>
 	
 	
-	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter>
+	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter><fieldset><legend class="offscreen">Contact FreshDirect</legend>
 		<a href='index.jsp'><h2 class="help-heading bold uppercase">contact freshdirect</h2></a>
 		<p class="small-text">FreshDirect Customer Service is standing by to answer your questions, seven days a week.
 			<fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" />
@@ -192,5 +192,5 @@
 			<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>
 			You may also call <%= (user.isChefsTable()) ? "toll-free" : "us" %> at <fd:IncludeMedia name="<%= csNumberMedia_i_contact_us %>" />
 		</div>
-	</form>
+	</fieldset></form>
 </fd:ContactFdController>

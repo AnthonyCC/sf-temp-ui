@@ -26,6 +26,7 @@ import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
@@ -175,9 +176,12 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		boolean refund = PAYMENTECH_RETURN_TX_CC.equals(txCode) || PAYMENTECH_RETURN_TX_EC.equals(txCode) || 
 				RETURN_TRANSACTION.equals(txCode)||PAYMENTECH_RETURN_TX_CC_NEW.equals(txCode)|| PAYMENTECH_RETURN_TX_EC_NEW.equals(txCode);
 		ErpAffiliate aff = ErpAffiliate.getAffiliateByTxDivision(trans.getMerchantNumber());
-		
-		ErpSettlementInfo info = this.reconciliationSB.processSettlement(saleId, aff, authId, accountNumber, Math.abs(chargeAmount), sequenceNumber, ccType, refund);
-		
+		ErpSettlementInfo info;
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+			 info = ReconciliationService.getInstance().processSettlement(saleId, aff, authId, accountNumber, chargeAmount, sequenceNumber, ccType, false);;
+					}else{
+		info = this.reconciliationSB.processSettlement(saleId, aff, authId, accountNumber, Math.abs(chargeAmount), sequenceNumber, ccType, refund);
+					}
 		if (info.isChargeSettlement()) {
 			this.builder.addBounceCheckCharge(info, ccType, Math.abs(chargeAmount));			
 		} else if (info.isSettlementFailedAfterSettled()) {
@@ -187,7 +191,13 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		} 
 		if(!processedSaleIds.contains(saleId) && !refund){
 			//Process Gift card settlements only if that is sale is not processed and is not a refund(Fix for APPDEV-866).
-			List gcSettlementInfos = this.reconciliationSB.processGCSettlement(saleId);
+			
+			List gcSettlementInfos;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+				gcSettlementInfos = ReconciliationService.getInstance().processGCSettlement(saleId);
+						}else{
+			 gcSettlementInfos = this.reconciliationSB.processGCSettlement(saleId);
+						}
 			appendGCSettlements(gcSettlementInfos);
 			processedSaleIds.add(saleId);
 		}
@@ -248,7 +258,12 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	
 	public void process(DFREnd end) throws RemoteException {
 		//Before adding header process settlement pending orders(Orders Paid with GC only).
-		List gcSettlementInfos = this.reconciliationSB.processSettlementPendingOrders();
+		List gcSettlementInfos = null;
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+		gcSettlementInfos=	ReconciliationService.getInstance().processSettlementPendingOrders();;
+		}else{
+		gcSettlementInfos = this.reconciliationSB.processSettlementPendingOrders();
+		}
 		appendGCSettlements(gcSettlementInfos);
 		
 		try {
@@ -287,7 +302,11 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		this.settlementSummary.setNumberOfAdjustments(this.adjustmentCount);
 		this.settlementSummary.setAdjustmentAmount(this.adjustmentAmount);
 		this.builder.addHeader(this.batchDate, this.batchNumber, (Math.round(netDeposit * 100)) / 100.0);
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+			ReconciliationService.getInstance().addSettlementSummary(this.settlementSummary);
+		}else{
 		this.reconciliationSB.addSettlementSummary(this.settlementSummary);
+		}
 		//After adding header append failed GC settlements.
 		appendFailedGCSettlements(failedGCSettlements);
 	}
@@ -356,16 +375,32 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 				ErpSettlementInfo info = null;
 				boolean isTrxnExecuted= false;
 				if (null != PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode())){
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					info = 	ReconciliationService.getInstance().addSettlement(model, saleId, affiliate, false);
+						}else{
 					info = this.reconciliationSB.addSettlement(model, saleId, affiliate, false);
+						}
 					isTrxnExecuted = true;
 				}else if (null != PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode())){
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					info = 	ReconciliationService.getInstance().addSettlement(model, saleId, affiliate, false);
+						}else{
 					info = this.reconciliationSB.addSettlement(model, saleId, affiliate, true);
+						}
 					isTrxnExecuted = true;
 				} else if (null != PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+						info = 	ReconciliationService.getInstance().addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+							}else{
 					info = this.reconciliationSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+							}
 					isTrxnExecuted = true;
 				} else if (null != PayPalSettlementTransactionCodes.EnumPPCBREventCode.getEnum(trxn.getTransactionEventCode())) {
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+						info = 	ReconciliationService.getInstance().addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+							}else{
 					info = this.reconciliationSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+							}
 					isTrxnExecuted = true;
 				} else {
 					LOGGER.info("Transaction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());

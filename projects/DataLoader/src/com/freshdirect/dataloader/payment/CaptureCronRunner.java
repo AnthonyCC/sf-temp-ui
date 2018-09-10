@@ -56,9 +56,6 @@ public class CaptureCronRunner {
 		Context ctx = null;
 		try {
 			LOGGER.info("CaptureCron started");
-			ctx = getInitialContext();
-			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-
 			
 			// First post auth sales for gift cards.
 			// Then capture sales
@@ -67,7 +64,10 @@ public class CaptureCronRunner {
 				SaleCronService.getInstance().postAuthSales(captureTimeout);
 				SaleCronService.getInstance().captureSales(captureTimeout);
 			} else {
+				ctx = getInitialContext();
+				SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 				SaleCronSB sb = home.create();
+
 				sb.postAuthSales(captureTimeout);
 				sb.captureSales(captureTimeout);
 			}
@@ -98,7 +98,6 @@ public class CaptureCronRunner {
 	}
 	
 	private static void email(Date processDate, String exceptionMsg) {
-		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="CaptureCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");

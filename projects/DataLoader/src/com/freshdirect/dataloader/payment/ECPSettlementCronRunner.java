@@ -20,10 +20,14 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
@@ -79,12 +83,20 @@ public class ECPSettlementCronRunner {
 			// process settlement transactions
 			if (inputFileName != null) {
 				LOGGER.debug("ECPSettlementCronRunner.main:  Loading sale ids in file " + inputFileName);						
-				List<String> saleIds = getSaleIdsFromFile(inputFileName);				
-				txnList = reconciliationSB.loadReadyToSettleECPSales(saleIds);
+				List<String> saleIds = getSaleIdsFromFile(inputFileName);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					txnList = ReconciliationService.getInstance().loadReadyToSettleECPSales(saleIds);
+					}else{
+					txnList = reconciliationSB.loadReadyToSettleECPSales(saleIds);
+					}
 			} else {
 				startDate = calcWeekDaysBack(startDate, numDaysBack);			
 				LOGGER.debug("ECPSettlementCronRunner.main:  Loading Ready to Settle ECP Sales with capture date <= " + startDate);						
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+				txnList = ReconciliationService.getInstance().loadReadyToSettleECPSales(startDate, maxNumSales);
+				}else{
 				txnList = reconciliationSB.loadReadyToSettleECPSales(startDate, maxNumSales);
+				}
 			}
 			LOGGER.debug("ECPSettlementCronRunner.main:  Settling " + txnList.size() + " ECP Sales");						
 			String fileName = settleECPSales(txnList, reconciliationSB);
@@ -136,11 +148,25 @@ public class ECPSettlementCronRunner {
 					//handle pre-BC split ECP tranaction which would have been againg FD anyway
 					//This will be turned off between 3 days - week.
 					ErpAffiliate aff = ErpAffiliate.getPrimaryAffiliate();
-
-					ErpSettlementInfo info = reconciliationSB.processSettlement(saleId, aff, authId, accountNumber, chargeAmount, sequenceNumber, ccType, false); 
-					boolean isChargeSettlement = reconciliationSB.isChargeSettlement(saleId, chargeAmount);
-					boolean isSettlementFailedAfterSettled = reconciliationSB.isSettlementFailedAfterSettled(saleId);
-
+					ErpSettlementInfo info;
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					 info = ReconciliationService.getInstance().processSettlement(saleId, aff, authId, accountNumber, chargeAmount, sequenceNumber, ccType, false);;
+							}else{
+					info = reconciliationSB.processSettlement(saleId, aff, authId, accountNumber, chargeAmount, sequenceNumber, ccType, false);
+							}
+					boolean isChargeSettlement;
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					isChargeSettlement = 	ReconciliationService.getInstance().isChargeSettlement(saleId, chargeAmount);
+							}else{
+					 isChargeSettlement = reconciliationSB.isChargeSettlement(saleId, chargeAmount);
+							}
+					
+					boolean isSettlementFailedAfterSettled;
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+					isSettlementFailedAfterSettled = ReconciliationService.getInstance().isSettlementFailedAfterSettled(saleId);
+							}else{
+					isSettlementFailedAfterSettled = reconciliationSB.isSettlementFailedAfterSettled(saleId);
+							}
 					if (!isChargeSettlement && !isSettlementFailedAfterSettled) {
 						builder.addChargeDetail(info, false, Math.abs(chargeAmount), ccType);
 					} else if (isChargeSettlement) {

@@ -1594,12 +1594,16 @@ public class RegistrationAction extends WebActionSupport {
 			return erpCustomer;
 		}
 
-		public FDSurveyResponse getMarketingSurvey(SurveyKey surveyKey, HttpServletRequest request) throws FDResourceException {
+		public FDSurveyResponse getMarketingSurvey(SurveyKey surveyKey, HttpServletRequest request) {
 
 			FDSurveyResponse surveyResponse = new FDSurveyResponse(null, surveyKey);
-			FDSurvey survey = FDSurveyFactory.getInstance().getSurvey(surveyKey);
-			
-			if(survey != null) {
+			FDSurvey survey = null;
+			try {
+				survey = FDSurveyFactory.getInstance().getSurvey(surveyKey);
+			} catch (Exception e) {
+				LOGGER.error("getMarketingSurvey SurveyKey=" + surveyKey, e);
+			}
+			if (survey != null) {
 				for (FDSurveyQuestion q : survey.getQuestions()) {
 				    String[] value = request.getParameterValues(q.getName());
 				    if (value != null && value.length > 0) {

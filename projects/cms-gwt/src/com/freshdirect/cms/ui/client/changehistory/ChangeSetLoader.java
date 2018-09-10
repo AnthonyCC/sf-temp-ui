@@ -120,10 +120,13 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
                             b.set("old", detail.getOldValue());
                         }
                         b.set("new", detail.getNewValue());
+                        if (detail.getMergeValue() != null) {
+                            b.set("mergeValue", detail.getMergeValue());
+                        }
                         b.set("attribute", detail.getAttributeName());
 
                         if (nodeChange.getChangeType() !=null){
-                        b.set("changeType", nodeChange.getChangeType());
+                            b.set("changeType", nodeChange.getChangeType());
                         }
 
                         b.set("user", changeSet.getUserId());

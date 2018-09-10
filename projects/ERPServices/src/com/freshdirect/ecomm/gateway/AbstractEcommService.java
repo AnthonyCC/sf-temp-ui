@@ -71,12 +71,16 @@ public abstract class AbstractEcommService {
 		restTemplate = new RestTemplate(converters);
 
 		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
+		
+		// we only have one route so far, maxTotal = maxPerRotue
 		cManager.setMaxTotal(FDStoreProperties.getLogisticsConnectionPool());
+		cManager.setDefaultMaxPerRoute(FDStoreProperties.getLogisticsConnectionPool());
+		
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
 				.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
 				.setConnectionRequestTimeout(FDStoreProperties.getLogisticsConnectionRequestTimeout() * 1000).build();
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig)
+		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).evictExpiredConnections()
 				.setConnectionManager(cManager).build();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 

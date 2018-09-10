@@ -99,9 +99,9 @@ final int W_SIGNUP_TOTAL = 970;
 	</td>
 </tr>
 </table>
-<form name="address" id="address" method="post" >
+<form name="address" id="address" method="post" ><fieldset><legend class="offscreen">signup for freshdirect</legend>
 <%@ include file="/includes/registration/i_signup.jspf" %>
-</form>
+</fieldset></form>
 </tmpl:put>
 </tmpl:insert>
 </fd:RegistrationController>

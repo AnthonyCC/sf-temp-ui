@@ -307,6 +307,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 	    	DPInfo responseMessage = new DPInfo();
 	    	responseMessage.setDeliveryPassStatus(user.getFDSessionUser().getDeliveryPassStatus());
 	    	responseMessage.setName(dpmodel.getTypePurchased().getName());
+	    	responseMessage.setShortName(dpmodel.getTypePurchased().getShortName());
 	    	responseMessage.setDescription(dpmodel.getDescription());
 	    	responseMessage.setPurchaseDate(sdf.format(dpmodel.getPurchaseDate()));
 	    	responseMessage.setExpDate(sdf.format(dpmodel.getExpDate()));

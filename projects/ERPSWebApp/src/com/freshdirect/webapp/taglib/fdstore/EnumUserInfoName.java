@@ -99,6 +99,10 @@ public class EnumUserInfoName implements Serializable {
 
 	// ECHECKS
 	public final static EnumUserInfoName CARD_NUMBER_VERIFY = new EnumUserInfoName("cardNumVerify", "Verify Account Number");
+	 public final static EnumUserInfoName BANK_NAME = new EnumUserInfoName(PaymentMethodName.BANK_NAME, "Bank Name");
+	 public final static EnumUserInfoName ABA_ROUTE_NUMBER = new EnumUserInfoName(PaymentMethodName.ABA_ROUTE_NUMBER, "Routing Number");
+	 public final static EnumUserInfoName BANK_ACCOUNT_TYPE = new EnumUserInfoName(PaymentMethodName.BANK_ACCOUNT_TYPE, "Account Type");
+	 
 
 	public final static EnumUserInfoName DLV_ALT_CONTACT_PHONE = new EnumUserInfoName("altContactPhone", "Alt Contact");
 	public final static EnumUserInfoName DLV_ALT_CONTACT_EXT = new EnumUserInfoName("altContactPhoneExt", "Alt Ext");
@@ -122,6 +126,8 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName DLV_METHOD = new EnumUserInfoName("deliveryMethod", "Delivery Method");
 	public final static EnumUserInfoName GC_MESSAGE = new EnumUserInfoName("message", "Message");
 	public final static EnumUserInfoName GC_QUANTITY = new EnumUserInfoName("quantity", "quantity");
+	public final static EnumUserInfoName GC_FLDAMOUNT = new EnumUserInfoName("fldAmount", "Amount");
+	public final static EnumUserInfoName GC_FLDALTAMOUNT = new EnumUserInfoName("fldAltAmount", "Alternate Amount");
 
 	public final static EnumUserInfoName GC_ACCOUNT_FROM = new EnumUserInfoName("fromGCAccount", "From GC Account");
 	public final static EnumUserInfoName GC_ACCOUNT_TO = new EnumUserInfoName("toGCAccount", "To GC Account");

@@ -23,11 +23,11 @@
 </head>
 	<body>
 	<%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
-    <div id="content">
+    <div id="content" class="<tmpl:get name='containerExtraClass'/>">
       <center class="text10">
-      <!-- content lands here -->
-      <tmpl:get name='content'/>
-      <!-- content ends above here-->
+	      <!-- content lands here -->
+	      <tmpl:get name='content'/>
+	      <!-- content ends above here-->
       </center>
     </div>
 	<%@ include file="/common/template/includes/footer.jspf" %>

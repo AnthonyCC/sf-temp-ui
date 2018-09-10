@@ -1060,7 +1060,8 @@ public class FDCustomerManager {
 	 * @deprecated
 	 */
 
-	public static String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException {
+	@Deprecated
+    public static String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
@@ -1085,7 +1086,8 @@ public class FDCustomerManager {
 	 * @deprecated
 	 */
 
-	public static void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException {
+	@Deprecated
+    public static void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
@@ -1774,32 +1776,29 @@ public class FDCustomerManager {
 			throw new FDResourceException(ie, "Error creating session bean InvalidCardException");
 		}
 	}
-
-
-	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays, boolean restoreReservation)
-		throws FDResourceException, ErpTransactionException, DeliveryPassException {
-		if (managerHome == null) {
-			lookupManagerHome();
-		}
-
+	
+	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail,
+			int currentDPExtendDays, boolean restoreReservation)
+			throws FDResourceException, ErpTransactionException, DeliveryPassException {
 		try {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
-				FDCustomerManagerSB sb = managerHome.create();
+
 				FDReservation reservation = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")){
-					OrderResourceApiClient service = OrderResourceApiClient.getInstance();
-					DlvManagerDecoder.setMapper(OrderResourceApiClient.getMapper());
-					FDReservationData reservationData = service.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
-					if(reservationData!=null){
-						reservation =  DlvManagerDecoder.converter(reservationData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")) {
+					reservation = OrderResourceApiClient.getInstance().cancelOrder(info, saleId, sendEmail,
+							currentDPExtendDays, restoreReservation);
+
+				} else {
+					if (managerHome == null) {
+						lookupManagerHome();
 					}
-					
-				}else{
+					FDCustomerManagerSB sb = managerHome.create();
 					reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
 				}
 
-				//invalidate quickshop past orders cache
-                CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName, info.getIdentity().getErpCustomerPK());
+				// invalidate quickshop past orders cache
+				CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName,
+						info.getIdentity().getErpCustomerPK());
 
 				return reservation;
 			}
@@ -1843,7 +1842,7 @@ public class FDCustomerManager {
 		FDPaymentInadequateException
 		{
 
-		lookupManagerHome();
+		
 		try {
 			String saleId = cart.getOriginalOrder().getErpSalesId();
 			if (!orderBelongsToUser(info.getIdentity(), saleId)) {
@@ -1864,7 +1863,7 @@ public class FDCustomerManager {
 				hasCouponDiscounts = true;
 			}
 
-			FDCustomerManagerSB sb = managerHome.create();
+			FDCustomerManagerSB sb = null;
 //			EnumSaleType type = cart.getOriginalOrder().getOrderType();
 			if (EnumSaleType.REGULAR.equals(type)){
 				
@@ -1884,6 +1883,11 @@ public class FDCustomerManager {
 						);
 					
 				}else{
+					if (sb == null) {
+						lookupManagerHome();
+						sb = managerHome.create();
+					}
+					
 					sb.modifyOrder(
 						info,
 						saleId,
@@ -1914,6 +1918,10 @@ public class FDCustomerManager {
 						);
 					
 				}else{
+					if (sb == null) {
+						lookupManagerHome();
+						sb = managerHome.create();
+					}
 				sb.modifyAutoRenewOrder(
 					info,
 					saleId,
@@ -1925,8 +1933,9 @@ public class FDCustomerManager {
 					info.getAgent() == null ? null : info.getAgent().getRole(),
 					status
 				);
-				}
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), saleId, type, cra);
+				}
+				
 			}
 
 			//invalidate quickshop past orders cache
@@ -4548,7 +4557,7 @@ public class FDCustomerManager {
 
 	}
 
-	public static Map<String,AssignedCustomerParam> getAssignedCustomerParams(FDUser user) throws FDResourceException {
+    public static Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user) throws FDResourceException {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
 				return CustomerInfoService.getInstance().getAssignedCustomerParams(user);

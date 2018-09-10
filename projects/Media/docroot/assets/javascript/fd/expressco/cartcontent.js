@@ -308,6 +308,7 @@ function parseTipTotal(data) {
 	var DISPATCHER = fd.common.dispatcher;
 	var requestCounter = 0;
 	var focusedElementId;
+	var retryOnCartContentError = true;
 	
 	//APPBUG-4365
 	var currentpagefile = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
@@ -575,8 +576,13 @@ function parseTipTotal(data) {
 					return ajax;
 				});
 				ajaxStream.onError(function() {
-					$(cartcontent.placeholder).
-					html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
+					if (retryOnCartContentError) {
+						retryOnCartContentError = false;
+						cartcontent.update();
+					} else {
+						$(cartcontent.placeholder).
+						html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
+					}
 					return false;
 				});
 				/* if user makes the form dirty before the ajax response comes back then we should not update UI

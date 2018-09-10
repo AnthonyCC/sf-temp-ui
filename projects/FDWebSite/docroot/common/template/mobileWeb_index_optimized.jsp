@@ -81,34 +81,15 @@
 		<%-- Feature version switcher --%>
 		<features:potato />
 		<%-- LOAD JS --%>
+		<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
 		<jwr:script src="/mobileweb_index_optimized_jquerylibs.js" useRandomParam="false" />
 		<script type="text/javascript">
-			window.FreshDirect = window.FreshDirect || {};
 			
-			var FD = FreshDirect || {};
-			FD.USQLegalWarning = FreshDirect.USQLegalWarning || {};
-			FD.USQLegalWarning.sessionStore = '<%=session.getId()%>';
-			FD.USQLegalWarning.getJSessionId = FD.USQLegalWarning.getJSessionId ||
-			function () { return FD.USQLegalWarning.sessionStore; };
-			
-			var fd = window.FreshDirect;
 			fd.libs = fd.libs || {};
 			fd.libs.$ = jQuery;
 	
-		    <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
-			FreshDirect.locabar = FreshDirect.locabar || {};
-			FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
 			$jq.fn.messages = function( method ) {};
 			
-			fd.features = fd.features || {};
-			
-			fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
-			
-			fd.properties = fd.properties || {};
-			fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
-			fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
-			fd.properties.isDebitSwitchNoticeEnabled = <%= FDStoreProperties.isDebitSwitchNoticeEnabled() ? "true" : "false" %>;
-	
 			
 			<%-- copied from utils.js for dfp.js --%>
 			fd.utils = fd.utils || {};
@@ -154,34 +135,6 @@
 				console.log('===== [ mobWeb optimized ] =====');
 			}
 			
-			<%
-				FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-				if (jsUser != null) {
-					int sessionUserLevel = jsUser.getLevel();
-					FDSessionUser sessionUser = (FDSessionUser) jsUser;
-					boolean hideZipCheckPopup = (!FDStoreProperties.isZipCheckOverLayEnabled() || (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession()));
-	
-					if (!hideZipCheckPopup){
-					    sessionUser.setZipPopupSeenInSession(true);
-					}
-			
-					String zipCode = jsUser.getZipCode();
-					String cohortName = jsUser.getCohortName();
-					MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
-		    	%>
-					fd.user = {};
-					fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
-					fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
-					fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
-					fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
-					fd.user.zipCode = '<%= zipCode %>';
-					fd.user.cohortName = '<%= cohortName %>';
-					fd.user.sessionId = '<%=session.getId()%>';
-					fd.user.isCorporateUser = <%= sessionUser.isCorporateUser() %>;
-					<% if (jsMasqueradeContext != null) {%>
-						fd.user.masquerade = true;
-					<% } %>
-				<% } %>
 			(function () {
 					
 				<%-- updateOAS code --%>
@@ -336,9 +289,9 @@
 			$jq(document).ready(function() {
 				if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
 					FreshDirect.components.ifrPopup.open({ 
-						url: '/social/DeliveryAddressCreateSuccess.jsp'}); 
+						url: '/social/delivery_address_create_success.jsp'}); 
 				} else {
-					pop('/social/DeliveryAddressCreateSuccess.jsp');
+					pop('/social/delivery_address_create_success.jsp');
 				}
 			});
 			</script>
@@ -355,9 +308,9 @@
 			$jq(document).ready(function() {
 				if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
 					FreshDirect.components.ifrPopup.open({ 
-						url: '/social/SocialAccountExist.jsp'}); 
+						url: '/social/social_account_exist.jsp'}); 
 				} else {
-					pop('/social/SocialAccountExist.jsp');
+					pop('/social/social_account_exist.jsp');
 				}
 			});
 			</script>

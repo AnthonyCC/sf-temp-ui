@@ -18,6 +18,22 @@
 /**
  * @param? carousel1 carousel1
  * @param? carousel2 carousel2
+ * @param? cssclass css class v22 - 2+2 products, v31 - 3+1 products
+ */
+{template .classedCarousels_prodcard2018 autoescape="false"}
+  {if $carousel1 or $carousel2}
+  <div class="carousels {$cssclass}">
+    {call browse.carousels_prodcard2018}
+      {param carousel1: $carousel1 /}
+      {param carousel2: $carousel2 /}
+    {/call}
+  </div>
+  {/if}
+{/template}
+
+/**
+ * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
  */
 {template .carousels autoescape="false"}
   {if $carousel1 or $carousel2}
@@ -63,3 +79,41 @@
   {/if}
 {/template}
 
+/**
+ * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
+ */
+{template .carousels_prodcard2018 autoescape="false"}
+	{if $carousel1 or $carousel2}
+		<div role="presentation" class="{if $carousel1}hasCarousel1{else}noCarousel1{/if} {if $carousel2}hasCarousel2{else}noCarousel2{/if}">
+			<div class="c1 carousel">
+				{if $carousel1}
+					<div class="header">
+						<h2>{$carousel1.name}</h2>
+					</div>
+					<div class="carousel-content" data-eventsource="{$carousel1.eventSource}">
+						{call common.simpleCarousel}
+							{param items: $carousel1.products /}
+							{param itemType:'grid' /}
+							{param eventSource:$carousel1.eventSource /}
+						{/call}
+					</div>
+				{/if}
+			</div>
+			<div class="c2 carousel">
+				{if $carousel2}
+					<div class="header">
+						<h2>{$carousel2.name}</h2>
+					</div>
+					<div class="carousel-content" data-eventsource="{$carousel2.eventSource}">
+						{call common.simpleCarousel}
+							{param items: $carousel2.products /}
+							{param itemType:'grid' /}
+							{param eventSource:$carousel2.eventSource /}
+						{/call}
+					</div>
+				{/if}
+			</div>
+		</div>
+	{/if}
+{/template}

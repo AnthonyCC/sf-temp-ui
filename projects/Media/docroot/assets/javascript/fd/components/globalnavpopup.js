@@ -12,6 +12,11 @@ var FreshDirect = FreshDirect || {};
 
 		var	$popupcontent = $menuitem.find('[data-component="globalnav-popup-body"]'),
 			$container = $('[data-component="globalnav-menu"]');
+		
+		/* change container since globalnav-menu is 100% */
+		if (fd && fd.features && fd.features.active && fd.features.active['productCard'] === '2018') {
+			$container = $('[data-component="globalnav-menu"] .top-nav-items');
+		}
 
 		if ($popupcontent.length === 0) {
 			$popupcontent = $('[data-component="globalnav-popups"] [data-id="'+$menuitem.data('id')+'"]').first();

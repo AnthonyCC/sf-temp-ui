@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Type-safe enumeration for reconciliation record types.
  *
@@ -70,8 +73,8 @@ public class EnumDetailRecordType implements java.io.Serializable {
     public static  List getTypeCodeList() {
         return codeList;
     }
-    
-    public static EnumDetailRecordType getRecordType(String code) {
+    @JsonCreator
+    public static EnumDetailRecordType getRecordType(@JsonProperty("typeCode") String code) {
         for (Iterator tIter = codeList.iterator(); tIter.hasNext();) {
             EnumDetailRecordType rt = (EnumDetailRecordType) tIter.next();
             if (rt.getTypeCode().equals(code)) {

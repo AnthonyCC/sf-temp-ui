@@ -56,14 +56,17 @@ public class GCRegisterCronRunner {
 		}
 
 		Context ctx = null;
+		SaleCronSB sb = null;
 		try {
 			LOGGER.info("GCRegisterCron started");
-			ctx = getInitialContext();
-			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-			SaleCronSB sb = home.create();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
 				SaleCronService.getInstance().registerGiftCards(registerTimeout);
 			} else {
+				ctx = getInitialContext();
+
+				SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
+				sb = home.create();
+
 				sb.registerGiftCards(registerTimeout);
 			}
 			LOGGER.info("GCRegisterCron finished");
@@ -93,7 +96,6 @@ public class GCRegisterCronRunner {
 	}
 	
 	private static void email(Date processDate, String exceptionMsg) {
-		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="GCRegisterCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");

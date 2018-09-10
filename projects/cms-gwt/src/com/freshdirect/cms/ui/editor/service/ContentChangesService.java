@@ -2,14 +2,18 @@ package com.freshdirect.cms.ui.editor.service;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +25,18 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeDetailEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.changecontrol.service.ContentChangeControlService;
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.domain.Relationship;
+import com.freshdirect.cms.core.domain.RelationshipCardinality;
 import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
+import com.freshdirect.cms.ui.editor.domain.ContentAttributeKey;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublish;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublishMessage;
@@ -53,6 +61,8 @@ public class ContentChangesService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentChangesService.class);
 
+    private static final String DRAFT_NULL_VALUE_DESCRIPTION = "(removed)";
+
     public static final ChangeSetQuery EMPTY_CHANGESET_QUERY = new ChangeSetQuery();
 
     @Autowired
@@ -72,7 +82,7 @@ public class ContentChangesService {
 
     @Autowired
     private FeedPublishMessageToGwtPublishMessageConverter feedPublishMessageToGwtConverter;
-    
+
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
@@ -350,7 +360,7 @@ public class ContentChangesService {
         return gwtChangeSet;
     }
 
-    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, DraftContext draftContext) {
+    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, Map<ContentAttributeKey, Object> shadowedFields, Map<ContentKey, Map<Attribute, Object>> payloadBeforeUpdate, DraftContext draftContext) {
         String username = null;
         long modifiedDate = 0l;
 
@@ -358,7 +368,17 @@ public class ContentChangesService {
         for (final DraftChange draftChange : draftChanges) {
             username = draftChange.getUserName();
             modifiedDate = draftChange.getCreatedAt();
-            nodeChanges.add(toGwtNodeChange(draftChange));
+
+            final ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
+            final String attributeName = draftChange.getAttributeName();
+            final ContentAttributeKey attributeKey = new ContentAttributeKey(key, attributeName);
+            final Attribute attributeDef = contentTypeInfoService.findAttributeByName(key.type, attributeName).get();
+
+            final boolean isFieldShadowed = shadowedFields.keySet().contains(attributeKey);
+            final Object oldValue = payloadBeforeUpdate.get(key).get(attributeDef);
+            final String draftValue = draftChange.getValue();
+
+            nodeChanges.add(toGwtNodeChange(key, attributeDef, isFieldShadowed, oldValue, draftValue));
         }
 
         GwtChangeSet gwtChangeSet = new GwtChangeSet(id, username, new Date(modifiedDate), null);
@@ -378,10 +398,11 @@ public class ContentChangesService {
             String label = labelProviderService.labelOfContentKey(contentKey);
             String previewLink = previewLinkService.getLink(contentKey);
 
-            gwtNodeChange = new GwtNodeChange(contentKey.type.name(), label, contentKey.toString(), changeEntity.getChangeType().description, previewLink);
+            final String changeType = changeEntity.getChangeType().description;
+            gwtNodeChange = new GwtNodeChange(contentKey.type.name(), label, contentKey.toString(), changeType, previewLink);
 
             for (ContentChangeDetailEntity detail : changeEntity.getDetails()) {
-                GwtChangeDetail gwtChangeDetail = toGwtChangeDetail(contentKey.getType(), detail);
+                GwtChangeDetail gwtChangeDetail = toGwtChangeDetail(changeType, contentKey.getType(), detail);
                 gwtNodeChange.addDetail(gwtChangeDetail);
             }
         }
@@ -389,18 +410,243 @@ public class ContentChangesService {
         return Optional.fromNullable(gwtNodeChange);
     }
 
-    private GwtNodeChange toGwtNodeChange(DraftChange draftChange) {
-        ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
-        String label = labelProviderService.labelOfContentKey(key);
+    private GwtNodeChange toGwtNodeChange(ContentKey key, Attribute attributeDef, boolean isFieldShadowed, Object valueBefore, String valueOnDraft) {
+        final String[] describedValues = describeValueChange(key, attributeDef, valueBefore, valueOnDraft);
 
-        GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), null, null);
-
-        gwtNodeChange.addDetail(new GwtChangeDetail(draftChange.getAttributeName(), null, draftChange.getValue()));
+        GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, isFieldShadowed);
+        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeDef.getName(), describedValues[0], describedValues[1], valueOnDraft));
 
         return gwtNodeChange;
     }
 
-    private GwtChangeDetail toGwtChangeDetail(ContentType type, ContentChangeDetailEntity detail) {
+    private GwtNodeChange createGwtNodeChangePrototype(ContentKey key, boolean isFieldShadowed) {
+        String label = labelProviderService.labelOfContentKey(key);
+        final String draftChangeKind = isFieldShadowed ? "Override" : "Create";
+        return new GwtNodeChange(key.type.name(), label, key.getEncoded(), draftChangeKind, null);
+    }
+
+    private String[] describeValueChange(ContentKey key, Attribute attributeDef, Object valueBefore, String valueOnDraft) {
+        String[] describedValues = null;
+
+        if (valueBefore != null) {
+
+            if (attributeDef instanceof Scalar) {
+                describedValues = new String[] { ScalarValueConverter.serializeToString((Scalar) attributeDef, valueBefore),
+                        valueOnDraft != null ? valueOnDraft : DRAFT_NULL_VALUE_DESCRIPTION };
+            } else if (attributeDef instanceof Relationship) {
+                Relationship relationshipDef = (Relationship) attributeDef;
+
+                if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
+                    describedValues = new String[] { ((ContentKey) valueBefore).getEncoded(), valueOnDraft != null ? valueOnDraft : DRAFT_NULL_VALUE_DESCRIPTION };
+                } else {
+                    if (valueOnDraft != null) {
+                        describedValues = describeContentKeyListChange(valueBefore, valueOnDraft);
+                    } else {
+                        List<ContentKey> oldKeys = (List<ContentKey>) valueBefore;
+
+                        StringBuilder oldValueBuilder = new StringBuilder();
+                        oldValueBuilder
+                            .append("Deleted: ");
+
+                        if (oldKeys.isEmpty()) {
+                            oldValueBuilder.append("(empty list)");
+                        } else {
+                            oldValueBuilder.append(StringUtils.join(", ", oldKeys));
+                        }
+
+                        describedValues = new String[] { oldValueBuilder.toString(), DRAFT_NULL_VALUE_DESCRIPTION };
+                    }
+                }
+            }
+        } else {
+            if (attributeDef instanceof Relationship && RelationshipCardinality.MANY == ((Relationship) attributeDef).getCardinality()) {
+                List<String> newKeys = decodedListOfContentKeysFromDraftValue(valueOnDraft);
+
+                StringBuilder newValueBuilder = new StringBuilder();
+                newValueBuilder
+                    .append("Added: ");
+                if (newKeys.isEmpty()) {
+                    newValueBuilder.append("(empty list)");
+                } else {
+                    newValueBuilder.append(StringUtils.join(", ", newKeys));
+                }
+
+                return new String[] { null, newValueBuilder.toString() };
+
+            } else {
+                describedValues = new String[] {null, valueOnDraft};
+            }
+        }
+
+        return describedValues;
+    }
+
+    private String[] describeContentKeyListChange(Object valueBefore, String draftValue) {
+        String[] describedValues = null;
+
+        // do the magic !
+        List<String> oldKeys = new ArrayList<String>();
+        for (ContentKey contentKey : (List<ContentKey>) valueBefore) {
+            oldKeys.add(contentKey.getEncoded());
+        }
+        List<String> newKeys = decodedListOfContentKeysFromDraftValue(draftValue);
+
+        Map<String, int[]> changeVector = computeItemPositions(oldKeys, newKeys);
+        if (changeVector != null && !changeVector.isEmpty()) {
+
+            Set<String> keysAdded = new HashSet<String>();
+            Set<String> keysRemoved = new HashSet<String>();
+            Map<String, String> keysMoved = new HashMap<String, String>();
+            Map<String, String> keysPermuted = new HashMap<String, String>();
+
+            for (Map.Entry<String, int[]> entry : changeVector.entrySet()) {
+                final String aKey = entry.getKey();
+                int[] positions = entry.getValue();
+                if (positions[1] == -1) {
+                    keysRemoved.add(aKey);
+                } else if (positions[0] == -1) {
+                    keysAdded.add(aKey);
+                }
+            }
+
+            // check for permutations
+            if (keysRemoved.size() < oldKeys.size() || keysAdded.size() < newKeys.size()) {
+                List<String> filteredOldKeys = new ArrayList<String>();
+                List<String> filteredNewKeys = new ArrayList<String>();
+
+                for (String aKey : oldKeys) {
+                    if (!keysRemoved.contains(aKey)) {
+                        filteredOldKeys.add(aKey);
+                    }
+                }
+                for (String aKey : newKeys) {
+                    if (!keysAdded.contains(aKey)) {
+                        filteredNewKeys.add(aKey);
+                    }
+                }
+
+                // At this point we have two equally sized lists having the same elements
+                // element order may or may not be the same
+                Map<String, int[]> changeVector2 = computeItemPositions(filteredOldKeys, filteredNewKeys);
+                if (changeVector2 != null) {
+                    for (Map.Entry<String, int[]> entry : changeVector2.entrySet()) {
+                        String movedKey = entry.getKey();
+                        int[] positions = entry.getValue();
+                        if (positions[0] != positions[1]) {
+                            // detect two items are permuted
+                            if (filteredNewKeys.get(positions[0]).equals(filteredOldKeys.get(positions[1]))) {
+                                String thisKey = movedKey;
+                                String otherKey = filteredNewKeys.get(positions[0]);
+
+                                // don't put {A,B} pair if {B,A} is already in
+                                if (!keysPermuted.containsKey(otherKey)) {
+                                    keysPermuted.put(thisKey, otherKey);
+                                }
+                            } else {
+                                keysMoved.put(movedKey, String.format("%d => %d", oldKeys.indexOf(movedKey), newKeys.indexOf(movedKey)));
+                            }
+                        }
+                    }
+                }
+            }
+
+            describedValues = describeKeyChanges(keysAdded, keysRemoved, keysPermuted, keysMoved);
+        } else {
+            describedValues = new String[] {"#error", null};
+        }
+
+        return describedValues;
+    }
+
+    private List<String> decodedListOfContentKeysFromDraftValue(String draftValue) {
+        if ("[]".equals(draftValue)) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(draftValue.split("\\|"));
+    }
+
+    private Map<String, int[]> computeItemPositions(List<String> left, List<String> right) {
+        Set<String> keys = new HashSet<String>();
+        if (left != null) {
+            keys.addAll(left);
+        }
+        if (right != null) {
+            keys.addAll(right);
+        }
+
+        Map<String, int[]> changeVector = new HashMap<String, int[]>(keys.size());
+        for (String key: keys) {
+            int[] positions = new int[2];
+            positions[0] = left != null ? left.indexOf(key) : -1;
+            positions[1] = right != null ? right.indexOf(key) : -1;
+
+            changeVector.put(key, positions);
+        }
+
+        return changeVector;
+    }
+
+    private String[] describeKeyChanges(Collection<String> keysAdded, Collection<String> keysRemoved, Map<String, String> keysPermuted, Map<String, String> keysMoved) {
+        StringBuilder oldValueBuilder = new StringBuilder();
+        StringBuilder newValueBuilder = new StringBuilder();
+
+        if (!keysRemoved.isEmpty()) {
+            oldValueBuilder
+                .append("Deleted: ")
+                .append(StringUtils.join(keysRemoved, ", "));
+        }
+        if (!keysAdded.isEmpty()) {
+            newValueBuilder
+                .append("Added: ")
+                .append(StringUtils.join(keysAdded, ", "));
+        }
+        if (!keysPermuted.isEmpty()) {
+            if (newValueBuilder.length() > 0) {
+                newValueBuilder.append("\n");
+            }
+
+            newValueBuilder.append("Exchanged: ");
+            for (Map.Entry<String, String> entry : keysPermuted.entrySet()) {
+                newValueBuilder
+                    .append(entry.getKey()).append("<->")
+                    .append(entry.getValue()).append("; ");
+            }
+        }
+        if (!keysMoved.isEmpty()) {
+            if (newValueBuilder.length() > 0) {
+                newValueBuilder.append("\n");
+            }
+
+            newValueBuilder.append("Moved: ");
+            for (Map.Entry<String, String> entry : keysMoved.entrySet()) {
+                newValueBuilder
+                    .append(entry.getKey()).append(" ")
+                    .append(entry.getValue()).append("; ");
+            }
+        }
+
+        String[] describedValues = new String[2];
+
+        if (oldValueBuilder.length() > 0) {
+            describedValues[0] = oldValueBuilder.toString();
+        }
+        if (newValueBuilder.length() > 0) {
+            describedValues[1] = newValueBuilder.toString();
+        }
+
+        return describedValues;
+    }
+
+    private GwtChangeDetail toGwtChangeDetail(String nodeChangeType, ContentType type, ContentChangeDetailEntity detail) {
+        String changeType = null;
+
+        // if the whole node was added, attributes also must
+        if ("ADD".equalsIgnoreCase(nodeChangeType)) {
+            changeType = "ADD";
+        } else {
+            changeType = detail.getChangeType() != null ? detail.getChangeType().name() : nodeChangeType;
+        }
+
         String oldValue = detail.getOldValue();
         String newValue = detail.getNewValue();
         Attribute attr = contentTypeInfoService.findAttributeByName(type, detail.getAttributeName()).orNull();
@@ -411,7 +657,7 @@ public class ContentChangesService {
                 newValue = enumToString(newValue, labels);
             }
         }
-        return new GwtChangeDetail(detail.getAttributeName(), oldValue, newValue);
+        return new GwtChangeDetail(changeType, detail.getAttributeName(), oldValue, newValue);
     }
 
     private static final String enumToString(String enumValue, Map<String, String> enumLabels) {

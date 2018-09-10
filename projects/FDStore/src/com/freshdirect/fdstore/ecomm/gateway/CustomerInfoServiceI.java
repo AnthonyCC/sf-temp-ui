@@ -88,7 +88,7 @@ public interface CustomerInfoServiceI {
 	public ErpCustomerModel getCustomerPaymentAndCredit(FDIdentity identity)
 			throws FDResourceException, RemoteException;
 
-	public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUser user)
+    public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user)
 			throws FDResourceException, RemoteException;
 
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;

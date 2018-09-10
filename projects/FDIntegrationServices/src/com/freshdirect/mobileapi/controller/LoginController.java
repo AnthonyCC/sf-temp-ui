@@ -23,6 +23,8 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecommerce.data.dlvpass.DlvPassStatusMapData;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
@@ -125,16 +127,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		if (ACTION_LOGIN.equals(action)) {
 			Login requestMessage = parseRequestObject(request, response,
 					Login.class);
-			try {
-				// Check to see if user session exists
-				SessionUser sessionUser = getUserFromSession(request, response);
-				if(sessionUser.isLoggedIn()){
-					logout(user, UserCleanupMode.SESSION_ONLY, request, response);
-				}
-
-			} catch (NoSessionException e) {
-				// Do nothing
-			}
 			responseMessage = login(requestMessage, request, response, false);
 		} else if (ACTION_PING.equals(action)) {
 		    responseMessage = ping(request, response);
@@ -613,6 +605,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         if(responseMessage.isPurchaseDlvPassEligible()){
         	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
         }
+        responseMessage.setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
         return responseMessage;
     }
 

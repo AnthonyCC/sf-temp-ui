@@ -1,6 +1,7 @@
 package com.freshdirect.mail.service;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			try {
 				ObjectMessage objMsg = (ObjectMessage)msg;
 				FDFtlEmail fdFtlEmail = (FDFtlEmail)objMsg.getObject();
-				Map<String,Object> parameters = fdFtlEmail.getParameters();
+				Map<String,Serializable> parameters = fdFtlEmail.getParameters();
 				if(null != (String)parameters.get(MailName.GC_FTL_PATH)) {
 					gc = true;
 				}
@@ -151,7 +152,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 	 * @throws IOException
 	 * @throws TemplateException
 	 */
-	private String processFtl(Map<String,Object> parameters, boolean gc, boolean iphone) throws IOException, TemplateException {
+	private String processFtl(Map<String,Serializable> parameters, boolean gc, boolean iphone) throws IOException, TemplateException {
 		String mailBody;
 		BaseTemplateContext context = new BaseTemplateContext(parameters);
 		StringWriter writer = new StringWriter();

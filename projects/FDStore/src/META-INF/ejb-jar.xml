@@ -607,7 +607,11 @@
     </message-driven>
   </enterprise-beans>
   <assembly-descriptor>
-
+		<!-- Default interceptor that will apply to all methods for all beans -->
+		<interceptor-binding>
+		  <ejb-name>*</ejb-name>
+		  <interceptor-class>com.freshdirect.ejb.BeanInterceptor</interceptor-class>
+		</interceptor-binding>
 		<!--
 		*****************************
 		*** Manager Session Beans ***
