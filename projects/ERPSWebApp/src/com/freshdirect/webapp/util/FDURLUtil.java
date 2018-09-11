@@ -3,6 +3,7 @@ package com.freshdirect.webapp.util;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
@@ -85,10 +86,15 @@ public class FDURLUtil {
     }
 
     public static String extendsUrlWithServiceType(String url, EnumServiceType serviceType) {
-        StringBuilder serviceTypeUrl = new StringBuilder(url);
-        serviceTypeUrl.append(url.contains("?") ? "&" : "?");
-        serviceTypeUrl.append("serviceType=");
-        serviceTypeUrl.append(serviceType.getName());
+        StringBuilder serviceTypeUrl = new StringBuilder();
+        if (url.contains("serviceType=")) {
+            serviceTypeUrl.append(url.replaceFirst(EnumServiceType.CORPORATE.getName() + "|" + EnumServiceType.HOME.getName(), serviceType.getName()));
+        } else {
+            serviceTypeUrl.append(url);
+            serviceTypeUrl.append(url.contains("?") ? "&" : "?");
+            serviceTypeUrl.append("serviceType=");
+            serviceTypeUrl.append(serviceType.getName());
+        }
         return serviceTypeUrl.toString();
     }
 
