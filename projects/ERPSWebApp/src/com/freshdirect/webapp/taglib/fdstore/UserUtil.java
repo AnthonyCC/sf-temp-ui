@@ -433,11 +433,11 @@ public class UserUtil {
 
 	private static ErpAddressModel getGiftCardDeliveryAddress(EnumServiceType sType){
 		ErpAddressModel address=new ErpAddressModel();
-		address.setAddress1("23-30 borden ave");
-		address.setCity("Long Island City");
-		address.setState("NY");
-		address.setCountry("US");
-		address.setZipCode("11101");
+		address.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+		address.setCity(FDStoreProperties.getFdDefaultBillingTown());
+		address.setState(FDStoreProperties.getFdDefaultBillingState());
+		address.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+		address.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
 		address.setServiceType(sType);
 		return address;
 
@@ -445,11 +445,11 @@ public class UserUtil {
 
 	private static ErpAddressModel getDonationOrderDeliveryAddress(EnumServiceType sType){
 		ErpAddressModel address=new ErpAddressModel();
-		address.setAddress1("23-30 borden ave");
-		address.setCity("Long Island City");
-		address.setState("NY");
-		address.setCountry("US");
-		address.setZipCode("11101");
+		address.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+		address.setCity(FDStoreProperties.getFdDefaultBillingTown());
+		address.setState(FDStoreProperties.getFdDefaultBillingState());
+		address.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+		address.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
 		address.setServiceType(sType);
 		address.setCharityName("ROBIN HOOD");
 		return address;

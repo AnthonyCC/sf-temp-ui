@@ -739,11 +739,11 @@ public class RegistrationAction extends WebActionSupport {
 					erpAddress.setLastName(customerInfo.getLastName());
 					erpAddress.setPhone(customerInfo.getHomePhone());
 					//Need to set dummy sap billing info for SAP processing.
-					erpAddress.setAddress1("23-30 borden ave");
-					erpAddress.setCity("Long Island City");
-					erpAddress.setState("NY");
-					erpAddress.setCountry("US");
-					erpAddress.setZipCode("11101");
+					erpAddress.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+					erpAddress.setCity(FDStoreProperties.getFdDefaultBillingTown());
+					erpAddress.setState(FDStoreProperties.getFdDefaultBillingState());
+					erpAddress.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+					erpAddress.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
 					
                 erpAddress.setServiceType(serviceType);
 					erpCustomer.setSapBillToAddress(erpAddress);

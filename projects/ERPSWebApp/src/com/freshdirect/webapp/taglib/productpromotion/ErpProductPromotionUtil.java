@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.common.pricing.ZoneInfo;
@@ -13,6 +14,7 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.application.CmsManager;
@@ -23,7 +25,7 @@ import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class ErpProductPromotionUtil {
 
-	public static final String DEFAULT_ZONE = "0000100000";
+	public static final String DEFAULT_ZONE = ErpServicesProperties.getMasterDefaultZoneId();
 	public static final ZoneInfo DEFAULT_ZONE_INFO = new ZoneInfo("0000100000","0001","01");
 	public static List<ErpZoneMasterInfo> zoneList =  getAvailablePricingZones();
 	/*public static Object getAvailableDepartments(){

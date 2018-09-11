@@ -275,8 +275,8 @@ public class FDOrderAdapter implements FDOrderI {
 										
 						ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), ol.getSalesOrg(), ol.getDistChannel()));
 						cartLine.getUserContext().setPricingContext(new PricingContext(z));
-					} else if (!"0001".equals(ol.getSalesOrg())){//for group scale
-						ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), "0001", "01"));
+					} else if (!FDStoreProperties.getDefaultFdSalesOrg().equals(ol.getSalesOrg())){//for group scale
+						ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel()));
 						cartLine.getUserContext().setPricingContext(new PricingContext(z));
 					}
 				}

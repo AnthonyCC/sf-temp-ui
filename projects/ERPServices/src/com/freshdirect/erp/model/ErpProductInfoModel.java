@@ -61,8 +61,8 @@ public class ErpProductInfoModel extends ModelSupport {
 //			this.salesOrg = "1000".equals(salesOrg)?"0001":salesOrg;
 //			this.distChannel = "1000".equals(salesOrg)?"01":distChannel;
 
-			this.salesOrg =StringUtil.isEmpty(salesOrg)?"0001":("1000".equals(salesOrg)?"0001":salesOrg);
-			this.distChannel = StringUtil.isEmpty(distChannel)?"01":("1000".equals(distChannel)?"01":distChannel);
+			this.salesOrg =StringUtil.isEmpty(salesOrg)?FDStoreProperties.getDefaultFdSalesOrg():("1000".equals(salesOrg)?FDStoreProperties.getDefaultFdSalesOrg():salesOrg);
+			this.distChannel = StringUtil.isEmpty(distChannel)?FDStoreProperties.getDefaultFdDistributionChannel():("1000".equals(distChannel)?FDStoreProperties.getDefaultFdDistributionChannel():distChannel);
 		}
 		
 		public double getPrice() {

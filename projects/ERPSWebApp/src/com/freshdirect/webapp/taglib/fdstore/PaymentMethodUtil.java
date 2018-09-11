@@ -774,11 +774,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.GIFTCARD);
         paymentMethod.setName(user.getFirstName() + " "+ user.getLastName());
         paymentMethod.setAccountNumber("1000");
-        paymentMethod.setAddress1("23-30 Borden Ave");
-        paymentMethod.setCity("Long Island City");
-        paymentMethod.setState("NY");
-        paymentMethod.setZipCode("11101");
-        paymentMethod.setCountry("US");
+        paymentMethod.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+        paymentMethod.setCity(FDStoreProperties.getFdDefaultBillingTown());
+        paymentMethod.setState(FDStoreProperties.getFdDefaultBillingState());
+        paymentMethod.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
+        paymentMethod.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
     	return paymentMethod;
     }
     

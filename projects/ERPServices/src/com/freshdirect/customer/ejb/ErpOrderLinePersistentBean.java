@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.ModelI;
@@ -368,10 +369,10 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         this.model.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
 
         String salesOrg=rs.getString("SALES_ORG");
-        salesOrg = "1000".equals(salesOrg)?"0001":salesOrg;
+        salesOrg = "1000".equals(salesOrg)?FDStoreProperties.getDefaultFdSalesOrg():salesOrg;
         this.model.setSalesOrg(salesOrg);
         String distrChannel=rs.getString("DISTRIBUTION_CHANNEL");
-        distrChannel = "1000".equals(salesOrg)?"01":distrChannel;
+        distrChannel = "1000".equals(salesOrg)?FDStoreProperties.getDefaultFdDistributionChannel():distrChannel;
         this.model.setDistChannel(distrChannel);
         this.model.setScaleQuantity(rs.getDouble("SCALE_QTY"));
         String source = rs.getString("SOURCE");

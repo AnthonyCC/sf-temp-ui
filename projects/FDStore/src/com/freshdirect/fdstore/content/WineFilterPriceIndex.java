@@ -16,6 +16,7 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -55,7 +56,7 @@ public final class WineFilterPriceIndex extends BalkingExpiringReference<Map<Pri
 			Collection<ContentKey> keys = ContentFactory.getInstance().getAllWineProductKeys();
 			Map<EnumWinePrice, Set<ContentKey>> tmp;
 			for (String zone : zones) {
-				PricingContext context = new PricingContext(new ZoneInfo(zone,"1000","1000"));//::FDX::
+				PricingContext context = new PricingContext(new ZoneInfo(zone,FDStoreProperties.getDefaultFdPlantID(),FDStoreProperties.getDefaultFdDistributionChannel()));//::FDX::
 				tmp = new HashMap<EnumWinePrice, Set<ContentKey>>(10);
 				for (EnumWinePrice price : EnumWinePrice.values())
 					tmp.put(price, new HashSet<ContentKey>(1000));

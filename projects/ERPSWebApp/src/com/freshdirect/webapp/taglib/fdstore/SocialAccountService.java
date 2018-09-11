@@ -518,11 +518,11 @@ public class SocialAccountService implements AccountService {
 
         AddressModel address = new AddressModel();
         // set default address for sociallogin-only user
-        address.setAddress1("23-30 borden ave");
-        address.setCity("Long Island City");
-        address.setState("NY");
-        address.setCountry("US");
-        address.setZipCode("11101");
+        address.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+        address.setCity(FDStoreProperties.getFdDefaultBillingTown());
+        address.setState(FDStoreProperties.getFdDefaultBillingState());
+        address.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+        address.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
 
         FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 

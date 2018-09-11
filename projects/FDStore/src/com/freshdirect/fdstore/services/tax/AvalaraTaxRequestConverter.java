@@ -265,10 +265,10 @@ public class AvalaraTaxRequestConverter {
 	private Address[] getDefaultOriginAddresses() {
 		Address address = new Address();
 		address.setAddressCode("Origin-01");
-		address.setLine1("23 Borden Avenue");
-		address.setCity("Long Island City");
-		address.setCountry("US");
-		address.setPostalCode("11101");
+		address.setLine1(FDStoreProperties.getFdDefaultBillingStreet());
+		address.setCity(FDStoreProperties.getFdDefaultBillingTown());
+		address.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+		address.setPostalCode(FDStoreProperties.getFdDefaultBillingPostalcode());
 		Address[] originAddresses = { address };
 		return originAddresses;
 	}
