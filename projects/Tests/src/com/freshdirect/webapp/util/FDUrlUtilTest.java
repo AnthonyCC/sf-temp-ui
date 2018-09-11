@@ -30,7 +30,14 @@ public class FDUrlUtilTest {
 
     @Test
     public void extendsAlreadyContainsServiceTypeComplexUrlWithServiceTypeHome() {
-        Assert.assertEquals("/index.jsp?param=value&serviceType=HOME&param2=value2", FDURLUtil.extendsUrlWithServiceType("/index.jsp?param=value&serviceType=CORPORATE&param2=value2", EnumServiceType.HOME));
+        Assert.assertEquals("/index.jsp?param=value&serviceType=HOME&param2=value2",
+                FDURLUtil.extendsUrlWithServiceType("/index.jsp?param=value&serviceType=CORPORATE&param2=value2", EnumServiceType.HOME));
+    }
+
+    @Test
+    public void extendsAlreadyContainsServiceTypeComplexUrlWithServiceTypePickup() {
+        Assert.assertEquals("/index.jsp?param=value&serviceType=PICKUP&param2=value2",
+                FDURLUtil.extendsUrlWithServiceType("/index.jsp?param=value&serviceType=HOME&param2=value2", EnumServiceType.PICKUP));
     }
 
 }

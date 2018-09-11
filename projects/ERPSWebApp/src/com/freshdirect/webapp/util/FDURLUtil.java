@@ -88,7 +88,15 @@ public class FDURLUtil {
     public static String extendsUrlWithServiceType(String url, EnumServiceType serviceType) {
         StringBuilder serviceTypeUrl = new StringBuilder();
         if (url.contains("serviceType=")) {
-            serviceTypeUrl.append(url.replaceFirst(EnumServiceType.CORPORATE.getName() + "|" + EnumServiceType.HOME.getName(), serviceType.getName()));
+            StringBuilder serviceTypesRegex = new StringBuilder();
+            EnumServiceType[] values = EnumServiceType.values();
+            for (int i = 0; i < values.length; i++) {
+                serviceTypesRegex.append(values[i].getName());
+                if (i != values.length - 1) {
+                    serviceTypesRegex.append("|");
+                }
+            }
+            serviceTypeUrl.append(url.replaceFirst(serviceTypesRegex.toString(), serviceType.getName()));
         } else {
             serviceTypeUrl.append(url);
             serviceTypeUrl.append(url.contains("?") ? "&" : "?");
