@@ -488,12 +488,13 @@ public class SubmitOrderAction extends WebActionSupport {
 				return ERROR;
 			}
 			
-			if(!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
+			if(cart!=null&&cart.getZoneInfo()!=null&&reservation!=null&&cart.getZoneInfo().getZoneId()!=null&&
+					!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
 				LOGGER.warn( "Invalid reservation : zone id-s do not match!" + "reservation zone-id : " +reservation.getZoneId()+ " cart zone-id : "+ cart.getZoneInfo().getZoneId()+ " cust id: "+reservation.getCustomerId());
 				this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
 				return ERROR;
 			}
-			Date cutoffTime = reservation.getCutoffTime();
+			Date cutoffTime = reservation!=null?reservation.getCutoffTime():null;
 			
 			//update cutoff time based on context. fdx order will have different cutoff time from reservation cutoff
 			cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, user);
