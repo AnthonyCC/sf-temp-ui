@@ -108,6 +108,7 @@ public class DraftValidatorService {
             ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
             Optional<Attribute> changedAttribute = contentTypeInfoService.findAttributeByName(key.type, draftChange.getAttributeName());
             if (changedAttribute.isPresent() && changedAttribute.get() instanceof Relationship
+                    && draftChange.getValue() != null
                     && DraftApplicatorService.getContentKeysFromRelationshipValue(draftChange.getValue()).contains(keyInError)) {
                 draftChangeThatCausedTheIssue = new DraftChange();
                 draftChangeThatCausedTheIssue.setAttributeName(draftChange.getAttributeName());
