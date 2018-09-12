@@ -68,7 +68,7 @@ public class FDCustomerCoupon implements Serializable {
 	public FDCustomerCoupon(FDCartLineI cartLine,EnumCouponStatus status,FDCouponProductInfo couponProductInfo,boolean displayStatusMessage) {
 		if(null !=cartLine.getCouponDiscount()){
 			this.couponId = cartLine.getCouponDiscount().getCouponId();
-			this.displayDescription = "Saved "+FormatterUtil.formatCurrency(cartLine.getCouponDiscount().getDiscountAmt())+" with coupon";
+			this.displayDescription = "Saved "+FormatterUtil.formatCurrency(cartLine.getCouponDiscount().getDiscountAmt())+" with coupon"; 
 			this.detailedDescription = cartLine.getCouponDiscount().getCouponDesc();
 			this.status = status;
 			this.value = ""+cartLine.getCouponDiscount().getDiscountAmt();
