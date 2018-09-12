@@ -468,7 +468,7 @@ public class ContentChangesService {
                 if (newKeys.isEmpty()) {
                     newValueBuilder.append("(empty list)");
                 } else {
-                    newValueBuilder.append(StringUtils.join(", ", newKeys));
+                    newValueBuilder.append(StringUtils.join(newKeys, ", "));
                 }
 
                 return new String[] { null, newValueBuilder.toString() };
