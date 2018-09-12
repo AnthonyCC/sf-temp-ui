@@ -26,6 +26,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.service.RedirectService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -49,7 +50,7 @@ public class SignUpServlet extends BaseJsonServlet {
         HttpSession session = request.getSession();
         SignUpRequest signUpRequest = BaseJsonServlet.parseRequestData(request, SignUpRequest.class);
         boolean skipPopup = false;
-        EnumServiceType serviceType = NVL.apply(EnumServiceType.getEnum(signUpRequest.getServiceType()), EnumServiceType.PICKUP);
+        EnumServiceType serviceType = NVL.apply(EnumServiceType.getEnum(signUpRequest.getServiceType()), EnumServiceType.HOME);
         String successPage = FDURLUtil.extendsUrlWithServiceType(NVL.apply(signUpRequest.getSuccessPage(), FDURLUtil.LANDING_PAGE), serviceType);
 
         try {
@@ -65,11 +66,11 @@ public class SignUpServlet extends BaseJsonServlet {
             if (result.isSuccess()) {
                 FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(signUpRequest.getZipCode());
                 Set<EnumServiceType> availableServices = serviceResult.getAvailableServices();
-                if (!availableServices.contains(serviceType)) {
+                EnumDeliveryStatus status = serviceResult.getServiceStatus(serviceType);
+                if (!EnumDeliveryStatus.DELIVER.equals(status) && !EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status) && !EnumDeliveryStatus.COS_ENABLED.equals(status)) {
                     result.addWarning(new ActionWarning("serviceType", "Selected service type is not available for current area, go with pickup type"));
                     serviceType = EnumServiceType.PICKUP;
                     signUpRequest.setServiceType(serviceType.getName());
-                    registrationService = selectSignUpService(serviceType);
                 }
 
                 try {
@@ -109,7 +110,6 @@ public class SignUpServlet extends BaseJsonServlet {
             }
 
             session.setAttribute(SessionName.SIGNUP_SUCCESS, result.isSuccess());
-
 
             signUpResponse.setSuccess(result.isSuccess());
             signUpResponse.setEmail(signUpRequest.getEmail());

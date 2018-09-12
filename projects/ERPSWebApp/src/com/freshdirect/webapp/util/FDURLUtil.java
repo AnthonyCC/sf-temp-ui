@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -85,10 +86,15 @@ public class FDURLUtil {
     }
 
     public static String extendsUrlWithServiceType(String url, EnumServiceType serviceType) {
-        StringBuilder serviceTypeUrl = new StringBuilder(url);
-        serviceTypeUrl.append(url.contains("?") ? "&" : "?");
-        serviceTypeUrl.append("serviceType=");
-        serviceTypeUrl.append(serviceType.getName());
+        StringBuilder serviceTypeUrl = new StringBuilder();
+        if (url.contains("serviceType=")) {
+            serviceTypeUrl.append(url.replaceFirst(StringUtils.join(EnumServiceType.values(), "|"), serviceType.getName()));
+        } else {
+            serviceTypeUrl.append(url);
+            serviceTypeUrl.append(url.contains("?") ? "&" : "?");
+            serviceTypeUrl.append("serviceType=");
+            serviceTypeUrl.append(serviceType.getName());
+        }
         return serviceTypeUrl.toString();
     }
 

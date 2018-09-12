@@ -8,11 +8,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <tmpl:get name="seoMetaTag"/>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <jwr:style src="/grid.css" media="all" />
-    <jwr:style src="/oldglobal.css" media="all" />
-    <jwr:style src="/global.css" media="all" />
-    <jwr:style src="/expressco.css" media="all" />
-    <jwr:style src="/accessibility.css" media="all" />
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf"%>
+    
     <tmpl:get name="extraCss"/>
     <tmpl:get name="extraJs"/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>

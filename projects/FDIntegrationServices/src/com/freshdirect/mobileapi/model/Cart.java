@@ -816,6 +816,12 @@ public class Cart {
                 productLineItem.setEstimatedPrice(cartLine.isEstimatedPrice());
                 productLineItem.setHasTax(cartLine.hasTax());
                 productLineItem.setCartLineId(Integer.toString(cartLine.getRandomId()));
+                
+                if(cart instanceof FDOrderAdapter){ 
+                	long cartlineId = Long.valueOf(cartLine.getCartlineId());
+                   	productLineItem.setNewItem(user.getFDSessionUser().getRecentCartlineIdsSet(((FDOrderI) cart).getErpSalesId()).contains(cartlineId)?true:false);
+                }
+                
                 productLineItem.setGroupScaleSavings(cartLine.getGroupScaleSavings());
                 productLineItem.setDlvPassProduct(cartLine.lookupFDProduct().isDeliveryPass()?true:false);
                 if(cartLine.lookupFDProduct().isDeliveryPass()){
