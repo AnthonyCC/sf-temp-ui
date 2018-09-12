@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
+import com.freshdirect.framework.util.FormatterUtil;
 
 public class FDCustomerCoupon implements Serializable {
 	
@@ -42,13 +43,13 @@ public class FDCustomerCoupon implements Serializable {
 				if(EnumCouponOfferType.PERCENT_OFF.equals(coupon.getOfferType())){
 					this.displayDescription = "Saved "+FORMAT_PERCENTAGE.format(Double.parseDouble(coupon.getValue())/100)+" with coupon";
 				}else{
-					this.displayDescription = "Saved "+FORMAT_CURRENCY.format(Double.parseDouble(coupon.getValue()))+" with coupon";
+					this.displayDescription = "Saved "+FormatterUtil.formatCurrency(Double.parseDouble(coupon.getValue()))+" with coupon";
 				}
 			}else{
 				if(EnumCouponOfferType.PERCENT_OFF.equals(coupon.getOfferType())){
 					this.displayDescription = "Save "+FORMAT_PERCENTAGE.format(Double.parseDouble(coupon.getValue())/100);
 				}else{
-					this.displayDescription = "Save "+FORMAT_CURRENCY.format(Double.parseDouble(coupon.getValue()));
+					this.displayDescription = "Save "+FormatterUtil.formatCurrency(Double.parseDouble(coupon.getValue()));
 				}
 			}
 		}
@@ -67,7 +68,7 @@ public class FDCustomerCoupon implements Serializable {
 	public FDCustomerCoupon(FDCartLineI cartLine,EnumCouponStatus status,FDCouponProductInfo couponProductInfo,boolean displayStatusMessage) {
 		if(null !=cartLine.getCouponDiscount()){
 			this.couponId = cartLine.getCouponDiscount().getCouponId();
-			this.displayDescription = "Saved "+FORMAT_CURRENCY.format(cartLine.getCouponDiscount().getDiscountAmt())+" with coupon";
+			this.displayDescription = "Saved "+FormatterUtil.formatCurrency(cartLine.getCouponDiscount().getDiscountAmt())+" with coupon";
 			this.detailedDescription = cartLine.getCouponDiscount().getCouponDesc();
 			this.status = status;
 			this.value = ""+cartLine.getCouponDiscount().getDiscountAmt();
