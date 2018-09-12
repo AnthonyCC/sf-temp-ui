@@ -65,6 +65,7 @@
 * @param? itemPerLine
 */
 {template .productList autoescape="false"}
+	{let $ifSingleUL: $ifSingleUL ? $ifSingleUL : ($abFeatures.productCard and $abFeatures.productCard == '2018' ? true : false) /}
 	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
 	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '2017') : '2017' /}
 	{let $itemPerLineFinal: $itemPerLine ? $itemPerLine : (($version == '4_0' or $productCardVersion == '2018') ? 4 : 5) /}

@@ -351,12 +351,6 @@ public abstract class ContextualContentProvider {
                 }
             }
         }
-
-        if (validationResults.hasError()) {
-            // FIXME: this is practically dead code, in case of error a ValidationFailedException was already thrown from inside validate(),
-            // which is not catched at this level, so we will never reach this point
-            throw new ValidationFailedException(validationResults);
-        }
     }
 
     /**

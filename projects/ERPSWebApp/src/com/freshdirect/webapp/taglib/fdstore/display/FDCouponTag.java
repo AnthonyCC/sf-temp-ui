@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.fdstore.ecoupon.FDCouponProductInfo;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -237,7 +238,7 @@ public class FDCouponTag extends BodyTagSupport {
 				if(EnumCouponOfferType.PERCENT_OFF.equals(coupon.getOfferType())){
 					buf.append(FORMAT_PERCENTAGE.format(couponVal/100));
 				}else {
-					buf.append(FORMAT_CURRENCY.format(couponVal));
+					buf.append(FormatterUtil.formatCurrency(couponVal));
 				}
 	    		/* single here could be:
 	    		 * 	$1.00 off
