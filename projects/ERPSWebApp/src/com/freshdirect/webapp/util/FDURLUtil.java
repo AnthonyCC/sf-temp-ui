@@ -3,7 +3,6 @@ package com.freshdirect.webapp.util;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +11,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -88,15 +88,7 @@ public class FDURLUtil {
     public static String extendsUrlWithServiceType(String url, EnumServiceType serviceType) {
         StringBuilder serviceTypeUrl = new StringBuilder();
         if (url.contains("serviceType=")) {
-            StringBuilder serviceTypesRegex = new StringBuilder();
-            EnumServiceType[] values = EnumServiceType.values();
-            for (int i = 0; i < values.length; i++) {
-                serviceTypesRegex.append(values[i].getName());
-                if (i != values.length - 1) {
-                    serviceTypesRegex.append("|");
-                }
-            }
-            serviceTypeUrl.append(url.replaceFirst(serviceTypesRegex.toString(), serviceType.getName()));
+            serviceTypeUrl.append(url.replaceFirst(StringUtils.join(EnumServiceType.values(), "|"), serviceType.getName()));
         } else {
             serviceTypeUrl.append(url);
             serviceTypeUrl.append(url.contains("?") ? "&" : "?");
