@@ -414,7 +414,11 @@ public class ContentChangesService {
         final String[] describedValues = describeValueChange(key, attributeDef, valueBefore, valueOnDraft);
 
         GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, isFieldShadowed);
-        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeDef.getName(), describedValues[0], describedValues[1], valueOnDraft));
+        String oldValue = calculateLabelAwareChangeValue(key.type, attributeDef, describedValues[0]);
+        String newValue = calculateLabelAwareChangeValue(key.type, attributeDef, describedValues[1]);
+        String mergeValue = calculateLabelAwareChangeValue(key.type, attributeDef, valueOnDraft);
+
+        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeDef.getName(), oldValue, newValue, mergeValue));
 
         return gwtNodeChange;
     }
@@ -647,20 +651,14 @@ public class ContentChangesService {
             changeType = detail.getChangeType() != null ? detail.getChangeType().name() : nodeChangeType;
         }
 
-        String oldValue = detail.getOldValue();
-        String newValue = detail.getNewValue();
         Attribute attr = contentTypeInfoService.findAttributeByName(type, detail.getAttributeName()).orNull();
-        if (attr != null && attr instanceof Scalar && ((Scalar) attr).isEnumerated()) {
-            Map<String, String> labels = labelProviderService.getEnumLabels(type, attr);
-            if (labels != null) {
-                oldValue = enumToString(oldValue, labels);
-                newValue = enumToString(newValue, labels);
-            }
-        }
+        String oldValue = calculateLabelAwareChangeValue(type, attr, detail.getOldValue());
+        String newValue = calculateLabelAwareChangeValue(type, attr, detail.getNewValue());
+
         return new GwtChangeDetail(changeType, detail.getAttributeName(), oldValue, newValue);
     }
 
-    private static final String enumToString(String enumValue, Map<String, String> enumLabels) {
+    private final String enumToString(String enumValue, Map<String, String> enumLabels) {
         String label = enumLabels.get(enumValue);
         return label != null ? label + " [" + enumValue + "]" : enumValue;
     }
@@ -781,5 +779,16 @@ public class ContentChangesService {
     public Long parsePublishId(ChangeSetQuery query) {
         Long parshedPublishId = "latest".equals(query.getPublishId()) ? null : Long.parseLong(query.getPublishId(), 10);
         return parshedPublishId;
+    }
+
+    private String calculateLabelAwareChangeValue(ContentType type, Attribute attribute, String value) {
+        String labelAwareValue = value;
+        if (attribute != null && attribute instanceof Scalar && ((Scalar) attribute).isEnumerated()) {
+            Map<String, String> labels = labelProviderService.getEnumLabels(type, attribute);
+            if (labels != null) {
+                labelAwareValue = enumToString(value, labels);
+            }
+        }
+        return labelAwareValue;
     }
 }
