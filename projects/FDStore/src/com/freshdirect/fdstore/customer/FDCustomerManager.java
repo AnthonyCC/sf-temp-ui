@@ -3203,14 +3203,16 @@ public class FDCustomerManager {
       						  				   ErpFraudException,
       						  				   //ReservationException,
       						  				   DeliveryPassException,
-      						  				   FDPaymentInadequateException{
+      						  				   FDPaymentInadequateException,
+      						  				   InvalidCardException,
+      						  				   ErpTransactionException{
 		return placeSubscriptionOrder (info,cart,appliedPromos,sendEmail,cra,status,false);
 	}
 
 	public static String placeSubscriptionOrder(FDActionInfo info, FDCartModel cart, Set<String> appliedPromos,
 			boolean sendEmail, CustomerRatingI cra, EnumDlvPassStatus status, boolean isRealTimeAuthNeeded)
 			throws FDResourceException, ErpFraudException,
-			DeliveryPassException, FDPaymentInadequateException {
+			DeliveryPassException, FDPaymentInadequateException,InvalidCardException, ErpTransactionException {
 		String orderId = "";
 		try {
 			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();

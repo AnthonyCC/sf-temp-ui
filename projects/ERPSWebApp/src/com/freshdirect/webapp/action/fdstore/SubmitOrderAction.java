@@ -75,6 +75,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.action.WebActionSupport;
@@ -90,6 +91,8 @@ import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
 import com.freshdirect.webapp.util.StandingOrderUtil;
+
+import weblogic.servlet.internal.dd.compliance.ComplianceException;
 
 public class SubmitOrderAction extends WebActionSupport {
 
@@ -441,7 +444,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		return recList;
 	}
 	
-    protected String doExecute() throws FDResourceException {
+    protected String doExecute() throws FDResourceException, ComplianceException, InvalidCardException {
 
 		final HttpSession session = this.getWebActionContext().getSession();
 		final HttpServletRequest request = this.getWebActionContext().getRequest();

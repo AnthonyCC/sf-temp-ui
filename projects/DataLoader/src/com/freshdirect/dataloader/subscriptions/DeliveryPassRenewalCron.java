@@ -39,6 +39,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
@@ -82,6 +83,7 @@ import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
@@ -193,7 +195,12 @@ public class DeliveryPassRenewalCron {
 		} catch (FDPaymentInadequateException e) {
 			LOGGER.warn(e);
 			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
-
+		}catch (InvalidCardException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		}catch (ErpTransactionException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
 		}
 		return orderID;
 	}
