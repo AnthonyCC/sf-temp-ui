@@ -118,7 +118,7 @@ To enable LDAP authentication please extend conf/server.xml with the following c
 
 ## Oracle Driver
 
-Please obtain ojdbc6.jar from projects/cmseue/src/main/resources/lib/  and place it into lib/ folder.
+Please obtain ojdbc6.jar from lib/thirdparty and place it into lib/ folder.
 
 # Deploy GWT
 
