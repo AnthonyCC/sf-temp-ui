@@ -867,3 +867,106 @@
 [data-feature-productcard="2018"] > .container.pdp [data-component="carousel"] .portrait-item {
 	width: calc( (100% / (var(--prodcard2018_perrow) - 2)) );
 }
+
+/* recipes */
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .container,
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .container,
+[data-feature-productcard="2018"][data-pagetype="recipe"] .container,
+[data-feature-productcard="2018"][data-pagetype="recipe_search"] .container  {
+	width: 100%;
+	min-width: 970px;
+	padding: 0 10px;
+	box-sizing: border-box;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .W_RIGHT_NAV_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .W_RECIPE_DEPT_BODY_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .W_RECIPE_SUBCAT_BODY_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_DL_NAVS_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_TOTAL {
+	width: 100%;
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .W_RECIPE_DEPT_BODY_TOTAL-391 {
+	width: calc( 100% - 391px );
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .W_RIGHT_NAV_LEFT {
+	max-width: calc( 100% - 205px );
+	width: calc( 100% - 205px );
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .W_RIGHT_NAV_CENTER_PADDING {
+	max-width: 14px;
+	width: 14px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .W_RIGHT_NAV_RIGHT {
+	max-width: 191px;
+	width: 191px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .W_RECIPE_DEPT_BODY_TOTAL td,
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL td {
+	box-sizing: border-box;
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] form[name="recipeSearch"] > table {
+	width: 100%;
+	max-width: 741px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] form[name="recipeSearch"] #_keyword {
+	width: 100%;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .RECIPE_DEPT_BODY_SEARCH_KEYWORD  {
+	max-width: 500px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .RECIPE_DEPT_BODY_SEARCH_FIND  {
+	max-width: 87px;
+	width: 87px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_dept"] .RECIPE_DEPT_BODY_SEARCH_ADVANCED  {
+	max-width: 154px;
+	width: 154px;
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_LEFT,
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_DL_NAVS_LEFT {
+	max-width: 150px;
+	width: 150px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_CENTER,
+[data-feature-productcard="2018"][data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_CENTER,
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_DL_NAVS_RIGHT {
+	width: 100%;
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] td.W_RECIPE_DLR_NAVS_CENTER,
+[data-feature-productcard="2018"][data-pagetype="recipe"] td.W_RECIPE_DL_NAVS_RIGHT {
+	padding-left: 20px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_RIGHT {
+	max-width: 191px;
+	width: 191px;
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL-50 {
+	width: calc( 100% - 50px );
+}
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL-295 {
+	width: calc( 100% - 295px );
+}
+[data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL-150 {
+	width: calc( 100% - 150px );
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe"] .recipe_leftBorder,
+[data-feature-productcard="2018"][data-pagetype="recipe"] .recipe_rightBorder {
+	width: 8px;
+}
+
+[data-feature-productcard="2018"][data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_CENTER > table {
+	min-width: 612px;
+}
+[data-feature-productcard="2018"][data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_CENTER fieldset br {
+	display: none;
+}

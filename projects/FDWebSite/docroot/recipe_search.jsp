@@ -32,9 +32,11 @@ request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 	<tmpl:put name='leftnav' direct='true'>
 		<a href="/recipe_search.jsp?trk=snav"><img src="/media_stat/recipe/recipes_advsearch_catnav.gif" alt="Advanced recipe search" width="118" height="64" vspace="17" border="0"></a>
 	</tmpl:put>
+	<tmpl:put name='pageType' direct='true'>recipe_search</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <style type="text/css">
+.W_RECIPE_SEARCH_TOTAL { width: <%= W_RECIPE_SEARCH_TOTAL %>px; }
 .section {
  border-bottom: 1px solid #f93;
  padding-bottom: 1em;
@@ -193,7 +195,7 @@ boolean searchPerformed = false;
 		}
 		
 		%>
-		<div class="resultsHeading" style="width:<%=W_RECIPE_SEARCH_TOTAL%>px;">
+		<div class="resultsHeading" class="W_RECIPE_SEARCH_TOTAL">
 		<h1><%=resultHeading%></h1>
 		<%
         List classifications = (List) pageContext.getAttribute("classifications");

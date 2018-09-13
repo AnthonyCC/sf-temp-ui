@@ -3,7 +3,12 @@ final int W_RECIPE_DEPT_BODY_TOTAL = 765;
 final int W_RECIPE_DEPT_BODY_LEFT = 435;
 final int W_RECIPE_DEPT_BODY_RIGHT = 330;
 %>
-
+<style>
+	.W_RECIPE_DEPT_BODY_TOTAL { width: <%= W_RECIPE_DEPT_BODY_TOTAL %>px; }
+	.W_RECIPE_DEPT_BODY_TOTAL-391 { width: calc( <%= W_RECIPE_DEPT_BODY_TOTAL %>px - 391px ); }
+	.W_RECIPE_DEPT_BODY_LEFT { width: <%= W_RECIPE_DEPT_BODY_LEFT %>px; }
+	.W_RECIPE_DEPT_BODY_RIGHT { width: <%= W_RECIPE_DEPT_BODY_RIGHT %>px; }
+</style>
 <%
 /*
 -- This includes paints the recipe department body and bottom (no side navs)
@@ -27,14 +32,14 @@ final int W_RECIPE_DEPT_BODY_RIGHT = 330;
 	
 <% 
 if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
-	<div style="width: <%=W_RECIPE_DEPT_BODY_TOTAL%>px; text-align:left;" class="text11">
+	<div class="W_RECIPE_DEPT_BODY_TOTAL" style="text-align:left;" class="text11">
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt=""><br>
 		<fd:IncludeMedia name='<%= editorialPath %>' />
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="12" alt="">
 	</div>
 <% } %>
 		
-	<table width="<%=W_RECIPE_DEPT_BODY_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
+	<table class="W_RECIPE_DEPT_BODY_TOTAL" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td colspan="3" width="206" height="25" valign="bottom"><img src="/media_stat/recipe/rechm_tab_choose.gif" width="206" height="25" alt="Choose a Category"></td>
         <td colspan="2" height="25" style="border-bottom: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
@@ -44,7 +49,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
         <td width="8" style="border-left: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="6" height="6" alt=""></td>
         <td width="11"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" alt=""></td>
         <td width="187"><img src="/media_stat/images/layout/clear.gif" width="187" height="1" alt=""></td>
-        <td width="<%=W_RECIPE_DEPT_BODY_TOTAL-391%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DEPT_BODY_TOTAL-391%>" height="1" alt=""></td>
+        <td class="W_RECIPE_DEPT_BODY_TOTAL-391"><img src="/media_stat/images/layout/clear.gif" class="W_RECIPE_DEPT_BODY_TOTAL-391" height="1" alt=""></td>
         <td width="177"><img src="/media_stat/images/layout/clear.gif" width="177" height="1" alt=""></td>
       </tr>
       <tr>
@@ -82,9 +87,9 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 				<td colspan="3" style="padding-bottom: 4px;"><img src="/media_stat/recipe/rechm_recipe_search.gif" width="98" height="10" alt="RECIPE SEARCH"></td>
 			</tr>
 		  	<tr>
-				<td style="padding-right: 6px;"><input aria-label="recipe search" class="accessible_search" name="keyword" size="20"></td>
-				<td style="padding-right: 10px;"><button type="submit" class="cssbutton orange small">Find</button></td>
-				<td><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
+				<td style="padding-right: 6px;" class="RECIPE_DEPT_BODY_SEARCH_KEYWORD"><input aria-label="recipe search" class="accessible_search" name="keyword" size="20"></td>
+				<td style="padding-right: 10px;" class="RECIPE_DEPT_BODY_SEARCH_FIND"><button type="submit" class="cssbutton orange small">Find</button></td>
+				<td class="RECIPE_DEPT_BODY_SEARCH_ADVANCED"><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
 			</tr>
 		  	 </table>
 		  	 </form>
@@ -127,9 +132,9 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
       </tr>
     </table>
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="">
-	<table width="<%=W_RECIPE_DEPT_BODY_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+	<table class="W_RECIPE_DEPT_BODY_TOTAL" cellpadding="0" cellspacing="0" border="0">
 	  <tr valign="top">
-	  	<td width="<%=W_RECIPE_DEPT_BODY_LEFT%>" style="padding-right: 10px; border-right: solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="272" height="1" alt=""><br>
+	  	<td class="W_RECIPE_DEPT_BODY_LEFT" style="padding-right: 10px; border-right: solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="272" height="1" alt=""><br>
 	       <% if (rcpCat!= null &&  featuredRecipes!=null && featuredRecipes.size() > 0) { 	       %>
 	          <img src="/media/images/navigation/department/recipes/rechome/rechm_seasonal_graphic.gif" alt="Seasonal Recipes" border="0" width="267"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt=""><br>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
@@ -143,7 +148,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 	  	<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+rcpCat+"&subCatId="+rcpSubCat+"&trk=feat")%>" class="text12"><strong>More seasonal recipes...</strong></a>
 	       <% } %>
 	  	</td>
-		<td width="<%=W_RECIPE_DEPT_BODY_RIGHT%>" align="center" style="padding-left:10px;">
+		<td class="W_RECIPE_DEPT_BODY_RIGHT" align="center" style="padding-left:10px;">
  
 	       <% if (featProdCat!=null && featuredProducts!=null && featuredProducts.size() > 0) { 	       
 	            int itmCount = 0;

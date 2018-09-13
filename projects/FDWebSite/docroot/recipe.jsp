@@ -51,6 +51,7 @@ if (!recipe.isAvailable()) {
         <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
 <%--    <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>recipe</tmpl:put>
    <tmpl:put name='content' direct='true'>
 
     Sorry, but this recipe is not available.
@@ -107,19 +108,18 @@ request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductN
 title = "FreshDirect - " + recipe.getName();
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
-   <tmpl:put name='leftnav' direct='true'>
-   </tmpl:put>
-   <tmpl:put name='customhead' direct='true'>
-    <link rel="stylesheet" href="/assets/css/quickshop/actions.css" />
-    <link rel="stylesheet" href="/assets/css/quickshop/popup.css" />
-   </tmpl:put>
-   <tmpl:put name="seoMetaTag" direct='true'>
-     <fd:SEOMetaTag title="<%= title %>"/>
-   </tmpl:put>
-   <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
-   <tmpl:put name='content' direct='true'>
-
-  <%@ include file="/shared/includes/layouts/i_recipe_body.jspf"%>
-
-</tmpl:put>
+	<tmpl:put name='leftnav' direct='true'>
+	</tmpl:put>
+	<tmpl:put name='customhead' direct='true'>
+		<link rel="stylesheet" href="/assets/css/quickshop/actions.css" />
+		<link rel="stylesheet" href="/assets/css/quickshop/popup.css" />
+	</tmpl:put>
+	<tmpl:put name="seoMetaTag" direct='true'>
+		<fd:SEOMetaTag title="<%= title %>"/>
+	</tmpl:put>
+	<tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+	<tmpl:put name='pageType' direct='true'>recipe</tmpl:put>
+	<tmpl:put name='content' direct='true'>
+		<%@ include file="/shared/includes/layouts/i_recipe_body.jspf"%>
+	</tmpl:put>
 </tmpl:insert>
