@@ -354,6 +354,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 						.isLoggedIn());
 			}
 			responseMessage.setConfiguration(getConfiguration(user));
+			user.getFDSessionUser().getUser().setApplication(transactionSource);
 		}
 		return responseMessage;
 }
@@ -583,6 +584,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
                 ((SessionResponse) responseMessage).setLoggedIn(user.isLoggedIn());
             }
             responseMessage.setConfiguration(getConfiguration(user));
+            user.getFDSessionUser().getUser().setApplication(transactionSource);
         }
 		if (responseMessage.getErrors() != null && responseMessage.getErrors().size() != 0) {
 			CaptchaUtil.increaseAttempt(request, SessionName.LOGIN_ATTEMPT);
