@@ -98,11 +98,11 @@ public class DeliveryPassFreeTrialUtil {
 
 	private final static String CLASS_NAME=DeliveryPassFreeTrialUtil.class.getSimpleName();
 
-	private static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
+	private static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String freeTrialSku, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
 		String orderID = null;
 		FDCartModel cart=null;
 		try {
-			cart = getCart(arSKU,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK(),userCtx);
+			cart = getCart(freeTrialSku,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK(),userCtx);
 			if(FDStoreProperties.getAvalaraTaxEnabled()){
 			AvalaraContext context = new AvalaraContext(cart);
 			context.setCommit(false);
@@ -167,7 +167,7 @@ public class DeliveryPassFreeTrialUtil {
 			return null;
 		}
 	}
-	public static String placeDpSubscriptionOrder(String erpCustomerID, String arSKU, EnumEStoreId estore) throws FDResourceException {
+	public static String placeDpSubscriptionOrder(String erpCustomerID, String freeTrialSku, EnumEStoreId estore) throws FDResourceException {
 
 		FDIdentity identity=null;
 		FDActionInfo actionInfo=null;
@@ -265,7 +265,7 @@ public class DeliveryPassFreeTrialUtil {
 				try {
 
 					cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-					orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,address,user.getUserContext());
+					orderID=placeOrder(actionInfo,cra,freeTrialSku,pymtMethod,address,user.getUserContext());
 
 				}
 				catch(FDResourceException fe) {
