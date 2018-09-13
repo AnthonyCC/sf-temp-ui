@@ -234,8 +234,8 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 				? request.getParameter("g-recaptcha-response").toString()
 				: null;
 				
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken,
-				ip, CaptchaType.PAYMENT, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken, ip, CaptchaType.PAYMENT, session,
+				SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
 		if (!isCaptchaSuccess) {
 			result.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
 			pageContext.setAttribute(this.result, result);

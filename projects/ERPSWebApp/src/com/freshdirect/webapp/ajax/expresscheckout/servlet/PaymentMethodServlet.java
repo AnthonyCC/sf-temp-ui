@@ -526,8 +526,8 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 		String captchaToken = request.getFormData().get("g-recaptcha-response") != null
 				? request.getFormData().get("g-recaptcha-response").toString()
 				: null;
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken,
-				ip, CaptchaType.PAYMENT, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken, ip, CaptchaType.PAYMENT, session,
+				SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
 		if (!isCaptchaSuccess) {
 			result.addError(new ValidationError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
     		paymentSubmitResponse.getSubmitForm().setSuccess(false);
