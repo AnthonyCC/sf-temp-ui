@@ -18,10 +18,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -244,6 +246,64 @@ public abstract class AbstractEcommService {
 		}*/
 
 		return responseOfTypestring;
+	}
+	
+	public <T, E> Response<T> postMFormDataTypeMap(MultiValueMap<String, Object> body, String url, TypeReference<E> type)
+			throws FDResourceException {
+		Response<T> responseOfTypestring = null;
+		RestTemplate restTemplate = getRestTemplate();
+		restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+		restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+		ResponseEntity<String> response;
+
+		HttpEntity<MultiValueMap<String, Object>> entity = getMFormEntity(body);
+		try {
+			response = restTemplate.postForEntity(new URI(url), entity, String.class);
+			responseOfTypestring = getMapper().readValue(response.getBody(), type);
+		} catch (JsonParseException e) {
+			LOGGER.info("Json Parsing failure", e);
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "Json Parsing failure");
+		} catch (JsonMappingException e) {
+			LOGGER.error("Json Mapping failure", e);
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "Json Mapping failure");
+		} catch (IOException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "API connection failure");
+		} catch (RestClientException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "API connection failure");
+		} catch (URISyntaxException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "API Syntax failure");
+		}
+		/*long endTime = System.currentTimeMillis() - starttime;
+		if (FDEcommProperties.isFeatureEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+			StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
+					- (stackTraceElements.length - 2)];
+
+			LOGGER.info(String.format("WebserviceExternalCall classname=%s, method= %s elapsed time=%s ms",
+					stackElem.getClassName(), stackElem.getMethodName(), endTime));
+		}*/
+
+		return responseOfTypestring;
+	}
+
+
+	private HttpEntity<MultiValueMap<String, Object>>  getMFormEntity(MultiValueMap<String, Object> body) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		HttpEntity<MultiValueMap<String, Object>> requestEntity
+		 = new HttpEntity<MultiValueMap<String, Object>> (body, headers);
+
+		return requestEntity;
 	}
 
 
