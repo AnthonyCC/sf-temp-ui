@@ -870,6 +870,7 @@
 
 /* recipes */
 [data-feature-productcard="2018"][data-pagetype="recipe_dept"] .container,
+[data-feature-productcard="2018"][data-pagetype="recipe_cat"] .container,
 [data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .container,
 [data-feature-productcard="2018"][data-pagetype="recipe"] .container,
 [data-feature-productcard="2018"][data-pagetype="recipe_search"] .container  {
@@ -885,7 +886,10 @@
 [data-feature-productcard="2018"][data-pagetype="recipe_subcat"] .W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL,
 [data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_DL_NAVS_TOTAL,
 [data-feature-productcard="2018"][data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL,
-[data-feature-productcard="2018"][data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_TOTAL {
+[data-feature-productcard="2018"][data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_cat"] .W_RECIPE_DR_NAVS_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_cat"] .W_RECIPE_CAT_BODY_TOTAL,
+[data-feature-productcard="2018"][data-pagetype="recipe_cat"] .W_RECIPE_DR_NAVS_LEFT {
 	width: 100%;
 }
 
