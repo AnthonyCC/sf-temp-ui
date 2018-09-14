@@ -40,7 +40,7 @@ String template = "/common/template/browse_template.jsp";
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 if (mobWeb) {
 	template = "/common/template/mobileWeb.jsp"; //mobWeb template
-	String oasSitePage = request.getAttribute("sitePage").toString();
+	String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com" : request.getAttribute("sitePage").toString();
 	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
 		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
 	}

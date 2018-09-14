@@ -193,7 +193,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	String pageTemplate = jspTemplate;
 	if (isIncludeMediaLayout && mobWeb) { //limit to media include pages
 		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
-		String oasSitePage = request.getAttribute("sitePage").toString();
+		String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com" : request.getAttribute("sitePage").toString();
 		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
 			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
 		}
