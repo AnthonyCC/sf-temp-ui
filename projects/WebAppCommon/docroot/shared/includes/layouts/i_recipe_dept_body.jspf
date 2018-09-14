@@ -138,12 +138,13 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 	       <% if (rcpCat!= null &&  featuredRecipes!=null && featuredRecipes.size() > 0) { 	       %>
 	          <img src="/media/images/navigation/department/recipes/rechome/rechm_seasonal_graphic.gif" alt="Seasonal Recipes" border="0" width="267"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt=""><br>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
-			  <% if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue; 
+			  <% if (isPreviewMode && aFeatRecipe.isAvailable()) { 
 			  if (rcpCat!=null) { %>
 		          <a href="<%=response.encodeURL("recipe.jsp?catId="+rcpCat+"&recipeId="+aFeatRecipe+"&trk=dfeat")%>"><%=aFeatRecipe.getName()%></a>
 			<% } else { %><%=aFeatRecipe.getName()%><% } %>
 			<br>
 		  	<span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>
+			<% } %>
            </logic:iterate>
 	  	<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+rcpCat+"&subCatId="+rcpSubCat+"&trk=feat")%>" class="text12"><strong>More seasonal recipes...</strong></a>
 	       <% } %>
