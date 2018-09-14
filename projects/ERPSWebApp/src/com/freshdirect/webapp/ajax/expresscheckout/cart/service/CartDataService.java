@@ -194,6 +194,7 @@ public class CartDataService {
                 FDActionInfo info = AccountActivityUtil.getActionInfo(session);
                 if (cart.getTotal() >= ErpServicesProperties.getStandingOrderSoftLimit()) {
                     StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] { "MINORDER", "TIMESLOT_MINORDER" });
+                    cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
                 }
                 FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, user.getCurrentStandingOrder(), null);
                 user.setRefreshSO3(true);
