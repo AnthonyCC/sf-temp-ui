@@ -1,8 +1,12 @@
 package com.freshdirect.fdstore.customer;
 
-public class UnbxdAutosuggestResults {
+import java.io.Serializable;
 
-    private String autosuggest;
+public class UnbxdAutosuggestResults implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	private String autosuggest;
     private String doctype;
     private String uniqueId;
     private int unbxdAutosuggestScore;
