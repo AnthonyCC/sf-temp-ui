@@ -447,42 +447,30 @@ public class ContentChangesService {
                         describedValues = describeContentKeyListChange(valueBefore, valueOnDraft);
                     } else {
                         List<ContentKey> oldKeys = (List<ContentKey>) valueBefore;
-
-                        StringBuilder oldValueBuilder = new StringBuilder();
-                        oldValueBuilder
-                            .append("Deleted: ");
-
-                        if (oldKeys.isEmpty()) {
-                            oldValueBuilder.append("(empty list)");
-                        } else {
-                            oldValueBuilder.append(StringUtils.join(", ", oldKeys));
-                        }
-
-                        describedValues = new String[] { oldValueBuilder.toString(), DRAFT_NULL_VALUE_DESCRIPTION };
+                        describedValues = new String[] { joinWithComma("Deleted: ", oldKeys), DRAFT_NULL_VALUE_DESCRIPTION };
                     }
                 }
             }
         } else {
             if (attributeDef instanceof Relationship && RelationshipCardinality.MANY == ((Relationship) attributeDef).getCardinality()) {
                 List<String> newKeys = decodedListOfContentKeysFromDraftValue(valueOnDraft);
-
-                StringBuilder newValueBuilder = new StringBuilder();
-                newValueBuilder
-                    .append("Added: ");
-                if (newKeys.isEmpty()) {
-                    newValueBuilder.append("(empty list)");
-                } else {
-                    newValueBuilder.append(StringUtils.join(newKeys, ", "));
-                }
-
-                return new String[] { null, newValueBuilder.toString() };
-
+                return new String[] { null, joinWithComma("Added: ", newKeys) };
             } else {
                 describedValues = new String[] {null, valueOnDraft};
             }
         }
 
         return describedValues;
+    }
+
+    private <T> String joinWithComma(String prefix, List<T> values) {
+        StringBuilder newValueBuilder = new StringBuilder(prefix);
+        if (values.isEmpty()) {
+            newValueBuilder.append("(empty list)");
+        } else {
+            newValueBuilder.append(StringUtils.join(values, ", "));
+        }
+        return newValueBuilder.toString();
     }
 
     private String[] describeContentKeyListChange(Object valueBefore, String draftValue) {
