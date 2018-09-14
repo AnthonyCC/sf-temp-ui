@@ -29,6 +29,7 @@ import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -36,6 +37,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cms.CMSPublishManager;
 import com.freshdirect.framework.util.BeanUtil;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.ContentNode;
@@ -260,6 +262,12 @@ public class CMSContentFactory {
 						section.setLinkText((String)sectionNode.getAttributeValue("linkText"));
 						section.setLinkType((String)sectionNode.getAttributeValue("linkType"));
 						section.setLinkURL((String)sectionNode.getAttributeValue("linkURL"));
+                            Integer maximumProductLimit = (Integer) NVL.apply(sectionNode.getAttributeValue(ContentTypes.Section.maximumProductLimit),
+                                    FDStoreProperties.getSectionProductLimitMaximumDefault());
+                            Integer minimumProductLimit = (Integer) NVL.apply(sectionNode.getAttributeValue(ContentTypes.Section.minimumProductLimit),
+                                    FDStoreProperties.getSectionProductLimitMinimumDefault());
+                            section.setMinimumProductLimit(minimumProductLimit);
+                            section.setMaximumProductLimit(maximumProductLimit);
 						if(sectionNode.getAttributeValue("imageBanner")!=null)
 						section.setImageBanner(createImageBanner(getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"), request), request));
 						List<ContentKey> prodKeys = getContentKeysList(sectionNode, "product");

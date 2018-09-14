@@ -1082,6 +1082,9 @@ public class FDStoreProperties {
     private static final String PROP_BACK_OFFICE_CONNECTION_TIMEOUT = "fdstore.backoffice.conn.timeout";
     private static final String PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.backoffice.conn.request.timeout";
     private static final String PROP_BACK_OFFICE_CONN_READ_TIMEOUT = "fdstore.backoffice.conn.read.timeout";
+
+    private static final String PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT = "fdstore.section.product.limit.minimum.default";
+    private static final String PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT = "fdstore.section.product.limit.maximum.default";
     
 	public static final String PROP_FD_DEFAULT_BILLING_STREET = "fdstore.default.billing.street";
 	public static final String PROP_FD_DEFAULT_BILLING_TOWN = "fdstore.default.billing.town";
@@ -1093,6 +1096,7 @@ public class FDStoreProperties {
     private static final String PROP_JAVASCRIPT_FIRST_ENABLED = "fdstore.javascript.first.enabled";
 
     private static Map<Long, Integer> METHODS_IN_EJB_SCOPE = new ConcurrentHashMap<Long,Integer>();
+
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -2080,6 +2084,9 @@ public class FDStoreProperties {
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
         
+        defaults.put(PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT, 30);
+        defaults.put(PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT, 1);
+
         defaults.put(PROP_FD_DEFAULT_BILLING_STREET, "23-30 borden ave");
         defaults.put(PROP_FD_DEFAULT_BILLING_TOWN, "Long Island City");
         defaults.put(PROP_FD_DEFAULT_BILLING_POSTALCODE, "11101");
@@ -5324,6 +5331,14 @@ public class FDStoreProperties {
 	            return 300;
 	        }
 	    }
+
+    public static int getSectionProductLimitMinimumDefault() {
+        return Integer.parseInt(get(PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT));
+    }
+
+    public static int getSectionProductLimitMaximumDefault() {
+        return Integer.parseInt(get(PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT));
+    }
 
 	public static String getFdDefaultBillingStreet() {
 		return get(PROP_FD_DEFAULT_BILLING_STREET);

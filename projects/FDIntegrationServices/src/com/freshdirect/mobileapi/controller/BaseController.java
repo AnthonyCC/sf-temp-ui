@@ -60,7 +60,6 @@ import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
-import com.freshdirect.mobileapi.controller.data.CMSPotatoSectionModel;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
@@ -84,6 +83,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpContextWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpSessionWrapper;
+import com.freshdirect.mobileapi.service.CMSSectionProductCollectorService;
 import com.freshdirect.mobileapi.service.Oas247Service;
 import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -94,16 +94,13 @@ import com.freshdirect.storeapi.content.CMSComponentType;
 import com.freshdirect.storeapi.content.CMSImageBannerModel;
 import com.freshdirect.storeapi.content.CMSImageModel;
 import com.freshdirect.storeapi.content.CMSPageRequest;
-import com.freshdirect.storeapi.content.CMSSectionModel;
 import com.freshdirect.storeapi.content.CMSWebPageModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.Image;
 import com.freshdirect.storeapi.content.ImageBanner;
 import com.freshdirect.storeapi.content.StoreModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.wcms.CMSContentFactory;
-import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -977,10 +974,7 @@ public abstract class BaseController extends AbstractController implements Messa
             }
         }
         for (CMSWebPageModel page : pages) {
-//            if(pageRequest.getStartSectionIndex() != null && pageRequest.getHowManySections() != null) {
-//            	pageRequest.limitSections(page);
-//            }
-            addProductsToSection(user, page);
+            CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page);
         }
         return pages;
     }
@@ -1010,59 +1004,6 @@ public abstract class BaseController extends AbstractController implements Messa
             }
         }
         return pages;
-    }
-
-    private void addProductsToSection(SessionUser user, CMSWebPageModel page) {
-        if (page != null) {
-            List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
-            List<String> errorProductKeys = new ArrayList<String>();
-            for (final CMSSectionModel section : page.getSections()) {
-                final CMSPotatoSectionModel potatoSection = CMSPotatoSectionModel.withSection(section);
-                potatoSection.setProducts(collectProductPotatos(user, section.getProductList(), errorProductKeys));
-                if (areMustHaveSectionProductsAvailable(section.getMustHaveProdList(), section.getProductList(), errorProductKeys, user)) {
-                    sectionWithProducts.add(potatoSection);
-                }
-                errorProductKeys.clear();
-            }
-            page.setSections(sectionWithProducts);
-        }
-    }
-
-    private boolean areMustHaveSectionProductsAvailable(List<String> mustHaveProductkeys, List<String> productKeys, List<String> errorProductKeys, SessionUser user) {
-        boolean allMustHaveProductsAreAvailable = true;
-        if (mustHaveProductkeys != null && productKeys != null) {
-            for (String mustHaveProductId : mustHaveProductkeys) {
-                if (!productKeys.contains(mustHaveProductId) || errorProductKeys.contains(mustHaveProductId)) {
-                    allMustHaveProductsAreAvailable = false;
-                    break;
-                }
-
-                final String prodId = mustHaveProductId.substring(FDContentTypes.PRODUCT.name().length() + 1);
-                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
-                if (data == null || !data.getProductData().isAvailable()) {
-                	allMustHaveProductsAreAvailable = false;
-                	break;
-                }
-            }
-        }
-        return allMustHaveProductsAreAvailable;
-    }
-
-    private List<ProductPotatoData> collectProductPotatos(SessionUser user, List<String> productKeys, List<String> errorProductKeys) {
-        final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
-        if (productKeys != null) {
-            for (final String productKey : productKeys) {
-                // extract CMS id
-                final String prodId = productKey.substring(FDContentTypes.PRODUCT.name().length() + 1);
-                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
-                if (data != null) {
-                    potatoes.add(data);
-                } else {
-                    errorProductKeys.add(productKey);
-                }
-            }
-        }
-        return potatoes;
     }
 
     protected void setContextHeaders(HttpServletRequest request,  HttpContextWrapper wrapper) {
