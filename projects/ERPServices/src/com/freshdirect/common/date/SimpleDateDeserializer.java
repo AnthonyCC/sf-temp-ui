@@ -18,7 +18,7 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 
 	@Override
 	public Date deserialize(JsonParser jp, DeserializationContext context) throws IOException, JsonProcessingException {
-		JsonNode node = jp.getCodec().readTree(jp);
+		JsonNode node = getJsonNode(jp);
 		final String date = getTextValue(jp, node);
 		if (date != null) {
 			try {
@@ -37,18 +37,26 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 		throw new JsonParseException("Unparseable date: " + date + ". Supported formats: yyyy-MM-dd, unix-timestamp");
 	}
 
-	private String getTextValue(JsonParser jp, JsonNode node) throws IOException {
+	private JsonNode getJsonNode(JsonParser jp) {
 		try {
-			return node.textValue();
+			return jp.getCodec().readTree(jp);
 		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private String getTextValue(JsonParser jp, JsonNode node) throws IOException {
+		if (node != null) {
+			return node.textValue();
+		} else {
 			return jp.getText();
 		}
 	}
 
 	private long getLongValue(JsonParser jp, JsonNode node) throws IOException {
-		try {
+		if (node != null) {
 			return node.asLong(-1);
-		} catch (Exception e) {
+		} else {
 			return jp.getLongValue();
 		}
 	}
