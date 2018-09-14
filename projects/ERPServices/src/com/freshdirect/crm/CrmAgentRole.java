@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.ejb.CrmAgentRoleDAO;
 import com.freshdirect.enums.EnumModel;
 
@@ -51,8 +52,9 @@ public class CrmAgentRole extends EnumModel {
 	public CrmAgentRole(String code, String name, String description) {
 		super(code, name, description);
 	}
-	
-	public CrmAgentRole(String code, String name, String description, String ldapRoleName) {
+
+	public CrmAgentRole(@JsonProperty("code") String code, @JsonProperty("name") String name,
+			@JsonProperty("description") String description, @JsonProperty("ldapRoleName") String ldapRoleName) {
 		super(code, name, description);
 		this.ldapRoleName = ldapRoleName;
 	}

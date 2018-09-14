@@ -49,13 +49,14 @@ if (redirectURL!=null) {
 		<fd:SEOMetaTag title="<%= title %>"></fd:SEOMetaTag>
 	</tmpl:put>
 <%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>recipe_dept</tmpl:put>
     <tmpl:put name='content' direct='true'>
-<% try { %>
-<%@ include file="/shared/includes/layouts/i_recipe_dept_body.jspf"%>
-<% } catch (Exception ex) {
-		ex.printStackTrace();
-%>
-<% } %>
+		<% try { %>
+			<%@ include file="/shared/includes/layouts/i_recipe_dept_body.jspf"%>
+		<% } catch (Exception ex) {
+				ex.printStackTrace();
+		%>
+		<% } %>
     </tmpl:put>
 
 </tmpl:insert>

@@ -131,7 +131,9 @@ public class RegistrationAction extends WebActionSupport {
 		addInfo.validate(actionResult);
 		cInfo.validate(actionResult, serviceType);
 		// validate captcha if it's enabled
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"), request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT, FDStoreProperties.getMaxInvalidSignUpAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"),
+				request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT,
+				FDStoreProperties.getMaxInvalidSignUpAttempt());
 		if (!isCaptchaSuccess) {
 			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
 		}
@@ -625,7 +627,9 @@ public class RegistrationAction extends WebActionSupport {
 		EnumServiceType serviceType = addInfo.getAddressType();
 		
 		// validate captcha if it's enabled
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"), request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT, FDStoreProperties.getMaxInvalidSignUpAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"),
+				request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT,
+				FDStoreProperties.getMaxInvalidSignUpAttempt());
 		if (!isCaptchaSuccess) {
 			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
 		}

@@ -87,18 +87,6 @@ public class ContentChangesService {
     private ContentTypeInfoService contentTypeInfoService;
 
     /**
-     * Record a {@link GwtChangeSet}.
-     *
-     * @param changeSet
-     *            change set to store (never null)
-     *
-     * @return primary key of stored change set (never null)
-     */
-    public String storeChangeSet(GwtChangeSet changeSet) {
-        throw new UnsupportedOperationException("Feature not implemented yet");
-    }
-
-    /**
      * Get change sets affecting a given content object. Note, that the retrieved change sets will only have the {@link ContentNodeChange} records affecting the given content node.
      *
      * @param key
@@ -414,7 +402,11 @@ public class ContentChangesService {
         final String[] describedValues = describeValueChange(key, attributeDef, valueBefore, valueOnDraft);
 
         GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, isFieldShadowed);
-        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeDef.getName(), describedValues[0], describedValues[1], valueOnDraft));
+        String oldValue = calculateLabelAwareChangeValue(key.type, attributeDef, describedValues[0]);
+        String newValue = calculateLabelAwareChangeValue(key.type, attributeDef, describedValues[1]);
+        String mergeValue = calculateLabelAwareChangeValue(key.type, attributeDef, valueOnDraft);
+
+        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeDef.getName(), oldValue, newValue, mergeValue));
 
         return gwtNodeChange;
     }
@@ -443,42 +435,30 @@ public class ContentChangesService {
                         describedValues = describeContentKeyListChange(valueBefore, valueOnDraft);
                     } else {
                         List<ContentKey> oldKeys = (List<ContentKey>) valueBefore;
-
-                        StringBuilder oldValueBuilder = new StringBuilder();
-                        oldValueBuilder
-                            .append("Deleted: ");
-
-                        if (oldKeys.isEmpty()) {
-                            oldValueBuilder.append("(empty list)");
-                        } else {
-                            oldValueBuilder.append(StringUtils.join(", ", oldKeys));
-                        }
-
-                        describedValues = new String[] { oldValueBuilder.toString(), DRAFT_NULL_VALUE_DESCRIPTION };
+                        describedValues = new String[] { joinWithComma("Deleted: ", oldKeys), DRAFT_NULL_VALUE_DESCRIPTION };
                     }
                 }
             }
         } else {
             if (attributeDef instanceof Relationship && RelationshipCardinality.MANY == ((Relationship) attributeDef).getCardinality()) {
                 List<String> newKeys = decodedListOfContentKeysFromDraftValue(valueOnDraft);
-
-                StringBuilder newValueBuilder = new StringBuilder();
-                newValueBuilder
-                    .append("Added: ");
-                if (newKeys.isEmpty()) {
-                    newValueBuilder.append("(empty list)");
-                } else {
-                    newValueBuilder.append(StringUtils.join(newKeys, ", "));
-                }
-
-                return new String[] { null, newValueBuilder.toString() };
-
+                return new String[] { null, joinWithComma("Added: ", newKeys) };
             } else {
                 describedValues = new String[] {null, valueOnDraft};
             }
         }
 
         return describedValues;
+    }
+
+    private <T> String joinWithComma(String prefix, List<T> values) {
+        StringBuilder newValueBuilder = new StringBuilder(prefix);
+        if (values.isEmpty()) {
+            newValueBuilder.append("(empty list)");
+        } else {
+            newValueBuilder.append(StringUtils.join(values, ", "));
+        }
+        return newValueBuilder.toString();
     }
 
     private String[] describeContentKeyListChange(Object valueBefore, String draftValue) {
@@ -647,20 +627,14 @@ public class ContentChangesService {
             changeType = detail.getChangeType() != null ? detail.getChangeType().name() : nodeChangeType;
         }
 
-        String oldValue = detail.getOldValue();
-        String newValue = detail.getNewValue();
         Attribute attr = contentTypeInfoService.findAttributeByName(type, detail.getAttributeName()).orNull();
-        if (attr != null && attr instanceof Scalar && ((Scalar) attr).isEnumerated()) {
-            Map<String, String> labels = labelProviderService.getEnumLabels(type, attr);
-            if (labels != null) {
-                oldValue = enumToString(oldValue, labels);
-                newValue = enumToString(newValue, labels);
-            }
-        }
+        String oldValue = calculateLabelAwareChangeValue(type, attr, detail.getOldValue());
+        String newValue = calculateLabelAwareChangeValue(type, attr, detail.getNewValue());
+
         return new GwtChangeDetail(changeType, detail.getAttributeName(), oldValue, newValue);
     }
 
-    private static final String enumToString(String enumValue, Map<String, String> enumLabels) {
+    private final String enumToString(String enumValue, Map<String, String> enumLabels) {
         String label = enumLabels.get(enumValue);
         return label != null ? label + " [" + enumValue + "]" : enumValue;
     }
@@ -781,5 +755,16 @@ public class ContentChangesService {
     public Long parsePublishId(ChangeSetQuery query) {
         Long parshedPublishId = "latest".equals(query.getPublishId()) ? null : Long.parseLong(query.getPublishId(), 10);
         return parshedPublishId;
+    }
+
+    private String calculateLabelAwareChangeValue(ContentType type, Attribute attribute, String value) {
+        String labelAwareValue = value;
+        if (attribute != null && attribute instanceof Scalar && ((Scalar) attribute).isEnumerated()) {
+            Map<String, String> labels = labelProviderService.getEnumLabels(type, attribute);
+            if (labels != null) {
+                labelAwareValue = enumToString(value, labels);
+            }
+        }
+        return labelAwareValue != null ? labelAwareValue.replaceAll("\\|", " | ") : null;
     }
 }

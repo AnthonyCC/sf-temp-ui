@@ -5,7 +5,13 @@ final int W_RECIPE_CAT_BODY_TOP_RIGHT = 555;
 final int W_RECIPE_CAT_BODY_BOTTOM_LEFT = 565;
 final int W_RECIPE_CAT_BODY_BOTTOM_RIGHT = 200;
 %>
-
+<style>
+	.W_RECIPE_CAT_BODY_TOTAL { width: <%= W_RECIPE_CAT_BODY_TOTAL %>px; }
+	.W_RECIPE_CAT_BODY_TOP_LEFT { width: <%= W_RECIPE_CAT_BODY_TOP_LEFT %>px; }
+	.W_RECIPE_CAT_BODY_TOP_RIGHT { width: <%= W_RECIPE_CAT_BODY_TOP_RIGHT %>px; }
+	.W_RECIPE_CAT_BODY_BOTTOM_LEFT { width: <%= W_RECIPE_CAT_BODY_BOTTOM_LEFT %>px; }
+	.W_RECIPE_CAT_BODY_BOTTOM_RIGHT { width: <%= W_RECIPE_CAT_BODY_BOTTOM_RIGHT %>px; }
+</style>
 <%
 /*
 -- This includes paints the recipe category body and bottom (no side navs)
@@ -33,7 +39,7 @@ List featuredRecipes = ((RecipeCategory)recipeCategory).getFeaturedRecipes();
 RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource();
 %>   
 	
-   <table width="<%=W_RECIPE_CAT_BODY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+   <table class="W_RECIPE_CAT_BODY_TOTAL" border="0" cellpadding="0" cellspacing="0">
 	<tr><td colspan="2">
 
 <%		 List subCats = ((RecipeCategory)recipeCategory).getSubcategories(); 
@@ -45,8 +51,8 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 %>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr valign="top">
-		<td width="<%=W_RECIPE_CAT_BODY_TOP_LEFT%>" rowspan="2"><%if (catPhotoPath!=null){%><img src="<%= catPhotoPath %>" alt="" width="<%=catPhotoWidth%>" height="<%=catPhotoHeight%>"><%}%></td>
-		<td width="<%=W_RECIPE_CAT_BODY_TOP_RIGHT%>"><%if (editorialPath!=null){%><fd:IncludeMedia name='<%= editorialPath %>' /><%}%></td>
+		<td class="W_RECIPE_CAT_BODY_TOP_LEFT" rowspan="2"><%if (catPhotoPath!=null){%><img src="<%= catPhotoPath %>" alt="" width="<%=catPhotoWidth%>" height="<%=catPhotoHeight%>"><%}%></td>
+		<td class="W_RECIPE_CAT_BODY_TOP_RIGHT"><%if (editorialPath!=null){%><fd:IncludeMedia name='<%= editorialPath %>' /><%}%></td>
 		</tr>
 		<tr><td>
 		<table width="80%" border="0" cellpadding="0" cellspacing="0">
@@ -74,19 +80,19 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 	</table>
 	</td>
 	</tr>
-	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_RECIPE_CAT_BODY_TOTAL%>" height="1" vspace="15"></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" alt="" class="W_RECIPE_CAT_BODY_TOTAL" height="1" vspace="15"></td></tr>
 	<tr valign="top">
-	  <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_LEFT%>" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
-	  <img src="/media_stat/recipe/hdr_our_faves.gif" alt="Our Favorites" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"><br>
-	  <% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
+	  <td class="W_RECIPE_CAT_BODY_BOTTOM_LEFT" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
+		<img src="/media_stat/recipe/hdr_our_faves.gif" alt="Our Favorites" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"><br>
+		<% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
 <%		   if (!(!isPreviewMode && !aFeatRecipe.isAvailable())) { %>
 		<a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCategory+"&recipeId="+aFeatRecipe+"&trk=cfeat")%>"><%=aFeatRecipe.getName()%></a><br>
 		  <span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>
                 <%} %> </logic:iterate>
-	 		<% } %> 
-		</td>  
-	       <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_RIGHT%>" style="padding-left: 10px;" align="center">
+	 	<% } %> 
+	</td>  
+	<td class="W_RECIPE_CAT_BODY_BOTTOM_RIGHT" style="padding-left: 10px;" align="center">
 <%		if (featuredSource!=null) {
 		    String ckbkURL = response.encodeURL("/recipe_search.jsp?recipeSource="+featuredSource+"&trk=cfeat");
 			MediaI srcImg = featuredSource.getImage();
@@ -112,6 +118,6 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 <%			} 
 			
 		}     %>
-	       <td>
+	       </td>
 	</tr>
    </table>

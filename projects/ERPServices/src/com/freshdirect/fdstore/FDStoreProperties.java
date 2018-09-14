@@ -772,6 +772,9 @@ public class FDStoreProperties {
     // Max Invalid Payment counts for Recaptcha
     private final static String PROP_MAX_INVALID_PAYMENT_ATTEMPT = "fdstore.max.invalid.payment.count";
 
+    // Set soft captcha is allowed
+    private final static String PROP_CAPTCHA_MANDATORY = "fdstore.recaptcha.mandatory.";
+    
     // Limiting the quicksearch results in mobile
     private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
 
@@ -1786,6 +1789,8 @@ public class FDStoreProperties {
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "1");
 		defaults.put(PROP_MAX_INVALID_SIGN_UP_ATTEMPT, "1");
         defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "1");
+        defaults.put(PROP_CAPTCHA_MANDATORY + CaptchaType.PAYMENT + ".web", "true");
+        
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 
         defaults.put(SUB_DOMAIN, "");
@@ -4403,6 +4408,13 @@ public class FDStoreProperties {
         }
     }
 
+    public static boolean isCaptchaMandatory(CaptchaType type, boolean isWeb) {
+        try {
+            return (new Boolean(get(PROP_CAPTCHA_MANDATORY + type + (isWeb?".web":".app")))).booleanValue();
+        } catch (Exception e) {
+            return false;
+        }
+    }
     public static int getQuickShopResultMaxLimit() {
         try {
             return Integer.parseInt(get(QUICKSHOP_ALL_ITEMS_MAX));

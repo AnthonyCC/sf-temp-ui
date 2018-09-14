@@ -18,21 +18,38 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 
 	@Override
 	public Date deserialize(JsonParser jp, DeserializationContext context) throws IOException, JsonProcessingException {
-		final String date = getTextValue(jp);
-		try {
-			return simpleDateFormat.parse(date);
-		} catch (ParseException e) {
-			throw new JsonParseException("Unparseable date: " + date + ". Supported formats: yyyy-MM-dd", e);
+		JsonNode node = jp.getCodec().readTree(jp);
+		final String date = getTextValue(jp, node);
+		if (date != null) {
+			try {
+				return simpleDateFormat.parse(date);
+			} catch (ParseException e) {
+				throw new JsonParseException(
+						"Unparseable date: " + date + ". Supported formats: yyyy-MM-dd, unix-timestamp", e);
+			}
+		} else {
+			// try long value, date could be unix time
+			final long timestamp = getLongValue(jp, node);
+			if (timestamp > 0) {
+				return new Date(timestamp);
+			}
 		}
+		throw new JsonParseException("Unparseable date: " + date + ". Supported formats: yyyy-MM-dd, unix-timestamp");
 	}
-	
-	private String getTextValue(JsonParser jp) throws IOException {
+
+	private String getTextValue(JsonParser jp, JsonNode node) throws IOException {
 		try {
-			JsonNode node = jp.getCodec().readTree(jp);
 			return node.textValue();
 		} catch (Exception e) {
 			return jp.getText();
 		}
 	}
 
+	private long getLongValue(JsonParser jp, JsonNode node) throws IOException {
+		try {
+			return node.asLong(-1);
+		} catch (Exception e) {
+			return jp.getLongValue();
+		}
+	}
 }
