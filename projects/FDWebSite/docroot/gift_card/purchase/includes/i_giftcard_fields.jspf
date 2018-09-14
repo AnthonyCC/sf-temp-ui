@@ -13,7 +13,10 @@
 final int W_ADD_GIFTCARD_FIELDS_TOTAL = 970;
 final int W_ADD_GIFTCARD_FIELDS_TABLE = 675;
 %>
-
+<style>
+	.W_ADD_GIFTCARD_FIELDS_TOTAL { width: <%= W_ADD_GIFTCARD_FIELDS_TOTAL %>px; }
+	.W_ADD_GIFTCARD_FIELDS_TABLE { width: <%= W_ADD_GIFTCARD_FIELDS_TABLE %>px; }
+</style>
 
 <%!
 String[] checkGiftCardForm = {
@@ -150,7 +153,7 @@ if (request.getParameter("fldMessage") !=null) {
 <%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 
 
-<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>" valign="middle" class="gcTable">
+<table role="presentation" border="0" cellspacing="0" cellpadding="0" valign="middle" class="W_ADD_GIFTCARD_FIELDS_TABLE gcTable">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
         <td colspan="4"><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="errortext"><%=errorMsg%></span></td>
@@ -268,9 +271,9 @@ if (request.getParameter("fldMessage") !=null) {
 <br/>
 <br/>
 
-<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
+<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_ADD_GIFTCARD_FIELDS_TOTAL">
     <tr valign="top">
-        <td align="center" <%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" class="text10bold">
+        <td align="center" class="W_ADD_GIFTCARD_FIELDS_TOTAL text10bold">
 			We deliver only to portions of New York, New Jersey and Connecticut.
         </td>
     </tr>
@@ -280,22 +283,22 @@ if (request.getParameter("fldMessage") !=null) {
         </td>
     </tr>
     <tr valign="middle">
-	    <td><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" height="1" border="0" vspace="3"></td>
+	    <td><img src="/media_stat/images/layout/999966.gif" alt="" class="W_ADD_GIFTCARD_FIELDS_TOTAL" height="1" border="0" vspace="3"></td>
 	</tr>
 </table>
 
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 
-<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
+<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_ADD_GIFTCARD_FIELDS_TOTAL">
 	<tr>
-		<td width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" align="right">
+		<td class="W_ADD_GIFTCARD_FIELDS_TOTAL" align="right">
 			<button class="cssbutton transparent green small" name="gcPreview" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />PREVIEW</button>
 			<%= addEditButton %>
 		</td>
 	</tr>
 </table>
 
-<table role="presentation" border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
+<table role="presentation" border="0" cellspacing="1" cellpadding="0" class="W_ADD_GIFTCARD_FIELDS_TOTAL">
 <tr valign="MIDDLE">
     <td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
 </tr>

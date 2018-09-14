@@ -53,6 +53,7 @@ String title = "FreshDirect - " + ((RecipeCategory)recipeCategory).getName();
         <fd:SEOMetaTag title="<%=title%>"/>
     </tmpl:put>
 <%--    <tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>recipe_cat</tmpl:put>
    <tmpl:put name='content' direct='true'>
 <% try {  %>
 <%@ include file="/shared/includes/layouts/i_recipe_cat_body.jspf"%>

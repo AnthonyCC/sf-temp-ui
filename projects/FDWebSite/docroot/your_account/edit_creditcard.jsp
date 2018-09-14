@@ -15,10 +15,12 @@ final int W_YA_EDIT_CREDITCARD = 970;
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(); %>
 <%
 String template = "/common/template/no_nav.jsp";
+String pageType = "cc_edit";
 
 String gcPage = (request.getParameter("gc")!=null)?request.getParameter("gc").toLowerCase():null;
 	if (gcPage != null && ("true".equals(gcPage) && FDStoreProperties.isGiftCardEnabled())) {
 			template = "/common/template/giftcard.jsp";
+			pageType = "gc_cc_edit";
 	}
 String rhPage = (request.getParameter("rh")!=null)?request.getParameter("rh").toLowerCase():null;
 	if (rhPage != null && ("true".equals(rhPage) && FDStoreProperties.isRobinHoodEnabled())) {
@@ -33,7 +35,11 @@ String rhPage = (request.getParameter("rh")!=null)?request.getParameter("rh").to
     <fd:SEOMetaTag title="FreshDirect - Your Account - Edit Credit / Debit Card"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Credit / Debit Card</tmpl:put> --%>
+<tmpl:put name='pageType' direct='true'><%= pageType %></tmpl:put>
 <tmpl:put name='content' direct='true'>
+	<style>
+		.W_YA_EDIT_CREDITCARD { width: <%= W_YA_EDIT_CREDITCARD %>px; }
+	</style>
 
 <%
 String successRedirect = "/your_account/payment_information.jsp";
@@ -66,11 +72,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <%} %>
 <FORM fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name='ccEdit' method='POST'>
-<table WIDTH="<%= W_YA_EDIT_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
+<table class="W_YA_EDIT_CREDITCARD" cellspacing="0" cellpadding="0" border="0">
 
 
 <tr>
-<td class="text11" WIDTH="<%= W_YA_EDIT_CREDITCARD %>">
+<td class="text11" class="W_YA_EDIT_CREDITCARD">
 <font class="title18">Edit Credit / Debit Card</font><br>
 </td>
 </tr>
@@ -80,11 +86,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <%@ include file="/includes/ckt_acct/i_edit_creditcard_fields.jspf"%>
 <br><br>
 
-<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_EDIT_CREDITCARD %>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" class="W_YA_EDIT_CREDITCARD" HEIGHT="1" BORDER="0"><BR>
 <FONT  CLASS="space4pix"><BR><BR></FONT>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_CREDITCARD %>">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" class="W_YA_EDIT_CREDITCARD">
 	<TR VALIGN="TOP">
-		<TD WIDTH="<%= W_YA_EDIT_CREDITCARD %>" ALIGN="RIGHT">
+		<TD class="W_YA_EDIT_CREDITCARD" ALIGN="RIGHT">
 			<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
 			<button class="cssbutton green small">SAVE CHANGES</button>
 		</TD>

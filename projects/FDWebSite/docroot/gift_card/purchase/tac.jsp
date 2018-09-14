@@ -11,6 +11,7 @@
     <fd:SEOMetaTag title="FreshDirect - Terms and Conditions FreshDirect Gift Cards"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Terms and Conditions FreshDirect Gift Cards</tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>gc_tac</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/terms_and_conditions.html" />
 	</tmpl:put>

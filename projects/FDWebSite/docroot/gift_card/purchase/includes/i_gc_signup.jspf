@@ -10,7 +10,9 @@
 <% //expanded page dimensions
 final int W_GC_SIGN_UP_TOTAL = 970;
 %>
-
+<style>
+	.W_GC_SIGN_UP_TOTAL { width: <%= W_GC_SIGN_UP_TOTAL %>px; }
+</style>
 <%!
 
 String[] checkGiftCardBuyerForm = {
@@ -167,11 +169,11 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 <br/>
 <br/>
 
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GC_SIGN_UP_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="0" class="W_GC_SIGN_UP_TOTAL">
 	<tr valign="top">
-	<td width="<%=W_GC_SIGN_UP_TOTAL%>">
+	<td class="W_GC_SIGN_UP_TOTAL">
 		<span class="title18" >SITE ACCESS PREFERENCES<FONT class="text12bold">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" border="0" VSPACE="3"><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" alt="" class="W_GC_SIGN_UP_TOTAL" height="1" border="0" VSPACE="3"><BR>
 	</td>
 	</tr>
 </table>
@@ -275,10 +277,10 @@ if("GET".equalsIgnoreCase(request.getMethod()) || sessionuser.getLevel()==FDUser
 
 
 <BR/>
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GC_SIGN_UP_TOTAL%>">
+<table border="0" cellspacing="0" cellpadding="0" class="W_GC_SIGN_UP_TOTAL">
 	<tr valign="top">
-	<td width="<%=W_GC_SIGN_UP_TOTAL%>"><span class="title18">CUSTOMER AGREEMENT</span><FONT class="text12bold">* Required information</FONT><BR>
-	<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" border="0" VSPACE="3"><BR></td>
+	<td class="W_GC_SIGN_UP_TOTAL"><span class="title18">CUSTOMER AGREEMENT</span><FONT class="text12bold">* Required information</FONT><BR>
+	<IMG src="/media_stat/images/layout/999966.gif" alt="" class="W_GC_SIGN_UP_TOTAL" height="1" border="0" VSPACE="3"><BR></td>
 	</tr>
 </table>
 <br/>
@@ -303,10 +305,10 @@ if("GET".equalsIgnoreCase(request.getMethod()) || sessionuser.getLevel()==FDUser
 
 <BR/>
 <BR/>
-    <table width=<%=W_GC_SIGN_UP_TOTAL%> cellspacing="0" cellpadding="0" border="0">
+    <table class="W_GC_SIGN_UP_TOTAL" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/></br>
+			<img style="margin: 2px 0;" class="W_GC_SIGN_UP_TOTAL" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/></br>
         </td>
      	</tr>
         <tr>

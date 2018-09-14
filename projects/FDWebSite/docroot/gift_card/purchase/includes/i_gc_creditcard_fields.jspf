@@ -73,7 +73,9 @@ function addOpt(addToId, addText, addVal) {
 <% //expanded page dimensions
 final int W_GC_CREDITCARD_FIELDS_TOTAL = 970;
 %>
-
+<style>
+	.W_GC_CREDITCARD_FIELDS_TOTAL { width: <%= W_GC_CREDITCARD_FIELDS_TOTAL %>px; }
+</style>
 <%!
 String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_COUNTRY.getCode(),EnumUserInfoName.BIL_ZIPCODE.getCode()};
 String[] checkErrorType = {"technical_difficulty", "payment_method_fraud","auth_failure"};
@@ -172,10 +174,10 @@ EnumServiceType serviceTypeGC = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 		<br><span class="errortext"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
     
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" class="W_GC_CREDITCARD_FIELDS_TOTAL">
 	<TR VALIGN="TOP">
-	<TD WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>"><span class="title18">CREDIT CARD DETAILS</span><FONT CLASS="text12bold">* Required information</FONT><BR>
-<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+	<TD class="W_GC_CREDITCARD_FIELDS_TOTAL"><span class="title18">CREDIT CARD DETAILS</span><FONT CLASS="text12bold">* Required information</FONT><BR>
+<IMG src="/media_stat/images/layout/999966.gif" ALT="" class="W_GC_CREDITCARD_FIELDS_TOTAL" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
 </TR></TABLE>
 <br>
 <input id="hash" name="hash" type="hidden" value="<%= sessionuser.getAddCcUuid() %>" />
@@ -291,11 +293,11 @@ EnumServiceType serviceTypeGC = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 </TABLE>
 <!-- </TABLE> -->
 <br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" class="W_GC_CREDITCARD_FIELDS_TOTAL">
 <TR VALIGN="TOP">
-	<TD WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>">
+	<TD class="W_GC_CREDITCARD_FIELDS_TOTAL">
 		<span class="title18">BILLING ADDRESS FOR THIS CARD</span><FONT CLASS="text12bold">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" ALT="" class="W_GC_CREDITCARD_FIELDS_TOTAL" HEIGHT="1" BORDER="0" vspace="3"><BR>
 		<font class="text12">Please enter billing address as it appears on your credit card statement.</font>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>
 </TABLE>

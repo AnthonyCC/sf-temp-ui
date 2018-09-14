@@ -13,7 +13,12 @@
 
 <% //expanded page dimensions
 final int W_RECIPENT_LIST_TOTAL = 970;
+final int W_RECIPENT_LIST_TOTAL_SUBINFO = 625;
 %>
+<style>
+	.W_RECIPENT_LIST_TOTAL { width: <%= W_RECIPENT_LIST_TOTAL %>px; }
+	.W_RECIPENT_LIST_TOTAL_SUBINFO { width: <%= W_RECIPENT_LIST_TOTAL_SUBINFO %>px; }
+</style>
 
 <%
 //for display of recipient number
@@ -32,7 +37,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
  	if(recipients != null && !recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
-		%><table role="presentation" width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		%><table role="presentation" class="W_RECIPENT_LIST_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><span class="title18">Review Your Recipient List</span><br /><br />
 					<span class="text10">Check the names and amounts of your gifts below.</span>
@@ -43,7 +48,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 		}else{
 			//we're on gift & recipient options page
 		%>
-		<table role="presentation" width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table role="presentation" class="W_RECIPENT_LIST_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><span class="title18">Recipient List</span><br /><br />
 					Check the names and amounts for your giftcards below. <strong>Click the link by the recipient names to see how their Email Gift Card will appear in their Inbox!</strong> If you need to make changes, you may alter the amount here or click the Edit link to change personal info.
@@ -52,7 +57,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 		</table>
 		<% } %>
 
-		<table class="recipTable">
+		<table class="W_RECIPENT_LIST_TOTAL_SUBINFO recipTable">
 			<tr>
 			    <th><div class="offscreen">Recipient list</div></th>
 				<th><div class="recipAmount right">Amount</div></th>
@@ -89,7 +94,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 
 		</table>
 
-		<table role="presentation" width="623" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table role="presentation" class="W_RECIPENT_LIST_TOTAL_SUBINFO" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 			</tr>
