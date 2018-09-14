@@ -9,13 +9,12 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-/*
- * @author: Nakkeeran Annamalai
- */
 public class CaptchaUtil {
 
 	private static final Logger LOGGER = Logger.getLogger(CaptchaUtil.class);
@@ -29,9 +28,21 @@ public class CaptchaUtil {
 	}
 
 	public static boolean validateCaptcha(String captchaToken, String remoteIp, CaptchaType captchaType, HttpSession session, String sessionName, int maxAttemptAllowed) {
+		if (!isExcessiveAttempt(maxAttemptAllowed, session, sessionName)) {
+			return true;
+		}
 		// captcha widget is not loaded or the validation is not needed
 		if (captchaToken == null) {
-			return true;
+			EnumTransactionSource source = null;
+			if (session.getAttribute(SessionName.APPLICATION) != null) {
+				source = EnumTransactionSource.getTransactionSource(session.getAttribute(SessionName.APPLICATION).toString());
+			} else if (session.getAttribute(SessionName.USER) != null) {
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				source = user.getApplication();
+			}
+			
+			boolean isWeb = source == EnumTransactionSource.WEBSITE || source == EnumTransactionSource.FOODKICK_WEBSITE;
+			return !FDStoreProperties.isCaptchaMandatory(captchaType, isWeb);
 		}
 		// captcha widget is loaded but user did not respond to the captcha
 		if ( captchaToken.isEmpty()) {

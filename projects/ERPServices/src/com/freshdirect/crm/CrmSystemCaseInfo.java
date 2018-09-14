@@ -1,7 +1,7 @@
 package com.freshdirect.crm;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,6 +9,10 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public class CrmSystemCaseInfo implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9043405631943597709L;
 	private PrimaryKey customerPK;
 	private PrimaryKey salePK;
 	private CrmCaseSubject subject;
@@ -20,7 +24,7 @@ public class CrmSystemCaseInfo implements Serializable {
 	private String crmCaseMedia;
 	
 	// holds assigned carton numbers (missing, misloaded, etc)
-    private List cartonNumbers;
+    private List<String> cartonNumbers;
     
     private CrmAgentModel loginAgent;
     
@@ -52,7 +56,7 @@ public class CrmSystemCaseInfo implements Serializable {
 	public CrmSystemCaseInfo(PrimaryKey customerPK,
 			PrimaryKey salePK, CrmCaseSubject subject,
 			String summary,  String note,
-			List cartonNumbers,  CrmAgentModel loginAgent,
+			List<String> cartonNumbers,  CrmAgentModel loginAgent,
 			String crmCaseMedia) {
 		this.customerPK = customerPK;
 		this.salePK = salePK;
@@ -71,7 +75,7 @@ public class CrmSystemCaseInfo implements Serializable {
 	public CrmSystemCaseInfo(@JsonProperty("customerPK") PrimaryKey customerPK,
 			@JsonProperty("salePK") PrimaryKey salePK, @JsonProperty("subject") CrmCaseSubject subject,
 			@JsonProperty("summary") String summary, @JsonProperty("note") String note,
-			@JsonProperty("cartonNumbers") List cartonNumbers, @JsonProperty("loginAgent") CrmAgentModel loginAgent,
+			@JsonProperty("cartonNumbers") List<String> cartonNumbers, @JsonProperty("loginAgent") CrmAgentModel loginAgent,
 			@JsonProperty("crmCaseMedia") String crmCaseMedia, 
 			@JsonProperty("origin") CrmCaseOrigin origin, 
 			@JsonProperty("state") CrmCaseState state) {
@@ -132,11 +136,11 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.note = note;
 	}
 	// List<String>
-	public List getCartonNumbers() {
-		return this.cartonNumbers == null ? Collections.EMPTY_LIST : this.cartonNumbers;
+	public List<String> getCartonNumbers() {
+		return this.cartonNumbers == null ? new ArrayList<String>() : this.cartonNumbers;
 	}
 
-	public void setCartonNumbers(List cartons) {
+	public void setCartonNumbers(List<String> cartons) {
 		this.cartonNumbers = cartons;
 	}
 

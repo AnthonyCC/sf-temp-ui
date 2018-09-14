@@ -59,8 +59,9 @@ public class SignUpServlet extends BaseJsonServlet {
 
             ActionResult result = registrationService.validate(signUpRequest);
 
-            boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(signUpRequest.getCaptchaToken(), request.getRemoteAddr(), CaptchaType.SIGN_UP, session,
-                    SessionName.SIGNUP_ATTEMPT, FDStoreProperties.getMaxInvalidSignUpAttempt());
+			boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(signUpRequest.getCaptchaToken(),
+					request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT,
+					FDStoreProperties.getMaxInvalidSignUpAttempt());
             result.addError(!isCaptchaSuccess, "captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
 
             if (result.isSuccess()) {

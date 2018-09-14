@@ -56,7 +56,10 @@ public abstract class ExtTimeAbstractEcommService {
 		restTemplate = new RestTemplate(converters);
 
 		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
+		// have no specific route, maxTotal = maxPerRotue
 		cManager.setMaxTotal(FDEcommProperties.getEcomServiceConnectionPool());
+		cManager.setDefaultMaxPerRoute(FDEcommProperties.getEcomServiceConnectionPool());
+		
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(FDEcommProperties.getEcomServiceConnectionTimeout() * 1000)
 				.setConnectTimeout(FDEcommProperties.getEcomServiceConnectionTimeout() * 1000)

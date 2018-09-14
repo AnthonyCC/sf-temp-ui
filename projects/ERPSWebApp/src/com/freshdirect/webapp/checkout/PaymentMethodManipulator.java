@@ -530,8 +530,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			//exception happens, do not validate captcha
 			return true;
 		}
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken,
-				request.getRemoteAddr(), CaptchaType.PAYMENT, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken, request.getRemoteAddr(),
+				CaptchaType.PAYMENT, session, SessionName.PAYMENT_ATTEMPT,
+				FDStoreProperties.getMaxInvalidPaymentAttempt());
 		if (!isCaptchaSuccess) {
 			result.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
 			return false;
@@ -544,10 +545,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
     	if (result.getErrors().isEmpty()) {
     		CaptchaUtil.resetAttempt(session, SessionName.PAYMENT_ATTEMPT);
     	} else {
-    		int currentAttempt = CaptchaUtil.increaseAttempt(session, SessionName.PAYMENT_ATTEMPT);
-    		if (currentAttempt >= FDStoreProperties.getMaxInvalidPaymentAttempt()) {
-    			result.addWarning(new ActionWarning("excessiveAttempt","excessiveAttempt"));
-    		}
+    		CaptchaUtil.increaseAttempt(session, SessionName.PAYMENT_ATTEMPT);
     	}
     }
 

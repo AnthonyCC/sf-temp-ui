@@ -31,7 +31,7 @@
 	if (mobWeb) {
 		/* uncomment the following template re-define when mobweb is ready for real */
 		//template = "/common/template/mobileWeb.jsp"; //mobWeb template
-		String oasSitePage = request.getAttribute("sitePage").toString();
+		String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com" : request.getAttribute("sitePage").toString();
 		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
 			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
 		}

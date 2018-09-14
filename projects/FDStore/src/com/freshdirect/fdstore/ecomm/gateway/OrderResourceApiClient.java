@@ -434,54 +434,41 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
 			FDPaymentInadequateException, ErpTransactionException, InvalidCardException {
 		if ("FDResourceException".equals(response.getMessage())) {
-			throw new FDResourceException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new FDResourceException(getErrorMessage(response));
 		}
 		if ("ErpFraudException".equals(response.getMessage())) {
-			throw new ErpFraudException(EnumFraudReason.getEnum(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null));
+			throw new ErpFraudException(EnumFraudReason.getEnum(getErrorMessage(response)));
 		}
 		if ("ErpAuthorizationException".equals(response.getMessage())) {
-			throw new ErpAuthorizationException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new ErpAuthorizationException(getErrorMessage(response));
 		}
 		if ("ErpAddressVerificationException".equals(response.getMessage())) {
-			throw new ErpAddressVerificationException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new ErpAddressVerificationException(getErrorMessage(response));
 		}
 		if ("ReservationException".equals(response.getMessage())) {
-			throw new ReservationException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new ReservationException(getErrorMessage(response));
 		}
 		if ("DeliveryPassException".equals(response.getMessage())) {
-			throw new DeliveryPassException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new DeliveryPassException(getErrorMessage(response));
 		}
 		if ("FDPaymentInadequateException".equals(response.getMessage())) {
-			throw new FDPaymentInadequateException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new FDPaymentInadequateException(getErrorMessage(response));
 		}
 		if ("ErpTransactionException".equals(response.getMessage())) {
-			throw new ErpTransactionException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new ErpTransactionException(getErrorMessage(response));
 		}
 		if ("InvalidCardException".equals(response.getMessage())) {
-			throw new InvalidCardException(
-					response.getError() != null ? response.getError().get(response.getMessage()).toString()
-							: null);
+			throw new InvalidCardException(getErrorMessage(response));
 		}
 
 		throw new FDResourceException(response.getMessage());
 	}
 
+	private String getErrorMessage(Response<String> response) {
+		return response.getError() != null && response.getError().get(response.getMessage()) != null
+				? response.getError().get(response.getMessage()).toString()
+				: null;
+	}
 	@Override
 	public void modifyAutoRenewOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order,
 			Set<String> appliedPromos, String originalReservationId, boolean sendEmail, CustomerRatingI cra,

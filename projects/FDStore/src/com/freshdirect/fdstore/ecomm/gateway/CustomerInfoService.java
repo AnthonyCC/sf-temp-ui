@@ -114,7 +114,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
+				LOGGER.error("Error in CustomerInfoService.getCustomerId: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return new PrimaryKey(response.getData());
@@ -137,7 +137,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
+				LOGGER.error("Error in CustomerInfoService.getCustomerInfo: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -173,7 +173,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
+				LOGGER.error("Error in CustomerInfoService.getSOCustomerInfo: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -201,7 +201,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
+				LOGGER.error("Error in CustomerInfoService.updateUserId: data=" + inputJson);
 				if ("ErpDuplicateUserIdException".equals(response.getMessage())) {
 					throw new ErpDuplicateUserIdException(
 							response.getError().get("ErpDuplicateUserIdException").toString());
@@ -230,7 +230,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
+				LOGGER.error("Error in CustomerInfoService.storeUser: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
