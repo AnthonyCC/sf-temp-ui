@@ -87,18 +87,6 @@ public class ContentChangesService {
     private ContentTypeInfoService contentTypeInfoService;
 
     /**
-     * Record a {@link GwtChangeSet}.
-     *
-     * @param changeSet
-     *            change set to store (never null)
-     *
-     * @return primary key of stored change set (never null)
-     */
-    public String storeChangeSet(GwtChangeSet changeSet) {
-        throw new UnsupportedOperationException("Feature not implemented yet");
-    }
-
-    /**
      * Get change sets affecting a given content object. Note, that the retrieved change sets will only have the {@link ContentNodeChange} records affecting the given content node.
      *
      * @param key
@@ -777,6 +765,6 @@ public class ContentChangesService {
                 labelAwareValue = enumToString(value, labels);
             }
         }
-        return labelAwareValue;
+        return labelAwareValue != null ? labelAwareValue.replaceAll("\\|", " | ") : null;
     }
 }
