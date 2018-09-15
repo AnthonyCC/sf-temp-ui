@@ -228,93 +228,94 @@ public class CMSContentFactory {
 		if(pageNode != null){
 			List<ContentKey> sectionKeys = getContentKeysList(pageNode, "WebPageSection");
 			if(BeanUtil.isNotEmpty(sectionKeys)){
-				for(ContentKey sectionKey: sectionKeys){
+				for(ContentKey sectionKey: sectionKeys) {
 					ContentNodeI sectionNode = getContentNodeByKey(sectionKey, request);
-					CMSSectionModel section = new CMSSectionModel();
-					if(sectionNode!=null){
-					 schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"), request);
-					}
+					if(sectionNode!=null) {
+						
+						CMSSectionModel section = new CMSSectionModel();
+						schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"), request);
+						
+						List<ContentKey> darkStoreContentkey = (List<ContentKey>) sectionNode.getAttributeValue("SectionDarkStore");
+						ArrayList<String> darkStoreFromCMS = new ArrayList<String>();
 
-				List<ContentKey> darkStoreContentkey = (List<ContentKey>) sectionNode
-						.getAttributeValue("SectionDarkStore");
-				ArrayList<String> darkStoreFromCMS = new ArrayList<String>();
+						if (darkStoreContentkey != null) {
+							for (ContentKey key : darkStoreContentkey) {
+								ContentNodeI contentnode = getContentNodeByKey(key, request);
+								if (contentnode != null) {
+									darkStoreFromCMS.add(((String) (contentnode.getAttributeValue("value"))));
+								}
+							}
+						}
 
-				if (darkStoreContentkey != null) {
-					for (ContentKey key : darkStoreContentkey) {
-						ContentNodeI contentnode = getContentNodeByKey(key,
-								request);
-						if (contentnode != null)
-							darkStoreFromCMS.add(((String) (contentnode
-									.getAttributeValue("value"))));
-					}
-				}
-
-				if (isSchedulesMatches(schedules, request, false) && sectionNode != null) {
-					if (darkStoreFromCMS.isEmpty() || darkStoreFromCMS.contains(request.getPlantId())) {
-						section.setName((String)sectionNode.getAttributeValue("name"));
-						section.setType((String)sectionNode.getAttributeValue("Type"));
-						section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
-						section.setBodyText((String)sectionNode.getAttributeValue("bodyText"));
-						section.setLinkTarget(getEncodedContentKey(sectionNode,"linkTarget"));
-						section.setDisplayType((String)sectionNode.getAttributeValue("displayType"));
-						section.setDrawer((Boolean)sectionNode.getAttributeValue("drawer"));
-						section.setHeadlineText((String)sectionNode.getAttributeValue("headlineText"));
-						section.setLinkText((String)sectionNode.getAttributeValue("linkText"));
-						section.setLinkType((String)sectionNode.getAttributeValue("linkType"));
-						section.setLinkURL((String)sectionNode.getAttributeValue("linkURL"));
-                            Integer maximumProductLimit = (Integer) NVL.apply(sectionNode.getAttributeValue(ContentTypes.Section.maximumProductLimit),
-                                    FDStoreProperties.getSectionProductLimitMaximumDefault());
-                            Integer minimumProductLimit = (Integer) NVL.apply(sectionNode.getAttributeValue(ContentTypes.Section.minimumProductLimit),
-                                    FDStoreProperties.getSectionProductLimitMinimumDefault());
-                            section.setMinimumProductLimit(minimumProductLimit);
-                            section.setMaximumProductLimit(maximumProductLimit);
-						if(sectionNode.getAttributeValue("imageBanner")!=null)
-						section.setImageBanner(createImageBanner(getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"), request), request));
-						List<ContentKey> prodKeys = getContentKeysList(sectionNode, "product");
-						List<ContentKey> musthaveprodKeys = getContentKeysList(sectionNode, "mustHaveProduct");
-						List<ContentKey> categoryKeys = getContentKeysList(sectionNode, "category");
-						List<ContentKey> pickListKeys = getContentKeysList(sectionNode, "pickList");
-						List<String> productList = new ArrayList<String>();
-						List<String> musthaveproductList = new ArrayList<String>();
-						List<String> categoryList = new ArrayList<String>();
-						List<CMSPickListModel> pickListList = new ArrayList<CMSPickListModel>();
-						if(prodKeys != null){
-							for(ContentKey key:prodKeys){
-								productList.add(key.getEncoded());
+						if (isSchedulesMatches(schedules, request, false) && sectionNode != null) {
+							if (darkStoreFromCMS.isEmpty() || darkStoreFromCMS.contains(request.getPlantId())) {
+								section.setName((String)sectionNode.getAttributeValue("name"));
+								section.setType((String)sectionNode.getAttributeValue("Type"));
+								section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
+								section.setBodyText((String)sectionNode.getAttributeValue("bodyText"));
+								section.setLinkTarget(getEncodedContentKey(sectionNode,"linkTarget"));
+								section.setDisplayType((String)sectionNode.getAttributeValue("displayType"));
+								section.setDrawer((Boolean)sectionNode.getAttributeValue("drawer"));
+								section.setHeadlineText((String)sectionNode.getAttributeValue("headlineText"));
+								section.setLinkText((String)sectionNode.getAttributeValue("linkText"));
+								section.setLinkType((String)sectionNode.getAttributeValue("linkType"));
+								section.setLinkURL((String)sectionNode.getAttributeValue("linkURL"));
+								Integer maximumProductLimit = (Integer) NVL.apply(sectionNode.getAttributeValue(ContentTypes.Section.maximumProductLimit),
+										FDStoreProperties.getSectionProductLimitMaximumDefault());
+								Integer minimumProductLimit = (Integer) NVL.apply(sectionNode.getAttributeValue(ContentTypes.Section.minimumProductLimit),
+										FDStoreProperties.getSectionProductLimitMinimumDefault());
+								section.setMinimumProductLimit(minimumProductLimit);
+								section.setMaximumProductLimit(maximumProductLimit);
+								if(sectionNode.getAttributeValue("imageBanner")!=null)
+									section.setImageBanner(createImageBanner(getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"), request), request));
+								List<ContentKey> prodKeys = getContentKeysList(sectionNode, "product");
+								List<ContentKey> musthaveprodKeys = getContentKeysList(sectionNode, "mustHaveProduct");
+								List<ContentKey> categoryKeys = getContentKeysList(sectionNode, "category");
+								List<ContentKey> pickListKeys = getContentKeysList(sectionNode, "pickList");
+								List<String> productList = new ArrayList<String>();
+								List<String> musthaveproductList = new ArrayList<String>();
+								List<String> categoryList = new ArrayList<String>();
+								List<CMSPickListModel> pickListList = new ArrayList<CMSPickListModel>();
+								if(prodKeys != null){
+									for(ContentKey key:prodKeys){
+										productList.add(key.getEncoded());
+									}
+									if(productList!=null && productList.size()>0)
+										section.setProductList(productList);
+								}
+								if(musthaveprodKeys != null){
+									for(ContentKey key:musthaveprodKeys){
+										musthaveproductList.add(key.getEncoded());
+									}
+									if(musthaveproductList!=null && musthaveproductList.size()>0)
+										section.setMustHaveProdList(musthaveproductList);
+								}
+								if(categoryKeys != null){
+									for(ContentKey key:categoryKeys){
+										categoryList.add(key.getEncoded());
+									}
+									if(categoryList!=null && categoryList.size()>0)
+										section.setCategoryList(categoryList);
+								}
+								if(pickListKeys != null){
+									for(ContentKey key:pickListKeys){
+										pickListList.add((CMSPickListModel) createPickList(getContentNodeByKey(key, request), request));
+									}
+									if(pickListList!=null && pickListList.size()>0)
+										section.setPickList(pickListList);
+								}
+								List<CMSComponentModel> components = getSectionComponents(sectionNode, request);
+								if(components != null && !components.isEmpty()){
+									section.setComponents(components);
+								}
+								section.setSchedules(schedules);
+								sections.add(section);
 							}
-							if(productList!=null && productList.size()>0)
-							section.setProductList(productList);
+						} else {
+							LOG.debug("Schedule is not matching for :"+ pageNode.getKey());
 						}
-						if(musthaveprodKeys != null){
-							for(ContentKey key:musthaveprodKeys){
-								musthaveproductList.add(key.getEncoded());
-							}
-							if(musthaveproductList!=null && musthaveproductList.size()>0)
-							section.setMustHaveProdList(musthaveproductList);
-						}
-						if(categoryKeys != null){
-							for(ContentKey key:categoryKeys){
-								categoryList.add(key.getEncoded());
-							}
-							if(categoryList!=null && categoryList.size()>0)
-							section.setCategoryList(categoryList);
-						}
-						if(pickListKeys != null){
-							for(ContentKey key:pickListKeys){
-								pickListList.add((CMSPickListModel) createPickList(getContentNodeByKey(key, request), request));
-							}
-							if(pickListList!=null && pickListList.size()>0)
-							section.setPickList(pickListList);
-						}
-						List<CMSComponentModel> components = getSectionComponents(sectionNode, request);
-						if(components != null && !components.isEmpty()){
-							section.setComponents(components);
-						}
-						section.setSchedules(schedules);
-						sections.add(section);
-					}
-				}else {
-						LOG.debug("Schedule is not matching for :"+ pageNode.getKey());
+					} else {
+						LOG.debug("FEED-CRITICALERROR01: SECTIONNODE MISSING : "+ pageNode.getKey() + " : " + sectionKey);
 					}
 				}
 
