@@ -2084,8 +2084,8 @@ public class FDStoreProperties {
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
         
-        defaults.put(PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT, 30);
-        defaults.put(PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT, 1);
+        defaults.put(PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT, "30");
+        defaults.put(PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT, "1");
 
         defaults.put(PROP_FD_DEFAULT_BILLING_STREET, "23-30 borden ave");
         defaults.put(PROP_FD_DEFAULT_BILLING_TOWN, "Long Island City");
@@ -2134,6 +2134,7 @@ public class FDStoreProperties {
                     LOGGER.info("Loaded configuration from fdstore.properties: " + config);
                     fireEvent();
                 }
+
             }
         }
     }
