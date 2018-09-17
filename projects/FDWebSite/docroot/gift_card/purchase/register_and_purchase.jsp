@@ -44,7 +44,12 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
     <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>gc_purchase_register</tmpl:put>
 <tmpl:put name='content' direct='true'>
+	<style>
+		.W_REGISTER_AND_PURCHASE_TOTAL { width: <%= W_REGISTER_AND_PURCHASE_TOTAL %>px; }
+		.W_REGISTER_AND_PURCHASE_TOTAL-135 { width: calc( <%= W_REGISTER_AND_PURCHASE_TOTAL %>px - 135px ); }
+	</style>
 <fd:GiftCardBuyerController actionName='registerGiftCardBuyer' result="result" registrationType='10' >
 <fd:ErrorHandler result='<%=result%>' field='<%=checkGiftCardBuyerForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
@@ -61,9 +66,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 
 
-<table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+<table class="W_REGISTER_AND_PURCHASE_TOTAL" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11" width="<%=W_REGISTER_AND_PURCHASE_TOTAL-135%>">
+		<td class="text11 W_REGISTER_AND_PURCHASE_TOTAL-135">
 			<span class="title18">purchase gift cards</span><br />
 			<b>(Already a FreshDirect customer? <a href="/login/login.jsp?successPage=/gift_card/purchase/purchase_giftcard.jsp">Click here log in</a>.)</b>
 		</td>
@@ -73,7 +78,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	</tr>
 	<tr>
 		<td colspan="2" style="padding: 4px 0px;">
-            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" alt="" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="2" border="0" /><br /><br/>
+            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" alt="" class="W_REGISTER_AND_PURCHASE_TOTAL" height="2" border="0" /><br /><br/>
 		</td>
 	</tr>
 </table>
@@ -92,10 +97,10 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 
 
     <%@ include file="/gift_card/purchase/includes/recipient_list.jspf" %>
-    <table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+    <table class="W_REGISTER_AND_PURCHASE_TOTAL" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br /><br/>
+			<img style="margin: 2px 0;" class="W_REGISTER_AND_PURCHASE_TOTAL" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br /><br/>
 		</td>
 	</tr>
     </table>

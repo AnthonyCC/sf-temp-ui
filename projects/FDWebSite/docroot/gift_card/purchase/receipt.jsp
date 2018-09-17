@@ -47,8 +47,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
     <fd:SEOMetaTag title="FreshDirect - Your Account - User Name, Password, & Contact Info"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>gc_receipt</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
+		<style>
+			.W_GIFTCARD_RECEIPT_TOTAL { width: <%= W_GIFTCARD_RECEIPT_TOTAL %>px; }
+			.W_GIFTCARD_RECEIPT_TOTAL-340 { width: calc( <%= W_GIFTCARD_RECEIPT_TOTAL %>px - 340px ); }
+			.W_GIFTCARD_RECEIPT_TOTAL-350 { width: calc( <%= W_GIFTCARD_RECEIPT_TOTAL %>px - 350px ); }
+		</style>
 
 <%
 //--------OAS Page Variables-----------------------
@@ -107,7 +113,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 	int idx = 0;
 %>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" class="W_GIFTCARD_RECEIPT_TOTAL">
 <tr>
 	<td colspan="6"class="text11">
 
@@ -123,16 +129,16 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 				</tr>
 			</table>
 		<% }%>
-		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" height="1" border="0" vspace="8"><br><br>
+		<img src="/media_stat/images/layout/ff9933.gif" alt="" class="W_GIFTCARD_RECEIPT_TOTAL" height="1" border="0" vspace="8"><br><br>
 	</td>
 
 </tr>
 
 <TR VALIGN="TOP">
-    <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
-        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
+    <TD class="W_GIFTCARD_RECEIPT_TOTAL-340">
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" class="W_GIFTCARD_RECEIPT_TOTAL-340">
         <TR VALIGN="TOP">
-            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>" COLSPAN="2">
+            <TD class="W_GIFTCARD_RECEIPT_TOTAL-340" COLSPAN="2">
             	<span class="title18"><b>PLEASE NOTE:</b><br/></span><BR>
             	<% if(gcType != null && EnumGiftCardType.REGULAR_GIFTCARD.equals(gcType)) {%>
 
@@ -152,7 +158,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
         </TR>
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
-            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-350%>">
+            <TD class="W_GIFTCARD_RECEIPT_TOTAL-350">
             <font class="space4pix"><br></font>
      </TD>
         </TR>
@@ -221,7 +227,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
  </TABLE>
  <br />
  <IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" height="1"><br>
+<IMG src="/media_stat/images/layout/cccccc.gif" alt="" class="W_GIFTCARD_RECEIPT_TOTAL" height="1"><br>
 <br /><br />
 <%
 //for display of recipient number
@@ -229,7 +235,7 @@ int indx = 1;
 %>
 
 
-<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
+<table class="W_GIFTCARD_RECEIPT_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
 		<tr>
 			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderNumber%></font></b></span><br /><br />
 				<a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
@@ -265,7 +271,7 @@ int indx = 1;
 			%>
 
 </table>
-<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+<table class="W_GIFTCARD_RECEIPT_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 		</tr>
@@ -278,7 +284,7 @@ int indx = 1;
 <tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
 <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td></tr>
 <tr><td>
-<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
+<table class="W_GIFTCARD_RECEIPT_TOTAL" cellpadding="0" cellspacing="0">
 <tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
   <div id='oas_ReceiptBotLeft'>
     <SCRIPT LANGUAGE=JavaScript>

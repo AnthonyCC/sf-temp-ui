@@ -33,6 +33,9 @@ final int W_GIFTCARD_TOTAL = 970;
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<jwr:script src="/giftcards.js" useRandomParam="false" />
+	<style>
+		.W_GIFTCARD_TOTAL { width: <%= W_GIFTCARD_TOTAL %>px; }
+	</style>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<jwr:style src="/giftcards.css" media="all" />
 
@@ -52,8 +55,9 @@ final int W_GIFTCARD_TOTAL = 970;
 %>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" data-gc-page >	
-	<center>
+<body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>"
+	data-gc-page="<tmpl:get name='pageType'/>"
+>
 	<%
 		boolean modOrder = false;
 		boolean inViewCart = false;
@@ -81,38 +85,40 @@ final int W_GIFTCARD_TOTAL = 970;
 			}
 		*/
 	%>
-	<%@ include file="/common/template/includes/i_giftcard_nav.jspf" %> 
-
-	<table role="presentation" width="<%=W_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
-		<tr>
-			<td width="<%=W_GIFTCARD_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_GIFTCARD_TOTAL%>" height="1" border="0"></td>
-		</tr>
-		<tr>
-			<td width="<%=W_GIFTCARD_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
-		</tr>
-		<tr valign="top">
-			<td align="center">
-				<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_GIFTCARD_TOTAL%>"><br />
-				<!-- content lands here -->
-				<tmpl:get name='content'/>
-				<!-- content ends above here-->
-				<br />
-			</td>
-		</tr>
-		<tr>
-			<td width="<%=W_GIFTCARD_TOTAL%>" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_GIFTCARD_TOTAL%>"><br></td>
-		</tr>
-		<tr valign="bottom">
-			<td width="<%=W_GIFTCARD_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
-		</tr>
-		<tr>
-			<td width="<%=W_GIFTCARD_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_GIFTCARD_TOTAL%>" height="1" border="0"></td>
-		</tr>
-	</table>
-	<%@ include file="/common/template/includes/footer.jspf" %>
-    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
-	<tmpl:get name='customJsBottom'/>
-</center>
-
+			
+	<center><%@ include file="/common/template/includes/i_giftcard_nav.jspf" %></center>
+	<section class="container">
+		<center>
+			<table role="presentation" class="W_GIFTCARD_TOTAL" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="W_GIFTCARD_TOTAL" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" class="W_GIFTCARD_TOTAL" height="1" border="0"></td>
+				</tr>
+				<tr>
+					<td class="W_GIFTCARD_TOTAL" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+				</tr>
+				<tr valign="top">
+					<td align="center">
+						<img src="/media_stat/images/layout/clear.gif" alt="" height="15" class="W_GIFTCARD_TOTAL"><br />
+						<!-- content lands here -->
+						<tmpl:get name='content'/>
+						<!-- content ends above here-->
+						<br />
+					</td>
+				</tr>
+				<tr>
+					<td class="W_GIFTCARD_TOTAL" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" class="W_GIFTCARD_TOTAL"><br></td>
+				</tr>
+				<tr valign="bottom">
+					<td class="W_GIFTCARD_TOTAL"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
+				</tr>
+				<tr>
+					<td class="W_GIFTCARD_TOTAL" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" class="W_GIFTCARD_TOTAL" height="1" border="0"></td>
+				</tr>
+			</table>
+			<%@ include file="/common/template/includes/footer.jspf" %>
+		    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+			<tmpl:get name='customJsBottom'/>
+		</center>
+	</section>
 </body>
 </html>

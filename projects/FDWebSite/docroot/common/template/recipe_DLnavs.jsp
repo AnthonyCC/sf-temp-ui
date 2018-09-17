@@ -15,11 +15,6 @@ final int W_RECIPE_DL_NAVS_TOTAL = 970;
 final int W_RECIPE_DL_NAVS_LEFT = 150;
 final int W_RECIPE_DL_NAVS_RIGHT = 820;
 %>
-<style>
-	.W_RECIPE_DL_NAVS_TOTAL { width: <%= W_RECIPE_DL_NAVS_TOTAL %>px; }
-	.W_RECIPE_DL_NAVS_LEFT { width: <%= W_RECIPE_DL_NAVS_LEFT %>px; }
-	.W_RECIPE_DL_NAVS_RIGHT { width: <%= W_RECIPE_DL_NAVS_RIGHT %>px; }
-</style>
 <%/*
     if (session.isNew()){
     	 response.sendRedirect(response.encodeRedirectURL("site_access.jsp"));
@@ -34,6 +29,11 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
      <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<style>
+		.W_RECIPE_DL_NAVS_TOTAL { width: <%= W_RECIPE_DL_NAVS_TOTAL %>px; }
+		.W_RECIPE_DL_NAVS_LEFT { width: <%= W_RECIPE_DL_NAVS_LEFT %>px; }
+		.W_RECIPE_DL_NAVS_RIGHT { width: <%= W_RECIPE_DL_NAVS_RIGHT %>px; }
+	</style>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   <%@ include file="/shared/template/includes/ccl.jspf" %>
 	<tmpl:get name='customhead'/>

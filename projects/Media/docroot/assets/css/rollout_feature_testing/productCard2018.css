@@ -974,3 +974,65 @@
 [data-feature-productcard="2018"][data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_CENTER fieldset br {
 	display: none;
 }
+
+/* giftcard */
+[data-feature-productcard="2018"][data-gc-page] .container {
+	width: 100%;
+	min-width: 970px;
+	padding: 0 10px;
+	box-sizing: border-box;
+}
+
+[data-feature-productcard="2018"][data-gc-page] .W_GIFTCARD_TOTAL,
+[data-feature-productcard="2018"][data-gc-page] .W_ADD_GIFTCARD_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_add"] .W_ADD_GIFTCARD_FIELDS_TABLE,
+[data-feature-productcard="2018"][data-gc-page="gc_add"] .W_RECIPENT_LIST_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_add"] .W_ADD_GIFTCARD_FIELDS_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_purchase"] .W_PURCHASE_GIFTCARD_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_cc_add"] .W_GC_ADD_CREDITCARD_TOTAL,
+[data-feature-productcard="2018"][data-gc-page] .W_GC_CREDITCARD_FIELDS_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_receipt"] .W_GIFTCARD_RECEIPT_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_landing"] .W_GIFTCARD_LANDING_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_landing"] .W_GIFTCARD_OPTIONS_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_purchase_register"] .W_REGISTER_AND_PURCHASE_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_purchase_register"] .W_GC_SIGN_UP_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_login"] .W_LOGIN_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_signup"] .W_LOGIN_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_cc_edit"] .W_YA_EDIT_CREDITCARD,
+[data-feature-productcard="2018"][data-gc-page="gc_cc_edit"] .W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL,
+[data-feature-productcard="2018"][data-gc-page="gc_ebt_edit"] .W_YA_EDIT_CREDITCARD,
+[data-feature-productcard="2018"][data-gc-page="gc_ebt_edit"] .W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL {
+	width: 100%;
+}
+
+[data-feature-productcard="2018"][data-gc-page] .globalNavigation {
+	width: 100%;
+	background-color: #6AAA6D;
+}
+
+[data-feature-productcard="2018"][data-gc-page] .W_ADD_GIFTCARD_TOTAL-99 {
+	width: calc( 100% - 99px );
+}
+[data-feature-productcard="2018"][data-gc-page="gc_add"] .W_RECIPENT_LIST_TOTAL_SUBINFO,
+[data-feature-productcard="2018"][data-gc-page="gc_receipt"] .recipTable {
+	width: calc( 100% - 175px );
+}
+[data-feature-productcard="2018"][data-gc-page="gc_purchase"] .W_PURCHASE_GIFTCARD_TOTAL-399 {
+	width: calc( 100% - 339px );
+}
+[data-feature-productcard="2018"][data-gc-page="gc_purchase"] .W_PURCHASE_GIFTCARD_TOTAL #submit_top {
+	min-width: 135px;
+}
+[data-feature-productcard="2018"][data-gc-page="gc_receipt"] .W_GIFTCARD_RECEIPT_TOTAL-340 {
+	width: calc( 100% - 340px );
+}
+[data-feature-productcard="2018"][data-gc-page="gc_receipt"] .W_GIFTCARD_RECEIPT_TOTAL-350 {
+	width: calc( 100% - 350px );
+}
+[data-feature-productcard="2018"][data-gc-page="gc_purchase_register"] .W_REGISTER_AND_PURCHASE_TOTAL-135 {
+	width: calc( 100% - 135px );
+}
+[data-feature-productcard="2018"][data-gc-page="gc_cc_edit"] .W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200,
+[data-feature-productcard="2018"][data-gc-page="gc_ebt_edit"] .W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 {
+	width: calc( 100% - 200px );
+}
