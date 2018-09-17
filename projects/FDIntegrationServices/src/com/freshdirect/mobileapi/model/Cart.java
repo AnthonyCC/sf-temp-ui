@@ -28,6 +28,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
@@ -92,6 +93,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.util.ProductInfoUtil;
@@ -863,11 +865,13 @@ public class Cart {
         //changes as part of APPDEV-6838
         if (cart instanceof FDOrderI && ((FDOrderI) cart).hasInvoice()) {
         	cartDetail.setEstimatedTotal(((FDOrderI) cart).getInvoicedTotal());
-            cartDetail.setSubtotal(((FDOrderI) cart).getInvoicedSubTotal());
+            cartDetail.setSubtotal(!user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId())?
+            						((FDOrderI) cart).getInvoicedSubTotal():((FDOrderI) cart).getInvoicedSubTotal()-cartDetail.getDlvPassCharge());
             
         } else {
         	cartDetail.setEstimatedTotal(cart.getTotal());
-            cartDetail.setSubtotal(cart.getSubTotal());
+            cartDetail.setSubtotal(!user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId())?
+            						cart.getSubTotal():cart.getSubTotal()-cartDetail.getDlvPassCharge());
         }
 
         double tip1 = cart.getTip();
