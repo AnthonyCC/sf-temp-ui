@@ -53,23 +53,23 @@ public class DeliveryCaseCreateCron {
 					LOGGER.debug("Creatng case for order # " + model.getOrderId());
 					try {
 						if(model.getOrderId() != null) {
-							FDOrderI order = null;
+							String customerId = null;
 							try {
-								order = FDCustomerManager.getOrder(model.getOrderId());
+								customerId = FDCustomerManager.getOrderCustomerId(model.getOrderId());
 							} catch (FDResourceException e){
 								// do nothing if no order exists
 							}
-							if(order != null){
+							if(customerId != null){
 								if(model.isEarlyDeliveryReq()){
-									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST,
+									createCase(customerId, model.getOrderId(), CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST,
 										"[Route/Stop] request for Early delivery - "+ model.getEarlyDlvStatus(), "Drivers attempted early delivery using the customer call feature", null);
 								}
 								if(model.getRefusedCartons() != null && model.getRefusedCartons().size() > 0){
-									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_REFUSED_CARTON,
+									createCase(customerId, model.getOrderId(), CrmCaseSubject.CODE_REFUSED_CARTON,
 										"Last refused at - "+ DateUtil.formatTime(model.getLastRefusedScan()), "Driver Scanned - "+ model.getReturnReason(), model.getRefusedCartons());
 								}
 								if(model.getLateBoxes() != null && model.getLateBoxes().size() > 0){
-									createCase(order.getCustomerId(), order.getErpSalesId(), CrmCaseSubject.CODE_LATE_BOX,
+									createCase(customerId, model.getOrderId(), CrmCaseSubject.CODE_LATE_BOX,
 										"Driver scanned at - "+ DateUtil.formatTime(model.getLateBoxScantime()), "Carton has left ProFoods",  model.getLateBoxes());
 								}
 							}

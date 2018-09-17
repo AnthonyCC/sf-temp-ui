@@ -1630,7 +1630,15 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	public static String getOrderCustomerId(String orderId) throws FDResourceException {	
 	
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
+			return CustomerOrderService.getInstance().getCustomerId(orderId);
+		} else {
+			return getOrder(orderId).getCustomerId();
+		}
+		
+	}
 	private static ErpOrderHistory getErpOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
 
 		if (identity == null) {

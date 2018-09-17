@@ -60,4 +60,5 @@ public interface CustomerOrderServiceI {
 	public ErpAddressModel getLastOrderAddress(FDIdentity identity, EnumEStoreId eStore)
 			throws FDResourceException, RemoteException;
 
+	public String getCustomerId(String orderId) throws FDResourceException;
 }
