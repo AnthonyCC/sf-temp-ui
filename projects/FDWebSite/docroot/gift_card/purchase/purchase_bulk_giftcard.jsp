@@ -24,6 +24,7 @@
     <fd:SEOMetaTag title="FreshDirect - Gift Card : Buy in Bulk"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>gc_purchase_bulk</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <%-- 	<jsp:include page="/includes/giftcard_nav.jsp" /> --%>
@@ -147,8 +148,8 @@
 
 						<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 							<tr valign="top">
-								<td width="693"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-										<img src="/media_stat/images/layout/999966.gif" alt="" width="675" height="1" border="0" vspace="3"><br />
+								<td width=""><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
+										<img src="/media_stat/images/layout/999966.gif" alt="" style="width: 100%;" height="1" border="0" vspace="3"><br />
 									<font class="space2pix"><br /></font>  
 								</td>   
 							</tr>

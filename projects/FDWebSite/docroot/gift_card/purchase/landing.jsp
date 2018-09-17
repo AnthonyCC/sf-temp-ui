@@ -20,7 +20,13 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
   <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="FreshDirect - Purchase Gift Card" pageId="landing"></fd:SEOMetaTag>
 	</tmpl:put>
+	<tmpl:put name='pageType' direct='true'>gc_landing</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+		<style>
+			.W_GIFTCARD_LANDING_TOTAL { width: <%= W_GIFTCARD_LANDING_TOTAL %>px; }
+			.W_GIFTCARD_OPTIONS_TOTAL { width: <%= W_GIFTCARD_OPTIONS_TOTAL %>px; }
+			.W_GIFTCARD_DONATION_TOTAL { width: <%= W_GIFTCARD_DONATION_TOTAL %>px; }
+		</style>
 
 		<%
 			String fdTemplateId = "";
@@ -56,10 +62,10 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 		%>
 		<%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 		
-		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_GIFTCARD_LANDING_TOTAL%>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_GIFTCARD_LANDING_TOTAL">
 			<tr>
 				<td valign="top">
-					<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%= (FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) ? W_GIFTCARD_OPTIONS_TOTAL : W_GIFTCARD_LANDING_TOTAL %>">
+					<table role="presentation" border="0" cellspacing="0" cellpadding="2" class="<%= (FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) ? "W_GIFTCARD_OPTIONS_TOTAL" : "W_GIFTCARD_LANDING_TOTAL" %>">
 						<tr>
 							<td align="left">
 								<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_header.html" />
@@ -88,7 +94,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 				</td>
 				<td>&nbsp;&nbsp;</td>
 				<td valign="top">
-					<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_GIFTCARD_DONATION_TOTAL%>" >
+					<table role="presentation" border="0" cellspacing="0" cellpadding="2" class="W_GIFTCARD_DONATION_TOTAL">
 						<tr>
 							<td align="left">
 								<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_donation_header.html" />

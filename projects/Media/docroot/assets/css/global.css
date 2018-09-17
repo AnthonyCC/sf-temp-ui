@@ -3520,6 +3520,7 @@ section.main .leftnav .menuBox label input:focus + span > span{
 	width: 100%;
 	z-index: 2000;
 	background-color: #fff;
+	left: 0;
 }
 /* bug fix for the overlapping content in browse, search and reorder pages */
 

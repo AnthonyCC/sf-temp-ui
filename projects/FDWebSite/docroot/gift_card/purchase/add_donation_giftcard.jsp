@@ -17,8 +17,13 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
     <fd:SEOMetaTag title="FreshDirect - Donate Gift Card"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Donate Gift Card</tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>gc_add_donation</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
+		<style>
+			.W_ADD_GIFTCARD_TOTAL { width: <%= W_ADD_GIFTCARD_TOTAL %>px; }
+			.W_ADD_GIFTCARD_TOTAL-99 { width: calc( <%= W_ADD_GIFTCARD_TOTAL %>px - 99px ); }
+		</style>
 
 <%
     //used?
@@ -115,9 +120,9 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				}
 			%>
 
-			<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+			<table class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0">
 				<tr>
-					<td class="text11" width="<%=W_ADD_GIFTCARD_TOTAL-99%>">
+					<td class="text11" class="W_ADD_GIFTCARD_TOTAL-99">
 						<span class="title18">Enter Gift Card Donation Information</span><br />
 					</td>
 					<td width="99">
@@ -127,7 +132,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<td colspan="2" style="padding: 2px 0px;">
-						<img style="margin: 2px 0;" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br />
+						<img style="margin: 2px 0;" class="W_ADD_GIFTCARD_TOTAL" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br />
 					</td>
 				</tr>
 			</table>
@@ -137,7 +142,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				<input type="hidden" id="deleteId" name="deleteId" value="">
                 <input type="hidden" id="checkout" name="checkout" value="">
                 <input type="hidden" id="gcDonId" name="gcDonId" value="<%= gcDonId %>">				
-				<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+				<table class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0">
 					<tr>
 						<td colspan="5" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6" border="0" /></td>
 					</tr>
@@ -193,10 +198,10 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</table>
 	        </form>
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
+		<img src="/media_stat/images/layout/999966.gif" alt="" class="W_ADD_GIFTCARD_TOTAL" height="1" border="0" /><br />
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 		
-		<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">			
+		<table class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">			
 			<tr valign="top">
 				<td align="right" colspan="2">
 					&nbsp;

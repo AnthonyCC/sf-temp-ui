@@ -29,8 +29,13 @@ Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
     <fd:SEOMetaTag title="FreshDirect - Purchase Gift Card"/>
   </tmpl:put>
   <tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put>
+	<tmpl:put name='pageType' direct='true'>gc_purchase</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
+		<style>
+			.W_PURCHASE_GIFTCARD_TOTAL { width: <%= W_PURCHASE_GIFTCARD_TOTAL %>px; }
+			.W_PURCHASE_GIFTCARD_TOTAL-339 { width: calc( <%= W_PURCHASE_GIFTCARD_TOTAL %>px - 339px ); }
+		</style>
 
 <%
     FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -213,9 +218,9 @@ UserUtil.initializeGiftCart(user);
 %>
 	<BR>
 <form method="post" id="form1" name="order_form">
-<table role="presentation" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+<table role="presentation" class="W_PURCHASE_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11" width="<%=W_PURCHASE_GIFTCARD_TOTAL-339%>">
+		<td class="text11" class="W_PURCHASE_GIFTCARD_TOTAL-339">
 			<span class="title18">Purchase Gift Cards</span><br />
 			Please enter your credit card information below.
 		</td>
@@ -225,7 +230,7 @@ UserUtil.initializeGiftCart(user);
 	</tr>
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br />
+			<img style="margin: 2px 0;" class="W_PURCHASE_GIFTCARD_TOTAL" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br />
 		</td>
 	</tr>
 </table>
@@ -267,7 +272,7 @@ boolean isCheckEligible = false;
 
 
 <fieldset><legend class="offscreen">&nbsp;Purchase&nbsp;Type:</legend>
-<table role="presentation" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0" class="text11">
+<table role="presentation" class="W_PURCHASE_GIFTCARD_TOTAL" border="0" cellpadding="0" cellspacing="0" class="text11">
     <%
     	String serviceType = request.getParameter("serviceType");
     	String value1 = "personal";
@@ -312,10 +317,10 @@ boolean isCheckEligible = false;
 </div>
 
 
-	<table role="presentation" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
+	<table role="presentation" class="W_PURCHASE_GIFTCARD_TOTAL" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>"><span class="title18">Choose Credit Card</span><br />
-					<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" vspace="3"><br />
+			<td class="W_PURCHASE_GIFTCARD_TOTAL"><span class="title18">Choose Credit Card</span><br />
+					<img src="/media_stat/images/layout/999966.gif" alt="" class="W_PURCHASE_GIFTCARD_TOTAL" height="1" border="0" vspace="3"><br />
 				<font class="space2pix"><br /></font>
 			</td>
 		</tr>
@@ -341,11 +346,11 @@ boolean isCheckEligible = false;
 		</tr>
 	</table>
 		<br />
-		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0"><br />
+		<img src="/media_stat/images/layout/ff9933.gif" alt="" class="W_PURCHASE_GIFTCARD_TOTAL" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>
-		<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="2" class="W_PURCHASE_GIFTCARD_TOTAL">
 		<tr valign="top">
-			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" align="right">
+			<td class="W_PURCHASE_GIFTCARD_TOTAL" align="right">
 			<BUTTON  name="submit_bot" id="submit_bot" class="cssbutton small orange">SUBMIT ORDER</BUTTON>
 			</td>
 		</tr>

@@ -11,7 +11,10 @@
 <% //expanded page dimensions
 final int W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL = 970;
 %>
-
+<style>
+	.W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL { width: <%= W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>px; }
+	.W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 { width: calc( <%= W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>px - 200px ); }
+</style>
 <script language="javascript" type="text/javascript">  
       var xmlHttp  
       var xmlHttp
@@ -218,25 +221,25 @@ if (isValidPaymentId) {
 
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
 		<br><span class="errortext"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
     <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL">
 	<tr>	
-		<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
+		<td CLASS="text12 W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL">
 			In order to better protect our customers' personal information, we require a $1 validation authorization each time you add or edit a credit / debit card. This charge may appear as a hold in your account information, but it will not be collected. The $1 charge will be returned as soon as is permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
 			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
 		</td>
 	</tr>
 	</TABLE>
 <%} else { %>	
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL">
 		<tr>	
-			<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
+			<td CLASS="text12 W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL">
 				To learn more about our <font class="text11bold">Security Policies</font>, 
 				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>.
 			</td>
@@ -252,7 +255,7 @@ if (isValidPaymentId) {
 			<%@ include file="/includes/your_account/checkacct_promo.jspf"%><br><br>
 <% } %>
 <% if(((FDUserI)session.getAttribute(SessionName.USER)).isEbtAccepted()&& !"true".equals(request.getParameter("rh")) && !"true".equals(request.getParameter("gc"))){ %>
-<table width="970" border="0" cellpadding="0" cellspacing="0">
+<table class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL" border="0" cellpadding="0" cellspacing="0">
 <% String currentPage = request.getRequestURI(); 
 boolean fromCheckout1 = currentPage.indexOf("checkout") > -1;
 String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_account/add_ebt_card.jsp";%>
@@ -264,9 +267,9 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 <br/>
 <% } %>
 <%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED HERE, SHOW CHECK PROMO--%>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0"  WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0"  class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL">
 	<TR VALIGN="bottom">
-		<TD WIDTH="<%=proceedThruCheckout? W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL: W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 %>" class="title14">
+		<TD class="<%=proceedThruCheckout? "W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL" : "W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200" %>" class="title14">
 <!-- 			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT / DEBIT CARD DETAILS"> -->CREDIT / DEBIT CARD DETAILS&nbsp;&nbsp;&nbsp;
 			<FONT CLASS="text12">* Required information</FONT>		</TD>
 		<%if (!proceedThruCheckout) { %>
@@ -278,7 +281,7 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 	</TR>
 
 </TABLE>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 
 <TABLE BORDER="0" class="accessibilitySpacing" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
@@ -380,12 +383,12 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 </TABLE>
 
 <br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL">
 <TR VALIGN="TOP">
-	<TD WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" class="title14">
+	<TD class="title14 W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL">
 <!-- <img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS"> -->BILLING ADDRESS FOR THIS CARD&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
 				
-		<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" class="W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
 		if (yuzer.isEligibleForSignupPromotion()) {
 			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br><b>NOTE</b>: <font class="success13text">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="success13text">Please enter billing address as it appears on your credit / debit card statement.</font><%

@@ -24,7 +24,11 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
     <fd:SEOMetaTag title="FreshDirect - Gift Card : Buy in Bulk"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>gc_add_bullk</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+		<style>
+			.W_ADD_GIFTCARD_TOTAL { width: <%= W_ADD_GIFTCARD_TOTAL %>px; }
+		</style>
 		<%
 			//used?
 			String success_page = "/gift_card/purchase/add_bulk_giftcard.jsp";

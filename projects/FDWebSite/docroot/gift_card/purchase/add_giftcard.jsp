@@ -17,7 +17,12 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
     <fd:SEOMetaTag title="FreshDirect - Add Gift Card"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Add Gift Card</tmpl:put> --%>
+	<tmpl:put name='pageType' direct='true'>gc_add</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+		<style>
+			.W_ADD_GIFTCARD_TOTAL { width: <%= W_ADD_GIFTCARD_TOTAL %>px; }
+			.W_ADD_GIFTCARD_TOTAL-99 { width: calc( <%= W_ADD_GIFTCARD_TOTAL %>px - 99px ); }
+		</style>
     <div class="gcCheckAddressBox"> 
 		<div style="text-align: left;" class="gcCheckAddressBoxContent" id="gcCheckAddressBox"><form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter>
 			<span class="title18">Check An Address</span>
@@ -150,9 +155,9 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				}
 			%>
 
-			<table role="presentation" width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+			<table role="presentation" class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0">
 				<tr>
-					<td class="text11" width="<%=W_ADD_GIFTCARD_TOTAL-99%>">
+					<td class="text11" class="W_ADD_GIFTCARD_TOTAL-99">
 						<span class="title18">Enter Gift Card Info</span><br />
 						Provide your recipients' personal info and details of your gift.
 					</td>
@@ -169,7 +174,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<td colspan="2" style="padding: 2px 0px;">
-						<img style="margin: 2px 0;" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br />
+						<img style="margin: 2px 0;" class="W_ADD_GIFTCARD_TOTAL" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br />
 					</td>
 				</tr>
 			</table>
@@ -183,7 +188,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 			
 
 			<%--
-				<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_TOTAL%>">
+				<table border="0" cellspacing="0" cellpadding="0" class="W_ADD_GIFTCARD_TOTAL">
 					<tr valign="top">
 						<td width="640">
 							<%@ include file="/includes/i_footer_account.jspf"%>
@@ -194,9 +199,9 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 
         </form>
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-		<img src="/media_stat/images/layout/ff9900.gif" alt="" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
+		<img src="/media_stat/images/layout/ff9900.gif" alt="" class="W_ADD_GIFTCARD_TOTAL" height="1" border="0" /><br />
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-		<table role="presentation" width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table role="presentation" class="W_ADD_GIFTCARD_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 			</tr>

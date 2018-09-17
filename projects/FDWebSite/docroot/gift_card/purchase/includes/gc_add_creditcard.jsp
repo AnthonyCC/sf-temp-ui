@@ -15,8 +15,11 @@ final int W_GC_ADD_CREDITCARD_TOTAL = 970;
     <fd:SEOMetaTag title="FreshDirect - Your Account - Add Credit Card"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit Card</tmpl:put> --%>
-
+	<tmpl:put name='pageType' direct='true'>gc_cc_add</tmpl:put>
     <tmpl:put name='content' direct='true'>
+		<style>
+			.W_GC_ADD_CREDITCARD_TOTAL { width: <%= W_GC_ADD_CREDITCARD_TOTAL %>px; }
+		</style>
 <%
 String success_page = "/gift_card/purchase/purchase_giftcard.jsp";
 request.setAttribute("giftcard", "true");
@@ -135,9 +138,9 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 
 	<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post" style="padding: 0px; margin: 0px;">
-	<table role="presentation" width="<%=W_GC_ADD_CREDITCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+	<table role="presentation" class="W_GC_ADD_CREDITCARD_TOTAL" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td class="title18" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
+			<td class="title18" class="W_GC_ADD_CREDITCARD_TOTAL">
 				ADD CREDIT CARD<br />
 			</td>
 		</tr>
@@ -147,11 +150,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <br><br>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL-2%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" class="W_GC_ADD_CREDITCARD_TOTAL" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
+	<TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="2" class="W_GC_ADD_CREDITCARD_TOTAL">
 	<TR VALIGN="TOP">
-	<TD WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>" ALIGN="RIGHT">
+	<TD class="W_GC_ADD_CREDITCARD_TOTAL" ALIGN="RIGHT">
 	<a class="cssbutton green transparent small" href="<%=success_page%>">CANCEL</a>
 	<button class="cssbutton green small">SAVE CHANGES</button>
 	</TD>
