@@ -127,6 +127,7 @@ public class ProductSearchResult {
     protected ProductSearchResult(com.freshdirect.mobileapi.model.Product product) {
         this.soldBySalesUnits = product.isSoldBySalesUnits();
         this.autoConfigurableSalesUnit = product.getAutoConfiguredSalesUnit();
+        this.setDeliveryPassProduct(product.getDefaultProduct().isDeliveryPass());
         if (product.isAvailable()) {
             this.sku = Sku.wrap(product.getDefaultSku());
         }
@@ -397,6 +398,8 @@ public class ProductSearchResult {
     public void setAutoConfigurable(boolean autoConfigurable) {
         this.autoConfigurable = autoConfigurable;
     }
+    
+    private boolean deliveryPassProduct;
 
     private boolean soldBySalesUnits;
 
@@ -481,5 +484,13 @@ public class ProductSearchResult {
     public void setProductData(ProductData productData) {
         this.productData = productData;
     }
+
+	public boolean isDeliveryPassProduct() {
+		return deliveryPassProduct;
+	}
+
+	public void setDeliveryPassProduct(boolean deliveryPassProduct) {
+		this.deliveryPassProduct = deliveryPassProduct;
+	}
 
 }

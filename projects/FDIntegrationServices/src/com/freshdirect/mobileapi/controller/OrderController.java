@@ -18,6 +18,7 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -67,6 +68,7 @@ import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
 import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -571,11 +573,15 @@ public class OrderController extends BaseController {
 		List<String> productIds = new ArrayList<String>();
 		if(productPage!=null && !productPage.isEmpty()){
 			for(ProductConfiguration pc : productPage){
-				productIds.add(pc.getProductId());
+				if(user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId()) && !pc.getProduct().isDeliveryPassProduct()){
+					productIds.add(pc.getProductId());
+				}else{
+					productIds.add(pc.getProductId());
+				}
 			}
 		}
 		quickShop.setProductIds(productIds);
-		quickShop.setTotalResultCount(products != null ? products.size() : 0);
+		quickShop.setTotalResultCount(productIds != null ? productIds.size() : 0);
 		return quickShop;
 	}
     
