@@ -12,6 +12,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -82,14 +83,17 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.cart.ModifyOrderHelper;
+import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.OrderPermissionsI;
 import com.freshdirect.webapp.util.OrderPermissionsImpl;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
+import com.google.common.collect.Lists;
 /**
  *
  * @version $Revision$
@@ -97,26 +101,28 @@ import com.freshdirect.webapp.util.ShoppingCartUtil;
  */
 public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
-	private static Category LOGGER 	= LoggerFactory.getInstance( ModifyOrderControllerTag.class );
+    private static final long serialVersionUID = 1746010651799902520L;
 
-	private final String CANCEL_ACTION 			= "cancel";
-	private final String MODIFY_ACTION 			= "modify";
-	private final String RETURN_ACTION 			= "return";
-	private final String RESUBMIT_ACTION 		= "resubmit";
-	private final String CANCEL_MODIFY_ACTION 	= "cancelModify";
-	private final String NEW_AUTHORIZATION		= "new_authorization";
-	private final String NEW_AUTHORIZATION_FAILED_SETTLEMENT = "new_payment_for_failed_settlement";
-	private final String REDELIVERY_ACTION		= "redelivery";
-	private final String AUTO_RENEW_AUTH	= "auto_renew_auth";
-	private final String PLACE_AUTO_RENEW_ORDER	= "place_auto_renew_order";
-	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
-	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
+    private static final Category LOGGER = LoggerFactory.getInstance(ModifyOrderControllerTag.class);
 
-	
+    private static final String CANCEL_ACTION = "cancel";
+    private static final String MODIFY_ACTION = "modify";
+    private static final String RETURN_ACTION = "return";
+    private static final String RESUBMIT_ACTION = "resubmit";
+    private static final String CANCEL_MODIFY_ACTION = "cancelModify";
+    private static final String NEW_AUTHORIZATION = "new_authorization";
+    private static final String NEW_AUTHORIZATION_FAILED_SETTLEMENT = "new_payment_for_failed_settlement";
+    private static final String REDELIVERY_ACTION = "redelivery";
+    private static final String AUTO_RENEW_AUTH = "auto_renew_auth";
+    private static final String PLACE_AUTO_RENEW_ORDER = "place_auto_renew_order";
+    private static final String EWALLET_SESSION_ATTRIBUTE_NAME = "EWALLET_CARD_TYPE";
+    private static final String WALLET_SESSION_CARD_ID = "WALLET_CARD_ID";
+
 	private String action;
 	private String orderId;
 	private String result;
 	private String successPage;
+	private String errorPage;
 	private boolean isMobileRequest = false;
 
 	public void setAction(String s) {
@@ -132,6 +138,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
     public void setSuccessPage(String sp) {
         this.successPage = sp;
+    }
+    
+    public void setErrorPage(String errorPage) {
+        this.errorPage = errorPage;
     }
 
     @Override
@@ -254,6 +264,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				throw new JspException(ioe.getMessage());
 			}
 		}
+
 		if (actionPerformed && results.isSuccess() && "noSuccess".equals(successPage)) {
 			try {
 				JspWriter writer = pageContext.getOut();
@@ -263,6 +274,19 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				throw new JspException(ioe.getMessage());
 			}
 		}
+
+		if (results.isFailure() && errorPage != null && !errorPage.isEmpty()) {
+		    LOGGER.debug("Success, redirecting to: "+errorPage);
+            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+            try {
+                response.sendRedirect(response.encodeRedirectURL(errorPage));
+                JspWriter writer = pageContext.getOut();
+                writer.close();
+                return SKIP_BODY;
+            } catch (IOException ioe) {
+                throw new JspException(ioe.getMessage());
+            }
+        }
 		return EVAL_BODY_BUFFERED;
 
 	} // method doStartTag
@@ -404,6 +428,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
 			throw new JspException("No customer was found for the requested action.");
 		}
+		
 		//
 		// Modify order: load the shopping cart with the old items
 		//
@@ -414,10 +439,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			currentUser.setSuspendShowPendingOrderOverlay(true);
 			//set inform ordermodify flag
 			currentUser.setShowingInformOrderModify(true);
-		}catch (FDException ex) {
-			LOGGER.warn("Unable to create modify cart", ex);
-			throw new JspException(ex.getMessage());
-		}
+        } catch (FDException ex) {
+            LOGGER.warn("Unable to create modify cart", ex);
+            throw new JspException(ex.getMessage());
+        } catch (ErpTransactionException ex) {
+            results.addError(new ActionError(ex.getMessage()));
+            LOGGER.error("Current sale status incompatible with requested action", ex);
+            errorPage = "/your_account/order_details.jsp?orderId=" + orderId;
+        }
 	}
 
 	
@@ -461,8 +490,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 	public static FDModifyCartModel modifyOrder(HttpServletRequest request, FDSessionUser currentUser, String orderId, HttpSession session,
 			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending, ActionResult results, boolean isMobileRequest)
-					throws FDResourceException, FDInvalidConfigurationException{
+					throws FDResourceException, FDInvalidConfigurationException, ErpTransactionException{
 
+	    FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
+
+        order.getSale().assertStatusModifySale();
+	    
 		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel) {
 			// there's a modify order already going on ...
 			LOGGER.warn("An order is already opened for modification, cancel it first");
@@ -482,8 +515,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			FDCustomerManager.updateFDCustomerEStoreInfo(currentUser.getFDCustomer().getCustomerEStoreModel(), currentUser.getFDCustomer().getId());	
     	}
 
-		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
-		
 		ModifyOrderHelper.handleModificationCutoff(order, currentUser, session, results);
 				
 		FDCustomerManager.storeUser(currentUser.getUser());

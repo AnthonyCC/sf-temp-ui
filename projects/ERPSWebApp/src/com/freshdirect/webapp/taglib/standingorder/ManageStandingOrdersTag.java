@@ -12,7 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -31,6 +34,7 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.checkout.RedirectToPage;
@@ -41,17 +45,13 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.ModifyOrderControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-/**
- * 
- * 
- * @author segabor
- *
- */
-public class ManageStandingOrdersTag extends AbstractGetterTag {
+public class ManageStandingOrdersTag extends AbstractGetterTag<Collection<FDStandingOrder>> {
 	
 	private static final long serialVersionUID = 3899271253313578651L;
 
-	String actionResultName;
+	private static final Category LOGGER = LoggerFactory.getInstance(ManageStandingOrdersTag.class);
+	
+	private String actionResultName;
 	
 	public void setActionResult(String n) {
 		this.actionResultName = n;
@@ -167,8 +167,13 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 				user.setShoppingCart(cart);
 			
 			} else {
-				cart = ModifyOrderControllerTag.modifyOrder((HttpServletRequest) pageContext.getRequest(), user, orderId,
-						request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false, result, false);
+				try {
+                    cart = ModifyOrderControllerTag.modifyOrder((HttpServletRequest) pageContext.getRequest(), user, orderId,
+                    		request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false, result, false);
+                } catch (ErpTransactionException e) {
+                    LOGGER.error("Current sale status incompatible with requested action", e);
+                    throw new RedirectToPage( "/your_account/order_details.jsp?orderId=" + orderId );
+                }
 				skusAndQuantities=getSkusAndQuantities(cart);
 				cart.clearOrderLines();
 			}	
@@ -270,7 +275,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 	 * Returns list of not deleted standing orders 
 	 */
 	@Override
-	protected Object getResult() throws Exception {
+	protected Collection<FDStandingOrder> getResult() throws Exception {
 		final FDStandingOrdersManager m = FDStandingOrdersManager.getInstance();
         HttpSession session = pageContext.getSession();
 	

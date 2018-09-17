@@ -363,7 +363,17 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	}
 
 	public void modifyOrder(ErpModifyOrderModel model, Set<String> usedPromotionCodes) throws ErpTransactionException {
-		assertStatus(
+		assertStatusModifySale();
+		transactions.add(model);
+		if (status != EnumSaleStatus.SETTLEMENT_FAILED) {
+			status = EnumSaleStatus.MODIFIED;
+		}
+
+		this.usedPromotionCodes = usedPromotionCodes;
+	}
+
+    public void assertStatusModifySale() throws ErpTransactionException {
+        assertStatus(
 			new EnumSaleStatus[] {
 				EnumSaleStatus.SUBMITTED,
 				EnumSaleStatus.AUTHORIZED,
@@ -372,13 +382,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				EnumSaleStatus.AVS_EXCEPTION,
 				EnumSaleStatus.SETTLEMENT_FAILED
 				});
-		transactions.add(model);
-		if (status != EnumSaleStatus.SETTLEMENT_FAILED) {
-			status = EnumSaleStatus.MODIFIED;
-		}
-
-		this.usedPromotionCodes = usedPromotionCodes;
-	}
+    }
 
 	public void modifyOrderComplete() throws ErpTransactionException {
 		assertStatus(

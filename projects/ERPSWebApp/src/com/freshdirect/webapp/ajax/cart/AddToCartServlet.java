@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -36,6 +37,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
@@ -391,6 +393,7 @@ public class AddToCartServlet extends BaseJsonServlet {
         FDOrderAdapter order;
         try {
             order = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), reqData.getOrderId());
+            order.getSale().assertStatusModifySale();
             
             ModifyOrderHelper.handleModificationCutoff(order, sessionUser, request.getSession(), new ActionResult());
     		
@@ -428,6 +431,9 @@ public class AddToCartServlet extends BaseJsonServlet {
         } catch (FDException e) {
             LOG.error("Cannot load order data into cart. Exception: " + e);
             returnHttpError(500, "Cannot load order data into cart. Exception: " + e);
+        } catch (ErpTransactionException e) {
+            LOG.error("Current sale status incompatible with requested action", e);
+            returnHttpError(500, "Current sale status incompatible with requested action" + e);
         }
         return cart;
     }

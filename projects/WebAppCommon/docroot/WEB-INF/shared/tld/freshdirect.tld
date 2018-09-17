@@ -2163,6 +2163,12 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>errorPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+                       <name>orderId</name>               
 			<name>orderId</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
