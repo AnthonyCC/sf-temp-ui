@@ -2958,7 +2958,7 @@
 			<zipfileset src="${work.dir}/cmseue.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StoreAPI.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*" />
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/customer/FDCustomerFactory*,  com/freshdirect/fdstore/customer/FDUserUtil*, com/freshdirect/fdstore/zone/FDZoneInfoManager*, com/freshdirect/fdstore/customer/FDCustomerManager*, com/freshdirect/fdstore/promotion/PromotionFactory*, com/freshdirect/smartstore/fdstore/VariantSelection*, com/freshdirect/fdstore/warmup/Warmup.class" />
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/customer/FDCustomerFactory*,  com/freshdirect/fdstore/customer/FDUserUtil*, com/freshdirect/fdstore/zone/FDZoneInfoManager*, com/freshdirect/fdstore/customer/FDCustomerManager*, com/freshdirect/fdstore/promotion/PromotionFactory*, com/freshdirect/smartstore/fdstore/VariantSelection*, com/freshdirect/fdstore/warmup/Warmup.class, com/freshdirect/fdstore/warmup/CacheWarmupUtil.class" />
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*" />
