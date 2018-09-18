@@ -1713,9 +1713,6 @@ public class FDCustomerManager {
 		boolean sendEmail, CustomerRatingI cra, EnumDlvPassStatus status, boolean isFriendReferred, int fdcOrderCount)
 	throws FDResourceException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException, ReservationException,
 		FDPaymentInadequateException, ErpTransactionException, DeliveryPassException {
-
-		lookupManagerHome();
-
 		try {
 			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
 			if (EnumPaymentType.REGULAR.equals(pt) && (cra.isOnFDAccount()/*||EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())*/)) {
@@ -1728,9 +1725,7 @@ public class FDCustomerManager {
 			//createOrder.setTaxationType(info.getTaxationType());
 			createOrder.setTransactionSource(info.getSource());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
-
-			FDCustomerManagerSB sb = managerHome.create();
-			
+		
 			String orderId;
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeOrder_Api")){
 	    		orderId = OrderResourceApiClient.getInstance().placeOrder(
@@ -1744,23 +1739,14 @@ public class FDCustomerManager {
 						status,
 						isFriendReferred,
 						fdcOrderCount
-					);
-	    	}else{
-
-			orderId =
-				sb.placeOrder(
-					info,
-					createOrder,
-					appliedPromos,
-					cart.getDeliveryReservation().getPK().getId(),
-					sendEmail,
-					cra,
-					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status,
-					isFriendReferred,
-					fdcOrderCount
 				);
-	    	}
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				orderId = sb.placeOrder(info, createOrder, appliedPromos, cart.getDeliveryReservation().getPK().getId(),
+						sendEmail, cra, info.getAgent() == null ? null : info.getAgent().getRole(), status,
+						isFriendReferred, fdcOrderCount);
+			}
 
 			LOGGER.info(">>> Reservation "+cart.getDeliveryReservation().getPK().getId()+" "+" Order "+ orderId);
 
