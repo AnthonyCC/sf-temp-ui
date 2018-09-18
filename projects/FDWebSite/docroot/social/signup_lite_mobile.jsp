@@ -59,13 +59,6 @@ String templateId = request.getParameter("template");
 	<style>
 		.W_LOGIN_TOTAL { width: <%=(mobWeb || isOAuthPage)? "100%" : W_LOGIN_TOTAL+"px" %>; }
 	</style>
-	<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
-		<script type="text/javascript">
-		var nextpage = '<%=nextSuccesspage %>';
-		doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>");
-		</script>
-	<%}%>
-	
 	<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_LOGIN_TOTAL" align="center">
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
 		
@@ -77,13 +70,16 @@ String templateId = request.getParameter("template");
 		</tr>
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
 		<tr><td colspan="2" bgcolor="#999966" class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td></tr>
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt=""></td></tr>
-		<tr>
-			<td colspan="2">
-				<%@ include file="/includes/i_signup_field.jspf" %>
-			</td>
-		</tr>
 	</table>
+  <%@ include file="/includes/i_signup_field.jspf" %>
+
+	<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+		<script type="text/javascript">
+		var nextpage = '<%=nextSuccesspage %>';
+		doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>");
+		</script>
+	<%}%>
+	
 </tmpl:put>
 </tmpl:insert>
 
