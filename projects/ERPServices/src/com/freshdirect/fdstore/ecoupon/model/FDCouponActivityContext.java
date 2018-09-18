@@ -43,4 +43,8 @@ public class FDCouponActivityContext implements Serializable{
 		return agent;
 	}
 
+	@Override
+	public String toString() {
+		return "src=" + this.src  + ", initiator=" + this.initiator +", agent=" + this.agent;
+	}
 }
