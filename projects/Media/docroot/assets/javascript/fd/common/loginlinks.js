@@ -11,7 +11,7 @@ var FreshDirect = FreshDirect || {};
   var loginSignupPopup = function (target, popupUrl) {
     if (fd.mobWeb) { /* send user to page instead of popup */
       var API = $("#nav-menu").data("mmenu");
-      window.top.location = '/social/signup_lite.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
+      window.top.location = '/social/signup_lite'+((fd.mobWeb)?'_mobile':'')+'.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
       if (API) {
         API.close();
       }
@@ -23,49 +23,52 @@ var FreshDirect = FreshDirect || {};
     }
   };
   
-    
   var showLoginAjaxPopup = function (target, popupUrl, type) {
-    if (fd.components && fd.components.ajaxPopup) {
-      var loginAjaxPopup;
-      
-      var hideCallback = function() {
-        if (loginAjaxPopup) {
-          loginAjaxPopup.popup.$el.removeClass(loginAjaxOverlayClassName);
-          
-        }
-        loginAjaxPopup = null;
-      };
+	  if (fd.mobWeb) { /* send user to page instead of popup */
+		  window.top.location = popupUrl + '?successPage=' + encodeURIComponent(target);
+	  } else {
+		    if (fd.components && fd.components.ajaxPopup) {
+		      var loginAjaxPopup;
+		      
+		      var hideCallback = function() {
+		        if (loginAjaxPopup) {
+		          loginAjaxPopup.popup.$el.removeClass(loginAjaxOverlayClassName);
+		          
+		        }
+		        loginAjaxPopup = null;
+		      };
 
-      var renderCallback  = (function(myType) {
-        return function(ajaxPopup, target, data) {
-          loginAjaxPopup = ajaxPopup;
-          ajaxPopup.popup.$overlay.off('click');
-          ajaxPopup.popup.config.valign = 'top';
-          ajaxPopup.popup.config.stayOnClick = true;
-          ajaxPopup.popup.config.noCloseOnOverlay = true;
-          ajaxPopup.popup.config.hidecallback = hideCallback;
-          ajaxPopup.scrollCheck.splice(0, ajaxPopup.scrollCheck.length);
-          ajaxPopup.popup.$overlay.css('opacity', 0.5);
-          ajaxPopup.popup.$el.addClass(loginAjaxOverlayClassName);
-          ajaxPopup.popup.show($('body'), 't');
+		      var renderCallback  = (function(myType) {
+		        return function(ajaxPopup, target, data) {
+		          loginAjaxPopup = ajaxPopup;
+		          ajaxPopup.popup.$overlay.off('click');
+		          ajaxPopup.popup.config.valign = 'top';
+		          ajaxPopup.popup.config.stayOnClick = true;
+		          ajaxPopup.popup.config.noCloseOnOverlay = true;
+		          ajaxPopup.popup.config.hidecallback = hideCallback;
+		          ajaxPopup.scrollCheck.splice(0, ajaxPopup.scrollCheck.length);
+		          ajaxPopup.popup.$overlay.css('opacity', 0.5);
+		          ajaxPopup.popup.$el.addClass(loginAjaxOverlayClassName);
+		          ajaxPopup.popup.show($('body'), 't');
 
-          if (myType === 'login') {
-            fd.components.loginForm.init();
-          } else {
-            fd.components.signupForm.init();
-          }
-        };
-      })(type)
+		          if (myType === 'login') {
+		            fd.components.loginForm.init();
+		          } else {
+		            fd.components.signupForm.init();
+		          }
+		        };
+		      })(type)
 
-      fd.components.ajaxPopup.open({ 
-        href: popupUrl + '?successPage=' + encodeURIComponent(target),
-        afterRenderCallback: renderCallback
-      });
-    }
+		      fd.components.ajaxPopup.open({ 
+		        href: popupUrl + '?successPage=' + encodeURIComponent(target),
+		        afterRenderCallback: renderCallback
+		      });
+		    }
+	  }
   };
 
   var socialSignup = function (target) {
-    showLoginAjaxPopup(target,  '/social/signup_lite.jsp', 'signup');
+    showLoginAjaxPopup(target,  '/social/signup_lite'+((fd.mobWeb)?'_mobile':'')+'.jsp', 'signup');
   };
 
   var lightSignup = function (target) {
