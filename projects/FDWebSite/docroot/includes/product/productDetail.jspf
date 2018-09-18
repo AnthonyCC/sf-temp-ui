@@ -46,7 +46,7 @@
 		</script>
 <div itemscope itemtype="http://schema.org/Product" class="pdp">
 	<div class="prodDetail">
-		<%if (false && FDStoreProperties.isAdServerEnabled()) {%>
+		<%if (FDStoreProperties.isAdServerEnabled()) {%>
 			<div class="center oas-cnt" id='oas_ProductNote'><script type="text/javascript">OAS_AD('ProductNote');</script></div>
 		<%} else {%>
     		<div class="center"><%@ include file="/shared/includes/product/i_product_quality_note.jspf" %></div>
