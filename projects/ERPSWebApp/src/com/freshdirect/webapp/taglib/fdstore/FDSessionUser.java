@@ -317,16 +317,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void valueUnbound(HttpSessionBindingEvent event) {
         LOGGER.debug("FDUser unbound from session " + event.getSession().getId() + " user cookie " + this.getCookie() + " username " + this.getUserId());
         if (!this.isRobot()) {
-        	
-        	Date loginTime = null;
-        	try {
-        		if (event.getSession() != null) {
-        			loginTime = new Date(event.getSession().getCreationTime());
-        		}
-        	} catch (Exception e) {
-        		LOGGER.error("FDUserGetCreationTimeIssue:" + this.getCookie() + ":" + this.getUserId(), e);
-        	}
-        	
+        	        	
             this.saveCart(true);
             this.saveImpressions();
             this.releaseModificationLock();
@@ -342,14 +333,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 				e1.printStackTrace();
 			}
             
-            if (FDStoreProperties.isSessionLoggingEnabled() && loginTime != null) {
+            if (FDStoreProperties.isSessionLoggingEnabled() && this.startDate != null) {
                 try {
                     if (user != null && user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
                        
                     	if (user.getSessionEvent() != null) {
                             SessionEvent sessionEvent = user.getSessionEvent();
                             sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
-                            sessionEvent.setLoginTime(loginTime);
+                            sessionEvent.setLoginTime(this.startDate);
                             sessionEvent.setLogoutTime(new Date());
                             sessionEvent.setClientIp(user.getClientIp());
                             sessionEvent.setServerName(user.getServerName());
@@ -357,9 +348,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
                         }
                     }
                 } catch (Exception e) {
-                    LOGGER.info("Exception while logging the session event");
+                    LOGGER.info("EXCEPTIONLOGGINSESSIONEVENT: " + this.getCookie() + ":" + this.getUserId());
                     e.printStackTrace();
                 }
+            } else {
+            	LOGGER.info("DIDNTLOGSESSIONEVENT:" + FDStoreProperties.isSessionLoggingEnabled() + " : " + this.startDate + " : " + this.getCookie() + ":" + this.getUserId());
             }
 
             // clear masquerade agent, and log this event
