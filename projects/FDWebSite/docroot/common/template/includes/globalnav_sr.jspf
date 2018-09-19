@@ -106,7 +106,7 @@ if(user != null) {
 
 <!-- GLOBALNAV TOP -->
 	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %><%= (inReorder) ? " inReorder" : "" %>">
-		<div class="FDL-beta-search"><a href="/expresssearch.jsp">try our new (beta) search</a></div>
+		<% if (user != null && user.isFDLabsCustomer()) { %><div class="FDL-beta-search"><a href="/expresssearch.jsp">try our new (beta) search</a></div><% } %>
 		<% if (useFdxGlobalNav) { %>
 
 			<div class="nav<%= " "+hasEcouponsClass %>">
