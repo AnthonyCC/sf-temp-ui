@@ -864,6 +864,7 @@
 }
 .assistive-mode p.restrictionpopup__section a,.assistive-mode p.restrictionpopup__section a:focus,.assistive-mode p.restrictionpopup__section a:hover{
 	color: #5d5f36 !important;
+	text-decoration:underline;
 }
 .assistive-mode div#oas_b_FirstECheckPromo a {
     background-color: #096D19 !important;
@@ -948,4 +949,29 @@ color: #B93D3F;
 .assistive-mode .selectedAddressIsHome-false{
 	color:#666 !important;
 }
-  
+.assistive-mode .titleor14,
+.assistive-mode .locabar_addresses-reservation-existing-change,
+.assistive-mode .recipe_tab,
+.asstive-mode a.recipe_tab:visited,
+.assistive-mode a.recipe_tab{
+	color: #AF3D08 !important;
+}
+.assistive-mode .recipe_section_6699CC{
+	color:#3C78B4;
+}
+.assistive-mode a.tsCTBenefits{
+	color:#fff;
+	text-decoration:underline;
+}
+.assistive-mode a.tsCTBenefits:focus,.assistive-mode a.tsCTBenefits:hover{
+	text-decoration:none;
+}
+.assistive-mode .num{
+	color:#333 !important;
+}
+.assistive-mode input[type="text"], 
+.assistive-mode input[type="email"], 
+.assistive-mode input[type="password"],
+.assistive-mode section.main .breadcrumbs{
+	color:#333;
+}

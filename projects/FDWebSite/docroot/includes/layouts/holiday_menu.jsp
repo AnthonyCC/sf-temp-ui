@@ -207,7 +207,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
                 	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="12" border="0"></TD>
                 </TR>
                 <TR VALIGN="MIDDLE">
-                	<TD ALIGN="CENTER" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4" CLASS="title12"><font color="#FF9933"><%=displayCategory.getFullName().toUpperCase()%></font></TD>
+                	<TD ALIGN="CENTER" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4" CLASS="title12"><font class="orange"><%=displayCategory.getFullName().toUpperCase()%></font></TD>
                 </TR>
                 <TR VALIGN="MIDDLE"><TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></TD></TR>
                 <TR VALIGN="MIDDLE">

@@ -22,7 +22,7 @@ final int W_QUICKSHOP_INDEX_NONE_LHALF = 350;
 			<% } %>
 			<div>
 				<font class="text14"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span><font class="space2pix"><br><br></font>
-				<font class="title11" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
+				<font class="title11 orange">CHANGE OR SHOP FROM YOUR LISTS:</font>
 				<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
 			</div>
 		 </td>
@@ -36,9 +36,9 @@ final int W_QUICKSHOP_INDEX_NONE_LHALF = 350;
 			<br><span class="space2pix"><br></span>   
         <font class="text14"><b>Once you receive your first order, you can shop from:</b></font><br><br>                     
                         
-        <font class="title11" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; PREVIOUS ORDERS</font><br><br>
-        <font class="title11" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; YOUR RECIPES</font><br><br>
-        <font class="title11" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; EVERYTHING YOU'VE <br> &nbsp;&nbsp;&nbsp;&nbsp;EVER ORDERED</font><br><br>        
+        <font class="title11 orange"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; PREVIOUS ORDERS</font><br><br>
+        <font class="title11 orange"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; YOUR RECIPES</font><br><br>
+        <font class="title11 orange"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; EVERYTHING YOU'VE <br> &nbsp;&nbsp;&nbsp;&nbsp;EVER ORDERED</font><br><br>        
 		</td>
         </fd:IncludeMedia>        
 	</tr>
