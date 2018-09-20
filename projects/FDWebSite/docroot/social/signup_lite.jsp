@@ -195,7 +195,7 @@
 				                 	</fieldset>
 								</div>
 							<% } %>
-						    <div class="signup-form">
+						    <div id="collapsible-sul_cos_fields" class="signup-form">
 								<% if (showAntsFields) { %>
 									<%-- ANTS data --%>
 									<fieldset>
