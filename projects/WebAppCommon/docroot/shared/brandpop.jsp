@@ -173,5 +173,6 @@ if (brandId!=null) {
 </tr>
 </table>-->
 </center>
+<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 </body>
 </html>

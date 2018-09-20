@@ -975,3 +975,9 @@ color: #B93D3F;
 .assistive-mode section.main .breadcrumbs{
 	color:#333;
 }
+.assistive-mode .nav li{
+	background-color: #098A1E;
+}
+.assistive-mode .nav a:focus{
+	background-color: #AF3D08 !important;
+}
