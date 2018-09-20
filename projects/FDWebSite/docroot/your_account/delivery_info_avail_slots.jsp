@@ -81,7 +81,7 @@ if (mobWeb) {
 		<fd:SEOMetaTag title="Available Delivery Slots" pageId="delivery_info_avail"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<div id="content">
+		<%= mobWeb ? "" :"<div id=\"content\">" %>
 			<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
 				<%@ include file="/help/delivery_info_nav.jspf" %>
 			</div>
@@ -106,7 +106,7 @@ if (mobWeb) {
 	    	<%} else {%>
 	      		<div class="timeslot-selector delivery-info-timeslot"></div>
 	      	<% }%>
-		</div>
+	<%= mobWeb ? "" :"</div>" %>
 	</tmpl:put>
 	<tmpl:put name="extraCss">
 	  <jwr:style src="/timeslots.css" media="all" />
