@@ -128,7 +128,7 @@ if (mobWeb) {
 							<td align="center">
 								<input type="checkbox" id="reservationType_field2" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "" : "checked" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="checkbox customcheckbox" onclick="javascript:changeMe(this)">&nbsp;
 								<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" />
-								<span class="text12"><b><label for="reservationType_field2"> Make this a Weekly Reservation* </label></b></span><br>
+								<label for="reservationType_field2" class="customcheckboxlabel"> Make this a Weekly Reservation* </label><br>
 							</td>
 						</tr>
 					</table>

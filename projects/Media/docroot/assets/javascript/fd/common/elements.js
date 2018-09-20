@@ -46,6 +46,7 @@ var FreshDirect = FreshDirect || {};
 	        	  if (!$origLabel.attr('for')) {
 	                  $origLabel.attr('for', id);
 	               }
+	  	        $origLabel.addClass('fake-checkbox'); //required for css
 	             $(orig).parent().append($origLabel);
 	          } else { //generic empty checkbox
 	              $(orig).parent().append('<label class="fake-checkbox" for="' + id + '"></label>');
