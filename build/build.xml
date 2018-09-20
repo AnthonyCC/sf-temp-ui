@@ -2944,7 +2944,6 @@
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
