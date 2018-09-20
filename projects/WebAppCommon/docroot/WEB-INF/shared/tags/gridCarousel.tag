@@ -4,7 +4,7 @@
 		import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"
 		import="com.freshdirect.webapp.util.FDURLUtil"
 		import="com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag"
-		import="java.util.Collections"
+		import="java.util.*"
 		import="com.freshdirect.webapp.util.TransactionalProductImpression"
 		import="com.freshdirect.webapp.util.ProductImpression"
 		import="com.freshdirect.fdstore.content.EnumBurstType"
@@ -16,7 +16,7 @@
 		import="com.freshdirect.fdstore.FDProduct"
 		import="com.freshdirect.WineUtil"
 %>
-<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri="display" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ attribute name="id" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="trkCode" required="true" rtexprvalue="true" type="java.lang.String" %>
