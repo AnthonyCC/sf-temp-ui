@@ -573,11 +573,7 @@ public class OrderController extends BaseController {
 		List<String> productIds = new ArrayList<String>();
 		if(productPage!=null && !productPage.isEmpty()){
 			for(ProductConfiguration pc : productPage){
-				if(user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId()) && !pc.getProduct().isDeliveryPassProduct()){
-					productIds.add(pc.getProductId());
-				}else{
-					productIds.add(pc.getProductId());
-				}
+				productIds.add(pc.getProductId());
 			}
 		}
 		quickShop.setProductIds(productIds);
@@ -616,7 +612,7 @@ public class OrderController extends BaseController {
         List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
         if(result != null) {
         	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
-        	
+        	boolean storeIsFDX = fdUser.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId());
 	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
 	        	QuickShopLineItem line = wrapper.getNode().getItem();
 	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
@@ -624,7 +620,12 @@ public class OrderController extends BaseController {
 	                try {
 						ProductConfiguration configuration = new ProductConfiguration();
 						configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
-						productsWithSkus.add(configuration);
+						// FOOD-655 : Hide fdx dp products
+						if(storeIsFDX && !configuration.getProduct().isDeliveryPassProduct()){	
+							productsWithSkus.add(configuration);
+						}else{
+							productsWithSkus.add(configuration);
+						}
 					} catch (Exception e) {
 						//Ignore
 						LOGGER.warn("Error while populating the product: "+productModel.getContentName());
