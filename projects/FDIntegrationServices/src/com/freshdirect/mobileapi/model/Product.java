@@ -319,8 +319,6 @@ public class Product {
             this.salesUnitsMatch = false;
             this.salesUnitDescrsMatch = false;
             
-            this.setDeliveryPass(this.defaultProduct.isDeliveryPass());
-            
             // Flasg required for quantity;
             this.sellBySalesUnit = productModel.getSellBySalesunit();
 
@@ -353,6 +351,7 @@ public class Product {
                     }
                     this.salesUnitsMatch &= defaultSalesUnit.equals(fdp.getSalesUnits()[0].getName());
                     this.salesUnitDescrsMatch &= defSU.getDescription().equals(fdp.getSalesUnits()[0].getDescription());
+                    this.deliveryPass = fdp.isDeliveryPass();
                 }
 
             } else if (defaultSalesUnit == "" && this.defaultProduct.getDefaultSalesUnit() != null) {
@@ -2217,9 +2216,7 @@ public class Product {
 	public boolean isDeliveryPass() {
 		return deliveryPass;
 	}
-	public void setDeliveryPass(boolean isDeliveryPass) {
-		this.deliveryPass = isDeliveryPass;
-	}
+	
 	
 	
 }
