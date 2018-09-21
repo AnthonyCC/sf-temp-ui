@@ -202,7 +202,7 @@ var dataLayer = window.dataLayer || [];
             id: productData.sku,
             name: deBrand(productData.name, productData.brand),
             price: productData.price,
-            brand: productData.brand,
+            brand: productData.brand || fd.gtm.getBrandNameForId(productData.id),
             category: productData.category,
             variant: productData.variant,
             dimension3: ""+productData.newProduct,
@@ -897,6 +897,16 @@ var dataLayer = window.dataLayer || [];
     }
 
     return [channel, location, title].filter(function (e) { return e; }).join('-').toLowerCase();
+  };
+
+  fd.gtm.getBrandNameForId = function (id) {
+    var el = document.querySelector('[data-product-id="'+id+'"] .portrait-item-header-name b');
+
+    if (el) {
+      return el.textContent;
+    }
+
+    return null;
   };
 
   fd.gtm.getListForProductId = function (id, config) {
