@@ -194,6 +194,8 @@ public class Product {
     protected boolean hasSingleSku;
 
     protected boolean hasSingleSalesUnit;
+    
+    protected boolean deliveryPass;
 
     protected boolean salesUnitsMatch;
 
@@ -316,7 +318,9 @@ public class Product {
             this.hasSingleSalesUnit = (1 == this.defaultProduct.getSalesUnits().length);
             this.salesUnitsMatch = false;
             this.salesUnitDescrsMatch = false;
-
+            
+            this.setDeliveryPass(this.defaultProduct.isDeliveryPass());
+            
             // Flasg required for quantity;
             this.sellBySalesUnit = productModel.getSellBySalesunit();
 
@@ -2209,6 +2213,12 @@ public class Product {
 
 	public SkuModel getDefaultsku(){
 		return this.product.getProductModel().getDefaultSku();
+	}
+	public boolean isDeliveryPass() {
+		return deliveryPass;
+	}
+	public void setDeliveryPass(boolean isDeliveryPass) {
+		this.deliveryPass = isDeliveryPass;
 	}
 	
 	
