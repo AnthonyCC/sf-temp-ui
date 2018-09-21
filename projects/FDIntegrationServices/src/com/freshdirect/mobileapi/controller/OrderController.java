@@ -621,8 +621,10 @@ public class OrderController extends BaseController {
 						ProductConfiguration configuration = new ProductConfiguration();
 						configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
 						// FOOD-655 : Hide fdx dp products
-						if(storeIsFDX && !configuration.getProduct().isDeliveryPass()){	
-							productsWithSkus.add(configuration);
+						if(storeIsFDX){
+							if(!configuration.getProduct().isDeliveryPass()){
+								productsWithSkus.add(configuration);
+							}
 						}else{
 							productsWithSkus.add(configuration);
 						}
