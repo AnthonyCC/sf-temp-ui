@@ -976,8 +976,11 @@ color: #B93D3F;
 	color:#333;
 }
 .assistive-mode .nav li{
-	background-color: #098A1E;
+	background-color:#098A1E;
 }
-.assistive-mode .nav a:focus{
-	background-color: #AF3D08 !important;
+.assistive-mode .nav li a:focus{
+	background-color:#AF3D08 !important;
+}
+.assistive-mode .nav li:hover{
+	background-color:#098A1E;
 }

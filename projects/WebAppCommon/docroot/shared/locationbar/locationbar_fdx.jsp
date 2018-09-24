@@ -646,9 +646,9 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 
 <%-- CART area --%>
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
-			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
+			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem">
 				<div class="bold cursor-pointer locabar_triggers_menuitem">
-          			<a href="/view_cart.jsp" tabindex="-1" nofocus>
+          			<a href="/view_cart.jsp">
 						<span class="offscreen">ViewCart</span>
 						<div style="display: inline-block;">
 							<div class="locabar-cart-count-cont">
