@@ -23,6 +23,7 @@ import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 /**
@@ -214,8 +215,8 @@ public class ErpGrpInfoDAO {
 	            	 double price=rs.getDouble("PRICE");
 	            	 String salesOrg = rs.getString("SALES_ORG");
 	            	 String distChannel = rs.getString("DISTRIBUTION_CHANNEL");
-	            	 if(salesOrg==null)salesOrg="0001";
-	            	 if(distChannel==null)distChannel="01";
+	            	 if(salesOrg==null)salesOrg=FDStoreProperties.getDefaultFdSalesOrg();
+	            	 if(distChannel==null)distChannel=FDStoreProperties.getDefaultFdDistributionChannel();
 	            	 ErpGrpPriceZoneModel  grpPriceZoneInfo=new ErpGrpPriceZoneModel(new ZoneInfo(zoneId,salesOrg, distChannel),quantity,unitOfMeasure,price, scaleUnit);	            	 
 	            	 grpPriceZoneInfo.setId(id);
 	            	 zoneList.add(grpPriceZoneInfo);

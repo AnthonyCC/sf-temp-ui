@@ -1055,7 +1055,8 @@ public class StandingOrderHelper {
 					while(DateUtil.getDiffInDays(so.getNextDeliveryDate(), c.getTime())>7) {
 						so.calculateNextDeliveryDate(so.getNextDeliveryDate());
 						count++;
-						if(count >60) { /* falling in infinity loop while clicking setting's  on SO template. To Avoid this.. */
+						if(count >60 || (so.getNextDeliveryDate().after(new Date()) &&  
+								DateUtil.getDiffInDays(so.getNextDeliveryDate(), DateUtil.getSubsequentDeliveryDate(so.getFrequency()))<35)) { /* falling in infinity loop while clicking setting's  on SO template. To Avoid this.. */
 							break;
 						}
 					}

@@ -16,6 +16,7 @@ import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.ProductModelPromotionAdapter;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -71,9 +72,9 @@ public class PPExportEmailProductsTag extends AbstractGetterTag<String>{
 			for (Iterator iterator = zoneInfoList.iterator(); iterator.hasNext();) {
 				ErpZoneMasterInfo erpZoneInfo = (ErpZoneMasterInfo) iterator.next();
 				String zoneId = erpZoneInfo.getSapId();
-				ZoneInfo zoneInfo = new ZoneInfo(zoneId,"0001","01");
+				ZoneInfo zoneInfo = new ZoneInfo(zoneId,FDStoreProperties.getDefaultFdSalesOrg(),FDStoreProperties.getDefaultFdDistributionChannel());
 
-				List<FDProductPromotionInfo> skusList = productPromoInfoMap.get(new ZoneInfo(zoneId,"0001","01"));//Default SalesOrg info for FD.
+				List<FDProductPromotionInfo> skusList = productPromoInfoMap.get(new ZoneInfo(zoneId,FDStoreProperties.getDefaultFdSalesOrg(),FDStoreProperties.getDefaultFdDistributionChannel()));//Default SalesOrg info for FD.
 				if(null == skusList){
 					skusList = productPromoInfoMap.get(ErpProductPromotionUtil.DEFAULT_ZONE_INFO);
 				}

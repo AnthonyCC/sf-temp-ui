@@ -540,7 +540,7 @@ int prodIdx = 0;
 					<br /><display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_recip"></display:FDCoupon>
                 </td>
 			
-                <td><input type="text" style="width: 60px;background-color: transparent;user-select: none;" aria-label="total" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" disabled="disabled" onChange="" onFocus="blur()"></td>
+                <td><input type="text" style="width: 60px;background-color: transparent;user-select: none;" aria-label="total" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" disabled="disabled" onChange=""></td>
                 
                 <script type="text/javascript">
                     function updatePriceField<%=prodIdx%>() {
@@ -615,7 +615,7 @@ int prodIdx = 0;
 				<td width="120" align="right"><b><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total:&nbsp;&nbsp;</b></td></tr>
 			</table>
 			</td>
-			<td colspan="4" style="padding-top: 1em;"><input aria-label="estimated total" type="text" name="total" value="" size="6" disabled="disabled" onChange="" onFocus="blur()" style="width: 60px;background-color: transparent;user-select: none;" class="text11"></td>
+			<td colspan="4" style="padding-top: 1em;"><input aria-label="estimated total" type="text" name="total" value="" size="6" disabled="disabled" onChange=""  style="width: 60px;background-color: transparent;user-select: none;" class="text11"></td>
 		</tr>
 		<tr>
 			<td colspan="9">

@@ -236,6 +236,8 @@ public interface FDUserI extends java.io.Serializable {
 
     public void setSelectedServiceType(EnumServiceType serviceType);
 
+    public void setAvailableServices(Set<EnumServiceType> availableServices);
+
     public String getCustomerServiceContact();
 
     public String getCustomerServiceContactMediaPath();

@@ -138,7 +138,7 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 {template .bundleProductRecommendation autoescape="false"}
 {if $optionalProducts and length($optionalProducts)>0}
   {foreach $rec in $optionalProducts}
-    <p {if $mobWeb}tabindex="0"{/if} class="recommendation-title{($mobWeb) ? ' gen-accord-toggler pdp-optProducts-header' : ''}">{$rec.fullName}</p>
+    <h2 {if $mobWeb}tabindex="0"{/if} class="recommendation-title{($mobWeb) ? ' gen-accord-toggler pdp-optProducts-header' : ''}">{$rec.fullName}</h2>
     {($mobWeb) ? '<div class="gen-accord-content" style="display: none;">' : ''}
 	    <div class="recommendation-editorial{($mobWeb) ? ' pdp-optProducts-editorial' : ''}">{$rec.editorial}</div>
 	    <div class="{($mobWeb) ? ' pdp-optProducts-prods' : ''}">

@@ -176,12 +176,12 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
                     populateSalesUnitInfo(fdProduct, product);
                     populateNutritionInfo(fdProduct, product);
                     populateConfigurationsInfo(fdProduct, product, productModel.getUserContext().getPricingContext());
-                    populateRatingInfo(fdProductInfo, product, "1000"); // ::FDX:: What plant to consider?
+                    populateRatingInfo(fdProductInfo, product, FDStoreProperties.getDefaultFdPlantID()); // ::FDX:: What plant to consider?
                     populateInventoryInfo(fdProductInfo, product);
                     populateImages(productModel, product);
                     populateBrands(productModel, product);
                     populateClaims(fdProduct, product);				//claims of product
-                    populateKtyps(fdProduct, product,"1000");		//KosherTypes of product
+                    populateKtyps(fdProduct, product,FDStoreProperties.getDefaultFdPlantID());		//KosherTypes of product
                     populateOrgns(product, fdProductInfo);			//OragnicTypes of product
                 }
            }

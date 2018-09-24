@@ -55,6 +55,7 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 	private static final String UPDATE_SHIPPING_TRUCK = "customerOrder/updateShippingInfoTruckDetails";
 	private static final String UPDATE_ORDER_IN_PROCESS = "customerOrder/updateOrderInProcess/";
 	private static final String GET_LAST_ORDER_ADDRESS = "customerOrder/getLastOrderAddress/";
+	private static final String GET_CUSTOMER_ID = "customerOrder/getCustomerId/";
 	
 	private static CustomerOrderServiceI INSTANCE;
 
@@ -356,6 +357,18 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 			LOGGER.error("Error in CustomerOrderService getLastOrderAddress: ", e);
 			throw new RemoteException(e.getMessage());
 		}
+	}
+
+	@Override
+	public String getCustomerId(String orderId) throws FDResourceException {
+		Response<String> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CUSTOMER_ID + orderId),
+				new TypeReference<Response<String>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.info("Error in CustomerOrderService.getCustomerId: orderId=" + orderId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
 	}
 
 }

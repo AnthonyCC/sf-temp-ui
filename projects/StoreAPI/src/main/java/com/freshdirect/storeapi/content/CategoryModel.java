@@ -15,6 +15,7 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
@@ -226,7 +227,7 @@ public class CategoryModel extends ProductContainer {
 		if(null !=productPromoInfoMap){
 			List<FDProductPromotionInfo> fDProductPromotionSkus = productPromoInfoMap.get(pricingZone);
 			if(null ==fDProductPromotionSkus){
-				fDProductPromotionSkus = productPromoInfoMap.get(new ZoneInfo("0000100000","0001","01"));//ProductPromotionData.DEFAULT_ZONE);
+				fDProductPromotionSkus = productPromoInfoMap.get(new ZoneInfo(ErpServicesProperties.getMasterDefaultZoneId(),FDStoreProperties.getDefaultFdSalesOrg(),FDStoreProperties.getDefaultFdDistributionChannel()));//ProductPromotionData.DEFAULT_ZONE);
 				productPromoInfoMap.put(pricingZone,fDProductPromotionSkus);
 			}
 			if(null != fDProductPromotionSkus)

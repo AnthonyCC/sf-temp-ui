@@ -63,7 +63,13 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 			String response = httpGetData(getFdCommerceEndPoint(GET_ORDER_API), String.class, new Object[] { id });
 			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
 			});
-			return parseResponse(info);
+			ErpSaleModel sale = parseResponse(info);
+			// jackson doesn't allow null key in a map, we map null key to to an empty string key in the ecom, now map the empty string key to null
+			if (sale != null && sale.getCartonMetrics() != null && sale.getCartonMetrics().containsKey("")) {
+				sale.getCartonMetrics().put(null, sale.getCartonMetrics().get(""));
+				sale.getCartonMetrics().remove("");
+			}
+			return sale;
 		} catch (Exception e) {
 			LOGGER.info(e);
 			LOGGER.info("Exception converting {} to ListOfObjects " + id);

@@ -487,6 +487,7 @@ public class FDCouponTag extends BodyTagSupport {
 		    		buf.append(" type=\"checkbox\"");
 			    	buf.append(" name=\""+this.getName()+"_cb"+"\"");
 			    	buf.append(" class=\"fdCoupon_cb\"");
+			    	buf.append(" aria-label=\"apply freshdirect coupon\"");
 		
 			    	/* user has clipped the coupon already */
 			    	if (this.isClipped()) {
@@ -510,7 +511,7 @@ public class FDCouponTag extends BodyTagSupport {
     	
     	buf.append("<img");
     		buf.append(" src=\""+this.getCouponImageUrl()+"\"");
-    		buf.append(" alt=\"\"");
+    		buf.append(" alt=\"freshdirect coupon\"");
     		buf.append(" name=\""+this.getName()+"_img"+"\"");
     		buf.append(" class=\"fdCoupon_img\"");
     	buf.append(" />");

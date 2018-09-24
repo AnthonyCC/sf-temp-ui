@@ -45,7 +45,7 @@ final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
 				<fd:CCLCheck>			
 					<font class="text14"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
 					<font class="space2pix"><br><br></font>
-					<font class="title11" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
+					<font class="title11 orange">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
 					<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
 				</fd:CCLCheck>
 			</div>
@@ -53,7 +53,7 @@ final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
 			<div id="eieo-section">
 				<div class="text14" style="font-weight: bold;">Everything You've<br>Ever Ordered!</div>
 				<font class="space2pix"><br><br></font>
-				<font class="title11" color="#FF9933">CHOOSE DEPARTMENT: </font>
+				<font class="title11 orange">CHOOSE DEPARTMENT: </font>
 				<font class="space2pix"><br><br><br></font><br>&nbsp;&nbsp;
 				<SELECT ONCHANGE="location = this.options[this.selectedIndex].value;">
 					<OPTION>Choose Department...

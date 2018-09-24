@@ -100,6 +100,7 @@ import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
@@ -241,11 +242,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 								erpAddress.setLastName(erpCustomer.getCustomerInfo().getLastName());
 								erpAddress.setPhone(erpCustomer.getCustomerInfo().getHomePhone());
 								//Need to set dummy sap billing info for SAP processing.
-								erpAddress.setAddress1("23-30 borden ave");
-								erpAddress.setCity("Long Island City");
-								erpAddress.setState("NY");
-								erpAddress.setCountry("US");
-								erpAddress.setZipCode("11101");
+								erpAddress.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+								erpAddress.setCity(FDStoreProperties.getFdDefaultBillingTown());
+								erpAddress.setState(FDStoreProperties.getFdDefaultBillingState());
+								erpAddress.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+								erpAddress.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
 
 								//erpAddress.setServiceType(serviceType);
 								erpCustomer.setSapBillToAddress(erpAddress);
@@ -256,11 +257,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 									erpAddress.setLastName(erpCustomer.getCustomerInfo().getLastName());
 									erpAddress.setPhone(erpCustomer.getCustomerInfo().getHomePhone());
 									//Need to set dummy sap billing info for SAP processing.
-									erpAddress.setAddress1("23-30 borden ave");
-									erpAddress.setCity("Long Island City");
-									erpAddress.setState("NY");
-									erpAddress.setCountry("US");
-									erpAddress.setZipCode("11101");
+									erpAddress.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+									erpAddress.setCity(FDStoreProperties.getFdDefaultBillingTown());
+									erpAddress.setState(FDStoreProperties.getFdDefaultBillingState());
+									erpAddress.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
+									erpAddress.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
 
 									//erpAddress.setServiceType(serviceType);
 									erpCustomer.setSapBillToAddress(erpAddress);

@@ -137,7 +137,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
  
 <table width="<%= W_YA_GC_ORDER_DETAILS %>" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
-			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderId%></font></b></span><br /><br />
+			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font class="orange">#<%=orderId%></font></b></span><br /><br />
 			</td>
 		</tr>
 </table>

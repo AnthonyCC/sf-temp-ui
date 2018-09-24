@@ -4011,7 +4011,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	private void logATPFailures(ErpCreateOrderModel createOrder, Map<String, FDAvailabilityI> fdInvMap,
 			String erpCustomerId, String actionType) throws FDResourceException {
 		List<ATPFailureInfo> lst = new ArrayList<ATPFailureInfo>();
-		String plantId = "1000";
+		String plantId = FDStoreProperties.getDefaultFdPlantID();
 		if (createOrder.getDeliveryInfo() != null && createOrder.getDeliveryInfo().getDeliveryPlantInfo() != null) {
 			plantId = createOrder.getDeliveryInfo().getDeliveryPlantInfo().getPlantId();
 		}
@@ -7584,7 +7584,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		List<FDCartonInfo> cartonInfo = new ArrayList<FDCartonInfo>();
 
-		SapCartonInfoForSale bapi = new SapCartonInfoForSale("1000", order.getRequestedDate(), order.getErpSalesId(),
+		SapCartonInfoForSale bapi = new SapCartonInfoForSale(FDStoreProperties.getDefaultFdPlantID(), order.getRequestedDate(), order.getErpSalesId(),
 				order.getSapOrderId(), order.getShippingInfo().getWaveNumber());
 		try {
 			bapi.execute();

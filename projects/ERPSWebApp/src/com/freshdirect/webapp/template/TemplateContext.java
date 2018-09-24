@@ -27,6 +27,7 @@ import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
@@ -95,7 +96,7 @@ public class TemplateContext extends BaseTemplateContext{
 			if(null != zones && !zones.isEmpty()){
 				for (Iterator<String> iterator = zones.iterator(); iterator.hasNext();) {
 					String zone = iterator.next();
-					PricingContext context = new PricingContext(new ZoneInfo(zone, "0001", "01"));//Default SalesOrg info for FD.
+					PricingContext context = new PricingContext(new ZoneInfo(zone, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel()));//Default SalesOrg info for FD.
 					pricingContexts.add(context);
 				}
 			}

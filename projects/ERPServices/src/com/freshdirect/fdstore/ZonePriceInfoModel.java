@@ -77,11 +77,11 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 			return this.sellingPrice;
 		}
 	}
-	/*
+	
 	public double getPromoPrice() {
 		return this.promoPrice;
 	}
-	*/
+	
 	/**
 	 * Get the unit of measure for the "default" price.
 	 *

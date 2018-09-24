@@ -2167,7 +2167,6 @@
 				<include name="xml-apis-1.0.b2.jar" />
 				<include name="hibernate-commons-annotations-5.0.0.Final.jar" />
 				<include name="hibernate-entitymanager-5.0.4.Final.jar" />
-				<!-- pathelement location="${thirdparty.home}/ojdbc6-11.2.0.3.0.jar" / -->
 				<include name="HikariCP-java6-2.3.12.jar" />
 				<include name="jta-1.1.jar" />
 				<include name="slf4j-api-1.7.13.jar" />
@@ -2966,7 +2965,6 @@
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
@@ -2980,7 +2978,7 @@
 			<zipfileset src="${work.dir}/cmseue.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StoreAPI.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*" />
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/customer/FDCustomerFactory*,  com/freshdirect/fdstore/customer/FDUserUtil*, com/freshdirect/fdstore/zone/FDZoneInfoManager*, com/freshdirect/fdstore/customer/FDCustomerManager*, com/freshdirect/fdstore/promotion/PromotionFactory*, com/freshdirect/smartstore/fdstore/VariantSelection*" />
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/customer/FDCustomerFactory*,  com/freshdirect/fdstore/customer/FDUserUtil*, com/freshdirect/fdstore/zone/FDZoneInfoManager*, com/freshdirect/fdstore/customer/FDCustomerManager*, com/freshdirect/fdstore/promotion/PromotionFactory*, com/freshdirect/smartstore/fdstore/VariantSelection*, com/freshdirect/fdstore/warmup/Warmup.class, com/freshdirect/fdstore/warmup/Warmup$1.class, com/freshdirect/fdstore/warmup/Warmup$2.class, com/freshdirect/fdstore/warmup/CacheWarmupUtil*" />
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*" />

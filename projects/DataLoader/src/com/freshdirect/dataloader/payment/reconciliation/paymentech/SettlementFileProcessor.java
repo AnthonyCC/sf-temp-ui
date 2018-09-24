@@ -28,6 +28,7 @@ import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechFINParser;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -231,6 +232,10 @@ public class SettlementFileProcessor {
 			if (isPde != null)
 				isPde.close();
 			builder.writeTo(f);
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+				ReconciliationService.getInstance().sendFile(new FileInputStream(f), fileName);
+			}
 		}
 		return fileName;
 	}

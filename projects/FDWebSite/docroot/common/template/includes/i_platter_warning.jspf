@@ -36,7 +36,7 @@ final int W_PLATTER_WARNING_TOTAL = 970;
 		Calendar cutoffCal = DateUtil.toCalendar(cutoffTime.getAsDate(new Date()));
 		if (now.after(showCal) && now.before(cutoffCal)) {
 			%>
-						<font color="#ff9933"><b>PLEASE ORDER BY <%= headerTime %> FOR DELIVERY TOMORROW</b></font><br>
+						<font class="orange"><b>PLEASE ORDER BY <%= headerTime %> FOR DELIVERY TOMORROW</b></font><br>
 						Some of the items in your cart have an advance cutoff time to allow for additional processing.<br>
 						You must <b>complete checkout by <%= bodyTime %></b> to order all items for delivery tomorrow.
 			<%

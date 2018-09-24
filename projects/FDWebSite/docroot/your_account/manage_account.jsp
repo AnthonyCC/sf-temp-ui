@@ -75,7 +75,14 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="FreshDirect - Your Account" pageId="manage_account"></fd:SEOMetaTag>
 	</tmpl:put>
+	<tmpl:put name='pageType' direct='true'>act_manage</tmpl:put>
     <tmpl:put name='content' direct='true'>
+		<style>
+			.W_YA_MANAGE_TOTAL { width: <%= W_YA_MANAGE_TOTAL %>px; }
+			.W_YA_CSICON { width: <%= W_YA_CSICON %>px; }
+			.W_YA_MAIN { width: <%= W_YA_MAIN %>px; }
+			.W_YA_CT { width: <%= W_YA_CT %>px; }
+		</style>
 		<jwr:style src="/your_account.css" media="all"/>
 <% 
 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
@@ -211,9 +218,9 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		</div>
 		<div class="pNavLoginButton primaryLink logout"><a href="#" class="green transparent cssbutton-flat">Logout</a></div>
 	<% } else { %>
-		<table role="presentation" width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		<table role="presentation" class="W_YA_MANAGE_TOTAL" border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<td width="<%= W_YA_MAIN %>" valign="top" >
+				<td class="W_YA_MAIN" valign="top" >
 					<!-- ct user logo -->
 					<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
 						<tr><td valign="top" class="text13">
@@ -345,17 +352,17 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 					<TD width="1" bgcolor="#ff9900"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 					<TD width="20"><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
 				<% } %>
-				<td valign="top" width="<%= W_YA_CT %>" class="NOMOBWEB">
+				<td valign="top" class="W_YA_CT" class="NOMOBWEB">
 					<!-- ct user logo -->
 					<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) { %>
-						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" class="W_YA_CT">
 							<tr valign="top">
 								<td valign="top" class="text13">
 								<td><img src="/media_stat/images/chefs_table/ct_almost_hdr.gif"/><br><br></td>
 							</tr>
 						</table>
 		
-						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" class="W_YA_CT">
 							<tr valign="top">
 								<td valign="top" class="text13">We enroll new members in our Chef's Table rewards program every month. 
 								<br><br><font class="text13bold">
@@ -379,7 +386,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 						<br>
 					<% }
 					if (user.isChefsTable() || (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT())) { %>
-						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" class="W_YA_CT">
 						<tr valign="top">
 							<td valign="top" class="text13">
 							<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
@@ -391,7 +398,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 						</tr>
 						</table>
 					<% }else{ %>
-						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" class="W_YA_CT">
 						<tr valign="top">
 							<td valign="top" class="text13">
 						<fd:IncludeMedia name="/media/editorial/site_pages/account/right_all.html" />

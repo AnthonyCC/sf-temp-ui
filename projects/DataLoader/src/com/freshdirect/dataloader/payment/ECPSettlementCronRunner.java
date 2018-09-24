@@ -183,6 +183,9 @@ public class ECPSettlementCronRunner {
 
 			File f = new File(DataLoaderProperties.getWorkingDir() + fileName);
 			builder.writeTo(f);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+				ReconciliationService.getInstance().sendFile(new FileInputStream(f), fileName);
+			}
 			
 		}
 

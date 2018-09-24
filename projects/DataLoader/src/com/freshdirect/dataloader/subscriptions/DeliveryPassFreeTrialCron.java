@@ -111,12 +111,12 @@ public class DeliveryPassFreeTrialCron {
 
 			custIds = getAllCustIdsOfFreeTrialSubsOrder();
 			if (custIds != null && custIds.size()>0) {
-				String arSKU = FDStoreProperties.getTwoMonthTrailDPSku();//"MKT0072335";
+				String freeTrialSku = FDStoreProperties.getTwoMonthTrailDPSku();//"MKT0072335";
 				LOGGER.info(
 						"DeliveryPassFreeTrialCron : " + custIds.size() + " customers eligible for FreeTrial.");
 				for (String erpCustomerID : custIds ) {
 					try {
-						String orderId = DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(erpCustomerID, arSKU, EnumEStoreId.FD);
+						String orderId = DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(erpCustomerID, freeTrialSku, EnumEStoreId.FD);
 						System.out.println("order placed" +orderId);
 					} catch (FDResourceException e) {
 						StringWriter sw = new StringWriter();

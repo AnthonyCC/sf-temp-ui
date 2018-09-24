@@ -35,6 +35,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -76,6 +77,7 @@ import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
@@ -96,11 +98,11 @@ public class DeliveryPassFreeTrialUtil {
 
 	private final static String CLASS_NAME=DeliveryPassFreeTrialUtil.class.getSimpleName();
 
-	private static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
+	private static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String freeTrialSku, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
 		String orderID = null;
 		FDCartModel cart=null;
 		try {
-			cart = getCart(arSKU,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK(),userCtx);
+			cart = getCart(freeTrialSku,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK(),userCtx);
 			if(FDStoreProperties.getAvalaraTaxEnabled()){
 			AvalaraContext context = new AvalaraContext(cart);
 			context.setCommit(false);
@@ -121,8 +123,13 @@ public class DeliveryPassFreeTrialUtil {
 		} catch (FDPaymentInadequateException e) {
 			LOGGER.warn(e);
 			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
-
-		}
+		} catch (InvalidCardException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		}catch (ErpTransactionException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		} 
 		return orderID;
 	}
 
@@ -160,7 +167,7 @@ public class DeliveryPassFreeTrialUtil {
 			return null;
 		}
 	}
-	public static String placeDpSubscriptionOrder(String erpCustomerID, String arSKU, EnumEStoreId estore) throws FDResourceException {
+	public static String placeDpSubscriptionOrder(String erpCustomerID, String freeTrialSku, EnumEStoreId estore) throws FDResourceException {
 
 		FDIdentity identity=null;
 		FDActionInfo actionInfo=null;
@@ -258,7 +265,7 @@ public class DeliveryPassFreeTrialUtil {
 				try {
 
 					cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-					orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,address,user.getUserContext());
+					orderID=placeOrder(actionInfo,cra,freeTrialSku,pymtMethod,address,user.getUserContext());
 
 				}
 				catch(FDResourceException fe) {
@@ -459,11 +466,11 @@ public class DeliveryPassFreeTrialUtil {
 		ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.GIFTCARD);
 		paymentMethod.setName(user.getFirstName() + " " + user.getLastName());
 		paymentMethod.setAccountNumber("1000");
-		paymentMethod.setAddress1("23-30 Borden Ave");
-		paymentMethod.setCity("Long Island City");
-		paymentMethod.setState("NY");
-		paymentMethod.setZipCode("11101");
-		paymentMethod.setCountry("US");
+		paymentMethod.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
+		paymentMethod.setCity(FDStoreProperties.getFdDefaultBillingTown());
+		paymentMethod.setState(FDStoreProperties.getFdDefaultBillingState());
+		paymentMethod.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
+		paymentMethod.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
 		return paymentMethod;
 	}
 }

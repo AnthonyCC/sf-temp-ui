@@ -22,14 +22,22 @@ public class PopulatorUtil {
     private static final String PRODUCT_IS_DISCONTINUED_IN_CMS_ERROR_MESSAGE = "Product is discontinued in Content Management System";
 
 	public static final ProductModel getProduct( String productId, String categoryId ) {
+        ProductModel product;
+
 		if ( categoryId == null ) {
 			// get product in its primary home
 		    ContentKey productKey = ContentKeyFactory.get(ContentType.Product, productId);
-			return (ProductModel)ContentFactory.getInstance().getContentNodeByKey(productKey);
+            product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(productKey);
 		} else {
 			// get product in specified category context
-			return ContentFactory.getInstance().getProductByName( categoryId, productId );
+            product = ContentFactory.getInstance().getProductByName(categoryId, productId);
 		}
+
+        if (product == null) {
+            LOGGER.info("Product was not found with categoryId = " + categoryId + ", productId = " + productId);
+        }
+
+        return product;
 	}
 
 	public static final ProductModel getProduct( String skuCode ) throws FDSkuNotFoundException {

@@ -53,8 +53,9 @@ if(windowSize.equalsIgnoreCase("custom")){
       <%--   <title> <%=name%></title> --%>
          <fd:SEOMetaTag title="<%=name%>"/>
         <%@ include file="/common/template/includes/metatags.jspf" %>
+        <%@ include file="/common/template/includes/i_javascripts_browse.jspf"%>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		<fd:javascript src="/assets/javascript/common_javascript.js"/>
+		
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 
@@ -104,5 +105,6 @@ if(windowSize.equalsIgnoreCase("custom")){
 </TABLE>
 
 </CENTER>
+<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 </BODY>
 </HTML>

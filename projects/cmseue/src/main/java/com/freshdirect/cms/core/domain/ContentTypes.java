@@ -2039,6 +2039,10 @@ public final class ContentTypes {
             .build();
         public static final Attribute SectionDarkStore = linkManyOf(DarkStore).toName("SectionDarkStore")
             .build();
+        public static final Attribute minimumProductLimit = integerAttribute("minimumProductLimit")
+                .build();
+        public static final Attribute maximumProductLimit = integerAttribute("maximumProductLimit")
+                .build();
     }
 
     public static final class Anchor {
