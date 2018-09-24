@@ -86,9 +86,6 @@ public class RegistrationService extends AbstractEcommService implements Registr
 		} catch (FDEcommServiceException e) {
 			LOGGER.error("Error in RegistrationService: ", e);
 			throw new RemoteException(e.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error("Error in RegistrationService: data=" + (inputJson == null ? "" : inputJson), e);
-			throw new RemoteException(e.getMessage());
 		}
 	}
 
