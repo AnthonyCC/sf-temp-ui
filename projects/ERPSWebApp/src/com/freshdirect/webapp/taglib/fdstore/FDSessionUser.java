@@ -923,7 +923,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setSelectedServiceType(serviceType);
     }
 
-    public void setAvailableServices(Set availableServices) {
+    @Override
+    public void setAvailableServices(Set<EnumServiceType> availableServices) {
         user.setAvailableServices(availableServices);
     }
 

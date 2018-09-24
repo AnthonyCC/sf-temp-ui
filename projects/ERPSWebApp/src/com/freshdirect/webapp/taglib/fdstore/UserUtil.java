@@ -250,6 +250,18 @@ public class UserUtil {
         session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
         return user;
     }
+    
+    public static void reclassifyUser(EnumServiceType serviceType, Set<EnumServiceType> availableServices, HttpSession session, HttpServletResponse response, AddressModel address)
+            throws FDResourceException {
+        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+        user.setAddress(address);
+        user.setSelectedServiceType(serviceType);
+        // Added the following line for zone pricing to keep user service type up-to-date.
+        user.setZPServiceType(serviceType);
+        user.setAvailableServices(availableServices);
+        FDCustomerManager.storeUser(user.getUser());
+        session.setAttribute(SessionName.USER, user);
+    }
 
 	public static void createSessionUser(HttpServletRequest request, HttpServletResponse response, FDUser loginUser)
 		throws FDResourceException {
