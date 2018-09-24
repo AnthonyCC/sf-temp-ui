@@ -13,34 +13,34 @@
 
  <tag-file>
  	<name>saving</name>
- 	<path>/WEB-INF/shared/tags/productBox/Saving.tag</path>
+ 	<path>/WEB-INF/tags/productBox/Saving.tag</path>
  </tag-file>
  <tag-file>
  	<name>image</name>
- 	<path>/WEB-INF/shared/tags/productBox/Image.tag</path>
+ 	<path>/WEB-INF/tags/productBox/Image.tag</path>
  </tag-file>
  <tag-file>
  	<name>rating</name>
- 	<path>/WEB-INF/shared/tags/productBox/Rating.tag</path>
+ 	<path>/WEB-INF/tags/productBox/Rating.tag</path>
  </tag-file>
  <tag-file>
  	<name>name</name>
- 	<path>/WEB-INF/shared/tags/productBox/Name.tag</path>
+ 	<path>/WEB-INF/tags/productBox/Name.tag</path>
  </tag-file>
  <tag-file>
  	<name>priceDescription</name>
- 	<path>/WEB-INF/shared/tags/productBox/PriceDescription.tag</path>
+ 	<path>/WEB-INF/tags/productBox/PriceDescription.tag</path>
  </tag-file>
  <tag-file>
  	<name>price</name>
- 	<path>/WEB-INF/shared/tags/productBox/Price.tag</path>
+ 	<path>/WEB-INF/tags/productBox/Price.tag</path>
  </tag-file>
  <tag-file>
  	<name>controls</name>
- 	<path>/WEB-INF/shared/tags/productBox/Controls.tag</path>
+ 	<path>/WEB-INF/tags/productBox/Controls.tag</path>
  </tag-file>
  <tag-file>
  	<name>iterator</name>
- 	<path>/WEB-INF/shared/tags/productBox/Iterator.tag</path>
+ 	<path>/WEB-INF/tags/productBox/Iterator.tag</path>
  </tag-file>
 </taglib>
