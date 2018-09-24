@@ -13,6 +13,6 @@
 
     <tag-file>
         <name>gridCarousel</name>
-        <path>/WEB-INF/shared/tags/gridCarousel.tag</path>
+        <path>/WEB-INF/tags/gridCarousel.tag</path>
     </tag-file>
 </taglib>
