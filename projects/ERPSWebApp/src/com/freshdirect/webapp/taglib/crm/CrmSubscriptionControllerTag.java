@@ -22,6 +22,7 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -38,6 +39,7 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
@@ -224,6 +226,12 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
 			} catch (FDPaymentInadequateException pe) {
 				LOGGER.error("Exception while attempting to place subscription order.", pe);
+				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
+			}catch (InvalidCardException ice) {
+				LOGGER.error("InvalidCardException while attempting to place subscription order.", ice);
+				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
+			}catch (ErpTransactionException ete) {
+				LOGGER.error("ErpTransactionException while attempting to place subscription order.", ete);
 				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
 			}
 		

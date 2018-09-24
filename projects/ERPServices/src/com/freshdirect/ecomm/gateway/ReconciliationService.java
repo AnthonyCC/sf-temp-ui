@@ -3,12 +3,23 @@
  */
 package com.freshdirect.ecomm.gateway;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.httpclient.methods.FileRequestEntity;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Category;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -67,8 +78,9 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	private static final String SETTLEMENT_FAILED_AFTER_SETTLED = "reconsiliation/isSettlementFailedAfterSettled/";
 	private static final String PROCESS_GC_SETTLEMENT = "reconsiliation/processGcSettlement/";
 	private static final String PROCESS_SETTLEMENT_PENDING_ORDER = "reconsiliation/proSettlePenOrder";
-	private static final String SEND_SETTLEMENT_RECON_SAP = "reconsiliation/sendSettleToReconSap/";
-	
+	private static final String SEND_SETTLEMENT_RECON_SAP = "reconsiliation/sendSettleToReconSap";
+	private static final String UPLOAD_SAP_FILE = "reconsiliation/uploadSapFile";
+		
 	
 	
 	public static ReconciliationServiceI getInstance() {
@@ -121,7 +133,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("chargebackModel", getMapper().convertValue(chargebackModel, JsonNode.class));
-			
+
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -442,21 +454,14 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 			throws RemoteException {
 		Response<Boolean> response = null;
 		try {
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			ObjectNode rootNode = getMapper().createObjectNode();
 
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SETTLEMENT_FAILED_AFTER_SETTLED+saleId),	new TypeReference<Response<Boolean>>() {});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in isSettlementFailedAfterSettled: data=" + inputJson);
+				LOGGER.error("Error in isSettlementFailedAfterSettled: " );
 				throw new FDResourceException(response.getMessage());
 			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in ReconciliationService: ", e);
-			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e) {
+		} catch (FDResourceException e) {
 			LOGGER.error("Error in ReconciliationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
@@ -467,20 +472,12 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	public List processGCSettlement(String saleId) throws RemoteException {
 		Response<List<ErpGCSettlementInfo>> response = null;
 		try {
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			ObjectNode rootNode = getMapper().createObjectNode();
-
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PROCESS_GC_SETTLEMENT+saleId),	new TypeReference<Response<List<ErpGCSettlementInfo>>>() {});
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in processGCSettlement: data=" + inputJson);
+				LOGGER.error("Error in processGCSettlement: ");
 				throw new FDResourceException(response.getMessage());
 			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in ReconciliationService: ", e);
-			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e) {
+		} catch (FDResourceException e) {
 			LOGGER.error("Error in ReconciliationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
@@ -491,21 +488,14 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	public List processSettlementPendingOrders() throws RemoteException {
 		Response<List<ErpGCSettlementInfo>> response = null;
 		try {
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			ObjectNode rootNode = getMapper().createObjectNode();
 
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PROCESS_SETTLEMENT_PENDING_ORDER),	new TypeReference<Response<List<ErpGCSettlementInfo>>>() {});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in processSettlementPendingOrders: data=" + inputJson);
+				LOGGER.error("Error in processSettlementPendingOrders: ");
 				throw new FDResourceException(response.getMessage());
 			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in ReconciliationService: ", e);
-			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e) {
+		} catch (FDResourceException e) {
 			LOGGER.error("Error in ReconciliationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
@@ -519,15 +509,21 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
-
+			rootNode.put("fileName", fileName);
+			rootNode.put("sapUploadFolder", sapUploadFolder);
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SEND_SETTLEMENT_RECON_SAP+sapUploadFolder+"/"+fileName),	new TypeReference<Response<String>>() {});
+			
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SEND_SETTLEMENT_RECON_SAP),
+						new TypeReference<Response<Response<String>>>() {
+						});
 
+			
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in processSettlementPendingOrders: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
+
 		} catch (FDEcommServiceException e) {
 			LOGGER.error("Error in ReconciliationService: ", e);
 			throw new RemoteException(e.getMessage());
@@ -535,6 +531,31 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 			LOGGER.error("Error in ReconciliationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
+	}
+
+	@Override
+	public void sendFile(InputStream is, final String fileName)
+			throws RemoteException {
+		MultiValueMap<String, Object> body  = new LinkedMultiValueMap<String, Object>();
+		body.add("file", new FileSystemResource(new File(fileName))); 
+		body.add("fileName", fileName); 
+		Response<String> response = null;
+		try {
+	
+
+			response = this.postMFormDataTypeMap(body, getFdCommerceEndPoint(UPLOAD_SAP_FILE),
+					new TypeReference<String>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in Uploading Sap File to Ecom Env: data=" + body);
+				throw new FDResourceException(response.getMessage());
+			}
+		}catch (FDResourceException e) {
+			LOGGER.error("Error in in Uploading Sap File to Ecom: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+		       
 	}
 	
 	

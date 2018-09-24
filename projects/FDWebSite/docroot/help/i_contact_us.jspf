@@ -56,20 +56,19 @@
 		</script>
 		<div class="from-elements-wrapper">
 			<div class="form-group">
-				<label for="contact_subject" class="bold inline text-right">* Subject:</label>
-				<select class="customsimpleselect" aria-describedby="subject_error" name="subject" id="contact_subject" onchange="">
+				<label for="subject" class="bold inline text-right">* Subject:</label>
+				<select class="customsimpleselect" aria-describedby="subject_error" name="subject" id="subject" onchange="">
 					<option value="">Select Subject:</option>
 					<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
 						<option value="<%= idx %>" <%= idx.intValue() == subjectIndex ? "selected" : "" %>><%= subject.getDescription() %></option>
 					</logic:iterate>
 				</select>
+				<div id="subject_error" class="bold error">
 				<fd:ErrorHandler result='<%=result%>' name='subject' id='errorMsg'>
 					<%--if error occured with subject selection, tracking is needed, because subject will be changed automatically--%>
-					<div id="subject_error" class="bold error">
-						<%=errorMsg%>
-					</div>
+					<%=errorMsg%>
 				</fd:ErrorHandler>
-
+               </div>
 			<%
 				/* APPDEV-1744	Product Request - 2011 CS Project */
 				Map params = new HashMap();
@@ -118,14 +117,12 @@
 					<% } %>
 				</div>
 				<div class="form-group">
-					<label for="msg-textarea" id="msg-textarea-label" class="bold inline">* Please enter your message here:</label>
-					<textarea id="msg-textarea" cols="40" aria-describedby="message_error" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
-					<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
-						<div id="message_error" class="bold error">
-							<%=errorMsg%>
-						</div>
+					<label for="message" id="msg-textarea-label" class="bold inline">* Please enter your message here:</label>
+					<textarea id="message" cols="40" aria-describedby="message_error" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
+					<div id="message_error" class="bold error"><fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
+						<%=errorMsg%>
 					</fd:ErrorHandler>
-				</div>
+				     </div></div>
 				</div>
 			</div>
 			<%-- info --%>
@@ -136,37 +133,37 @@
 			</div>
 			<div class="from-elements-wrapper">
 			<div class="form-group">	
-				<label for="email-field" class="bold inline">* E-mail Address/    User Name:</label>
-				<input type="text" name="email" id="email-field" aria-describedby="emailid_error" size="34" value="<%=email%>" />
+				<label for="email" class="bold inline">* E-mail Address/    User Name:</label>
+				<input type="text" name="email" id="email" aria-describedby="emailid_error" size="34" value="<%=email%>" />
 				<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span id="emailid_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 			</div>
 			<div class="form-group">
-				<label for="first-name-field" class="bold inline">* First Name:</label>
-				<input type="text" name="first_name" id="first-name-field" aria-describedby="firstname_error" size="21" value="<%=firstName%>" />
+				<label for="first_name" class="bold inline">* First Name:</label>
+				<input type="text" name="first_name" id="first_name" aria-describedby="firstname_error" size="21" value="<%=firstName%>" />
 				<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span id="firstname_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 			</div>
 			<div class="form-group">
-				<label for="last-name-field" class="bold inline">* Last Name:</label>
-				<input type="text" name="last_name" id="last-name-field" aria-describedby="lastname_error" size="21" value="<%=lastName%>" />
+				<label for="last_name" class="bold inline">* Last Name:</label>
+				<input type="text" name="last_name" id="last_name" aria-describedby="lastname_error" size="21" value="<%=lastName%>" />
 				<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span id="lastname_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 			</div>
 			<div class="form-group">
-				<label for="home-phone-field" class="bold inline">Home Phone #:</label>
-				<input type="text" name="home_phone" id="home-phone-field" size="21" value="<%=homePhone%>" maxlength="15" />
-				<label for="home-phone-ext-field">Ext.<span class="offscreen">extension for home phone number</span></label>
-				<input type="text" name="home_phone_ext" id="home-phone-ext-field" size="4" value="<%=homePhoneExt%>" maxlength="6" />
+				<label for="home_phone" class="bold inline">Home Phone #:</label>
+				<input type="text" name="home_phone" id="home_phone" size="21" value="<%=homePhone%>" maxlength="15" />
+				<label for="home_phone_ext">Ext.<span class="offscreen">extension for home phone number</span></label>
+				<input type="text" name="home_phone_ext" id="home_phone_ex" size="4" value="<%=homePhoneExt%>" maxlength="6" />
 			</div>
 			<div class="form-group">
-				<label for="work-phone-field" class="bold inline">Work Phone #:</label>
-				<input type="text" name="work_phone" id="work-phone-field" size="21" value="<%=workPhone%>" maxlength="15" />
+				<label for="work_phone" class="bold inline">Work Phone #:</label>
+				<input type="text" name="work_phone" id="work_phone" size="21" value="<%=workPhone%>" maxlength="15" />
 				<label for="work-phone-ext-field">Ext.<span class="offscreen">extension for work phone number</span></label>
 				<input type="text" id="work-phone-ext-field" name="work-phone-ext-field" size="4" value="<%=workPhoneExt%>" maxlength="6" />
 			</div>
 			<div class="form-group">
-				<label for="other-phone-field" class="bold inline">Other Phone #:</label>
-				<input type="text" name="alt_phone" id="other-phone-field" size="21" value="<%=altPhone%>" maxlength="15" />
-				<label for="other-phone-ext-field">Ext.<span class="offscreen">extension for other phone number</span></label>
-				<input type="text" name="alt_phone_ext" id="other-phone-ext-field"  size="4" value="<%=altPhoneExt%>" maxlength="6" />
+				<label for="alt_phone" class="bold inline">Other Phone #:</label>
+				<input type="text" name="alt_phone" id="alt_phone" size="21" value="<%=altPhone%>" maxlength="15" />
+				<label for="alt_phone_ext">Ext.<span class="offscreen">extension for other phone number</span></label>
+				<input type="text" name="alt_phone_ext" id="alt_phone_ext"  size="4" value="<%=altPhoneExt%>" maxlength="6" />
 			</div>
 		</div>
 			<% }else{ %>

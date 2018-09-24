@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.expresscheckout.location.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +42,6 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.storeapi.content.ComparatorChain;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.DeliveryLocationData;
@@ -69,7 +67,7 @@ public class DeliveryAddressService {
     private static final String HAMPTON_DEPOT_CODE = "HAM";
     private static final String PICKUP_DELIVERY_POPUP = "/delivery_popup.jsp?depotCode=%s&locaId=%s";
 
-    private static Category LOGGER = LoggerFactory.getInstance(DeliveryAddressService.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(DeliveryAddressService.class);
 
     private static final DeliveryAddressService INSTANCE = new DeliveryAddressService();
 
@@ -282,7 +280,7 @@ public class DeliveryAddressService {
             } else {
             	lShippingAddresses = new ArrayList<ErpAddressModel>(shippingAddresses);
             }
-            sortDeliveryAddress(user, lShippingAddresses);
+            moveLastOrderAddressFirst(user, lShippingAddresses);
             
             for (ErpAddressModel shippingAddress : lShippingAddresses) {
                 EnumServiceType serviceType = shippingAddress.getServiceType();
@@ -380,36 +378,13 @@ public class DeliveryAddressService {
         return depotLocationDatas;
     }
 
-    public void sortDeliveryAddress(FDUserI user, List<ErpAddressModel> deliveryAddressMethods) throws FDResourceException {
-        FDOrderI lastOrder = FDCustomerManager.getLastOrder(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
-        ErpAddressModel lastUsedOrderAddress = null;
-        if (lastOrder != null) {
-            lastUsedOrderAddress = lastOrder.getDeliveryAddress();
-            if (deliveryAddressMethods.contains(lastUsedOrderAddress)) {
-                deliveryAddressMethods.remove(lastUsedOrderAddress);
-            } else {
-                lastUsedOrderAddress = null;
-            }
-        }
-//        Collections.sort(deliveryAddressMethods, DELIVERY_ADDRESS_COMPARATOR_BY_ID_REVERSED); --No need to sort. Fetching directly from db in the required order.
-        if (lastUsedOrderAddress != null) {
+    public void moveLastOrderAddressFirst(FDUserI user, List<ErpAddressModel> deliveryAddressMethods) throws FDResourceException {
+        ErpAddressModel lastUsedOrderAddress = FDCustomerManager.getLastOrderAddress(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
+        if (deliveryAddressMethods.contains(lastUsedOrderAddress)) {
+            deliveryAddressMethods.remove(lastUsedOrderAddress);
             deliveryAddressMethods.add(0, lastUsedOrderAddress);
         }
     }
-
-    private static final Comparator<ErpAddressModel> DELIVERY_ADDRESS_COMPARATOR_BY_ID = new Comparator<ErpAddressModel>() {
-
-        @Override
-        public int compare(ErpAddressModel o1, ErpAddressModel o2) {
-            Long id1 = Long.parseLong(o1.getPK().getId());
-            Long id2 = Long.parseLong(o2.getPK().getId());
-            return id1.compareTo(id2);
-        }
-
-    };
-
-    private static final Comparator<ErpAddressModel> DELIVERY_ADDRESS_COMPARATOR_BY_ID_REVERSED = ComparatorChain
-            .<ErpAddressModel> reverseOrder(ComparatorChain.create(DELIVERY_ADDRESS_COMPARATOR_BY_ID));
 
     private boolean isDeliveryZoneUnattended(ErpAddressModel deliveryAddress) throws FDResourceException {
         boolean isUnatteded = isDeliveryAddressUnattended(deliveryAddress);
@@ -636,7 +611,7 @@ public class DeliveryAddressService {
 	protected void populateCorporateDeliveryAddress(FDUserI user, List<LocationData> addresses) throws FDResourceException, JspException, RedirectToPage{
         boolean isValidSOAddress=false;
 		List<ErpAddressModel> shippingAddresses = new ArrayList<ErpAddressModel>(FDCustomerManager.getShipToAddresses(user.getIdentity()));
-		sortDeliveryAddress(user, shippingAddresses);
+		moveLastOrderAddressFirst(user, shippingAddresses);
 
 		for (ErpAddressModel shippingAddress : shippingAddresses) {
 			EnumServiceType serviceType = shippingAddress.getServiceType();
@@ -653,12 +628,10 @@ public class DeliveryAddressService {
 		}
 		if (!isValidSOAddress && !addresses.isEmpty()) {
 			String selectedDeliveryAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
-			boolean isSelectedMatch = false;
 			if (selectedDeliveryAddressId != null) {
 				for (LocationData locationData : addresses) {
 					if (locationData.getId().equals(selectedDeliveryAddressId)) {
 						locationData.setSelected(true);
-						isSelectedMatch = true;
 						break;
 					}
 				}

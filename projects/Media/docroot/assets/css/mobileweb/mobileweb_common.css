@@ -1329,7 +1329,7 @@ li.cleanli .gen-arrow {
 	.mm-page #quickshop ul.products li.portrait-item{
 		max-width: none;
 	}
-	.mm-page .browseContent .sectionContent ul.products li.portrait-item form.atc{
+	.mm-page ul.products li.portrait-item form.atc{
 		clear: both;
 		height: 33px;
 	}

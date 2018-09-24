@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.ajax.signup;
 
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,6 +13,7 @@ import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -54,40 +53,55 @@ public class SignUpServlet extends BaseJsonServlet {
         String successPage = FDURLUtil.extendsUrlWithServiceType(NVL.apply(signUpRequest.getSuccessPage(), FDURLUtil.LANDING_PAGE), serviceType);
 
         try {
-            SignUpResponse signUpResponse = new SignUpResponse();   
+            SignUpResponse signUpResponse = new SignUpResponse();
             SignUpService registrationService = selectSignUpService(serviceType);
 
             ActionResult result = registrationService.validate(signUpRequest);
 
-			boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(signUpRequest.getCaptchaToken(),
-					request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT,
-					FDStoreProperties.getMaxInvalidSignUpAttempt());
+            boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(signUpRequest.getCaptchaToken(), request.getRemoteAddr(), CaptchaType.SIGN_UP, session,
+                    SessionName.SIGNUP_ATTEMPT, FDStoreProperties.getMaxInvalidSignUpAttempt());
             result.addError(!isCaptchaSuccess, "captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
 
             if (result.isSuccess()) {
-                FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(signUpRequest.getZipCode());
-                Set<EnumServiceType> availableServices = serviceResult.getAvailableServices();
-                EnumDeliveryStatus status = serviceResult.getServiceStatus(serviceType);
-                if (!EnumDeliveryStatus.DELIVER.equals(status) && !EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status) && !EnumDeliveryStatus.COS_ENABLED.equals(status)) {
-                    result.addWarning(new ActionWarning("serviceType", "Selected service type is not available for current area, go with pickup type"));
-                    serviceType = EnumServiceType.PICKUP;
-                    signUpRequest.setServiceType(serviceType.getName());
-                }
 
-                try {
+                if (user.getLevel() < FDUserI.RECOGNIZED) {
+                    String zipCode = signUpRequest.getZipCode();
+                    FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
                     AddressModel address = new AddressModel();
-                    address.setZipCode(signUpRequest.getZipCode());
-                    FDSessionUser signedInUser = UserUtil.createSessionUser(serviceType, availableServices, session, response, address);
-                    FDActionInfo actionInfo = AccountActivityUtil.getActionInfo(session);
-                    FDCustomerModel fdCustomer = registrationService.createFdCustomer(signedInUser, signUpRequest);
-                    ErpCustomerModel erpCustomer = registrationService.createErpCustomer(signedInUser, signUpRequest);
-                    RegisterService.getInstance().register(signedInUser, actionInfo, erpCustomer, fdCustomer, serviceType, signUpRequest.isTcAgree());
-                } catch (ErpDuplicateUserIdException de) {
-                    LOGGER.warn("User registration failed due to duplicate id", de);
-                    result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
-                } catch (ErpFraudException fe) {
-                    LOGGER.warn("User registration failed due to ", fe);
-                    result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), fe.getFraudReason().getDescription()));
+                    address.setZipCode(zipCode);
+                    serviceType = checkServiceStatus( serviceType, result, serviceResult);
+                    FDSessionUser signedInUser = UserUtil.createSessionUser(serviceType, serviceResult.getAvailableServices(), session, response, address);
+                    try {
+                        FDActionInfo actionInfo = AccountActivityUtil.getActionInfo(session);
+                        FDCustomerModel fdCustomer = registrationService.createFdCustomer(signedInUser, signUpRequest);
+                        ErpCustomerModel erpCustomer = registrationService.createErpCustomer(signedInUser, signUpRequest);
+                        RegisterService.getInstance().register(signedInUser, actionInfo, erpCustomer, fdCustomer, serviceType, signUpRequest.isTcAgree());
+                    } catch (ErpDuplicateUserIdException de) {
+                        LOGGER.warn("User registration failed due to duplicate id", de);
+                        result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+                    } catch (ErpFraudException fe) {
+                        LOGGER.warn("User registration failed due to ", fe);
+                        result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), fe.getFraudReason().getDescription()));
+                    }
+                } else {
+                    AddressModel address = null;
+                    FDDeliveryServiceSelectionResult serviceResult = null;
+                    serviceType = user.getSelectedServiceType();
+                    //Address will not be null when user signs up for a Partial Delivery address
+                    if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().length() > 0) {
+                        // VALIDATE DELIVERY ADDRESS to see if service restricted
+                        address = user.getAddress();
+                        address.setServiceType(serviceType);
+                        serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(address);
+                    } else {
+                        //Directly from Zip Check page
+                        String zipCode = user.getZipCode();
+                        serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
+                        address = new AddressModel();
+                        address.setZipCode(zipCode);
+                    }
+                    serviceType = checkServiceStatus( serviceType, result, serviceResult);
+                    UserUtil.reclassifyUser(serviceType, serviceResult.getAvailableServices(), session, response, address);
                 }
             }
 
@@ -126,7 +140,20 @@ public class SignUpServlet extends BaseJsonServlet {
             CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
             session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
             BaseJsonServlet.returnHttpError(500, "Failed to register customer with email: " + signUpRequest.getEmail(), e);
+        } catch (FDInvalidAddressException e) {
+            CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
+            session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
+            BaseJsonServlet.returnHttpError(500, "Failed to register customer with email: " + signUpRequest.getEmail(), e);
         }
+    }
+
+    private EnumServiceType checkServiceStatus(EnumServiceType serviceType, ActionResult result, FDDeliveryServiceSelectionResult serviceResult) {
+        EnumDeliveryStatus status = serviceResult.getServiceStatus(serviceType);
+        if (!EnumDeliveryStatus.DELIVER.equals(status) && !EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status) && !EnumDeliveryStatus.COS_ENABLED.equals(status)) {
+            result.addWarning(new ActionWarning("serviceType", "Selected service type is not available for current area, go with pickup type"));
+            serviceType = EnumServiceType.PICKUP;
+        }
+        return serviceType;
     }
 
     private SignUpService selectSignUpService(EnumServiceType serviceType) {

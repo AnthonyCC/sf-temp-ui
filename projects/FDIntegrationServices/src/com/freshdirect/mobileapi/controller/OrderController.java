@@ -18,6 +18,7 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -67,6 +68,7 @@ import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
 import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -575,7 +577,7 @@ public class OrderController extends BaseController {
 			}
 		}
 		quickShop.setProductIds(productIds);
-		quickShop.setTotalResultCount(products != null ? products.size() : 0);
+		quickShop.setTotalResultCount(productIds != null ? productIds.size() : 0);
 		return quickShop;
 	}
     
@@ -610,7 +612,7 @@ public class OrderController extends BaseController {
         List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
         if(result != null) {
         	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
-        	
+        	boolean storeIsFDX = fdUser.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId());
 	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
 	        	QuickShopLineItem line = wrapper.getNode().getItem();
 	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
@@ -618,7 +620,14 @@ public class OrderController extends BaseController {
 	                try {
 						ProductConfiguration configuration = new ProductConfiguration();
 						configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
-						productsWithSkus.add(configuration);
+						// FOOD-655 : Hide fdx dp products
+						if(storeIsFDX){
+							if(!configuration.getProduct().isDeliveryPass()){
+								productsWithSkus.add(configuration);
+							}
+						}else{
+							productsWithSkus.add(configuration);
+						}
 					} catch (Exception e) {
 						//Ignore
 						LOGGER.warn("Error while populating the product: "+productModel.getContentName());

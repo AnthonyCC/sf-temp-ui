@@ -657,6 +657,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		                             //ReservationException,
 		                             DeliveryPassException,
 		                             FDPaymentInadequateException,
+		                             InvalidCardException, 
+		                             ErpTransactionException,
 		                             RemoteException;
 
 	@Deprecated

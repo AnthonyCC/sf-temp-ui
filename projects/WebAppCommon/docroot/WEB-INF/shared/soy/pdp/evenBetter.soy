@@ -7,7 +7,7 @@
 {template .evenBetter}
     {if $productList and length($productList) > 0}
 		<div class="pdp-evenbetter">
-			<div {if $mobWeb}tabindex="0"{/if} class="header {if $mobWeb}gen-accord-toggler{/if}">Even Better!</div>
+			<h2 {if $mobWeb}tabindex="0"{/if} class="header {if $mobWeb}gen-accord-toggler{/if}">Even Better!</h2>
 			<div class="{if $mobWeb} gen-accord-content{/if}" {if $mobWeb}style="display: none;"{/if}>
 				{call .evenBetterItem data="$productList[0]"/}
 				{if length($productList) > 1}

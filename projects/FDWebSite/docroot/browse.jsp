@@ -95,9 +95,9 @@ if (mobWeb) {
 
 	<div class="browse-oas-top">
 	    <div class="oas-cnt" id="oas_CategoryNote" ad-fixed-size="true" ad-size-height="95" ad-size-width="774"><script type="text/javascript">OAS_AD('CategoryNote');</script></div>
-	    <div class="oas-cnt" id="oas_BrowseTop1" ad-fixed-size="true" ad-size-height="216" ad-size-width="578"><script type="text/javascript">OAS_AD('BrowseTop1');</script></div>
-	    <div class="oas-cnt left" id="oas_BrowseTop2" ad-fixed-size="true" ad-size-height="216" ad-size-width="186"><script type="text/javascript">OAS_AD('BrowseTop2');</script></div>
-	    <div class="oas-cnt right" id="oas_BrowseTop3"><script type="text/javascript">OAS_AD('BrowseTop3');</script></div>
+	    <div class="oas-cnt" id="oas_BrowseTop1" ad-fixed-size="true" ad-size-height="95" ad-size-width="774"><script type="text/javascript">OAS_AD('BrowseTop1');</script></div>
+	    <div class="oas-cnt left" id="oas_BrowseTop2" ad-fixed-size="true" ad-size-height="216" ad-size-width="578"><script type="text/javascript">OAS_AD('BrowseTop2');</script></div>
+	    <div class="oas-cnt right" id="oas_BrowseTop3" ad-fixed-size="true" ad-size-height="216" ad-size-width="186"><script type="text/javascript">OAS_AD('BrowseTop3');</script></div>
    	</div>
 
     <div class="browse-media-top">
@@ -143,6 +143,9 @@ if (mobWeb) {
     
     <div class="oas-cnt left" id="oas_b_BrowseBottom1"><script type="text/javascript">OAS_AD('BrowseBottom1');</script></div>
     <div class="oas-cnt right" id="oas_b_BrowseBottom2"><script type="text/javascript">OAS_AD('BrowseBottom2');</script></div>
+
+    <div class="oas-cnt left" id="oas_BrowseBottom1" ad-fixed-size="true" ad-size-height="216" ad-size-width="578"><script type="text/javascript">OAS_AD('BrowseBottom1');</script></div>
+    <div class="oas-cnt right" id="oas_BrowseBottom2" ad-fixed-size="true" ad-size-height="216" ad-size-width="186"><script type="text/javascript">OAS_AD('BrowseBottom2');</script></div>
 
     <div class="browse-media-bottom">
       <soy:render template="browse.bottomMedia" data="${browsePotato.descriptiveContent}" />

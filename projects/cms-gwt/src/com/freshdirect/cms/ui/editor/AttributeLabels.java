@@ -1345,7 +1345,8 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.MediaFolder, ContentTypes.MediaFolder.lastmodified), "Last Modified");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.MediaFolder, ContentTypes.MediaFolder.subFolders), "Sub Folders");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.MediaFolder, ContentTypes.MediaFolder.files), "Files");
-
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Section, ContentTypes.Section.minimumProductLimit), "Minimum Product Limit");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Section, ContentTypes.Section.maximumProductLimit), "Maximum Product Limit");
     }
 }
 

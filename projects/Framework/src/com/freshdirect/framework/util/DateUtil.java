@@ -598,4 +598,17 @@ public class DateUtil {
 		
 		return hourRange.toString();
 	}
+	
+	public static Date getSubsequentDeliveryDate(int frequency) {
+		
+		Calendar cl = Calendar.getInstance();
+		cl.setTime(new Date());
+		
+		cl.add(Calendar.DATE, 7*frequency);
+		
+		cl.set(Calendar.HOUR, 0);
+		cl.set(Calendar.MINUTE, 0);
+
+		return cl.getTime();
+	}
 } 

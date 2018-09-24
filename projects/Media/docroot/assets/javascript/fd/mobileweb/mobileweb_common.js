@@ -139,31 +139,53 @@ var API;
 					}
 				}
 			});
-			$jq('.portrait-item-coupon').find('.fdCoupon_cont:first').prepend('<div class="fdCoupon_arrow fdCoupon_arrow_s fdCoupon_collapseArrow"></div>');
-			$('.portrait-item-coupon').on('click', function(e) {
-				e.stopPropagation();
-				var $this = $(this);
-				$this.find('.fdCoupon_collapseArrow').toggleClass('fdCoupon_arrow_n');
-				$this.find('.fdCoupon_detContent').show();
-				var $saveBtn = $this.find('.fdCoupon_detContent_saveButton');
-				if ($this.find(".fdCoupon_cont").hasClass('isClipped')) {
-					$saveBtn.addClass('disabled');
-				}
-				$saveBtn.show();
-				$(this).toggleClass('open');
-				
-			});
-			$('.portrait-item-coupon .fdCoupon_detContent_saveButton').on('click', function(e) {
-				e.stopPropagation();
-				e.preventDefault();
+			
+			function couponPrep() {
 
-				var couponId = $(e.currentTarget).closest('[data-component="ecoupon"]').data('ecouponid');
-				if(couponId && fdCouponClip) {
-					if (fdCouponClip(couponId)) {						
-						$(this).addClass('disabled');
+				$jq('.portrait-item-coupon').find('.fdCoupon_cont:first').prepend('<div class="fdCoupon_arrow fdCoupon_arrow_s fdCoupon_collapseArrow"></div>');
+				$('.portrait-item-coupon').on('click', function(e) {
+					e.stopPropagation();
+					var $this = $(this);
+					$this.find('.fdCoupon_collapseArrow').toggleClass('fdCoupon_arrow_n');
+					$this.find('.fdCoupon_detContent').show();
+					var $saveBtn = $this.find('.fdCoupon_detContent_saveButton');
+					if ($this.find(".fdCoupon_cont").hasClass('isClipped')) {
+						$saveBtn.addClass('disabled');
 					}
-				}
-			});
+					$saveBtn.show();
+					$(this).toggleClass('open');
+					
+				});
+				$('.portrait-item-coupon .fdCoupon_detContent_saveButton').on('click', function(e) {
+					e.stopPropagation();
+					e.preventDefault();
+
+					var couponId = $(e.currentTarget).closest('[data-component="ecoupon"]').data('ecouponid');
+					if(couponId && fdCouponClip) {
+						if (fdCouponClip(couponId)) {						
+							$(this).addClass('disabled');
+						}
+					}
+				});
+			}
+			couponPrep();
+			if (fd && fd.common && fd.common.signalTarget) {
+				Object.create(fd.common.signalTarget,{
+					allowNull:{
+						value:true
+					},
+					signal:{
+						value:'items'
+					},
+					callback:{
+						value:function(data) {
+							couponPrep();
+						}
+					}
+				}).listen();
+			}
+			
+			
 		$jq('.mm-page .portrait-item').each(function(i, e){
 			if($jq(e).find(".atc-info").attr('data-amount') != 0){
 				$jq(e).find(".addtocart").html($jq(e).find(".atc-info").attr('data-amount')).addClass("ATCHasItemsMobile");

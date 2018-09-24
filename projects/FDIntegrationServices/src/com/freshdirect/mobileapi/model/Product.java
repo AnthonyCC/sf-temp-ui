@@ -194,6 +194,8 @@ public class Product {
     protected boolean hasSingleSku;
 
     protected boolean hasSingleSalesUnit;
+    
+    protected boolean deliveryPass;
 
     protected boolean salesUnitsMatch;
 
@@ -316,7 +318,7 @@ public class Product {
             this.hasSingleSalesUnit = (1 == this.defaultProduct.getSalesUnits().length);
             this.salesUnitsMatch = false;
             this.salesUnitDescrsMatch = false;
-
+            
             // Flasg required for quantity;
             this.sellBySalesUnit = productModel.getSellBySalesunit();
 
@@ -349,6 +351,7 @@ public class Product {
                     }
                     this.salesUnitsMatch &= defaultSalesUnit.equals(fdp.getSalesUnits()[0].getName());
                     this.salesUnitDescrsMatch &= defSU.getDescription().equals(fdp.getSalesUnits()[0].getDescription());
+                    this.deliveryPass = fdp.isDeliveryPass();
                 }
 
             } else if (defaultSalesUnit == "" && this.defaultProduct.getDefaultSalesUnit() != null) {
@@ -2210,6 +2213,10 @@ public class Product {
 	public SkuModel getDefaultsku(){
 		return this.product.getProductModel().getDefaultSku();
 	}
+	public boolean isDeliveryPass() {
+		return deliveryPass;
+	}
+	
 	
 	
 }

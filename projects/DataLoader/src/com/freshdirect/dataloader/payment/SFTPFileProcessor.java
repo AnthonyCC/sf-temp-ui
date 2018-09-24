@@ -187,8 +187,10 @@ public class SFTPFileProcessor {
 						LOGGER.info("This file contains settlement failures..");
 						String STFfileName=DataLoaderProperties.getSettlementFailureFileName()+PaymentFileType.SETTLEMENT_FAILURE.getExtension();
 						zipFile.extractFile(STFfileName, context.getLocalHost());
+						LOGGER.info("File Name  : "+ zipFile.getFile()!=null?zipFile.getFile():" ");
 						File f=new File(context.getLocalHost()+STFfileName);
-						File f1=new File (context.getLocalHost()+DataLoaderProperties.getSettlementFailureFileName()+ new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date())+PaymentFileType.SETTLEMENT_FAILURE.getExtension());
+						// APPDEV-7503 : Changed the below file name File Fromant from Minute to milisec. With min it was over riding the earlier extracted file with the same file name. This change will keep all the extracted file with different milisec file name. 
+						File f1=new File (context.getLocalHost()+DataLoaderProperties.getSettlementFailureFileName()+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.mmm").format(new Date())+PaymentFileType.SETTLEMENT_FAILURE.getExtension());
 						boolean success=f.renameTo(f1);
 						if(success)
 							LOGGER.info("Renamed file :"+f.getName()+" to "+f1.getName());

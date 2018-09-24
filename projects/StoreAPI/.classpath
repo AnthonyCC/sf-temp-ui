@@ -50,6 +50,5 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/javax.servlet-api-3.0.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Delivery"/>
-	<classpathentry kind="lib" path="/cmseue/src/main/resources/lib/ojdbc6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

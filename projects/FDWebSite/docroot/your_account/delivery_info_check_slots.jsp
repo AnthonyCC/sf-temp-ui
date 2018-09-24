@@ -116,7 +116,7 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 <tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br><label for="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>_field">* Zip Code&nbsp;&nbsp;</label></td>
 <td><input type="text"  maxlength="5" class="text11" size="6" id="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>_field" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
-<tr><td>&nbsp;</td><td><input type="image" src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" name="address_check" vspace="8" value="Check My Address" border="0">
+<tr><td>&nbsp;</td><td><input type="image" src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" alt="check my address" name="address_check" vspace="8" value="Check My Address" border="0">
 <br><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_NOT_IN_ZONE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CANT_GEOCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 <fd:ErrorHandler result='<%=result%>' name='technicalDifficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td></tr>

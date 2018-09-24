@@ -172,13 +172,13 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			paymentMethod.setEmailID(email);
 			paymentMethod.setAccountNumber("1111111111111111");
 			paymentMethod.setCardType(EnumCardType.PAYPAL);
-			paymentMethod.setAddress1("23-30 BORDEN AVE");
+			paymentMethod.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
 			paymentMethod.setAddress2("");
 			paymentMethod.setApartment("");
-			paymentMethod.setCity("Long Island City");
-			paymentMethod.setState("NY");
-			paymentMethod.setZipCode("11101");
-			paymentMethod.setCountry("US");
+			paymentMethod.setCity(FDStoreProperties.getFdDefaultBillingTown());
+			paymentMethod.setState(FDStoreProperties.getFdDefaultBillingState());
+			paymentMethod.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
+			paymentMethod.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
 			paymentMethod.setProfileID(vaultToken);
 			paymentMethod.seteWalletID(""+EnumEwalletType.PP.getValue());
 			paymentMethod.setVendorEWalletID("");

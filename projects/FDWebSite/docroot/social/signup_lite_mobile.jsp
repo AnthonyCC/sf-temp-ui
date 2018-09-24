@@ -59,6 +59,13 @@ String templateId = request.getParameter("template");
 	<style>
 		.W_LOGIN_TOTAL { width: <%=(mobWeb || isOAuthPage)? "100%" : W_LOGIN_TOTAL+"px" %>; }
 	</style>
+	<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+		<script type="text/javascript">
+		var nextpage = '<%=nextSuccesspage %>';
+		doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>");
+		</script>
+	<%}%>
+	
 	<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_LOGIN_TOTAL" align="center">
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
 		

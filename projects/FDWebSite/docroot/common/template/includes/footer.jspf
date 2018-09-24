@@ -86,149 +86,150 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 </script>
 --%>
-<div class="center">
-<table data-component="footer-cont" role="presentation" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %><%= (user_footer.getShoppingCart() instanceof FDModifyCartModel) ? " modify" : "" %>">
-	<tr>
-		<td>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
-			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
-				<script type="text/javascript">
-					FreshDirect = FreshDirect || {};
-					FreshDirect.globalnav = FreshDirect.globalnav || {};
-					FreshDirect.globalnav.botNav = '<%=botNav%>';
-				</script>
-			
-			  <fd:IncludeMedia name="/media/layout/nav/globalnav/footer/bottom_global_nav.ftl" parameters="<%= params %>">
-			  </fd:IncludeMedia>
-			  
-			<% } else { %>
-					<fd:IncludeMedia name="/media/layout/nav/bottom_nav.ftl" parameters="<%= params %>">
-					</fd:IncludeMedia>
-			<% } %>
-	</td>
-	</tr>
-	<tr>
-		<td class="text11bold" style="text-align: center; padding: 5px 0px;">
-			<% if (FDStoreProperties.isSocialFooterStatic()) { %>
-				<div id="socialFooterStatic">
-					<a href="http://www.facebook.com/FreshDirect" target="_social-facebook">
-						<div class="spritediv sprite-social-facebook"></div>
-							<div class="vahidden">Facebook</div>
-					</a>
-					<a href="http://www.twitter.com/FreshDirect" target="_social-twitter">
-						<div class="spritediv sprite-social-twitter"></div>
-							<div class="vahidden">Twitter</div>
-					</a>
-					<a href="http://www.pinterest.com/FreshDirect" target="_social-pinterest">
-						<div class="spritediv sprite-social-pinterest"></div>
-							<div class="vahidden">Pinterest</div>
-						</a>
-					<a href="https://plus.google.com/107881041343024996566" target="_social-googleplus">
-						<div class="spritediv sprite-social-googleplus"></div>
-							<div class="vahidden">Google Plus</div>
-					</a>
-					<a href="http://www.youtube.com/FreshDirect" target="_social-youtube">
-						<div class="spritediv sprite-social-youtube"></div>
-							<div class="vahidden">Youtube</div>
-					</a>
-				</div>
-			<% } else { %>
-					<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
-						<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
-						<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
-						<div style="width: 81px; overflow: hidden;">
-						<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
-						<div class="atclear"></div>
-						</div>
-						<div class="atclear"></div>
-					</div>
+<div class="container globalfooter">
+	<div class="center">
+	<table data-component="footer-cont" role="presentation" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %><%= (user_footer.getShoppingCart() instanceof FDModifyCartModel) ? " modify" : "" %>">
+		<tr>
+			<td>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
+				<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
 					<script type="text/javascript">
-						var addthis_config = {
-							data_ga_property: 'UA-20535945-1',
-							data_ga_social : true
-						};
-						if (!window['initAddThis']) {
-							window['initAddThis'] = function() {
-								if (window['addthis']) {
-									addthis.init();
-								} else {
-									setTimeout(initAddThis, 1000);
-								}
-							}
-							$jq(window).ready(function () {
-								var at = document.createElement('script'); 
-	
-								at.type = 'text/javascript'; 
-					
-								at.async = true;
-								at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') 
-					
-								+ 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
-								var sat = document.getElementsByTagName('script')[0]; 
-					
-								sat.parentNode.insertBefore(at, sat);
-							
-								initAddThis();
-							});
-						}
+						FreshDirect = FreshDirect || {};
+						FreshDirect.globalnav = FreshDirect.globalnav || {};
+						FreshDirect.globalnav.botNav = '<%=botNav%>';
 					</script>
-			<% } %>
-			<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
-			<div style="float:left">
-				<a href="/category.jsp?catId=mobile&trk=bnav" nofocus tabindex="-1">
-          <div class="spritediv sprite-nav-mobile_apps" style="float: left;">Our Mobile Apps</div>
-        </a>
-				<a href="/category.jsp?catId=mobile&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</a>
-			</div>
-			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
-			<div style="float:right; padding: 10px 5px 0px 5px">
-				<a href="/index.jsp?serviceType=HOME">Home</a>
-				&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
-        &nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
 				
-				&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
-				&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
-				&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
-				&nbsp;&nbsp;<a href="/help/index.jsp?trk=bnav">Contact Us</a>
-			</div>
+				  <fd:IncludeMedia name="/media/layout/nav/globalnav/footer/bottom_global_nav.ftl" parameters="<%= params %>">
+				  </fd:IncludeMedia>
+				  
+				<% } else { %>
+						<fd:IncludeMedia name="/media/layout/nav/bottom_nav.ftl" parameters="<%= params %>">
+						</fd:IncludeMedia>
+				<% } %>
 		</td>
-	</tr>
-	<tr>
-		<td class="text11bold" style="text-align: center;">
-			<div style="width:100%; height:1px" class="dotted_separator_h"></div>
-		</td>
-	</tr>
-	<tr>
-		<td class="text11" style="padding-top: 10px; text-align: center;">
-			
-			
-			<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
+		</tr>
+		<tr>
+			<td class="text11bold" style="text-align: center; padding: 5px 0px;">
+				<% if (FDStoreProperties.isSocialFooterStatic()) { %>
+					<div id="socialFooterStatic">
+						<a href="http://www.facebook.com/FreshDirect" target="_social-facebook">
+							<div class="spritediv sprite-social-facebook"></div>
+								<div class="vahidden">Facebook</div>
+						</a>
+						<a href="http://www.twitter.com/FreshDirect" target="_social-twitter">
+							<div class="spritediv sprite-social-twitter"></div>
+								<div class="vahidden">Twitter</div>
+						</a>
+						<a href="http://www.pinterest.com/FreshDirect" target="_social-pinterest">
+							<div class="spritediv sprite-social-pinterest"></div>
+								<div class="vahidden">Pinterest</div>
+							</a>
+						<a href="https://plus.google.com/107881041343024996566" target="_social-googleplus">
+							<div class="spritediv sprite-social-googleplus"></div>
+								<div class="vahidden">Google Plus</div>
+						</a>
+						<a href="http://www.youtube.com/FreshDirect" target="_social-youtube">
+							<div class="spritediv sprite-social-youtube"></div>
+								<div class="vahidden">Youtube</div>
+						</a>
+					</div>
+				<% } else { %>
+						<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
+							<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
+							<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
+							<div style="width: 81px; overflow: hidden;">
+							<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
+							<div class="atclear"></div>
+							</div>
+							<div class="atclear"></div>
+						</div>
+						<script type="text/javascript">
+							var addthis_config = {
+								data_ga_property: 'UA-20535945-1',
+								data_ga_social : true
+							};
+							if (!window['initAddThis']) {
+								window['initAddThis'] = function() {
+									if (window['addthis']) {
+										addthis.init();
+									} else {
+										setTimeout(initAddThis, 1000);
+									}
+								}
+								$jq(window).ready(function () {
+									var at = document.createElement('script'); 
 		
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /><br />
-				<a href="/help/privacy_policy.jsp">Privacy Policy</a>
-				&nbsp;<span style="color: #999999">|</span>
-				&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
-				&nbsp;<span style="color: #999999">|</span>
-				&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
-			</fd:IncludeMedia>
-		</td>
-	</tr>
-	<tr>
-		<td class="text11" style="padding-top: 10px; text-align: center;">
-				<%@ include file="/shared/template/includes/copyright.jspf" %>
-		</td>
-	</tr>
-</table>
-
-<%
-	String turi = request.getRequestURI();
-	String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
-
-	if(turi.indexOf("help") > -1){
-		faqLink = "/help/faq_home.jsp?page=" + FDFaqUtil.getFaqHomeId();
-	}
-%>
-
-<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
+									at.type = 'text/javascript'; 
+						
+									at.async = true;
+									at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') 
+						
+									+ 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
+									var sat = document.getElementsByTagName('script')[0]; 
+						
+									sat.parentNode.insertBefore(at, sat);
+								
+									initAddThis();
+								});
+							}
+						</script>
+				<% } %>
+				<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
+				<div style="float:left">
+					<a href="/category.jsp?catId=mobile&trk=bnav" nofocus tabindex="-1">
+	          <div class="spritediv sprite-nav-mobile_apps" style="float: left;">Our Mobile Apps</div>
+	        </a>
+					<a href="/category.jsp?catId=mobile&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</a>
+				</div>
+				<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
+				<div style="float:right; padding: 10px 5px 0px 5px">
+					<a href="/index.jsp?serviceType=HOME">Home</a>
+					&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
+	        &nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
+					
+					&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
+					&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
+					&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
+					&nbsp;&nbsp;<a href="/help/index.jsp?trk=bnav">Contact Us</a>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="text11bold" style="text-align: center;">
+				<div style="width:100%; height:1px" class="dotted_separator_h"></div>
+			</td>
+		</tr>
+		<tr>
+			<td class="text11" style="padding-top: 10px; text-align: center;">
+				
+				
+				<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
+			
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /><br />
+					<a href="/help/privacy_policy.jsp">Privacy Policy</a>
+					&nbsp;<span style="color: #999999">|</span>
+					&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
+					&nbsp;<span style="color: #999999">|</span>
+					&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
+				</fd:IncludeMedia>
+			</td>
+		</tr>
+		<tr>
+			<td class="text11" style="padding-top: 10px; text-align: center;">
+					<%@ include file="/shared/template/includes/copyright.jspf" %>
+			</td>
+		</tr>
+	</table>
+	
+	<%
+		String turi = request.getRequestURI();
+		String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
+	
+		if(turi.indexOf("help") > -1){
+			faqLink = "/help/faq_home.jsp?page=" + FDFaqUtil.getFaqHomeId();
+		}
+	%>
+	
+	<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
+	</div>
 </div>
-

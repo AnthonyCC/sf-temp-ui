@@ -237,7 +237,7 @@ int indx = 1;
 
 <table class="W_GIFTCARD_RECEIPT_TOTAL" cellspacing="0" cellpadding="0" border="0" valign="middle">
 		<tr>
-			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderNumber%></font></b></span><br /><br />
+			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font class="orange">#<%=orderNumber%></font></b></span><br /><br />
 				<a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
             <span class="title12"><b>View this order (and download printable PDFs of your gifts) in Your Account.</b></span></a>
 			</td>

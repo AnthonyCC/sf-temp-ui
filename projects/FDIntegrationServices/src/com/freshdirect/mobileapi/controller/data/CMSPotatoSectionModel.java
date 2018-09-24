@@ -34,13 +34,14 @@ public class CMSPotatoSectionModel extends CMSSectionModel {
         model.setProductList(section.getProductList());
         model.setMustHaveProdList(section.getMustHaveProdList());
         model.setCategoryList(section.getCategoryList());
+        model.setMinimumProductLimit(section.getMinimumProductLimit());
+        model.setMaximumProductLimit(section.getMaximumProductLimit());
         
         return model;
     }
 
 
     private List<ProductPotatoData> products;
-
 
     public List<ProductPotatoData> getProducts() {
         return products;

@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ejb.ObjectNotFoundException;
+
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -16,6 +18,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -23,6 +26,7 @@ import com.freshdirect.ecommerce.data.customer.ErpSaleData;
 import com.freshdirect.ecommerce.data.customer.ProfileData;
 import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.ProfileModel;
@@ -190,7 +194,6 @@ public class CustomersApi extends AbstractEcommService implements CustomersApiCl
 @Override
 public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, EnumEStoreId storeId)
 		throws ErpSaleNotFoundException, RemoteException {
-	try{
 		Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
 		OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
 		criteria.setCustomerId(customerID);
@@ -198,25 +201,43 @@ public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, Enu
 		criteria.setSaleStatus(saleStatus.getStatusCode());
 		criteria.setStoreId(storeId.getContentId());
 		request.setData(criteria);
+		ErpSaleModel saleModel=null;
+		try{
+
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
 		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
-		ErpSaleModel saleModel =ModelConverter.buildErpSaleData(info.getData());
-		
+		if(info.getResponseCode().equals("500")){
+			if ("ErpSaleNotFoundException".equals(info.getMessage())) {
+				throw new ErpSaleNotFoundException(info.getMessage());
+			}
+		}
+		saleModel =ModelConverter.buildErpSaleData(info.getData());
+
+		}catch(FDEcommServiceException e){
+			LOGGER.info(e);
+			throw new RemoteException(e.getMessage());
+		}catch(FDResourceException e){
+			LOGGER.info(e);
+			throw new RemoteException(e.getMessage());
+		}catch(JsonMappingException e){
+			LOGGER.info(e);
+			throw new RemoteException(e.getMessage());
+		}catch(JsonParseException e){
+			LOGGER.info(e);
+			throw new RemoteException(e.getMessage());
+		}catch(IOException e){
+			
+		}
+
 		return new FDOrderAdapter(saleModel);	
-	}catch(Exception e){
-		LOGGER.info(e);
-		LOGGER.info("Exception converting {} to ListOfObjects ");
-		throw new RemoteException(e.getMessage(), e);
-		
-	}
+
 	}
 
 @Override
-public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType,
-		EnumEStoreId eStore) throws FDResourceException,
+public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType,	EnumEStoreId eStore) throws FDResourceException,
 		ErpSaleNotFoundException, RemoteException {
-
+	ErpSaleModel saleModel = null;
 	try{
 		Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
 		OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
@@ -227,14 +248,29 @@ public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType,
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALETYPE_STORE_API.getValue()), String.class);
 		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
-		ErpSaleModel saleModel =ModelConverter.buildErpSaleData(info.getData());
-		return  new FDOrderAdapter(saleModel);	
-	}catch(Exception e){
+		if(info.getResponseCode().equals("500")){
+			if ("ErpSaleNotFoundException".equals(info.getMessage())) {
+				throw new ErpSaleNotFoundException(info.getMessage());
+			}
+		}
+	saleModel =ModelConverter.buildErpSaleData(info.getData());
+		
+	}catch(FDEcommServiceException e){
 		LOGGER.info(e);
-		LOGGER.info("Exception converting {} to ListOfObjects ");
-		throw new RemoteException(e.getMessage(), e);
+		throw new RemoteException(e.getMessage());
+	}catch(FDResourceException e){
+		LOGGER.info(e);
+		throw new RemoteException(e.getMessage());
+	}catch(JsonMappingException e){
+		LOGGER.info(e);
+		throw new RemoteException(e.getMessage());
+	}catch(JsonParseException e){
+		LOGGER.info(e);
+		throw new RemoteException(e.getMessage());
+	}catch(IOException e){
 		
 	}
+	return  new FDOrderAdapter(saleModel);	
 	}
 
 @Override
@@ -292,4 +328,6 @@ public void releaseModificationLock(String saleId) throws FDResourceException,
 		
 	}
 	}
+
+
 }

@@ -136,7 +136,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private EnumTransactionSource application;
     private String depotCode;
 
-    private Set availableServices = new HashSet();
+    private Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
     private Collection<EnumServiceType> servicesBasedOnAddress;
     private EnumServiceType selectedServiceType = null;
     // for new COS customers
@@ -1293,7 +1293,8 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.selectedServiceType = serviceType;
     }
 
-    public void setAvailableServices(Set availableServices) {
+    @Override
+    public void setAvailableServices(Set<EnumServiceType> availableServices) {
         this.availableServices = Collections.unmodifiableSet(availableServices);
     }
 

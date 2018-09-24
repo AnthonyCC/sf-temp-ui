@@ -21,6 +21,8 @@ public class CMSSectionModel {
 	private List<String> productList;
 	private List<String> mustHaveProdList;
 	private List<String> categoryList;
+    private Integer minimumProductLimit;
+    private Integer maximumProductLimit;
 	
 	public List<CMSComponentModel> getComponents() {
 		return components;
@@ -165,6 +167,22 @@ public class CMSSectionModel {
 	public void setLinkTarget(String linkTarget) {
 		this.linkTarget = linkTarget;
 	}
+	
+    public Integer getMinimumProductLimit() {
+        return minimumProductLimit;
+    }
+    
+    public void setMinimumProductLimit(Integer minimumProductLimit) {
+        this.minimumProductLimit = minimumProductLimit;
+    }
+    
+    public Integer getMaximumProductLimit() {
+        return maximumProductLimit;
+    }
+    
+    public void setMaximumProductLimit(Integer maximumProductLimit) {
+        this.maximumProductLimit = maximumProductLimit;
+    }
 
     @Override
     public int hashCode() {
@@ -188,6 +206,8 @@ public class CMSSectionModel {
         result = prime * result + ((productList == null) ? 0 : productList.hashCode());
         result = prime * result + ((schedules == null) ? 0 : schedules.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((minimumProductLimit == null) ? 0 : minimumProductLimit.hashCode());
+        result = prime * result + ((maximumProductLimit == null) ? 0 : maximumProductLimit.hashCode());
         return result;
     }
 
@@ -288,6 +308,20 @@ public class CMSSectionModel {
                 return false;
         } else if (!type.equals(other.type))
             return false;
+        if (minimumProductLimit == null) {
+            if (other.minimumProductLimit != null) {
+                return false;
+            }
+        } else if (!minimumProductLimit.equals(other.minimumProductLimit)) {
+            return false;
+        }
+        if (maximumProductLimit == null) {
+            if (other.maximumProductLimit != null) {
+                return false;
+            }
+        } else if (!maximumProductLimit.equals(other.maximumProductLimit)) {
+            return false;
+        }
         return true;
     }
 	

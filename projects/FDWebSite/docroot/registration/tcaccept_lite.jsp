@@ -64,7 +64,6 @@
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	
-	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
 
     
@@ -164,9 +163,9 @@
 				
 				<div class="bodyCopySUL">Hello <%=user.getFirstName()+" "+user.getLastName() %>, Our Customer Agreement & Privacy Policy have changed</div>
 				<div class="SystemMessage">By selecting "I Agree" you agree to the updates to our Customer Agreement and Privacy Policy. If you wish to view or print the new Customer Agreement or Privacy Policy, tap or click the "View Customer Agreement" or "View Privacy Policy" button below.</div>
-				<a class="cssbutton cssbutton-flat green transparent" href="#" onClick="popupOpener('/registration/user_agreement.jsp')">View Customer Agreement</a>
-				<a class="cssbutton cssbutton-flat green transparent" href="#" onClick="popupOpener('/registration/privacy_policy.jsp')">View Privacy Policy</a>
-				<a class="cssbutton cssbutton-flat green nontransparent" href="#" onclick="document.litetcaccept.submit();">I Agree</a>
+				<a class="cssbutton green transparent" href="#" onClick="popupOpener('/registration/user_agreement.jsp')">View Customer Agreement</a>
+				<a class="cssbutton green transparent" href="#" onClick="popupOpener('/registration/privacy_policy.jsp')">View Privacy Policy</a>
+				<a class="cssbutton green" href="#" onclick="document.litetcaccept.submit();">I Agree</a>
 
 			</form>
 		</div>
@@ -179,7 +178,7 @@
 		<% } %>
 	<% } %>
 	</center>
-
+<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 </body>
 </html>
 

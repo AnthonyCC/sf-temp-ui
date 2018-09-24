@@ -353,7 +353,7 @@ public class FDProductHelper {
 			List<ErpMaterialPrice> subList = new ArrayList<ErpMaterialPrice>();
 			for(Iterator<ErpMaterialPrice> it = matPrices.iterator() ; it.hasNext();){
 				ErpMaterialPrice matPrice = it.next();
-				mpPricingZone=new ZoneInfo(matPrice.getSapZoneId(),"1000".equals(matPrice.getSalesOrg())?"0001":matPrice.getSalesOrg(), "1000".equals(matPrice.getDistChannel())?"01":matPrice.getDistChannel());
+				mpPricingZone=new ZoneInfo(matPrice.getSapZoneId(),"1000".equals(matPrice.getSalesOrg())?FDStoreProperties.getDefaultFdSalesOrg():matPrice.getSalesOrg(), "1000".equals(matPrice.getDistChannel())?FDStoreProperties.getDefaultFdDistributionChannel():matPrice.getDistChannel());
 				if(pricingZone==null ||pricingZone.equals(mpPricingZone)) {
 					subList.add(matPrice);
 				}

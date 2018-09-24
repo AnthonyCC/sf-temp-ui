@@ -116,9 +116,7 @@ public class AdQueryStringFactory {
 
             // Set of String (product department Ids, "rec" for recipe items)
             Set<String> cartDeptIds = new HashSet<String>();
-            for (Iterator i = user.getShoppingCart().getOrderLines()
-                    .iterator(); i.hasNext();) {
-                FDCartLineI cartLine = (FDCartLineI) i.next();
+            for (FDCartLineI cartLine : user.getShoppingCart().getOrderLines()) {
                 if (cartLine.getRecipeSourceId() != null) {
                     cartDeptIds.add("rec");
                 } else {
@@ -134,10 +132,7 @@ public class AdQueryStringFactory {
             FDProductCollectionI ccList = (FDProductCollectionI) request
                     .getAttribute("loadedCclList");
             if (ccList != null) {
-                for (Iterator i = ccList.getProducts().iterator(); i
-                        .hasNext();) {
-                    FDProductSelectionI productSelection = (FDProductSelectionI) i
-                            .next();
+                for (FDProductSelectionI productSelection : ccList.getProducts()) {
                     if (productSelection.getRecipeSourceId() != null) {
                         ccListDeptIds.add("rec");
                     } else {
@@ -197,9 +192,8 @@ public class AdQueryStringFactory {
 
             /* this loop does not set the pageType from query params like it looks like */
             String uri = request.getRequestURI().toLowerCase();
-            for (Iterator ptIter = pages.entrySet().iterator(); ptIter
-                    .hasNext();) {
-                Map.Entry e = (Map.Entry) ptIter.next();
+            for (Iterator<Map.Entry<String, String>> ptIter = pages.entrySet().iterator(); ptIter.hasNext();) {
+                Map.Entry<String, String> e = ptIter.next();
                 String pattern = (String) e.getKey();
                 String value = (String) e.getValue();
 
@@ -251,7 +245,7 @@ public class AdQueryStringFactory {
 
             if (cartDeptIds.size() > 0) {
                 StringBuilder cartString = new StringBuilder();
-                for (Iterator i = cartDeptIds.iterator(); i.hasNext();) {
+                for (Iterator<String> i = cartDeptIds.iterator(); i.hasNext();) {
                     cartString.append(i.next());
                     if (i.hasNext())
                         cartString.append(':');
@@ -261,7 +255,7 @@ public class AdQueryStringFactory {
 
             if (ccListDeptIds.size() > 0) {
                 StringBuilder listString = new StringBuilder();
-                for (Iterator i = ccListDeptIds.iterator(); i.hasNext();) {
+                for (Iterator<String> i = ccListDeptIds.iterator(); i.hasNext();) {
                     listString.append(i.next());
                     if (i.hasNext())
                         listString.append(':');
@@ -335,6 +329,7 @@ public class AdQueryStringFactory {
             }
 
             //Building up the values required for Delivery Pass Ads.
+            queryString.addParam("expd", calculateDeliveryPassExpiredDay(user));
             if (user.isEligibleForDeliveryPass()) {
                 queryString.addParam("dpnever", user.isDlvPassNone() ? "T" : "F");
                 String profileVal = user.getDlvPassProfileValue();
@@ -343,7 +338,6 @@ public class AdQueryStringFactory {
                 String dprem = null;
                 String dpused = null;
                 String dpar = "n";
-                boolean expired = false;
                 EnumDlvPassStatus status = user.getDeliveryPassStatus();
                 EnumDPAutoRenewalType dparType = user.hasAutoRenewDP();
                 if ((EnumDPAutoRenewalType.YES.equals(dparType)) && (user.getDlvPassInfo().getAutoRenewUsablePassCount() > 0)) {
@@ -364,24 +358,14 @@ public class AdQueryStringFactory {
                     //If BSGS pass then pass the remaining count.
                     queryString.addParam("dpr", dprem);
                 } else {
-                    //If UNLIMITED pass then pass the used count if not expired.
-                    if (user.isDlvPassExpired()) {
-                        int days = user.getDlvPassInfo().getDaysSinceDPExpiry() * -1;
-
-                        queryString.addParam("expd", days);
-                    } else if ((user.getDlvPassInfo() != null) && user.getDlvPassInfo().isUnlimited() == false) {
-                        //If BSGS pass then pass the remaining count.
+                    // If UNLIMITED pass then pass the used count if not expired.
+                    if (!user.isDlvPassExpired() && (user.getDlvPassInfo() != null) && user.getDlvPassInfo().isUnlimited() == false) {
+                        // If BSGS pass then pass the remaining count.
                         dprem = String.valueOf(user.getDlvPassInfo().getRemainingCount());
                         queryString.addParam("dpr", dprem);
-
-                    } else if (user.getUsableDeliveryPassCount() > 0) {
-                        //Not Purchased yet or Purchased not expired.
-                        //int days=DateUtil.getDiffInDays(user.getDlvPassInfo().getExpDate(), new Date());
-                        int days = user.getDlvPassInfo().getDaysToDPExpiry();
-                        queryString.addParam("dpu", dpused).addParam("expd", days);
-                    } else {
-                        queryString.addParam("dpu", dpused);
                     }
+                    // Not Purchased yet or Purchased not expired.
+                    queryString.addParam("dpu", dpused);
                 }
                 if (user.getDlvPassInfo() != null && user.getDlvPassInfo().getTypePurchased() != null) {
                     queryString.addParam("dp", user.getDlvPassInfo().getTypePurchased().getCode());
@@ -475,6 +459,22 @@ public class AdQueryStringFactory {
         }
 
         return queryString;
+    }
+
+    private static String calculateDeliveryPassExpiredDay(FDUserI user) throws FDResourceException {
+        StringBuilder expiredDay = new StringBuilder();
+
+        if (user.isEligibleForDeliveryPass() && user.getEligibleDeliveryPass() != EnumDlvPassProfileType.BSGS) {
+            if (user.isDlvPassExpired()) {
+                // If UNLIMITED pass then pass the used count if not expired.
+                expiredDay.append(user.getDlvPassInfo().getDaysSinceDPExpiry() * -1);
+            } else if (!((user.getDlvPassInfo() != null) && user.getDlvPassInfo().isUnlimited() == false) && user.getUsableDeliveryPassCount() > 0) {
+                // Not Purchased yet or Purchased not expired.
+                expiredDay.append(user.getDlvPassInfo().getDaysToDPExpiry());
+            }
+        }
+
+        return expiredDay.toString();
     }
 
     public static String composeAdQueryString(final FDUserI user, final HttpServletRequest request, final boolean isMobile) throws FDResourceException, UnsupportedEncodingException {
