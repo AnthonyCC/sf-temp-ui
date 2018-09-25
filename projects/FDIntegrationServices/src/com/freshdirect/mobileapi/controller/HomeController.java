@@ -36,6 +36,7 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.FeaturedCategory;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.service.CMSSectionProductCollectorService;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.storeapi.application.CmsManager;
@@ -245,6 +246,7 @@ public class HomeController extends BaseController {
 					pageResponse.setPage(pages.get(0));
 				}
 			}
+            CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, pageResponse.getPage());
 		}
 		
 		setMediaPath(pageResponse);
