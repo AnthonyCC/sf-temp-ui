@@ -578,11 +578,11 @@ public class ProductRecommenderUtil {
 
     	List<ProductModel> weLove = new ArrayList<ProductModel>();
     	Map<ContentKey, double[]> globalProductScores = ScoreProvider.getInstance().getGlobalScores();
-
+    	int indexOfPopularity = ScoreProvider.getInstance().getGlobalIndexes().get("Popularity");
     	for (Map.Entry<ContentKey, double[]> entry : globalProductScores.entrySet()) {			
     		double[] value = entry.getValue();
 
-    		if(value[4] >= popularityBaseLine) {
+    		if( value[indexOfPopularity] >= popularityBaseLine) {
     			productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
     			if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine, considerNew, considerBackInStock)) {
     				weLove.add(productModel);
