@@ -1254,6 +1254,10 @@
         <from>^/v/([0-9]+)/adqueryparams</from>
         <to last="true">/ad.do?action=queryparams&amp;ver=$1</to>
     </rule>         
+    <rule>
+        <from>^/v/([0-9]+)/recommender/cart</from>
+        <to last="true">/recommend.do?action=cart&amp;ver=$1</to>
+    </rule>         
 
 		
 	<!-- Test -->

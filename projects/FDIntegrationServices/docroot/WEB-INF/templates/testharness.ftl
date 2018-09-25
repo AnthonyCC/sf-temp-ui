@@ -1499,6 +1499,10 @@ function loadStuff() {
     $("#url").val("/adqueryparams");
     $("#header").val('');
     $("#payload").val("");
+  } else if (loaddata == "recommendForCart") {
+    $("#url").val("/recommender/cart");
+    $("#header").val('');
+    $("#payload").val("");
   }
   $("#result").JSONView({});  	
   $("#payload").focus();
@@ -1938,6 +1942,9 @@ function doStuff() {
 
   <option value=""> ========== Ad Services ========== </option>
   <option value="adQueryParams">Ads - Return Query String</option>
+
+  <option value=""> ========== Product Recommendations ========== </option>
+  <option value="recommendForCart">Recommenders - Recommend for Customer Cart</option>
 
   </select>
   
