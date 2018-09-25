@@ -91,24 +91,14 @@ public class QuickShopFilterService {
 		List<QuickShopLineItemWrapper> items = QuickShopHelper.getWrappedOrderHistoryUsingCache(user, tab, cacheName);
 		
 		List<QuickShopLineItemWrapper> discontinuedandoosproducts = new ArrayList<QuickShopLineItemWrapper>();
-		List<QuickShopLineItemWrapper> dpproducts = new ArrayList<QuickShopLineItemWrapper>();
 		if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX
 				&& items!=null){    			
 	        for(QuickShopLineItemWrapper item : items){
 	        	if(item!=null && item.getProduct()!=null && (item.getProduct().isDiscontinued() || item.getProduct().isOutOfSeason())){
 	        		discontinuedandoosproducts.add(item);
 	        	}
-	        	try {
-					if(item.getProduct().getDefaultSku().getProduct().isDeliveryPass()){
-						dpproducts.add(item);
-					}
-				} catch (FDSkuNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 	        }
 	        items.removeAll(discontinuedandoosproducts);
-	        items.removeAll(dpproducts);
 		}      
 			
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {
