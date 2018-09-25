@@ -679,31 +679,14 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return theFullName;
 	}
 
-	/**
-	 * @return the brand that begins with the specified name, empty string otherwise
-	 */
-	@Override
+    /**
+     * @return the brand that begins with the specified name, empty string otherwise
+     */
+    @Override
     public String getPrimaryBrandName(String productName) {
-		// get the first brand name, if any.
-		List<BrandModel> myBrands = this.getBrands();
-
-		String prodNameLower = productName.toLowerCase();
-
-		if (myBrands != null && myBrands.size() > 0) {
-
-			// find the brand that begins with the full name
-			for (int bx = 0; bx < myBrands.size(); bx++) {
-				BrandModel bm = myBrands.get(bx);
-				if (bm.getFullName() != null) {
-					if (prodNameLower.startsWith(bm.getFullName().toLowerCase())) {
-						return bm.getFullName();
-					}
-				}
-			}
-
-		}
-		return "";
-	}
+        List<BrandModel> brands = this.getBrands();
+        return (brands.isEmpty()) ? "" : brands.get(0).getFullName();
+    }
 
 	/**
 	 * @return list of brands that can be displayed on the product page

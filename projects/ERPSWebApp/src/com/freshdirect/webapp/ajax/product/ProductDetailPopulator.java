@@ -649,10 +649,7 @@ public class ProductDetailPopulator {
         final String fullName = product.getFullName();
         String productNameNoBrand = fullName;
 
-        String brandName = null;
-        if (product.getBrands() != null && !product.getBrands().isEmpty()) {
-            brandName = product.getBrands().get(0).getFullName();
-        }
+        String brandName = product.getPrimaryBrandName();
 
         // remove brand name from product full name if possible
         if (brandName != null && brandName.length() > 0 && fullName.length() >= brandName.length() && fullName.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
