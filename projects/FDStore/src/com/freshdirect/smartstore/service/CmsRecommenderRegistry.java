@@ -86,6 +86,7 @@ public class CmsRecommenderRegistry {
 		}
 
 		//LOGGER.info("needed factors :" + factors);
+		LOGGER.info("from CMS recommenders calling acquireFactors");
 		ScoreProvider.getInstance().acquireFactors(factors);
 		//LOGGER.info("configured CMS recommenders:" + tmpSmartCatVariants.keySet());
 
