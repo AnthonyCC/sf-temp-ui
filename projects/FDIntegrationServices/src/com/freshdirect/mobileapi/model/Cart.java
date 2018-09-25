@@ -865,13 +865,13 @@ public class Cart {
         //changes as part of APPDEV-6838
         if (cart instanceof FDOrderI && ((FDOrderI) cart).hasInvoice()) {
         	cartDetail.setEstimatedTotal(((FDOrderI) cart).getInvoicedTotal());
-            cartDetail.setSubtotal(!user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId())?
-            						((FDOrderI) cart).getInvoicedSubTotal():((FDOrderI) cart).getInvoicedSubTotal()-cartDetail.getDlvPassCharge());
+            cartDetail.setSubtotal((user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId()) && !dlvPassCart) ?
+            						((FDOrderI) cart).getInvoicedSubTotal()-cartDetail.getDlvPassCharge():((FDOrderI) cart).getInvoicedSubTotal());
             
         } else {
         	cartDetail.setEstimatedTotal(cart.getTotal());
-            cartDetail.setSubtotal(!user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId())?
-            						cart.getSubTotal():cart.getSubTotal()-cartDetail.getDlvPassCharge());
+            cartDetail.setSubtotal((user.getUserContext().getStoreContext().getEStoreId().getContentId().equals(EnumEStoreId.FDX.getContentId()) && !dlvPassCart) ?
+            						cart.getSubTotal()-cartDetail.getDlvPassCharge():cart.getSubTotal());
         }
 
         double tip1 = cart.getTip();
