@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -750,7 +751,10 @@ public class ScoreProvider implements DataAccess {
 				LOGGER.warn("Unknown factor");
 			}
 		}
-
+		LOGGER.debug("rawGlobalFactors ============ "+rawGlobalFactors);
+		for(String rawGlobalFactorsItr: rawGlobalFactors) {
+			LOGGER.debug("rawGlobalFactorsItr===================="+rawGlobalFactorsItr);
+		}
 		GlobalScoreRangeProvider globalScoreRangeProvider = new GlobalScoreRangeProvider(new ArrayList<String>(rawGlobalFactors));
 		personalizedScoreRangeProvider = new PersonalizedScoreRangeProvider(new ArrayList<String>(rawPersonalizedFactors));
 
@@ -763,6 +767,8 @@ public class ScoreProvider implements DataAccess {
 		globalIndexes.clear();
 		for(Iterator<String> i = globalDBFactors.iterator(); i.hasNext();) {
 			String factor = i.next();
+			LOGGER.debug("factor==========================="+factor);
+			LOGGER.debug("globalIndexes.size()==========================="+globalIndexes.size());
 			globalIndexes.put(factor, new Integer(globalIndexes.size()));
 		}
 
@@ -798,7 +804,6 @@ public class ScoreProvider implements DataAccess {
 			Map.Entry<String, Integer> entry = i.next();
 			FactorRangeConverter converter = rangeConverters.get(entry.getKey());
 			double[] values = converter.map(null,globalScoreRangeProvider);
-
 			storeScores(products, result, entry, values);
 		}
 		globalScoreRangeProvider.purge();
@@ -839,6 +844,7 @@ public class ScoreProvider implements DataAccess {
         }
         for(int j=0; j< values.length; ++j) {
         	double[] productScores = result.get(ContentKeyFactory.get(FDContentTypes.PRODUCT,products.get(j).toString()));
+        	System.out.println("["+((Number)entry.getValue()).intValue()+"],"+ values[j]);
         	productScores[((Number)entry.getValue()).intValue()] = values[j];
         }
     }
