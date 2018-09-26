@@ -802,7 +802,6 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<div class="accordion"><input type="checkbox" id="order_notices_accordion" />
 			<label for="order_notices_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 			<div class="text12" id="article" align="left">
-				<p><strong>Estimated Time of Delivery: </strong> We'll narrow down your two-hour window to just one hour on the day of delivery.</p>
 				<p><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way!</p>
 			</div>
 		</div>
