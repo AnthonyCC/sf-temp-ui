@@ -127,7 +127,7 @@ public class PDPRedirector extends BodyTagSupport {
         	
         	HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
             response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
-            pageContext.getOut().close();
+            //pageContext.getOut().close();
             this.redirected = true;
             
         } catch (IOException ioe) {
