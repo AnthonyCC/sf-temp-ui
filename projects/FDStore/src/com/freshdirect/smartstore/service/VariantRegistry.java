@@ -158,7 +158,6 @@ final public class VariantRegistry {
 			}
 
 			LOGGER.info("needed factors :" + factors);
-			LOGGER.info("from VariantRegistry calling acquireFactors");
 			ScoreProvider.getInstance().acquireFactors(factors);
 			LOGGER.info("configured variants:" + variantMapTmp.keySet());
 

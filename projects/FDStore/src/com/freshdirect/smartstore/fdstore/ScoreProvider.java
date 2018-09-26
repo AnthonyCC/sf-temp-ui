@@ -324,7 +324,7 @@ public class ScoreProvider implements DataAccess {
        // Map<Factor:String,IndexInDoubleArray:Integer> score index
         // Score indexes tell what position the score is stored in globalScores or personalizesScores
         // in the double array
-	protected Map<String, Integer> globalIndexes = new TreeMap<String, Integer>();
+	public Map<String, Integer> globalIndexes = new TreeMap<String, Integer>();
     protected Map<String, Integer> personalizedIndexes = new TreeMap<String, Integer>();
 
 
@@ -751,10 +751,7 @@ public class ScoreProvider implements DataAccess {
 				LOGGER.warn("Unknown factor");
 			}
 		}
-		LOGGER.debug("rawGlobalFactors ============ "+rawGlobalFactors);
-		for(String rawGlobalFactorsItr: rawGlobalFactors) {
-			LOGGER.debug("rawGlobalFactorsItr===================="+rawGlobalFactorsItr);
-		}
+		
 		GlobalScoreRangeProvider globalScoreRangeProvider = new GlobalScoreRangeProvider(new ArrayList<String>(rawGlobalFactors));
 		personalizedScoreRangeProvider = new PersonalizedScoreRangeProvider(new ArrayList<String>(rawPersonalizedFactors));
 
@@ -767,8 +764,6 @@ public class ScoreProvider implements DataAccess {
 		globalIndexes.clear();
 		for(Iterator<String> i = globalDBFactors.iterator(); i.hasNext();) {
 			String factor = i.next();
-			LOGGER.debug("factor==========================="+factor);
-			LOGGER.debug("globalIndexes.size()==========================="+globalIndexes.size());
 			globalIndexes.put(factor, new Integer(globalIndexes.size()));
 		}
 
@@ -1268,4 +1263,16 @@ public class ScoreProvider implements DataAccess {
 	public List<? extends ContentNodeModel> getPosteriorNodes() {
 		throw new UnsupportedOperationException();
 	}
+
+
+	public Map<String, Integer> getGlobalIndexes() {
+		return globalIndexes;
+	}
+
+
+	public void setGlobalIndexes(Map<String, Integer> globalIndexes) {
+		this.globalIndexes = globalIndexes;
+	}
+	
+	
 }
