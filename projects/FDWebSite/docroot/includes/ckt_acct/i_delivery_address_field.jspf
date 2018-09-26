@@ -361,23 +361,22 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 			<label for="homephoneext">&nbsp;&nbsp;Ext.<span class="offscreen">extension for contact number</span>&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="homephoneext" name="homephoneext" value="<%=fldHomePhoneExt%>"></td>
 		</tr>
 		<tr>
-		<td></td>
-		<td colspan="2" style="max-width:350px;"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>' id='errorMsg'><span id="homephone_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<td></td>
+			<td colspan="2" style="max-width:350px;"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>' id='errorMsg'><span id="homephone_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
-			<tr>
+		<tr>
 			<td align="right" class="text12">
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>"><span class="errortext"></fd:ErrorHandler>
 				<label for="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>">&nbsp;Alt Contact #&nbsp;&nbsp;</label>
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>"></span></fd:ErrorHandler>
 			</td>
-			<td colspan="2" class="text12"><input type="text" size="16" class="text11" aria-describedby="alternatecontact_error" id="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" value="<%=fldAltContactPhone%>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>' id='errorMsg'><span id="alternatecontact_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+			<td colspan="2" class="text12"><input type="text" size="16" class="text11" aria-describedby="alternatecontact_error" id="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" value="<%=fldAltContactPhone%>">&nbsp;&nbsp;
 			<label for="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>">&nbsp;&nbsp;Ext.<span class="offscreen">extension for alternate contact number</span>&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" value="<%=fldAltContactExt%>"></td>
 		</tr>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="115" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="210" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="335" height="1"></td>
+			<td></td>
+			<td></td>
+			<td colspan="2" style="max-width:350px;"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>' id='errorMsg'><span id="alternatecontact_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
 	</table>
 
