@@ -933,12 +933,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
         try {
             ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
             ErpSaleModel _order = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")) {
-				OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-				_order = OrderServiceApiClient.getInstance().getOrder(saleId);
-			} else {
-				_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
-			}
+			_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
             ErpAbstractOrderModel order =_order.getCurrentOrder();
             ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
             //@TODO Logistics ReIntegration Task - Need to determine if SAP is using the region send as part of Create/Change Sales Order. If not this logic will be removed. 
@@ -1834,11 +1829,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					// Set it to actionInfo object to write to the activity log.
 					saleId = orderInfo.getSaleId();
 					ErpSaleModel saleModel = null;
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-			    		saleModel =  OrderServiceApiClient.getInstance().getOrder(saleId);
-			    	}else{
-			    		saleModel = sb.getOrder(new PrimaryKey(saleId));
-			    	}
+			    	saleModel = sb.getOrder(new PrimaryKey(saleId));
 					FDOrderI order = new FDOrderAdapter(saleModel);
 					ErpReturnOrderModel returnModel = getReturnModel(order);
 					// Process Full Return.
@@ -3268,11 +3259,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome()
 						.create();
 				ErpSaleModel _order = null;
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")) {
-					_order = OrderServiceApiClient.getInstance().getOrder(saleId);
-				} else {
-					_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
-				}
+				_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
 				if (_order == null)
 					return;
 				if (EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
@@ -3370,11 +3357,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			ErpSaleModel _order = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")) {
-				_order = OrderServiceApiClient.getInstance().getOrder(saleId);
-			} else {
-				_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
-			}
+			_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
 			if (_order == null)
 				return;
 			if (EnumSaleStatus.PAYMENT_PENDING.equals(_order.getStatus())) {
