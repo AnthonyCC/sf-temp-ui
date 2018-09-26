@@ -5,8 +5,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.CMSPotatoSectionModel;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
@@ -26,6 +29,8 @@ import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
  *
  */
 public class CMSSectionProductCollectorService {
+
+    private static final Category LOGGER = LoggerFactory.getInstance(CMSSectionProductCollectorService.class);
 
     private static final CMSSectionProductCollectorService INSTANCE = new CMSSectionProductCollectorService();
 
@@ -111,7 +116,12 @@ public class CMSSectionProductCollectorService {
         List<CategoryModel> categories = new ArrayList<CategoryModel>();
         if (sectionModel.getCategoryList() != null && !sectionModel.getCategoryList().isEmpty()) {
             for (String categoryKey : sectionModel.getCategoryList()) {
-                categories.add((CategoryModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(categoryKey)));
+                CategoryModel modelToAddd = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(categoryKey));
+                if (modelToAddd != null) {
+                    categories.add(modelToAddd);
+                } else {
+                    LOGGER.debug("Try to load category for section but it was not found. Category key: " + categoryKey);
+                }
             }
             Set<ProductModel> products = new LinkedHashSet<ProductModel>();
             for (CategoryModel category : categories) {

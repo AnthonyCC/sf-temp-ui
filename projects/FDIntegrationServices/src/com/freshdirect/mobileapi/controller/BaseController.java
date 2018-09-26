@@ -973,8 +973,10 @@ public abstract class BaseController extends AbstractController implements Messa
                 pages = getCachedPages(pageRequest);
             }
         }
-        for (CMSWebPageModel page : pages) {
-            CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page);
+        if (pages != null) {
+            for (CMSWebPageModel page : pages) {
+                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page);
+            }
         }
         return pages;
     }

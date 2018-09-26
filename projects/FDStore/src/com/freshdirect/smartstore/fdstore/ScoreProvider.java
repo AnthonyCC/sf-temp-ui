@@ -839,7 +839,6 @@ public class ScoreProvider implements DataAccess {
         }
         for(int j=0; j< values.length; ++j) {
         	double[] productScores = result.get(ContentKeyFactory.get(FDContentTypes.PRODUCT,products.get(j).toString()));
-        	System.out.println("["+((Number)entry.getValue()).intValue()+"],"+ values[j]);
         	productScores[((Number)entry.getValue()).intValue()] = values[j];
         }
     }
