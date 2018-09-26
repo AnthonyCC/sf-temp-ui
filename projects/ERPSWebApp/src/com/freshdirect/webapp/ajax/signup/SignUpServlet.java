@@ -100,6 +100,7 @@ public class SignUpServlet extends BaseJsonServlet {
                         address = new AddressModel();
                         address.setZipCode(zipCode);
                     }
+                    skipPopup = true;
                     serviceType = checkServiceStatus( serviceType, result, serviceResult);
                     UserUtil.reclassifyUser(serviceType, serviceResult.getAvailableServices(), session, response, address);
                 }
