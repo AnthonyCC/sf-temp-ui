@@ -246,7 +246,9 @@ public class HomeController extends BaseController {
 					pageResponse.setPage(pages.get(0));
 				}
 			}
-            CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, pageResponse.getPage());
+            if (pageResponse != null && pageResponse.getPage() != null) {
+                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, pageResponse.getPage());
+            }
 		}
 		
 		setMediaPath(pageResponse);
