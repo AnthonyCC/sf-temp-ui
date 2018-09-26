@@ -33,7 +33,9 @@ import com.freshdirect.cms.ui.editor.reports.repository.ReportsRepository;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
 
 @Service
 public class ReportingService {
@@ -79,6 +81,8 @@ public class ReportingService {
             .toList();
 
     public static final Set<ContentKey> ALL_REPORTING_KEYS = new HashSet<ContentKey>() {
+        private static final long serialVersionUID = 1671795856320147621L;
+
         {
             this.add(CMS_REPORTS_FOLDER_KEY);
             this.add(SMARTSTORE_REPORTS_FOLDER_KEY);
@@ -136,7 +140,7 @@ public class ReportingService {
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentHiddenProducts"), "Recent Hidden Products");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "scarabRules"), "Scarab merchandising rules");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Smart categories");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Active Smart categories");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "ymalSets"), "YMAL sets");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsQuery, "orphans"), "Orphan Store Objects");
@@ -303,6 +307,39 @@ public class ReportingService {
         } else if ("smartCatRecs".equals(contentKey.id)) {
             List<Map<Attribute,Object>> result = repository.fetchSmartCategoryRecommenders();
 
+            final ContentKey keyOfArchiveDepartment = ContentKeyFactory.get(ContentType.Department, "Archive");
+
+            final int smartCategoryCount = result.size();
+
+            // Strip off inactive categories
+            Iterables.filter(result, new Predicate<Map<Attribute,Object>>() {
+                @Override
+                public boolean apply(Map<Attribute, Object> reportEntry) {
+                    // extract key from artificially composed attribute name "KEY|"<contentkey>
+                    ContentKey smartCategoryKey = extractContentKeyFromTableAttribute(reportEntry.keySet().iterator().next());
+
+                    // orphans don't apply
+                    if (contentProviderService.isOrphan(smartCategoryKey, RootContentKey.STORE_FRESHDIRECT.contentKey)) {
+                        LOGGER.debug("Removing ORPHAN smart category " + smartCategoryKey);
+                        return false;
+                    }
+
+                    final List<List<ContentKey>> contexts = contentProviderService.findContextsOf(smartCategoryKey);
+                    List<ContentKey> singleContext = contexts.get(0);
+
+                    // non-orphan categories do have only single context (no more, no less)
+                    final boolean archived = singleContext.contains(keyOfArchiveDepartment);
+                    if (archived) {
+                        LOGGER.debug("Removing ARCHIVE smart category " + smartCategoryKey);
+                    }
+                    return !archived;
+                }
+            });
+
+            final int filteredSmartCategoryCount = result.size();
+
+            LOGGER.debug("Retained " + filteredSmartCategoryCount + " smart categories from total " + smartCategoryCount);
+
             values.put(ReportAttributes.CmsReport.name, "Smart categories");
             values.put(ReportAttributes.CmsReport.description, "Smart category recommenders");
             values.put(ReportAttributes.CmsReport.results, result);
@@ -398,5 +435,9 @@ public class ReportingService {
         LOGGER.debug("Skipped " + archivedProducts + " archived products from the report");
 
         return reportPayload;
+    }
+
+    private ContentKey extractContentKeyFromTableAttribute(Attribute attributeDef) {
+        return ContentKeyFactory.get(attributeDef.getName().split("\\|")[1]);
     }
 }
