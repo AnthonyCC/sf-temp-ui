@@ -371,6 +371,7 @@
 	<tag>
 		<name>storeCreditsPotato</name>
 		<tagclass>com.freshdirect.webapp.taglib.storecredits.StoreCreditsPotatoTag</tagclass>
+		<body-content>empty</body-content>
 		<info></info>
 		<attribute>
 			<name>name</name>
