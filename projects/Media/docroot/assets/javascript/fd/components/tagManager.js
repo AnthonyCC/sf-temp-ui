@@ -75,6 +75,15 @@ var dataLayer = window.dataLayer || [];
       .replace(/_+$/, '');          // Trim _ from the end of text
   };
 
+  var safeNameSpacePlus = function (text) {
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '+')         // Replace spaces with _
+      .replace(/[^\w\-\+]+/g, '')     // Remove all non-word chars
+      .replace(/\+\++/g, '+')         // Replace multiple _ with single _
+      .replace(/^\++/, '')           // Trim _ from start of text
+      .replace(/\++$/, '');          // Trim _ from the end of text
+  };
+
   var deBrand = function (name, brand) {
     if (name.indexOf(brand) === 0) {
       name = name.substr(brand.length);
@@ -812,7 +821,7 @@ var dataLayer = window.dataLayer || [];
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
       location = 'pdp_' + productId;
     } else if ($('ul.breadcrumbs li').length) {
-      location = 'cat_' + safeName($('ul.breadcrumbs li').toArray().map(function (li) { return li.textContent.toLowerCase(); }).join('_'));
+      location = 'cat_' + safeNameSpacePlus($('ul.breadcrumbs li').toArray().map(function (li) { return li.textContent.toLowerCase(); }).join('_'));
     } else if (searchParams) {
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
     } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {
