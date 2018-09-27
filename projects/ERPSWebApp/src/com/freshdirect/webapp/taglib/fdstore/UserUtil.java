@@ -202,23 +202,7 @@ public class UserUtil {
             // make sure to hang on to the cart that might be in progress in
             // CallCenter
             //
-            FDCartModel oldCart = null;
-
-            if (user != null) {
-                oldCart = user.getShoppingCart();
-            }
-            StoreContext storeContext = StoreContextUtil.getStoreContext(session);
-            user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType, storeContext.getEStoreId()), session);
-            user.setUserCreatedInThisSession(true);
-            user.setSelectedServiceType(serviceType);
-            // Added the following line for zone pricing to keep user service type up-to-date.
-            user.setZPServiceType(serviceType);
-            user.setAvailableServices(availableServices);
-
-            if (oldCart != null) {
-                user.setShoppingCart(oldCart);
-            }
-
+            user = createNewSessionUser(serviceType, availableServices, session, response, address, user);
             CookieMonster.storeCookie(user, response);
             session.setAttribute(SessionName.USER, user);
         } else {
@@ -250,17 +234,25 @@ public class UserUtil {
         session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
         return user;
     }
-    
-    public static void reclassifyUser(EnumServiceType serviceType, Set<EnumServiceType> availableServices, HttpSession session, HttpServletResponse response, AddressModel address)
-            throws FDResourceException {
-        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-        user.setAddress(address);
+
+    public static FDSessionUser createNewSessionUser(EnumServiceType serviceType, Set<EnumServiceType> availableServices, HttpSession session, HttpServletResponse response,
+            AddressModel address, FDUserI oldUser) throws FDResourceException {
+        StoreContext storeContext = StoreContextUtil.getStoreContext(session);
+        FDSessionUser user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType, storeContext.getEStoreId()), session);
+        user.setUserCreatedInThisSession(true);
         user.setSelectedServiceType(serviceType);
         // Added the following line for zone pricing to keep user service type up-to-date.
         user.setZPServiceType(serviceType);
         user.setAvailableServices(availableServices);
-        FDCustomerManager.storeUser(user.getUser());
-        session.setAttribute(SessionName.USER, user);
+
+        FDCartModel oldCart = null;
+        if (oldUser != null) {
+            oldCart = oldUser.getShoppingCart();
+        }
+        if (oldCart != null) {
+            user.setShoppingCart(oldCart);
+        }
+        return user;
     }
 
 	public static void createSessionUser(HttpServletRequest request, HttpServletResponse response, FDUser loginUser)

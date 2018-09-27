@@ -13,7 +13,6 @@ import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
-import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -29,6 +28,7 @@ import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.service.RedirectService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -63,46 +63,25 @@ public class SignUpServlet extends BaseJsonServlet {
             result.addError(!isCaptchaSuccess, "captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
 
             if (result.isSuccess()) {
-
-                if (user.getLevel() < FDUserI.RECOGNIZED) {
-                    String zipCode = signUpRequest.getZipCode();
-                    FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
-                    AddressModel address = new AddressModel();
-                    address.setZipCode(zipCode);
-                    serviceType = checkServiceStatus( serviceType, result, serviceResult);
-                    FDSessionUser signedInUser = UserUtil.createSessionUser(serviceType, serviceResult.getAvailableServices(), session, response, address);
-                    try {
-                        FDActionInfo actionInfo = AccountActivityUtil.getActionInfo(session);
-                        FDCustomerModel fdCustomer = registrationService.createFdCustomer(signedInUser, signUpRequest);
-                        ErpCustomerModel erpCustomer = registrationService.createErpCustomer(signedInUser, signUpRequest);
-                        RegisterService.getInstance().register(signedInUser, actionInfo, erpCustomer, fdCustomer, serviceType, signUpRequest.isTcAgree());
-                    } catch (ErpDuplicateUserIdException de) {
-                        LOGGER.warn("User registration failed due to duplicate id", de);
-                        result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
-                    } catch (ErpFraudException fe) {
-                        LOGGER.warn("User registration failed due to ", fe);
-                        result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), fe.getFraudReason().getDescription()));
-                    }
-                } else {
-                    AddressModel address = null;
-                    FDDeliveryServiceSelectionResult serviceResult = null;
-                    serviceType = user.getSelectedServiceType();
-                    //Address will not be null when user signs up for a Partial Delivery address
-                    if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().length() > 0) {
-                        // VALIDATE DELIVERY ADDRESS to see if service restricted
-                        address = user.getAddress();
-                        address.setServiceType(serviceType);
-                        serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(address);
-                    } else {
-                        //Directly from Zip Check page
-                        String zipCode = user.getZipCode();
-                        serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
-                        address = new AddressModel();
-                        address.setZipCode(zipCode);
-                    }
-                    skipPopup = true;
-                    serviceType = checkServiceStatus( serviceType, result, serviceResult);
-                    UserUtil.reclassifyUser(serviceType, serviceResult.getAvailableServices(), session, response, address);
+                String zipCode = signUpRequest.getZipCode();
+                FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
+                AddressModel address = new AddressModel();
+                address.setZipCode(zipCode);
+                serviceType = checkServiceStatus(serviceType, result, serviceResult);
+                FDSessionUser signedInUser = UserUtil.createNewSessionUser(serviceType, serviceResult.getAvailableServices(), session, response, address, user);
+                try {
+                    FDActionInfo actionInfo = AccountActivityUtil.getActionInfo(session);
+                    FDCustomerModel fdCustomer = registrationService.createFdCustomer(signedInUser, signUpRequest);
+                    ErpCustomerModel erpCustomer = registrationService.createErpCustomer(signedInUser, signUpRequest);
+                    RegisterService.getInstance().register(signedInUser, actionInfo, erpCustomer, fdCustomer, serviceType, signUpRequest.isTcAgree());
+                    CookieMonster.storeCookie(signedInUser, response);
+                    session.setAttribute(SessionName.USER, signedInUser);
+                } catch (ErpDuplicateUserIdException de) {
+                    LOGGER.warn("User registration failed due to duplicate id", de);
+                    result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+                } catch (ErpFraudException fe) {
+                    LOGGER.warn("User registration failed due to ", fe);
+                    result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), fe.getFraudReason().getDescription()));
                 }
             }
 
@@ -138,10 +117,6 @@ public class SignUpServlet extends BaseJsonServlet {
 
             writeResponseData(response, signUpResponse);
         } catch (FDResourceException e) {
-            CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
-            session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
-            BaseJsonServlet.returnHttpError(500, "Failed to register customer with email: " + signUpRequest.getEmail(), e);
-        } catch (FDInvalidAddressException e) {
             CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
             session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
             BaseJsonServlet.returnHttpError(500, "Failed to register customer with email: " + signUpRequest.getEmail(), e);
