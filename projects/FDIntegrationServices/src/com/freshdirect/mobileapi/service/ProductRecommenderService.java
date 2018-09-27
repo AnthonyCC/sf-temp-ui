@@ -14,7 +14,6 @@ public class ProductRecommenderService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(ProductRecommenderService.class);
 
-    // TODO make it configurable
     private boolean debugRecommender = false;
 
     public Recommendations recommendDYFForFoodKickCart(FDUserI customer) {
