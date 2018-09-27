@@ -128,10 +128,16 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		try {
 			response.sendRedirect(response.encodeRedirectURL(destination));
-			JspWriter writer = pageContext.getOut();
+			//JspWriter writer = pageContext.getOut();
 			//writer.close();
 		} catch (IOException ioe) {
 			throw new JspException(ioe.getMessage());
+		} finally {
+        	try {
+				pageContext.getOut().close();
+			} catch (IOException e) {
+	            throw new JspException(e.getMessage());
+			}
 		}
 	}
 
