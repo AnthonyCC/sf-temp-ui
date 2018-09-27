@@ -2,11 +2,9 @@ package com.freshdirect.mobileapi.controller.data.response.recommender;
 
 import java.io.Serializable;
 
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.Cohort;
-import com.freshdirect.smartstore.Variant;
 
-public class TrackingData implements Serializable {
+public class RecommendationTrackingData implements Serializable {
 
     private static final long serialVersionUID = 7743273378536504789L;
 
@@ -14,7 +12,7 @@ public class TrackingData implements Serializable {
      * The primary identifier of the location
      * where product recommendation was requested
      *
-     * @see EnumSiteFeature
+     * @see com.freshdirect.fdstore.util.EnumSiteFeature#getName()
      */
     private String siteFeature;
 
@@ -22,7 +20,7 @@ public class TrackingData implements Serializable {
      * ID of variant that actually delivered
      * recommendation
      *
-     * @see Variant
+     * @see com.freshdirect.smartstore.Variant#getId()
      */
     private String variant;
 

@@ -37,7 +37,7 @@ public class ProductRecommendationData implements Serializable {
     @JsonInclude(Include.NON_NULL)
     private List<ProductPotatoData> products;
 
-    private TrackingData tracking;
+    private RecommendationTrackingData tracking;
 
     public String getId() {
         return id;
@@ -79,11 +79,11 @@ public class ProductRecommendationData implements Serializable {
         this.products = products;
     }
 
-    public TrackingData getTracking() {
+    public RecommendationTrackingData getTracking() {
         return tracking;
     }
 
-    public void setTracking(TrackingData tracking) {
+    public void setTracking(RecommendationTrackingData tracking) {
         this.tracking = tracking;
     }
 

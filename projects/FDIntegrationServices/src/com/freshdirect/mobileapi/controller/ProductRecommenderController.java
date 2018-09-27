@@ -16,7 +16,7 @@ import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.response.recommender.CartRecommenderResponse;
 import com.freshdirect.mobileapi.controller.data.response.recommender.ProductRecommendationData;
-import com.freshdirect.mobileapi.controller.data.response.recommender.TrackingData;
+import com.freshdirect.mobileapi.controller.data.response.recommender.RecommendationTrackingData;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.MessageCodes;
@@ -105,8 +105,8 @@ public class ProductRecommenderController extends BaseController {
         }
     }
 
-    private TrackingData makeRecommendenderTrackingInfo(Recommendations recommendations, FDUserI customer) {
-        TrackingData data = new TrackingData();
+    private RecommendationTrackingData makeRecommendenderTrackingInfo(Recommendations recommendations, FDUserI customer) {
+        RecommendationTrackingData data = new RecommendationTrackingData();
 
         data.setSiteFeature(recommendations.getVariant().getSiteFeature().getName() );
         data.setVariant(recommendations.getVariant().getId());
