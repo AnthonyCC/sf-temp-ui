@@ -34,7 +34,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.cms.core.domain.EStoreId;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -66,7 +65,6 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
-import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -169,7 +167,6 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.PendingOrder;
-import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
@@ -177,6 +174,8 @@ import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaint;
+import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
@@ -200,7 +199,6 @@ import com.freshdirect.fdstore.temails.TEmailConstants;
 import com.freshdirect.fdstore.temails.TEmailsUtil;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
@@ -3851,34 +3849,40 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "from cust.sale s, cust.complaint c "
 			+ "where s.status = 'PPG' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' "
 			+ "and c.id not in (select complaint_id from cust.complaintline where c.id = complaint_id and method = 'CSH') "
+            + "and c.CREATED_BY <> ? "
 			+ "union all " + "select c.id as complaint_id " + "from cust.sale s, cust.complaint c "
-			+ "where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' ";
+            + "where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?" + "union all " + "select c.id as complaint_id "
+            + "from cust.sale s, cust.complaint c " + "where s.status = 'ENR' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?";
 
-	public List<String> getComplaintsForAutoApproval() throws FDResourceException {
+	public List<String> getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException {
 		Connection conn = null;
+		PreparedStatement ps= null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(PENDING_COMPLAINT_QUERY);
+			ps = conn.prepareStatement(PENDING_COMPLAINT_QUERY);
 			// ps.setDouble(1,
 			// ErpServicesProperties.getCreditAutoApproveAmount());
 			ps.setBigDecimal(1, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
+            ps.setString(2, ErpServicesProperties.getSelfCreditAgent());
 			// ps.setDouble(2,
 			// ErpServicesProperties.getCreditAutoApproveAmount());
-			ps.setBigDecimal(2, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
-			ResultSet rs = ps.executeQuery();
+            ps.setBigDecimal(3, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
+            ps.setString(4, ErpServicesProperties.getSelfCreditAgent());
+            ps.setBigDecimal(5, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
+            ps.setString(6, ErpServicesProperties.getSelfCreditAgent());
+            rs = ps.executeQuery();
 			List<String> lst = new ArrayList<String>();
 
 			while (rs.next()) {
 				lst.add(rs.getString("COMPLAINT_ID"));
 			}
-
-			rs.close();
-			ps.close();
-
 			return lst;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
+			close(rs);
+			close(ps);
 			close(conn);
 		}
 	}
@@ -4872,22 +4876,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			conn = this.getConnection();
 			ps = conn.prepareStatement(
 					"SELECT ct.sale_id, s.type, ct.id AS complaint_id, cc.amount, SUM(cl.amount) AS original_amount, cl.method, cd.name AS department, "
-							+ "cc.create_date, ct.STATUS, ct.CREATED_BY, ct.APPROVED_BY "
+                            + "cc.create_date, ct.STATUS, ct.CREATED_BY, ct.APPROVED_BY, s.E_STORE "
 							+ "FROM (select SUM(amount) as amount, complaint_id, create_date from cust.customercredit where customer_id= ? GROUP BY complaint_id, create_date) cc, CUST.COMPLAINT ct, "
 							+ "CUST.COMPLAINTLINE cl, CUST.COMPLAINT_DEPT_CODE cdc, CUST.COMPLAINT_DEPT cd, CUST.SALE s "
 							+ "WHERE cc.COMPLAINT_ID = ct.id AND ct.id=cl.complaint_id "
 							+ "AND cl.complaint_dept_code_id = cdc.id "
 							+ "AND cdc.comp_dept = cd.code and ct.sale_id = s.id "
-							+ "and cl.method = 'FDC' and ct.status='APP' "
-							+ "GROUP BY ct.sale_id, s.type, ct.id, cc.amount, cl.method, cd.name, cc.create_date, ct.status, ct.created_by, ct.approved_by "
+                            + "and cl.method = 'FDC' and ct.status='APP' "
+                            + "GROUP BY ct.sale_id, s.type, ct.id, cc.amount, cl.method, cd.name, cc.create_date, ct.status, ct.created_by, ct.approved_by, s.E_STORE "
 							+ "UNION "
 							+ "SELECT ct.sale_id, sa.type, ct.id AS complaint_id, 0 as amount, cl.amount as ORIGINAL_AMOUNT, cl.method, cd.name AS department, ct.create_date, "
-							+ "ct.status, ct.created_by, ct.approved_by " + "FROM CUST.COMPLAINT ct, "
+                            + "ct.status, ct.created_by, ct.approved_by, sa.E_STORE " + "FROM CUST.COMPLAINT ct, "
 							+ "CUST.COMPLAINTLINE cl, CUST.SALE sa, "
 							+ "CUST.COMPLAINT_DEPT_CODE cdc, CUST.COMPLAINT_DEPT cd " + "WHERE sa.customer_id = ? "
 							+ "AND sa.id = ct.sale_id AND ct.id = cl.complaint_id AND cl.complaint_dept_code_id = cdc.id "
-							+ "and cl.method = 'CSH' and ct.status='APP' " + "AND cdc.comp_dept = cd.code "
-							+ "GROUP BY ct.sale_id, sa.type, ct.id, cl.amount, cl.method, ct.create_date, ct.status, cd.name, ct.created_by, ct.approved_by "
+                            + "and cl.method = 'CSH' and ct.status='APP' " + "AND cdc.comp_dept = cd.code "
+                            + "GROUP BY ct.sale_id, sa.type, ct.id, cl.amount, cl.method, ct.create_date, ct.status, cd.name, ct.created_by, ct.approved_by, sa.E_STORE "
 							+ "ORDER BY create_date DESC, complaint_id, department, method");
 			ps.setString(1, identity.getErpCustomerPK());
 			ps.setString(2, identity.getErpCustomerPK());
@@ -4923,6 +4927,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				credit.setIssuedBy(rs.getString("CREATED_BY"));
 				credit.setApprovedBy(rs.getString("APPROVED_BY"));
 				credit.setOrderType(rs.getString("TYPE"));
+                credit.seteStore(rs.getString("E_STORE"));
 
 				if ("Referral".equals(rs.getString("DEPARTMENT"))) {
 					// Get the order number that helped to earn this credit
@@ -8491,6 +8496,47 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+
+    private static final String PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
+            + "from cust.complaint c "
+            + "left join cust.sale s on s.id = c.sale_id " + "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ?";
+
+    private static final String PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
+            + "from cust.complaint c "
+            + "left join cust.sale s on s.id = c.sale_id " + "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ? and c.COMPLAINT_TYPE = 'FDC'";
+
+    private List<PendingSelfComplaint> getPendingSelfComplaintsByCustomerIdForAutoApproval() throws FDResourceException, RemoteException {
+        Connection conn = null;
+        PreparedStatement ps= null;
+		ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            final boolean isCashBackAllowed = ErpServicesProperties.getSelfCreditAllowCashback();
+            ps = conn.prepareStatement(isCashBackAllowed ? PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY : PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY);
+            ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
+            ps.setBigDecimal(2, new java.math.BigDecimal(ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint()));
+            rs = ps.executeQuery();
+
+            List<PendingSelfComplaint> pendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
+
+            while (rs.next()) {
+                PendingSelfComplaint pendingSelfComplaint = new PendingSelfComplaint();
+                pendingSelfComplaint.setComplaintId(rs.getString("SELF_COMPLAINT_ID"));
+                pendingSelfComplaint.setCustomerId(rs.getString("CUSTOMER_ID"));
+                pendingSelfComplaint.setComplaintAmount(rs.getDouble("COMPLAINT_AMOUNT"));
+                pendingSelfComplaint.setNote(rs.getString("NOTE"));
+                pendingSelfComplaints.add(pendingSelfComplaint);
+            }
+
+            return pendingSelfComplaints;
+        } catch (SQLException e) {
+            throw new FDResourceException(e);
+        } finally {
+        	close(rs);
+            close(ps);
+            close(conn);
+        }
+    }
 	
 	private static final String GET_REJECTAL_COMPLAINTS ="select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
 			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         (s.status = 'STF')  " + 
@@ -8543,4 +8589,283 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public PendingSelfComplaintResponse getSelfIssuedComplaintsForAutoApproval() throws RemoteException, FDResourceException {
+		List<PendingSelfComplaint> approvablePendingSelfComplaints = filterPendingSelfComplaints(getPendingSelfComplaintsByCustomerIdForAutoApproval());;
+		PendingSelfComplaintResponse pendingSelfComplaintResponse = new PendingSelfComplaintResponse();
+		pendingSelfComplaintResponse.setPendingSelfComplaints(approvablePendingSelfComplaints);
+		return pendingSelfComplaintResponse;
+	}
+
+
+    private List<PendingSelfComplaint> filterPendingSelfComplaints(List<PendingSelfComplaint> pendingSelfComplaints) throws FDResourceException, RemoteException {
+    	
+    	List<PendingSelfComplaint> approvablePendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
+    	Map<String, List<String>> approvedComplaints = collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange();
+        Map<String, Double> approvedAmount = collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange();
+
+        for (PendingSelfComplaint pendingSelfComplaint : pendingSelfComplaints) {
+        	String selfComplaintId = pendingSelfComplaint.getComplaintId();
+            String customerId = pendingSelfComplaint.getCustomerId();
+            Double selfComplaintAmount = pendingSelfComplaint.getComplaintAmount();
+            
+            boolean isEligibleForAutoApproval = null == pendingSelfComplaint.getNote() ? true : !complaintHasNote(pendingSelfComplaint.getNote());
+            
+            if (isEligibleForAutoApproval && approvedComplaints.containsKey(customerId)) {
+                int customersApprovedComplaints = approvedComplaints.get(customerId).size();
+                int selfCreditMaxAutoApproveQuantity = ErpServicesProperties.getSelfCreditAutoapproveMaxQuantityPerDayRange();
+                if (customersApprovedComplaints >= selfCreditMaxAutoApproveQuantity) {
+                    isEligibleForAutoApproval = false;
+                }
+            }
+
+            if (isEligibleForAutoApproval && approvedAmount.containsKey(customerId)) {
+                Double customersTotalApprovedAmount = approvedAmount.get(customerId);
+                Double selfCreditMaxAutoApproveAmount = ErpServicesProperties.getSelfCreditAutoapproveMaxAmountPerDayRange();
+                if ((selfComplaintAmount + customersTotalApprovedAmount) > selfCreditMaxAutoApproveAmount) {
+                    isEligibleForAutoApproval = false;
+                }
+            }
+            
+            if(isEligibleForAutoApproval) {
+            	isEligibleForAutoApproval = isComplaintAutoApprove(selfComplaintId);
+            }
+            
+            if (isEligibleForAutoApproval) {
+				approvablePendingSelfComplaints.add(pendingSelfComplaint);
+				updateApprovedComplaints(approvedComplaints, pendingSelfComplaint);
+				updateApprovedAmount(approvedAmount, pendingSelfComplaint);
+			}
+        }
+    	return approvablePendingSelfComplaints;
+	}
+
+	private boolean complaintHasNote(String note) {
+        boolean noteContainsAdditionalNote = note.split("\\[", 3).length != 2;
+        return noteContainsAdditionalNote;
+	}
+
+		private Double getComplaintAmount(String selfComplaintId) throws FDResourceException {
+        Connection conn = null;
+        PreparedStatement ps= null;
+		ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            ps = conn.prepareStatement("select c.amount as complaint_amount from cust.complaint c where c.id = ?");
+            ps.setString(1, selfComplaintId);
+            rs = ps.executeQuery();
+
+            Double amount = 0.0;
+            while (rs.next()) {
+                amount = rs.getDouble("COMPLAINT_AMOUNT");
+            }
+            
+            return amount;
+        } catch (SQLException e) {
+            throw new FDResourceException(e);
+        } finally {
+        	close(rs);
+            close(ps);
+            close(conn);
+        }
+    }
+
+    private static final String GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY = "select c.amount as complaint_amount, s.customer_id as customer_id"
+            + " from cust.complaint c left join cust.sale s on s.id = c.sale_id"
+            + " where c.created_by = ? and c.status = 'APP' and c.approved_date >= ?";
+
+
+    private Map<String, Double> collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange() throws FDResourceException, RemoteException {
+
+        Connection conn = null;
+        PreparedStatement ps= null;
+		ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY);
+
+            ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
+            ps.setDate(2, collectAmountDayLimitDate());
+
+            rs = ps.executeQuery();
+
+            Map<String, Double> approvedSelfComplaintAmountsByCustomerId = new HashMap<String, Double>();
+
+            while (rs.next()) {
+                String customerId = rs.getString("CUSTOMER_ID");
+                Double complaintAmount = rs.getDouble("COMPLAINT_AMOUNT");
+
+                if (approvedSelfComplaintAmountsByCustomerId.containsKey(customerId)) {
+                    complaintAmount += approvedSelfComplaintAmountsByCustomerId.get(customerId);
+                }
+                approvedSelfComplaintAmountsByCustomerId.put(customerId, complaintAmount);
+            }
+
+            return approvedSelfComplaintAmountsByCustomerId;
+        } catch (SQLException e) {
+            throw new FDResourceException(e);
+        } finally {
+        	close(rs);
+            close(ps);
+            close(conn);
+        }
+    }
+
+    private java.sql.Date collectAmountDayLimitDate() {
+        int quantityDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveAmountDayRangeLimit();
+        Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -quantityDayRangeLimit);
+        return new java.sql.Date(dateToQuery.getTime());
+    }
+
+    private static final String GET_APPROVED_SELF_COMPLAINTS_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id " + "from cust.complaint c "
+            + "left join cust.sale s on s.id = c.sale_id " + "where c.created_by = ? and c.status = 'APP' "
+            + "and c.approved_date >= ?";
+
+    private Map<String, List<String>> collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange() throws FDResourceException, RemoteException {
+
+        Connection conn = null;
+        PreparedStatement ps= null;
+		ResultSet rs = null;
+        try {
+            conn = this.getConnection();
+            ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINTS_QUERY);
+
+            ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
+            ps.setDate(2, collectQuantityDayLimitDate());
+
+            rs = ps.executeQuery();
+
+            Map<String, List<String>> approvedSelfComplaints = new HashMap<String, List<String>>();
+
+            while (rs.next()) {
+                String selfComplaintId = rs.getString("SELF_COMPLAINT_ID");
+                String customerId = rs.getString("CUSTOMER_ID");
+                List<String> customersApprovedSelfComplaints = new ArrayList<String>();
+                if (approvedSelfComplaints.containsKey(customerId)) {
+                    customersApprovedSelfComplaints = approvedSelfComplaints.get(customerId);
+                }
+                customersApprovedSelfComplaints.add(selfComplaintId);
+                approvedSelfComplaints.put(customerId, customersApprovedSelfComplaints);
+            }
+
+            
+            return approvedSelfComplaints;
+        } catch (SQLException e) {
+            throw new FDResourceException(e);
+        } finally {
+        	close(rs);
+            close(ps);
+            close(conn);
+        }
+    }
+
+    private java.sql.Date collectQuantityDayLimitDate() {
+        int quantityDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveQuantityDayRangeLimit();
+        Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -quantityDayRangeLimit);
+        return new java.sql.Date(dateToQuery.getTime());
+    }
+    
+    private static final String IS_COMPLAINT_AUTO_APPROVE = "select cc.auto_approve as complaint_auto_approve from cust.complaintline c "
+    		+ "left join cust.complaint_dept_code cdc on c.complaint_dept_code_id = cdc.id "
+    		+ "left join cust.complaint_code cc on cdc.comp_code=cc.code where c.complaint_id=?";
+
+    private boolean isComplaintAutoApprove(String selfComplaintId) throws FDResourceException {
+    	Connection conn = null;
+        PreparedStatement ps= null;
+		ResultSet rs = null;
+
+        String autoApprove = null;
+        boolean isComplaintAutoApprove = true;
+        try {
+            conn = this.getConnection();
+            ps = conn.prepareStatement(IS_COMPLAINT_AUTO_APPROVE);
+            ps.setString(1, selfComplaintId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                autoApprove = rs.getString("complaint_auto_approve");
+                if (null == autoApprove || !autoApprove.equals("X")) {
+					isComplaintAutoApprove = false;
+					break;
+				}
+            }
+            return isComplaintAutoApprove;
+        } catch (SQLException e) {
+            throw new FDResourceException(e);
+        } finally {
+        	close(rs);
+            close(ps);
+            close(conn);
+        }
+	}
+    
+    private void updateApprovedComplaints(Map<String, List<String>> approvedComplaints,
+			PendingSelfComplaint pendingSelfComplaint) {
+        String customerId = pendingSelfComplaint.getCustomerId();
+    	List<String> customersApprovedSelfComplaints = new ArrayList<String>();
+    	if (approvedComplaints.containsKey(customerId)) {
+            customersApprovedSelfComplaints = approvedComplaints.get(customerId);
+        }
+        customersApprovedSelfComplaints.add(pendingSelfComplaint.getComplaintId());
+        approvedComplaints.put(customerId, customersApprovedSelfComplaints);
+	}
+
+	private void updateApprovedAmount(Map<String, Double> approvedAmount, PendingSelfComplaint pendingSelfComplaint) {
+		Double complaintAmount = pendingSelfComplaint.getComplaintAmount();
+		String customerId = pendingSelfComplaint.getCustomerId();
+
+        if (approvedAmount.containsKey(customerId)) {
+            complaintAmount += approvedAmount.get(customerId);
+        }
+        approvedAmount.put(customerId, complaintAmount);
+	}
+
+    public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws RemoteException, FDResourceException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = this.getConnection();
+            ps = conn.prepareStatement("select c.create_date, s.id as sale_id, s.e_store, c.status, c.amount, c.complaint_type "
+                    + "from cust.complaint c left join cust.sale s on s.id = c.sale_id where c.status = 'PEN' and s.customer_id=? order by 1 desc");
+            ps.setString(1, identity.getErpCustomerPK());
+            rs = ps.executeQuery();
+
+            List<FDCustomerCreditModel> lst = new ArrayList<FDCustomerCreditModel>();
+            FDCustomerCreditModel prevCredit = null;
+
+            while (rs.next()) {
+
+                FDCustomerCreditModel credit = new FDCustomerCreditModel();
+
+                credit.setSaleId(rs.getString("sale_id"));
+                credit.setCreateDate(rs.getTimestamp("create_date"));
+                credit.seteStore(rs.getString("e_store"));
+                credit.setStatus(EnumComplaintStatus.getComplaintStatus(rs.getString("status")));
+                credit.setAmount(rs.getDouble("amount"));
+                credit.setMethod(EnumComplaintLineMethod.getComplaintLineMethod(rs.getString("complaint_type")));
+
+                lst.add(credit);
+                prevCredit = credit;
+            }
+            FDCustomerCreditHistoryModel creditHistory = new FDCustomerCreditHistoryModel(identity, lst);
+            return creditHistory;
+
+        } catch (SQLException e) {
+            throw new FDResourceException(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.warn("error while cleanup", e);
+            }
+            close(conn);
+
+        }
+    }
 }

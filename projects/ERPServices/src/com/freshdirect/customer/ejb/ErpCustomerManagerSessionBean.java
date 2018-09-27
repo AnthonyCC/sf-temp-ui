@@ -1,5 +1,10 @@
 package com.freshdirect.customer.ejb;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,8 +29,10 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentRole;
@@ -49,7 +56,6 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
@@ -79,26 +85,22 @@ import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
-import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpResubmitPaymentModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
-import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.customer.RedeliverySaleInfo;
 import com.freshdirect.customer.adapter.CustomerAdapter;
 import com.freshdirect.customer.adapter.SapOrderAdapter;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
@@ -129,7 +131,6 @@ import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
-import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.sap.SapCustomerI;
 import com.freshdirect.sap.SapOrderLineI;
 import com.freshdirect.sap.command.SapPostReturnCommand;
@@ -1314,7 +1315,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public String approveComplaint(String complaintId, boolean isApproved, String csrId,Double limit) throws ErpComplaintException {
+	public String approveComplaint(String complaintId, boolean isApproved, String csrId,Double limit) throws ErpComplaintException, FDResourceException {
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByComplaintId(complaintId);
 			ErpSaleModel saleModel = (ErpSaleModel) eb.getModel();
@@ -1343,14 +1344,22 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					throw new ErpComplaintException("Complaints containing refunds can only be approved once the sale is in the SETTLED state.");
 				}
 				//
-				// complaints containing only store credits can be approved once the order is delivered
+				// complaints containing only store credits can be approved once the order is delivered 
+				// CS-65: complaints with the order status en-route are considered to be eligible for auto-approval
 				//
+				
+				
 				if ((pendingComplaint.getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
 					&& !(EnumSaleStatus.SETTLED.equals(saleModel.getStatus())
 						|| EnumSaleStatus.PAYMENT_PENDING.equals(saleModel.getStatus())
 						|| EnumSaleStatus.CAPTURE_PENDING.equals(saleModel.getStatus()))) {
-					this.getSessionContext().setRollbackOnly();
-					throw new ErpComplaintException("Store credit can only be approved once the has been delivered to the customer.");
+					
+                    final boolean allCartonsDelivered = EnumSaleStatus.ENROUTE.equals(saleModel.getStatus()) ? checkAllOrderCartonsAreDelivered(pendingComplaint.getId()) : false;
+					
+					if (!allCartonsDelivered) {
+						this.getSessionContext().setRollbackOnly();
+						throw new ErpComplaintException("Store credit can only be approved once the order has been delivered to the customer.");	
+					}
 				}
 				//Cannot issue cashback that is more than the amount we actually charged for.
 				double invoiceAmount = ((int) Math.round(saleModel.getLastInvoice().getAmount() * 100)) / 100.0;
@@ -1408,7 +1417,53 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 	}
+	
 
+    private boolean checkAllOrderCartonsAreDelivered(String complaintId) throws FDResourceException {
+		StringBuilder content = new StringBuilder();
+        BufferedReader input = null;
+        try {
+        	StringBuilder stringBuilder = new StringBuilder(FDStoreProperties.getBkofficeCartonInfoUrl());
+            stringBuilder.append("/").append(complaintId);
+            URL url = new URL(stringBuilder.toString());
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            connection.setRequestProperty("Accept", "application/json");
+
+            input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine = null;
+
+            while ((inputLine = input.readLine()) != null) {
+                content.append(inputLine);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Exception while making call to Backoffice Self-Credit service.", e);
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    LOGGER.error("Exception while closing conenction with Backoffice Self-Credit service.", e);
+                }
+            }
+        }
+
+        Boolean allAreComplaintCartonsDelivered = Boolean.FALSE;
+        ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			allAreComplaintCartonsDelivered = objectMapper.readValue(content.toString(), Boolean.class);
+		} catch (JsonParseException e) {
+			LOGGER.error("Exception while mapping issue self-complaint response.", e);
+		} catch (JsonMappingException e) {
+			LOGGER.error("Exception while mapping issue self-complaint response.", e);
+		} catch (IOException e) {
+			LOGGER.error("Exception while mapping issue self-complaint response.", e);
+		}
+		
+		return allAreComplaintCartonsDelivered;
+	}
+	
 	private void validateComplaintPayment(EnumPaymentType paymentType, ErpComplaintModel pendingComplaint) throws ErpComplaintException {
 		if (EnumPaymentType.MAKE_GOOD.equals(paymentType) && pendingComplaint.getMakegood_sale_id() == null) {
 			this.getSessionContext().setRollbackOnly();
@@ -1430,8 +1485,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 * @param ErpComplaintModel represents the complaint
 	 * @param String the PK of the sale to which the complaint is to be added
 	 * @throws ErpComplaintException if order was not in proper state to accept complaints
+	 * @throws FDResourceException 
 	 */
-	public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,  boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException {
+	public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,  boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, FDResourceException {
 		Connection conn = null;
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));

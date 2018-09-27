@@ -1499,6 +1499,18 @@ function loadStuff() {
     $("#url").val("/adqueryparams");
     $("#header").val('');
     $("#payload").val("");
+  } else if(loaddata == "getSelfCreditOrderHistory") {
+  	$("#url").val("/selfcredit/orders/");
+  	$("#header").val('');
+  	$("#payload").val('');
+  }else if(loaddata == "getSelfCreditOrderDetails") {
+  	$("#url").val("/selfcredit/orderdetails/10309166355");
+  	$("#header").val('');
+  	$("#payload").val('');
+  } else if(loaddata == "postIssueSelfCredit") {
+  	$("#url").val("/selfcredit/issuecredit");
+  	$("#header").val('');
+  	$("#payload").val('{"orderId":"10295522534","orderLineParams":[{"orderLineId":"10295522539","complaintId":"10272575431","quantity":"1"}],"note":""}');
   } else if (loaddata == "recommendForCart") {
     $("#url").val("/recommender/cart");
     $("#header").val('');
@@ -1942,6 +1954,11 @@ function doStuff() {
 
   <option value=""> ========== Ad Services ========== </option>
   <option value="adQueryParams">Ads - Return Query String</option>
+  
+  <option value=""> ========== Self-Credit ========== </option>
+  <option value="getSelfCreditOrderHistory">Self-Credit - Get Order History</option>
+  <option value="getSelfCreditOrderDetails">Self-Credit - Get Order Details</option>
+  <option value="postIssueSelfCredit">Self-Credit - Issue Self-Credit</option>
 
   <option value=""> ========== Product Recommendations ========== </option>
   <option value="recommendForCart">Recommenders - Recommend for Customer Cart</option>

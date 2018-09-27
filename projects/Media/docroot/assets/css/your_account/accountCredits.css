@@ -1,0 +1,381 @@
+#accountCredits {
+  color: #444;
+  font-family: "Verdana", sans-serif;
+}
+#accountCredits .account-credits {
+  margin: auto;
+  margin-bottom: 60px;
+  width: 80%;
+}
+#accountCredits .account-credits .total-credit {
+  background-color: #eee;
+  height: 150px;
+  text-align: center;
+  margin-top: 65px;
+  margin-bottom: 30px;
+}
+#accountCredits .account-credits .total-credit .credit {
+  font-size: 30px;
+  font-weight: bold;
+  padding-top: 45px;
+}
+#accountCredits .account-credits .total-credit .total {
+  font-size: 17px;
+  line-height: 1.29;
+  text-transform: uppercase;
+}
+#accountCredits .account-credits .credit-info {
+  font-size: 16px;
+  line-height: 1.63;
+  text-align: left;
+}
+#accountCredits .account-credits .under-review,
+#accountCredits .account-credits .all-credits {
+  margin-top: 25px;
+}
+#accountCredits .account-credits .under-review h1,
+#accountCredits .account-credits .all-credits h1 {
+  font-size: 22px;
+  line-height: 0.82;
+  letter-spacing: 0.3px;
+  margin: 0;
+  padding: 25px 0;
+}
+#accountCredits .account-credits .under-review h1,
+#accountCredits .account-credits .under-review .credit-line-col,
+#accountCredits .account-credits .all-credits h1,
+#accountCredits .account-credits .all-credits .credit-line-col {
+  border-bottom: solid 2px #ddd;
+}
+#accountCredits .account-credits .under-review .credit-line-col,
+#accountCredits .account-credits .all-credits .credit-line-col {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 25px 20px;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container {
+  display: flex;
+  align-items: center;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .date,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .date {
+  font-size: 18px;
+  line-height: 1.33;
+  margin-right: 40px;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .brand,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .brand {
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: white;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  height: 26px;
+  letter-spacing: 0.5px;
+  margin-right: 5px;
+  padding-top: 5px;
+  text-align: center;
+  width: 35px;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .brand.FD,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .brand.FD {
+  background-color: #408244;
+}
+  .brand.FK {
+    background-color: #4f175a;
+  }
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .brand.fk,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .brand.fk {
+  background-color: #4f175a;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .status,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .status {
+  color: #666;
+  display: inline-block;
+  font-size: 14px;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .value,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .value {
+  font-size: 18px;
+  line-height: 1.33;
+  text-align: right;
+  color: #111111;
+  margin-right: 20px;
+}
+#accountCredits
+.account-credits
+.all-credits
+.credit-line-col
+.credit-line-container
+.value.FK,
+#accountCredits
+.account-credits
+.all-credits
+.credit-line-col
+.credit-line-container
+.value.Referral.Credit {
+  margin-right: 124px;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .value.redeemed,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .value.redeemed {
+  color: #757575;
+}
+#accountCredits
+  .account-credits
+  .under-review
+  .credit-line-col
+  .credit-line-container
+  .receipt,
+#accountCredits
+  .account-credits
+  .all-credits
+  .credit-line-col
+  .credit-line-container
+  .receipt {
+  color: #6bd672;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1.33;
+  text-align: right;
+}
+#accountCredits
+  .account-credits--header {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: normal;
+  padding-bottom: calc(18px - .5em);
+  text-align: left;
+}
+#accountCredits
+  .under-review--header,
+  #accountCredits
+  .all-credits--header {
+  color: #444444;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 22px;
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: 0.3px;
+  line-height: 0.82;
+  text-align: left;
+}
+#accountCredits
+  .account-credits--header-mobile {
+  display: none;
+}
+#accountCredits
+  .account-credits--header-hr {
+  background: #ff9933;
+}
+#accountCredits
+  .account-credits {
+  position: relative;
+  top: -6px;
+}
+
+@media (max-width: 615px) {
+  #accountCredits
+    .account-credits
+    .total-credit {
+    border-top: solid 2px #979797;
+  }
+  #accountCredits
+    .account-credits
+    .under-review
+    .credit-line-col
+    .credit-line-container,
+  #accountCredits
+    .account-credits
+    .all-credits
+    .credit-line-col
+    .credit-line-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  #accountCredits
+    .account-credits
+    .under-review
+    .credit-line-col
+    .credit-line-container
+    > div,
+  #accountCredits
+    .account-credits
+    .all-credits
+    .credit-line-col
+    .credit-line-container
+    > div {
+    margin-bottom: 15px;
+  }
+  #accountCredits
+    .account-credits
+    .under-review
+    .credit-line-col
+    .credit-line-container.end,
+  #accountCredits
+    .account-credits
+    .all-credits
+    .credit-line-col
+    .credit-line-container.end {
+    align-items: flex-end;
+  }
+  #accountCredits
+    .account-credits
+    .under-review
+    .credit-line-col
+    .credit-line-container.end
+    .value,
+  #accountCredits
+    .account-credits
+    .all-credits
+    .credit-line-col
+    .credit-line-container.end
+    .value {
+    margin-right: 0;
+  }
+  #accountCredits
+    .credit-redeemed-sign,
+    #accountCredits
+    .credit-redeemed-sign + .credit-line--amount {
+    color: #757575;
+  }
+}
+
+@media (max-width: 840px) {
+  #accountCredits
+    .account-credits--header {
+    display: none;
+  }
+  #accountCredits
+    .account-credits--header-mobile {
+    display: block;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: normal;
+    margin-bottom: 0;
+    padding: 25px 0 20px 20px;
+    text-align: left;
+  }
+  #accountCredits
+    .account-credits {
+    margin: 0 20px;
+    margin-bottom: 0;
+    width: auto;
+  }
+  #accountCredits
+    .account-credits--header-hr {
+    display: none;
+  }
+  #accountCredits
+    .all-credits--header,
+    #accountCredits
+    .under-review--header {
+    padding: 20px 0;
+  }
+  #accountCredits
+    .credit-line-col {
+    padding: 29px 20px;
+  }
+  #accountCredits
+    .account-credits
+    .total-credit {
+    margin-top: 0;
+  }
+  #accountCredits
+    .account-credits
+    .all-credits
+    .credit-line-col
+    .credit-line-container
+    .value.FK,
+    #accountCredits
+    .account-credits
+    .all-credits
+    .credit-line-col
+    .credit-line-container
+    .value.Referral.Credit {
+      margin-right: 0px;
+  }
+}

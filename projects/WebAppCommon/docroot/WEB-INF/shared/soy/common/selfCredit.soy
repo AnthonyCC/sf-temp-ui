@@ -1,0 +1,279 @@
+{namespace common}
+
+/**
+* @param user
+* @param? orders
+ */
+{template .selfCreditInit autoescape="false"}
+  <h1>Credit Request</h1>
+  <form fdform="self-credit-init-order-id">
+    <div class="self-credit-init-row">
+        <label>Name</label>
+        {if $user.firstName and $user.lastName}<i class="user-info">{$user.firstName} {$user.lastName}</i>{/if}
+    </div>
+    <div class="self-credit-init-row">
+        <label>Email Address</label>
+        <i class="user-info">{$user.userId}</i>
+    </div>
+    <div class="self-credit-init-row-last">
+      <label for="order-id">Your Order</label>
+      <i class="form-field-info-flag">Required</i>
+      <div>
+        <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+          <option value="" disabled selected>Select an Order</option>
+          {foreach $order in $orders}
+          // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}{$order.standingOrderName}{/if}
+          <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
+          {else}[br][b]Order #: {$order.orderId}[/b]{/if}
+          </option>
+          {/foreach}
+        </select>
+      </div>
+    </div>
+    <div>
+      <button onclick="FreshDirect.components.selfCreditInitPopup.submit()" class='cssbutton full-width green selfcredit-button' type="button" value="Continue" disabled>Continue</button>
+    </div>
+  </form>
+  <div class="spinner-overlay">
+    <div class="spinner"></div>
+  </div>
+{/template}
+
+
+/**
+  @param readonly
+  @param order
+  @param? comment
+  @param? orderlines
+  @param? sample
+  @param? free
+  @param? reviewData
+
+ */
+{template .selfCreditIssueReport autoescape="false"}
+  <form id="selfcreditform" fdform="selfcreditform" class="self-credit-report-screen">
+  {if not $readonly}
+    <div class="self-credit-body-header">
+      <div class="self-credit-container" data-horizontal-scroll-fader>
+        {if $order.standingOrderName}
+          <div class="body-header-col">
+              <label for="self-credit-order-name">Order Name</label>
+              <span id="self-credit-order-name">{$order.standingOrderName}</span>
+          </div>
+        {/if}
+        <div class="body-header-col">
+            <label for="self-credit-delivery-date">Delivery Date</label>
+            <span id="self-credit-delivery-date">{$order.dayName} {$order.timeSlot} {$order.longDate}</span>
+        </div>
+        <div class="body-header-col">
+          <label for="self-credit-order-id">Order #</label>
+          <span id="self-credit-order-id">{$order.orderId}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="self-credit-body">
+      <div class="self-credit-container">
+        <h2 class="form-header">Select an issue and quantity of each affected item.</h2>
+        {if ($orderlines)}
+          {foreach $orderline in $orderlines }
+            {call .selfCreditProductLine}
+              {param orderline: $orderline /}
+              {param sample: $sample /}
+              {param free: $free /}
+            {/call}
+          {/foreach}
+        {/if}
+      </div>
+    </div>
+    <div class="self-credit-footer">
+        <div class="form-instructions">
+          <div class="self-credit-container">
+            <span id="self-credit-form-alert" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+      <div class="button-container">
+        <div class="self-credit-container footer-button-container">
+          <div class="button-triangle-container button-div">
+            <button class="cssbutton green button-triangle" type="submit">Review Request</button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+
+  {else}
+    <div class="review">
+      <div class="self-credit-header section-container">
+        <h1>Review Credit Request</h1>
+        <p>
+          Once submitted, you will generally receive an email confirming your store credit within 24 hours.
+        </p>
+      </div>
+      <div class="self-credit-body">
+        <div class="section-container">
+          <div class="body-info">
+            {if $order.standingOrderName}
+              <div class="body-header-col">
+                  <label for="self-credit-order-name">Order Name</label>
+                  <span id="self-credit-order-name">{$order.standingOrderName}</span>
+              </div>
+            {/if}
+            <div class="body-info-col">
+              <label for="self-credit-order-id">Order #</label>
+              <span id="self-credit-order-id">{$order.orderId}</span>
+            </div>
+            <div class="body-info-col">
+                <label for="self-credit-delivery-date">Delivery Date</label>
+                <span id="self-credit-delivery-date">{$order.dayName} {$order.timeSlot} {$order.longDate}</span>
+            </div>
+          </div>
+          <div class="review-grid-container">
+            <div class="self-credit-comment-info">
+              <div class="{if $comment} hide{/if}">
+                <label>Have additional thoughts about this order?</label>
+                <button onclick="FreshDirect.components.selfCreditIssueReportPopup.commentClick(event)">Leave a comment for further review</button>
+              </div>
+              <div class="self-credit-comment-container {if not $comment} hide{/if}">
+                <label for="self-credit-comment">Additional Comments</label>
+                <i class="form-field-info-flag">Optional</i>
+                <textarea id="self-credit-comment" name="self-credit-comment" maxlength="250" rows="4" data-max-length-display>{if ($comment)}{$comment}{/if}</textarea>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>qty</th>
+                  <th>item</th>
+                  <th>credit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {foreach $complaintLine in $reviewData.complaintLines }
+
+                <tr>
+                  <td>{$complaintLine.complaint.qty}</td>
+                  <td>
+                    <div class="complaint-item">
+                      {if $complaintLine.brand}<label>{$complaintLine.brand}</label>{/if}
+                      <p class="description">{$complaintLine.productName}</p>
+                      <small class="sale-unit">{$complaintLine.configurationDescription} | ${$complaintLine.basePrice}{if $complaintLine.basePriceUnit}/{$complaintLine.basePriceUnit}{/if}</small>
+                      <p class="issue">
+                        <span>Issue:</span>
+                        <i>{$complaintLine.complaint.description}</i>
+                      </p>
+                    </div>
+                  </td>
+                  <td>${$complaintLine.complaint.price}</td>
+                </tr>
+                {/foreach}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3">Total Store Credit: ${$reviewData.totalCredit}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="self-credit-footer">
+        <div class="section-container">
+          <div class="sc-edit-button"><button class="cssbutton green transparent" onclick="FreshDirect.components.selfCreditIssueReportPopup.editRequest()">
+            {call .ariaReview}
+              {param title: 'Edit' /}
+              {param reviewData: $reviewData /}
+            {/call}
+          </button></div>
+          <div class="sc-submit-button">
+            <button class="cssbutton green" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
+              {call .ariaReview}
+                {param title: 'Submit Request' /}
+                {param reviewData: $reviewData /}
+              {/call}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
+  </form>
+  <div class="spinner-overlay">
+    <div class="spinner"></div>
+  </div>
+{/template}
+
+/**
+  @param orderline
+  @param? sample
+  @param? free
+*/
+{template .selfCreditProductLine autoescape="false"}
+  <div class="order-line">
+    <div class="order-line-col order-line-product-image">
+      // todo remove absolute path after demo
+      <img src="https://www.freshdirect.com{$orderline.productImage}" width="70px"/>
+    </div>
+    <div class="order-line-col order-line-product">
+      <div>
+        {if $orderline.brand}<label>{$orderline.brand}</label>{/if}
+        <div class="product-desc">{$orderline.productName}</div>
+        <small class="sale-unit">{$orderline.configurationDescription} | ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
+      </div>
+    </div>
+    {if not ($sample or $free)}
+      <div class="order-line-col order-line-reason">
+        <select class="customsimpleselect" name="reason-{$orderline.orderLineId}" aria-label="Select an issue for {$orderline.description}">
+          <option value="" {if not $orderline.complaint}selected{/if}>Select an Issue</option>
+          {foreach $reason in $orderline.complaintReasons}
+            <option value="{$reason.id}" {if $orderline.complaint and $orderline.complaint.reasonId == $reason.id}selected{/if}>{$reason.reason}</option>
+          {/foreach}
+        </select>
+      </div>
+      <div class="order-line-col order-line-qty">
+        <select class="customsimpleselect" name="qty-{$orderline.orderLineId}" aria-label="Select quantity for {$orderline.description}">
+          <option value="" {if not $orderline.complaint}selected{/if}>Quantity</option>
+          {for $index in range(1, $orderline.quantity + 1)}
+            <option value="{$index}" {if $orderline.complaint and $orderline.complaint.qty == $index}selected{/if}>{$index}</option>
+          {/for}
+        </select>
+      </div>
+    {/if}
+    {if $sample or $free}
+      <div class="order-line-col disable-order-line">
+        <div class="title">
+          {if $sample}
+            SAMPLE ITEM
+          {else}
+            FREE ITEM
+          {/if}
+        </div>
+      </div>
+    {/if}
+  </div>
+{/template}
+
+/**
+*/
+{template .selfCreditRequestComplete autoescape="false"}
+  <img src="/media_stat/images/common/check-radio-selected.svg" width="100" height="100" alt="Credit Request Submitted">
+  <h1 class="credit-request-submit" id="creditRequestCompleteHeader" aria-label="Credit Request Submitted.">Credit Request Submitted</h1>
+  <div class="status" id="creditRequestCompleteDetails">You can view the status of your claim in the <a href="/your_account/credits.jsp">Store Credits</a> page.</div>
+  <button onclick="FreshDirect.components.selfCreditRequestCompletePopup.closePopup(event)"class='cssbutton full-width green selfcredit-button'>Ok</button>
+{/template}
+
+/**
+  @param title
+  @param reviewData
+*/
+{template .ariaReview autoescape="false"}
+  <span>{$title}</span><span class="aria-hidden">Button.</span>
+  <h2 class="aria-hidden">Items:</h2>
+  <ul class="aria-hidden">
+    {foreach $complaintLine in $reviewData.complaintLines }
+      <li>{$complaintLine.complaint.qty} {$complaintLine.description}. {$complaintLine.complaint.description}.</li>
+    {/foreach}
+  </ul>
+  <h1 class="aria-hidden">Total Store Credits: ${$reviewData.totalCredit}.</h1>
+  <h1 class="aria-hidden">Once submitted, you will generally receive an email confirming your store credit within 24 hours.</h1>
+{/template}

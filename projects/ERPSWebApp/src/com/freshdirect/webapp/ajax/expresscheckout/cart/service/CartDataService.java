@@ -171,7 +171,7 @@ public class CartDataService {
         synchronized (order) {
 
             // Fetch recent cartline ids
-            Set<Long> recentIds = (Set<Long>) ((FDSessionUser) user).getRecentCartlineIdsSet(orderId);
+            Set<Long> recentIds = ((FDSessionUser) user).getRecentCartlineIdsSet(orderId);
             
             populateOrderData(user, request, userId, order, cartData, recentIds);
         }
@@ -388,7 +388,7 @@ public class CartDataService {
         return item;
     }
 
-    private boolean isMealBundle(ProductModel productModel) {
+    public boolean isMealBundle(ProductModel productModel) {
         return HolidayMealBundleService.defaultService().isProductModelLayoutTypeHolidayMealBundle(productModel)
                 || MealkitService.defaultService().isProductModelLayoutTypeMealkit(productModel);
     }

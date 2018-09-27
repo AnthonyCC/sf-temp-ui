@@ -127,5 +127,7 @@ public interface CustomerInfoServiceI {
 	public boolean updateCustomerInfo(FDActionInfo info, ErpCustomerInfoModel customerInfo) throws FDResourceException, RemoteException;
 	
 	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException, RemoteException;
+
+    public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws FDResourceException;
 	
 }

@@ -1075,13 +1075,20 @@ public class FDStoreProperties {
 	private static final String WHITELISTED_IP_LIST="fdstore.allowed.ip.list";
 	private static final String CARD_VERIFICATION_RATE_LIMIT="fdstore.payment.verification.rate.limit";
 
-	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled";
+    private static final String PROP_BKOFFICE_SELF_CREDIT_URL = "fdstore.bkoffice.selfcredit.url";
+    private static final String PROP_BKOFFICE_COMPLAINT_REASONS_URL = "fdstore.bkoffice.complaint.reasons.url";
+
+	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled"; 
+
 	private static final String PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO = "fdstore.refresh.lookbackSecs.productInfo";
 	private static final String PROP_BACK_OFFICE_API_URL = "fdstore.backoffice.url";
 	private static final String PROP_BACK_OFFICE_CONNECTION_POOL = "fdstore.backoffice.conn.pool";
     private static final String PROP_BACK_OFFICE_CONNECTION_TIMEOUT = "fdstore.backoffice.conn.timeout";
     private static final String PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.backoffice.conn.request.timeout";
     private static final String PROP_BACK_OFFICE_CONN_READ_TIMEOUT = "fdstore.backoffice.conn.read.timeout";
+    
+    private static final String PROP_BKOFFICE_CARTON_INFO_URL = "fdstore.bkoffice.cartoninfo.url";
+    private static final String PROP_ORDER_COMPLAINT_DROPDOWN_LIMIT = "fdstore.order.complaint.dropdown.limit";
 
     private static final String PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT = "fdstore.section.product.limit.minimum.default";
     private static final String PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT = "fdstore.section.product.limit.maximum.default";
@@ -2074,16 +2081,26 @@ public class FDStoreProperties {
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
+
+        defaults.put(PROP_BKOFFICE_SELF_CREDIT_URL, "http://bsl.stdev14.nj01/FDService/service/V0/issueselfcredit");
+        defaults.put(PROP_BKOFFICE_COMPLAINT_REASONS_URL, "http://bsl.stdev14.nj01/FDService/service/V0/complaintreasons/true");
+
         defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
         defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");
 
         defaults.put(PROP_LAZYLOADING_MODULES_ENABLED, "false");
+
+        defaults.put("feature.rollout.backOfficeSelfCredit", "GLOBAL:ENABLED,false;");
 
         defaults.put(PROP_BACK_OFFICE_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_POOL, 5);
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
         
+        defaults.put(PROP_BKOFFICE_CARTON_INFO_URL, "http://bsl.stdev14.nj01/FDService/service/v0/arecartonsdelivered");
+
+        defaults.put(PROP_ORDER_COMPLAINT_DROPDOWN_LIMIT, "5");
+
         defaults.put(PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT, "30");
         defaults.put(PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT, "1");
 
@@ -3202,6 +3219,15 @@ public class FDStoreProperties {
 
     public static String getWindowSteeringPromoPrefix() {
         return get(WINDOW_STEERING_PROMOTION_PREFIX);
+    }
+
+    /**
+     * OSCACHE should be disabled when we are in some development environment. ( = annotation or preview mode ) Jsp-s can refer to this when deciding to use oscache or not.
+     *
+     * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)
+     */
+    public static boolean useOscache() {
+        return !(isAnnotationMode() || getPreviewMode());
     }
 
     public static boolean isStandingOrdersEnabled() {
@@ -5271,6 +5297,15 @@ public class FDStoreProperties {
     public static boolean isAmountSavedDpAccPageEnabled() {
         return (Boolean.valueOf(get(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED))).booleanValue();
     }
+
+    public static String getBkofficeSelfCreditUrl() {
+        return get(PROP_BKOFFICE_SELF_CREDIT_URL);
+    }
+
+    public static String getBkofficeComplaintReasonsUrl() {
+        return get(PROP_BKOFFICE_COMPLAINT_REASONS_URL);
+    }
+
     public static int getAccountCreationLimitPerIP() {
 		 return Integer.parseInt(get(ACCOUNT_CREATION_LIMIT_PER_IP));
 
@@ -5333,6 +5368,14 @@ public class FDStoreProperties {
 	        }
 	    }
 
+	public static String getBkofficeCartonInfoUrl() {
+		return get(PROP_BKOFFICE_CARTON_INFO_URL);
+	}
+
+    public static int getOrderComplaintDropdownLimit() {
+        return Integer.parseInt(get(PROP_ORDER_COMPLAINT_DROPDOWN_LIMIT));
+    }
+
     public static int getSectionProductLimitMinimumDefault() {
         return Integer.parseInt(get(PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT));
     }
@@ -5390,5 +5433,4 @@ public class FDStoreProperties {
 			}
 		}
 	}
-
 }

@@ -19,8 +19,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="fd-features" prefix="features" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <fd:CheckLoginStatus />
+<features:isActive name="selfcredit" featureName="backOfficeSelfCredit" />
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
@@ -176,6 +179,7 @@
 							}
 						%>
 					</li>
+					<li><a href="#" data-component="self-credit-open-button">Request a Credit</a></li>
 					<%-- NO TARGET, comment out for now <li><a href="#">Legal</a></li> --%>
 				</ul>
 			</div>
@@ -211,6 +215,10 @@
 						<li><a href="/your_account/delivery_information.jsp">Update delivery addresses</a></li>
 						<li><a href="/your_account/signin_information.jsp">Update account, mobile and email information</a></li>
 					</ul>
+					
+					<c:if test="${selfcredit}">
+     					<button class="cssbutton green" type="button" data-component="self-credit-open-button">Request a Credit</button>
+					</c:if>
 					
 					<%-- FAQs --%>
 					<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><h2 class="help-heading bold">FAQs</h2></a>

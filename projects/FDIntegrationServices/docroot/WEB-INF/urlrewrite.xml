@@ -1286,5 +1286,20 @@
 	<!--		<from>^/([^v])(.*)$</from>-->
 	<!--		<to>/v/1/$1$2</to>-->
 	<!--	</rule>-->
+	
+	<!-- Self-Credit -->
+	<rule>
+		<from>^/v/([0-9]+)/selfcredit/orders/</from>
+		<to last="true">/selfcredit.do?action=getSelfCreditOrderHistory&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/selfcredit/orderdetails/(.*)</from>
+		<to last="true">/selfcredit.do?action=getSelfCreditOrderDetails&amp;orderId=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/selfcredit/issuecredit</from>
+		<to last="true">/selfcredit.do?action=postIssueSelfCredit&amp;ver=$1</to>
+	</rule>
+	
 </urlrewrite>
 
