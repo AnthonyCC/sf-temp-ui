@@ -355,6 +355,7 @@
 	
 	<tag>
 		<name>selfCreditOrderDetails</name>
+		<bodycontent>empty</bodycontent>
 		<tagclass>com.freshdirect.webapp.taglib.selfcredit.SelfCreditOrderDetailsPotatoTag</tagclass>
 		<info></info>
 		<attribute>
