@@ -50,6 +50,7 @@
 	<tag>
 		<name>redirectUnauthorizedFeature</name>
 		<tagclass>com.freshdirect.webapp.features.tags.UnauthorizedFeatureRedirectorTag</tagclass>
+		<bodycontent>empty</bodycontent>
 		<attribute>
 	       <name>featureActive</name>
 	       <required>true</required>
