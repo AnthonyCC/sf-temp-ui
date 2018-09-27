@@ -44,27 +44,32 @@ public class ProductRecommenderController extends BaseController {
 
         Message responseMessage = null;
 
-        if (ACTION_FK_CART.equals(action)) {
-            FDUserI customer = user.getFDSessionUser();
-
-            Recommendations recommendations = recommenderService.recommendDYFForFoodKickCart(customer);
-            if (recommendations != null) {
-                List<ProductRecommendationData> listOfRecommendations = new ArrayList<ProductRecommendationData>();
-
-                ProductRecommendationData dyfRecommendation = buildResponseDataFromRecommendations(recommendations, "Custom Title", "Custom Deal Info", request, customer);
-                listOfRecommendations.add(dyfRecommendation);
-
-                responseMessage = new CartRecommenderResponse(listOfRecommendations);
-            } else {
-                responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, "FK Cart Recommender failed.");
-            }
+        if (user == null) {
+            responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
         } else {
-            final String error = String.format("Unrecognized action '%s'.", (action != null ? action : "<null>"));
-            responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, error);
+            if (ACTION_FK_CART.equals(action)) {
+                FDUserI customer = user.getFDSessionUser();
+
+                Recommendations recommendations = recommenderService.recommendDYFForFoodKickCart(customer);
+                if (recommendations != null) {
+                    List<ProductRecommendationData> listOfRecommendations = new ArrayList<ProductRecommendationData>();
+
+                    ProductRecommendationData dyfRecommendation = buildResponseDataFromRecommendations(recommendations, "Custom Title", "Custom Deal Info", request, customer);
+                    listOfRecommendations.add(dyfRecommendation);
+
+                    responseMessage = new CartRecommenderResponse(listOfRecommendations);
+                } else {
+                    responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, "FK Cart Recommender failed.");
+                }
+            } else {
+                final String error = String.format("Unrecognized action '%s'.", (action != null ? action : "<null>"));
+                responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, error);
+            }
         }
 
         setResponseMessage(model, responseMessage, user);
-
         return model;
     }
 
