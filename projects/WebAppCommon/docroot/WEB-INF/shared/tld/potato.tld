@@ -341,4 +341,48 @@
 		</attribute>
 	</tag>
 	
+	<tag>
+		<name>selfCreditOrderHistory</name>
+		<tagclass>com.freshdirect.webapp.taglib.selfcredit.SelfCreditOrderHistoryPotatoTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>selfCreditOrderDetails</name>
+		<tagclass>com.freshdirect.webapp.taglib.selfcredit.SelfCreditOrderDetailsPotatoTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>orderId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>storeCreditsPotato</name>
+		<tagclass>com.freshdirect.webapp.taglib.storecredits.StoreCreditsPotatoTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>featureActive</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	
 </taglib>

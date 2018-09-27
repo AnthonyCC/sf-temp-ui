@@ -38,6 +38,8 @@ ul.customselect,
   color: inherit;
   background: transparent;
   border: none;
+  text-align: left;
+  cursor: pointer;
 }
 
 #FDCustomSelect li button:focus,
@@ -59,7 +61,72 @@ select.selected + .fdselect > .selectButton {
   background-color: #4fa157;
 }
 
+.popupcontentghost > .selectButton.selectlight,
+select.selected + .fdselect > .selectButton.selectlight {
+  background-color: #fff;
+  border: solid 2px #d4d4d4;
+  border-radius: 0;
+  color: #444444;
+}
+
+.fdselect .selectButton.selectlight:focus,
+.fdselect .selectButton.selectlight:hover,
+.popupcontentghost > .selectButton.selectlight:hover,
+.popupcontentghost > .selectButton.selectlight:active {
+  border: solid 2px #4fa157;
+}
+
+.selectButton.selectlight.overlay-open {
+  border: solid 2px #4fa157;  
+}
+
 .fdselect .selectButton {
   background-color: #999;
   border-color: transparent;
+}
+
+.fdselect .selectButton.selectlight {
+  background-color: #fff;
+  color: #444444;
+  border: solid 2px #d4d4d4;
+}
+.fdselect .selectButton.selectlight::after,
+.popupcontentghost > .selectButton.selectlight::after {
+  content: "";
+  background-color: transparent;
+  position: absolute;
+  top: 0px;
+  width: 8px;
+  border-bottom: 2px solid #919191;
+  height: 8px;
+  border-right: 2px solid #919191;
+  transform: rotate(45deg);
+}
+
+#FDCustomSelect.browse-popup.selectlight .browse-popup-content ul:first-child {
+  margin-left: 0;
+}
+
+#FDCustomSelect.browse-popup.selectlight .popupcontent .customselect li {
+  height: 51px;
+  padding: 0 11px;
+  border-top: 1px solid #d4d4d4;
+}
+
+#FDCustomSelect.browse-popup.selectlight .popupcontent .customselect li button {
+  font-size: 14px;
+  font-family: "Verdana", sans-serif;
+  position: relative;
+  transform: translateY(25%);
+}
+
+@media (max-width: 768px) {
+  .browse-popup.shown {
+    top: 10%;
+    bottom: 10%;
+    left: 9%;
+    right: 9%;
+    max-height: 80%;
+    overflow-y: auto;
+  }
 }

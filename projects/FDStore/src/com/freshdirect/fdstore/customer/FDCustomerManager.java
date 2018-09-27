@@ -67,7 +67,6 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
-import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
@@ -144,7 +143,6 @@ import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -170,8 +168,6 @@ import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
-import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.storeapi.content.ContentFactory;
 
@@ -2735,6 +2731,24 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
+
+    public static FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws FDResourceException {
+        try {
+            if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+                return CustomerInfoService.getInstance().getPendingCreditHistory(identity);
+            } else {
+                lookupManagerHome();
+                FDCustomerManagerSB sb = managerHome.create();
+                return sb.getPendingCreditHistory(identity);
+            }
+        } catch (RemoteException e) {
+            invalidateManagerHome();
+            throw new FDResourceException(e, "Error creating session bean");
+        } catch (CreateException e) {
+            invalidateManagerHome();
+            throw new FDResourceException(e, "Error creating session bean");
+        }
+    }
 
 	public static String getNextId(String schema, String sequence) throws FDResourceException {
 		

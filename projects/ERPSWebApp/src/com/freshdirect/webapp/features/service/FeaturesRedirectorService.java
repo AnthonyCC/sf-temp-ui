@@ -39,7 +39,7 @@ public class FeaturesRedirectorService {
 				redirectUrl = null;
 				break;
 			}
-		}
+        }
 		return redirectUrl;
 	}
 }

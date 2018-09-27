@@ -1228,7 +1228,7 @@ public class Cart {
 			}
 		}
 
-
+		cartDetail.setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
         return cartDetail;
     }
 

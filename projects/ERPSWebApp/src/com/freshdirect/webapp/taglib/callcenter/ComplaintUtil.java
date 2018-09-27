@@ -94,7 +94,7 @@ public class ComplaintUtil {
     	if (!it.hasNext())
     		return Collections.emptySet();
     	
-    	String deptName = (String) it.next();
+    	String deptName = it.next();
     	Set<String> reasons = getReasonTextsForDepartment(deptName, excludeCartReq);
 
     	// Case k=1
@@ -104,7 +104,7 @@ public class ComplaintUtil {
     	// Case k>1
     	Set<String> r0 = reasons; // convert list to set
     	while (it.hasNext()) {
-        	deptName = (String) it.next();
+        	deptName = it.next();
         	Set<String> r1 = getReasonTextsForDepartment(deptName, excludeCartReq);
         	
         	r0.retainAll(r1); // intersect r0 and r1
@@ -127,7 +127,7 @@ public class ComplaintUtil {
     	if (!it.hasNext())
     		return Collections.emptyList();
     	
-    	String deptName = (String) it.next();
+    	String deptName = it.next();
     	List<ErpComplaintReason> reasons = getReasonsForDepartment(deptName, excludeCartReq);
 
     	// Case k=1
@@ -137,7 +137,7 @@ public class ComplaintUtil {
     	// Case k>1
     	List<ErpComplaintReason> r0 = new ArrayList<ErpComplaintReason>(reasons); // convert list to set
     	while (it.hasNext()) {
-        	deptName = (String) it.next();
+        	deptName = it.next();
         	List<ErpComplaintReason> r1 = getReasonsForDepartment(deptName, excludeCartReq);
         	
         	r0.retainAll(r1); // intersect r0 and r1
@@ -170,7 +170,7 @@ public class ComplaintUtil {
         return null;
     }
     
-    private static String standardizeDepartment(String dept) {
+    public static String standardizeDepartment(String dept) {
         String r = "none";
         
         if ( "bakery".equalsIgnoreCase(dept) || (dept != null && dept.toLowerCase().contains("bakery")) ) { r = "BAK"; }
@@ -233,14 +233,14 @@ public class ComplaintUtil {
 		Collection<FDCartLineI> lines = order.getOrderLines();
 
 		for (Iterator<FDCartLineI> it = lines.iterator(); it.hasNext(); ) {
-			FDCartLineI line = (FDCartLineI) it.next();
+			FDCartLineI line = it.next();
 			if ( lastDept==null || !lastDept.equalsIgnoreCase( line.getDepartmentDesc() ) ) {
 				lastDept = standardizeDepartment(line.getDepartmentDesc());
 			}
 
 			ComplaintDeptInfo deptInfo = null;
 			if ( map.containsKey(lastDept) ) {
-				deptInfo = (ComplaintDeptInfo) map.get(lastDept);
+				deptInfo = map.get(lastDept);
 			} else {
 				deptInfo = new ComplaintDeptInfo();
                 map.put(lastDept, deptInfo);

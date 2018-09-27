@@ -1,0 +1,91 @@
+{namespace youraccount}
+
+/**
+  @param? totalAmount
+  @param? totalAmountFD
+  @param? totalAmountFK
+  @param? pendingCredits
+  @param? approvedCredits
+ */
+{template .accountCredits autoescape="false"}
+<div id="accountCredits">
+  <h1 class="account-credits--header">FreshDirect Account Credits</h1>
+  <h1 class="account-credits--header-mobile">Account Credits</h1>
+  <hr class="account-credits--header-hr">
+  <div class="account-credits">
+    {if isNonnull($totalAmount)}
+      <div class="total-credit">
+        <div class="credit">${$totalAmount}</div>
+        <spam class="total">total available credits</spam>
+      </div>
+      {if isNonnull($totalAmountFD) and isNonnull($totalAmountFK)}
+        <div class="credit-info">
+        FreshDirect (FD) and FoodKick (FK) credits are combined. They will automatically be deducted from your next order.
+        </div>
+        {else}
+        <div class="credit-info">
+        Credits will automatically be deducted from your next order.
+        </div>
+      {/if}
+    {/if}
+    {if length($pendingCredits) > 0}
+      <div class="under-review">
+        <h1 class="under-review--header">Under Review</h1>
+          {foreach $creditLine in $pendingCredits}
+            {call .creditLine}
+              {param date: $creditLine.date /}
+              {param store: $creditLine.store /}
+              {param status: $creditLine.status /}
+              {param amount: $creditLine.amount /}
+              {param order: $creditLine.order /}
+            {/call}
+          {/foreach}
+      </div>
+    {/if}
+    {if length($approvedCredits) > 0}
+      <div class="all-credits">
+        <h1 class="all-credits--header">All Credits</h1>
+          {foreach $creditLine in $approvedCredits}
+            {call .creditLine}
+              {param date: $creditLine.date /}
+              {param store: $creditLine.store /}
+              {param status: $creditLine.status /}
+              {param amount: $creditLine.amount /}
+              {param order: $creditLine.order /}
+            {/call}
+          {/foreach}
+      </div>
+    {/if}
+  </div>
+</div>
+{/template}
+
+/**
+  @param date
+  @param store
+  @param status
+  @param amount
+  @param order
+*/
+{template .creditLine autoescape="false"}
+  <div class="credit-line-col">
+    <div class="credit-line-container">
+      <div class="date">{$date}</div>
+      <div>
+        <div class="brand {$store}">{$store}</div>
+        <div class="status">{$status}</div>
+      </div>
+    </div>
+    <div class="credit-line-container end">
+      <div class="value {$store} {$status}">
+      {if $status == 'Credit redeemed'}
+        <span class="credit-redeemed-sign">-</span>
+      {/if}
+      <span class="credit-line--amount">${$amount}</span>
+      </div>
+      {if $store == 'FD' and $status != 'Referral Credit'}
+        <div class="receipt"><a href="order_details.jsp?orderId={$order}">View Receipt</a></div>
+      {/if}
+    </div>
+  </div>
+{/template}

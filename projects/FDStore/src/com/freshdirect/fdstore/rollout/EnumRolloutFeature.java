@@ -27,7 +27,9 @@ public enum EnumRolloutFeature {
     debitCardSwitch("debitCardSwitch", "2017"),
     cosRedesign2017("cosRedesign2017", "2017"),
     modOrderConfirmPageRedesign("modOrderConfirmPageRedesign", "2018"),
+    backOfficeSelfCredit("backOfficeSelfCredit", "2018"),
     productCard2018("productCard", "2018");
+
 
     private final EnumRolloutFeature child;
     private final String cookieName;

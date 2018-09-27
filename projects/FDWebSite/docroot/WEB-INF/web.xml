@@ -767,6 +767,34 @@
 		<servlet-name>referralregistration</servlet-name>
 		<url-pattern>/invite/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>BackOfficeSelfCreditServlet</servlet-name>
+		<servlet-class>com.freshdirect.backoffice.selfcredit.servlet.BackOfficeSelfCreditServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BackOfficeSelfCreditServlet</servlet-name>
+		<url-pattern>/api/selfcredit/issuecredit</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>SelfCreditOrderHistoryServlet</servlet-name>
+		<servlet-class>com.freshdirect.backoffice.selfcredit.servlet.SelfCreditOrderHistoryServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SelfCreditOrderHistoryServlet</servlet-name>
+		<url-pattern>/api/selfcredit/orders</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>SelfCreditOrderDetailsServlet</servlet-name>
+		<servlet-class>com.freshdirect.backoffice.selfcredit.servlet.SelfCreditOrderDetailsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SelfCreditOrderDetailsServlet</servlet-name>
+		<url-pattern>/api/selfcredit/orderdetails</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>Warmup</servlet-name>
 		<servlet-class>com.freshdirect.webapp.warmup.web.WarmupServlet</servlet-class>
@@ -796,6 +824,10 @@
 	<error-page>
 		<error-code>500</error-code>
 		<location>/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>401</error-code>
+		<location>/unauthorized.jsp</location>
 	</error-page>
 	<jsp-config>
 		<taglib>

@@ -19,6 +19,8 @@ public class CartDetail {
     private List<SummaryLineCharge> summaryLineCharges = new ArrayList<SummaryLineCharge>();
 
     private Date platterCutoffTime;
+    
+    private boolean purchaseDlvPassEligible;
 
     public String getPlatterCutoffTime() {
         if (platterCutoffTime != null){
@@ -1004,6 +1006,14 @@ public class CartDetail {
 
 	public void setDlvPassId(String dlvPassId) {
 		this.dlvPassId = dlvPassId;
+	}
+
+	public boolean isPurchaseDlvPassEligible() {
+		return purchaseDlvPassEligible;
+	}
+
+	public void setPurchaseDlvPassEligible(boolean purchaseDlvPassEligible) {
+		this.purchaseDlvPassEligible = purchaseDlvPassEligible;
 	}
 
 }

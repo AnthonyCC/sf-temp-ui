@@ -3,7 +3,6 @@ package com.freshdirect.mobileapi.controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -19,20 +18,15 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.pricing.PricingException;
-import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
-import com.freshdirect.fdstore.referral.FDReferralManager;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -44,15 +38,14 @@ import com.freshdirect.mobileapi.controller.data.request.DlvPassRequest;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.Timezone;
-import com.freshdirect.mobileapi.controller.data.response.CreditHistory;
 import com.freshdirect.mobileapi.controller.data.response.DPInfo;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.mobileapi.controller.data.response.DpAllPlans;
-import com.freshdirect.mobileapi.controller.data.response.DpSkuListResponse;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory.Order;
 import com.freshdirect.mobileapi.controller.data.response.ReservationTimeslots;
+import com.freshdirect.mobileapi.controller.data.response.StoreCredits;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
@@ -63,15 +56,14 @@ import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.Timeslot;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.mobileapi.util.NewBrowseUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
-import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
-
+import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.DeliveryPassService;
+import com.freshdirect.webapp.ajax.storecredits.service.StoreCreditsService;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.util.JspMethods;
 
 public class AccountController extends BaseController implements Comparator <Order>{
 
@@ -272,27 +264,11 @@ public class AccountController extends BaseController implements Comparator <Ord
     }
 
     private ModelAndView getCreditHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-
-    	CreditHistory responseMessage = new CreditHistory();
-        FDIdentity customerIdentity = user.getFDSessionUser().getIdentity();
-
-        FDCustomerCreditHistoryModel creditHistory = FDCustomerManager.getCreditHistory(customerIdentity);
-		responseMessage.setRemainingAmount(creditHistory.getRemainingAmount());
-
-        List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
-
-        responseMessage.setTotalResultCount(mimList.size());
-        List<CreditHistory.Credit> crlist = new ArrayList<CreditHistory.Credit>();
-        for(ErpCustomerCreditModel cm : mimList) {
-    		CreditHistory.Credit cr = new CreditHistory.Credit();
-    		cr.setDate(cm.getcDate());
-    		cr.setType(cm.getDepartment());
-    		cr.setOrder("Referral Credit".equals(cm.getDepartment())?"":cm.getSaleId());
-    		cr.setEstore(cm.geteStore());
-    		cr.setAmount("Redemption".equals(cm.getDepartment())?"(" + JspMethods.formatPrice(cm.getAmount()) + ")" :JspMethods.formatPrice(cm.getAmount()));
-    		crlist.add(cr);
-    	}
-        responseMessage.setCredits(crlist);
+        boolean isSelfCreditFeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.backOfficeSelfCredit, request.getCookies(),
+                user.getFDSessionUser());
+        com.freshdirect.webapp.ajax.storecredits.data.StoreCredits storeCredits = StoreCreditsService.defaultService().collectStoreCredits(user.getFDSessionUser(),
+                isSelfCreditFeatureActive);
+        StoreCredits responseMessage = new StoreCredits(storeCredits);
         setResponseMessage(model, responseMessage, user);
         return model;
     }

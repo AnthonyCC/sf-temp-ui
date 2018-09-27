@@ -15,10 +15,14 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="fd-features" prefix="features" %>
 <%-- 
 	requires: 
 		Map<String, String> folderMap=new LinkedHashMap<String, String>();
 --%>
+
+<features:isActive name="selfcredit" featureName="backOfficeSelfCredit" />
+
 <%
 	final Logger LOGGER = LoggerFactory.getInstance("i_youraccount_links.jspf");
 	FDSessionUser user_youract = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -97,8 +101,13 @@
 		/* 2-5 */
 			folderMap.put("Order History","/your_account/order_history.jsp");
 		/* 2-6 */
-			folderMap.put("Store Credits","/your_account/credits.jsp");
+			boolean selfCreditEnabled = ((Boolean)pageContext.getAttribute("selfcredit")).booleanValue();
+			if ( selfCreditEnabled ) {
+				 folderMap.put("Issue Self-Credit","/your_account/selfcredit.jsp");
+			}
 		/* 2-7 */
+			folderMap.put("Store Credits","/your_account/credits.jsp");
+		/* 2-8 */
 			if ( user_youract.isGiftCardsEnabled() ) {
 				 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
 			}

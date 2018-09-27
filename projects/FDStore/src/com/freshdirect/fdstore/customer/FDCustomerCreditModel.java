@@ -5,9 +5,9 @@ import java.util.Date;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.customer.EnumSaleType;
 
 /**@author ekracoff*/
 public class FDCustomerCreditModel implements java.io.Serializable {
@@ -69,6 +69,14 @@ public class FDCustomerCreditModel implements java.io.Serializable {
 	public void setCreateDate(Date date){
 		customerCreditModel.setCreateDate(date);
 	}
+
+    public String geteStore() {
+        return customerCreditModel.geteStore();
+    }
+
+    public void seteStore(String eStore) {
+        customerCreditModel.seteStore(eStore);
+    }
 
 	public String getAction() {
 		return action;

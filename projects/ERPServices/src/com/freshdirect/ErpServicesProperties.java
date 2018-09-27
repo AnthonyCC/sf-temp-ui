@@ -304,8 +304,13 @@ public class ErpServicesProperties {
 	private static final String PROP_HL_PDP_URL="fdstore.erp.hl.pdp.url";
     private static final String PROP_HL_PDP_UPDATE_URL="fdstore.erp.hl.pdpupdate.url";
 
-
-
+    private final static String PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_PER_COMPLAINT = "selfcredit.autoApprove.amount.per.complaint";
+    private final static String PROP_SELF_CREDIT_AUTOAPPROVE_QUANTITY_DAY_RANGE_LIMIT = "selfcredit.autoApprove.day.range.limit";
+    private final static String PROP_SELF_CREDIT_AUTOAPPROVE_MAX_QUANTITY_PER_DAY_RANGE = "selfcredit.autoApprove.max.quantity.per.day.range";
+    private final static String PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_DAY_RANGE_LIMIT = "selfcredit.autoApprove.amount.day.range.limit";
+    private final static String PROP_SELF_CREDIT_AUTOAPPROVE_MAX_AMOUNT_PER_DAY_RANGE = "selfcredit.autoApprove.max.amount.per.day.range";
+    private final static String PROP_SELF_CREDIT_ALLOW_CASHBACK = "selfcredit.allow.cashback";
+    private final static String PROP_SELF_CREDIT_AGENT = "selfcredit.agent";
 
 	static {
 		Properties defaults = new Properties();
@@ -547,6 +552,14 @@ public class ErpServicesProperties {
         defaults.put(PROP_HL_PDP_URL, "http://uat1.hlserve.com/delivery/api/relatedSkus?");
         defaults.put(PROP_HL_PDP_UPDATE_URL, "http://uat1.hlserve.com/delivery/api/product?");
         defaults.put(PROP_HL_PDPPAGE_MAXMES_COUNT, "2");
+
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_PER_COMPLAINT, "20.0");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_QUANTITY_DAY_RANGE_LIMIT, "10");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_QUANTITY_PER_DAY_RANGE, "2");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_DAY_RANGE_LIMIT, "10");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_AMOUNT_PER_DAY_RANGE, "40.0");
+        defaults.put(PROP_SELF_CREDIT_ALLOW_CASHBACK, "false");
+        defaults.put(PROP_SELF_CREDIT_AGENT, "self");
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -1345,4 +1358,31 @@ public class ErpServicesProperties {
 		return Integer.parseInt(config.getProperty(PROP_HL_PDPPAGE_MAXMES_COUNT));
 	}
 
+    public static double getSelfCreditAutoapproveAmountPerComplaint() {
+        return Double.parseDouble(config.getProperty(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_PER_COMPLAINT));
+    }
+
+    public static int getSelfCreditAutoapproveQuantityDayRangeLimit() {
+        return Integer.parseInt(config.getProperty(PROP_SELF_CREDIT_AUTOAPPROVE_QUANTITY_DAY_RANGE_LIMIT));
+    }
+
+    public static int getSelfCreditAutoapproveMaxQuantityPerDayRange() {
+        return Integer.parseInt(config.getProperty(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_QUANTITY_PER_DAY_RANGE));
+    }
+
+    public static int getSelfCreditAutoapproveAmountDayRangeLimit() {
+        return Integer.parseInt(config.getProperty(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_DAY_RANGE_LIMIT));
+    }
+
+    public static double getSelfCreditAutoapproveMaxAmountPerDayRange() {
+        return Double.parseDouble(config.getProperty(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_AMOUNT_PER_DAY_RANGE));
+    }
+
+    public static boolean getSelfCreditAllowCashback() {
+        return Boolean.valueOf(config.getProperty(PROP_SELF_CREDIT_ALLOW_CASHBACK)).booleanValue();
+    }
+
+    public static String getSelfCreditAgent() {
+        return config.getProperty(PROP_SELF_CREDIT_AGENT);
+    }
 }

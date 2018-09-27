@@ -55,6 +55,7 @@ import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguredProduct;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -177,9 +178,9 @@ public interface ErpCustomerManagerSB extends EJBObject {
      
     public Collection<ModelI> getFailedAuthorizationSales() throws RemoteException;
     
-    public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, RemoteException;
+    public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, RemoteException, FDResourceException;
     
-    public String approveComplaint(String complaintId, boolean isApproved, String csrId, Double limit) throws ErpComplaintException, RemoteException;
+    public String approveComplaint(String complaintId, boolean isApproved, String csrId, Double limit) throws ErpComplaintException, RemoteException, FDResourceException;
     
     public void updateCustomerCredit(PrimaryKey pk, String customerCreditId, double delta) throws RemoteException;
     

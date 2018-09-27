@@ -8,6 +8,7 @@
 	String[] checkContactForm_i_contact_us = {"subject", "message", "email", "first_name", "last_name", "home_phone"};
 	String faqSections_i_contact_us = FDStoreProperties.getFaqSections();
 	String csNumberMedia_i_contact_us = user.getCustomerServiceContactMediaPath();
+	int orderMaxQuantity = FDStoreProperties.getOrderComplaintDropdownLimit();
 %>
 <fd:ContactFdController result="result" successPage='/help/contact_fd_thank_you.jsp'>
 	<fd:ErrorHandler result='<%=result%>' name='kana' id='errorMsg'>
@@ -107,7 +108,7 @@
 									<select class="customsimpleselect" name="salePK" id="order-field">
 										<option value="">Select Order:</option>
 										<logic:iterate id="orderInfo" indexId="idx" collection="<%= orderHistoryInfo %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
-											<% if (idx.intValue() == 5) break; %>
+											<% if (idx.intValue() == orderMaxQuantity) break; %>
 											<option value="<%= orderInfo.getErpSalesId() %>">#<%= orderInfo.getErpSalesId() %> - <%=orderInfo.getOrderStatus().getDisplayName()%> - <%= dateFormatter.format( orderInfo.getRequestedDate() ) %></option>
 										</logic:iterate>
 									</select>
