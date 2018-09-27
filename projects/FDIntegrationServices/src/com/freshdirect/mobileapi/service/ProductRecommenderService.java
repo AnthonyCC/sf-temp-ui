@@ -36,21 +36,16 @@ public class ProductRecommenderService {
         try {
             result = FDStoreRecommender.getInstance().getRecommendations(siteFeature, customer, input);
 
-            debugRecommendation("recommendDYFForFoodKickCart", customer, result);
+            // debug section
+            final int numberOfRecommendedProducts = result.sizeOfRecommendedContent();
+            final String customerId = customer.getIdentity().getErpCustomerPK();
+            final String cohortName = customer.getCohortName();
+            final String variantId = result.getVariant().getId();
+
+            LOGGER.debug(numberOfRecommendedProducts + " products were recommended to customer id=" + customerId + ", cohort=" + cohortName + " by variant " + variantId + " of " + siteFeature + " site feature");
         } catch (FDResourceException exc) {
             LOGGER.error("Failed to get recommendations for customer " + customer.getIdentity(), exc );
         }
         return result;
-    }
-
-    private void debugRecommendation(String recommenderName, FDUserI customer, Recommendations recommendations) {
-        EnumSiteFeature siteFeature = recommendations.getVariant().getSiteFeature();
-        String variantId = recommendations.getVariant().getId();
-        String cohortName = customer.getCohortName();
-
-        LOGGER.debug("== " + recommenderName + " ==");
-        LOGGER.debug("  Customer ID: " + customer.getIdentity().getErpCustomerPK() + "; Cohort: " + cohortName);
-        LOGGER.debug("  Site Feature: " + siteFeature.getName() + "; Selected Variant: " + variantId);
-        LOGGER.debug("  Recommended products: " + recommendations.getAllProducts().size());
     }
 }
