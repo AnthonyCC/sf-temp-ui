@@ -25,7 +25,6 @@ import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -57,7 +56,6 @@ import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
-import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.URLRewriteRule;
@@ -82,18 +80,17 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.PendingOrder;
-import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
+import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -107,7 +104,6 @@ import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
-import com.freshdirect.logistics.delivery.model.ShippingDetail;
 
 /**
  *
@@ -275,6 +271,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public boolean updateCustomerInfo(FDActionInfo info, ErpCustomerInfoModel customerInfo) throws FDResourceException, RemoteException;
     @Deprecated
     public void updateUserId(FDActionInfo info, String userId) throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
@@ -396,6 +393,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param identity the customer's identity reference
      * @deprecated
      */
+    @Deprecated
     public ErpOrderHistory getOrderHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
 
@@ -405,6 +403,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param identity the customer's identity reference
      * @deprecated
      */
+    @Deprecated
     public ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
     /**
@@ -416,7 +415,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured while accessing remote resources
      * @deprecated
      */
-	public String placeOrder(
+	@Deprecated
+    public String placeOrder(
 		FDActionInfo info,
 		ErpCreateOrderModel createOrder,
 		Set<String> usedPromotionCodes,
@@ -446,6 +446,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured while accessing remote resources
      * @deprecated
      */
+    @Deprecated
     public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays, boolean restoreReservation) throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException;
 
     /**
@@ -455,6 +456,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured while accessing remote resources
      * @deprecated
      */
+    @Deprecated
     public void modifyOrder(
 		FDActionInfo info,
 		String saleId,
@@ -485,6 +487,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured while accessing remote resources
      * @deprecated
      */
+    @Deprecated
     public void modifyAutoRenewOrder(
 		FDActionInfo info,
 		String saleId,
@@ -525,6 +528,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @return Map of order line number / FDAvailabilityI objects
      * @deprecated
      */
+    @Deprecated
     public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder, long timeout, String isFromLogin) throws FDResourceException, RemoteException;
 
     /**
@@ -540,6 +544,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured while accessing remote resources
      * @deprecated
      */
+    @Deprecated
     public List<FDCustomerOrderInfo> locateCustomers(FDCustomerSearchCriteria criteria) throws FDResourceException, RemoteException;
     @Deprecated
     public List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException, RemoteException;
@@ -643,7 +648,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured while accessing remote resources
      * @deprecated
      */
-	public String placeSubscriptionOrder( FDActionInfo info,
+	@Deprecated
+    public String placeSubscriptionOrder( FDActionInfo info,
 		                      ErpCreateOrderModel createOrder,
 		                      Set<String> usedPromotionCodes,
 		                      String rsvId,
@@ -687,6 +693,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param identity the customer's identity reference
      * @deprecated
      */
+    @Deprecated
     public OrderHistoryI getWebOrderHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
     public  String getAutoRenewSKU(String customerPK)throws FDResourceException, RemoteException;
@@ -965,10 +972,14 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException;
 	@Deprecated
 	public void updateDpOptinDetails(boolean isAutoRenewDp, String custId, String dpType, FDActionInfo info, EnumEStoreId eStore) throws FDResourceException,RemoteException;
-	@Deprecated
+
 	public List<String> getComplaintsToRejectCredits() throws RemoteException, FDResourceException;
 	@Deprecated
 	public void rejectCreditsOlderThanAMonth(List<String> listToRejCredits) throws RemoteException;
+
+	public PendingSelfComplaintResponse getSelfIssuedComplaintsForAutoApproval() throws RemoteException, FDResourceException;
+
+    public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws RemoteException, FDResourceException;
 
 }
 

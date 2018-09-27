@@ -117,6 +117,9 @@
 
     <bean id="adController" class="com.freshdirect.mobileapi.controller.AdController"
         parent="baseController" />
+        
+    <bean id="selfCreditController" class="com.freshdirect.mobileapi.controller.SelfCreditController"
+		parent="baseController" />
 
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -159,6 +162,7 @@
 				<prop key="ewalletexpresscheckout.do">ewalletExpressController</prop> -->
 				<prop key="**/ewalletstdcheckout.do">ewalletStandardController</prop>
                 <prop key="**/ad.do">adController</prop>
+                <prop key="**/selfcredit.do">selfCreditController</prop>
 			</props>
 		</property>
 	</bean>
@@ -207,4 +211,5 @@
 	</bean>
 
 	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+
 </beans>

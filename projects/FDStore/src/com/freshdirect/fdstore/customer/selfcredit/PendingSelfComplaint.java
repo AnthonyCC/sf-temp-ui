@@ -11,8 +11,8 @@ public class PendingSelfComplaint implements Serializable {
 
     private String complaintId;
     private String customerId;
+    private Double complaintAmount;
     private String note;
-    private Double amount;
 
     public String getComplaintId() {
         return complaintId;
@@ -30,19 +30,19 @@ public class PendingSelfComplaint implements Serializable {
         this.customerId = customerId;
     }
 
+    public Double getComplaintAmount() {
+        return complaintAmount;
+    }
+
+    public void setComplaintAmount(Double complaintAmount) {
+        this.complaintAmount = complaintAmount;
+    }
+
 	public String getNote() {
 		return note;
 	}
 
 	public void setNote(String note) {
 		this.note = note;
-	}
-
-	public Double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Double amount) {
-		this.amount = amount;
 	}
 }

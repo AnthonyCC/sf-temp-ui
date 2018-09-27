@@ -251,7 +251,7 @@ var FreshDirect = FreshDirect || {};
         });
       }
     }.bind(this));
-    
+
     $('input, button, textarea, select, a, [tabindex]').each(function (i, tiel) {
       var $tiel = $(tiel);
       if (!$el.find($tiel).length) {
@@ -259,7 +259,7 @@ var FreshDirect = FreshDirect || {};
       }
     });
 
-    
+
     // set new tabindices for popup
     if ($el.attr('data-tabindex') !== 'manual') {
         $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
@@ -276,7 +276,7 @@ var FreshDirect = FreshDirect || {};
               $(e).attr('tabindex', lastEl+=1);
         }
     });
-    
+
 //    if ($el.find('.qs-popup-close-icon').length > 0 ) {
 //        var close = $el.find('.qs-popup-close-icon')[0];
 //        $(close).attr('tabindex', lastEl+1);
@@ -425,7 +425,7 @@ var FreshDirect = FreshDirect || {};
       this.placeholderActive = true;
     }
 
-    if(align) {
+    if(align && !fd.mobWeb) {
       var position={};
       // trigger, vertical
       if(align[0]==='t') {
@@ -494,7 +494,7 @@ var FreshDirect = FreshDirect || {};
 
       this.$el.attr('data-align', align);
 
-    } else if(align!==false) {
+    } else if(align!==false && !fd.mobWeb) {
       if (this.config.valign === 'bottom') {
           this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
       } else {

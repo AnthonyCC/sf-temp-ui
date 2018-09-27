@@ -23,6 +23,10 @@ var FreshDirect = FreshDirect || {};
 
     if (this.el.next() && this.el.next().hasClass(this.config.cssClass)) {
       return this.el.next();
+    } else if(!!this.el.attr('data-custom-select-light-class')) {
+      widgetNode = $('<span class="'+(this.config.cssClass || '')+' '+(this.el.attr('data-custom-select-class') || '')+'"><button class="selectButton cssbutton '+(this.el.attr('data-custom-select-button-class') || '')+' '+(this.el.attr('data-custom-select-light-class'))+'" aria-haspopup="true"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
+      this.el.after(widgetNode);
+      return widgetNode;
     } else {
       widgetNode = $('<span class="'+(this.config.cssClass || '')+' '+(this.el.attr('data-custom-select-class') || '')+'"><button class="selectButton cssbutton '+(this.config.buttonClass || '')+' '+(this.el.attr('data-custom-select-button-class') || '')+'" aria-haspopup="true"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
       this.el.after(widgetNode);
@@ -49,6 +53,7 @@ var FreshDirect = FreshDirect || {};
 
   Select.prototype.open = function () {
     this.popup.$el.find('.browse-popup-content').html('').append(this.widget.find('.popupcontent').clone());
+    $('.selectButton.selectlight').addClass('overlay-open');
     this.popup.showWithDelay(this.widget.find('.selectButton'), 'bl-tl-p');
     this.bindClick(this.popup.$el.find('.popupcontent'));
   };
@@ -67,10 +72,17 @@ var FreshDirect = FreshDirect || {};
         $('<div id="FDCustomSelect" class="browse-popup"><div class="browse-popup-content">cica</div></div>').hide().appendTo(document.body),
         $('.customselect button'),
         Select.POPUP_CONFIG
-      );
+        );
+        if($('.selectButton.cssbutton').hasClass('selectlight')) {
+          $('#FDCustomSelect.browse-popup').addClass('selectlight');
+        }
     }
 
     return Select.popup;
+  };
+
+  Select.unescape = function (text) {
+    return text.replace(/\[br]/g, "<br>").replace(/\[b]/g, '<b>').replace(/\[\/b]/g, '</b>');
   };
 
   Select.update = function (el, widget) {
@@ -79,7 +91,7 @@ var FreshDirect = FreshDirect || {};
         options = el.children('option'),
         popupcontent = '';
 
-    widget.find('.title').first().html(title);
+    widget.find('.title').first().html(Select.unescape(title));
 
     popupcontent += '<ul class="customselect" data-value="'+selected.val()+'">';
     options.each(function (i, option) {
@@ -92,7 +104,7 @@ var FreshDirect = FreshDirect || {};
       if (selected.val() === $option.val()) {
         cssClass += ' selected';
       }
-      popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+$option.html()+'</button></li>';
+      popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
     });
     popupcontent += '</ul>';
 
@@ -117,7 +129,7 @@ var FreshDirect = FreshDirect || {};
 
   Select.selectize = function (root) {
     var root = root || $(document.body),
-        els = root.find('select.customselect'),
+        els = root.find('select.customselect.custom-select-light') || root.find('select.customselect'),
         select;
 
     els.each(function (i, el) {

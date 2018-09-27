@@ -14,7 +14,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.referral.FDReferralManager;
-import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.webapp.ajax.storecredits.data.StoreCreditData;
 import com.freshdirect.webapp.ajax.storecredits.data.StoreCredits;
 
@@ -53,9 +52,9 @@ public class StoreCreditsService {
             double totalAmountFK = fdCustomerCreditHistoryModel.getRemainingAmountByEStore(EnumEStoreId.FDX.getContentId());
             double totalAmount = totalAmountFD + totalAmountFK;
 
-            storeCredits.setTotalAmountFD(FormatterUtil.formatToTwoDecimal(totalAmountFD));
-            storeCredits.setTotalAmountFK(FormatterUtil.formatToTwoDecimal(totalAmountFK));
-            storeCredits.setTotalAmount(FormatterUtil.formatToTwoDecimal(totalAmount));
+            storeCredits.setTotalAmountFD(totalAmountFD);
+            storeCredits.setTotalAmountFK(totalAmountFK);
+            storeCredits.setTotalAmount(totalAmount);
         }
 
         List<StoreCreditData> approvedCredits = new ArrayList<StoreCreditData>();
@@ -64,7 +63,7 @@ public class StoreCreditsService {
             storeCreditData.setDate(cm.getcDate());
             storeCreditData.setStore(collectStoreName(cm.geteStore()));
             storeCreditData.setStatus(collectStatus(cm.getDepartment()));
-            storeCreditData.setAmount(FormatterUtil.formatToTwoDecimal(cm.getAmount()));
+            storeCreditData.setAmount(Double.toString(cm.getAmount()));
             storeCreditData.setType(cm.getDepartment());
             storeCreditData.setOrder("Referral Credit".equals(cm.getDepartment()) ? "" : cm.getSaleId());
             approvedCredits.add(storeCreditData);
@@ -74,17 +73,16 @@ public class StoreCreditsService {
         List<StoreCreditData> pendingCredits = new ArrayList<StoreCreditData>();
         DateFormat pendingCreditDateFormatter = new SimpleDateFormat("MM/dd/yyyy");
         List<FDCustomerCreditModel> creditHistory = null == pendingCreditHistory ? new ArrayList<FDCustomerCreditModel>() : pendingCreditHistory.getCreditHistory();
-		for (FDCustomerCreditModel credit : creditHistory) {
-			StoreCreditData storeCreditData = new StoreCreditData();
-			storeCreditData.setDate(pendingCreditDateFormatter.format(credit.getCreateDate()));
-			storeCreditData.setStore(collectStoreName(credit.geteStore()));
-			storeCreditData.setStatus(PENDING_CREDIT_STATUS);
-			storeCreditData.setAmount(FormatterUtil.formatToTwoDecimal(credit.getAmount()));
-			if (credit.getMethod() != null)
-				storeCreditData.setType(credit.getMethod().getName());
-			storeCreditData.setOrder(credit.getSaleId());
-			pendingCredits.add(storeCreditData);
-		}
+        for (FDCustomerCreditModel credit : creditHistory) {
+                StoreCreditData storeCreditData = new StoreCreditData();
+                storeCreditData.setDate(pendingCreditDateFormatter.format(credit.getCreateDate()));
+            storeCreditData.setStore(collectStoreName(credit.geteStore()));
+                storeCreditData.setStatus(PENDING_CREDIT_STATUS);
+            storeCreditData.setAmount(Double.toString(credit.getAmount()));
+                storeCreditData.setType(credit.getMethod().getName());
+                storeCreditData.setOrder(credit.getSaleId());
+                pendingCredits.add(storeCreditData);
+        }
         storeCredits.setPendingCredits(pendingCredits);
 
         return storeCredits;

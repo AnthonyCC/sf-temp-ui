@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -16,22 +14,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditRequest;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse;
-import com.freshdirect.backoffice.selfcredit.data.RequestContext;
-import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemRequestData;
-import com.freshdirect.customer.ActivityLog;
-import com.freshdirect.customer.EnumAccountActivityType;
-import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class BackOfficeSelfCreditService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(BackOfficeSelfCreditService.class);
     private static final BackOfficeSelfCreditService INSTANCE = new BackOfficeSelfCreditService();
+
+    private static final String SELF_CREDIT_CASE_MEDIA = "Self Credit";
 
     private BackOfficeSelfCreditService() {
     }
@@ -40,35 +31,20 @@ public class BackOfficeSelfCreditService {
         return INSTANCE;
     }
 
-    public IssueSelfCreditResponse postSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
+    public IssueSelfCreditResponse postSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest) {
 
-    	final String orderId = issueSelfCreditRequest.getOrderId();
-    	final boolean isSelfCreditRequestValid = validateSelfCreditRequest(issueSelfCreditRequest, user);
-		
-        if (!isSelfCreditRequestValid) {
-			IssueSelfCreditResponse issueSelfCreditResponse = new IssueSelfCreditResponse();
-			issueSelfCreditResponse.setMessage("ERROR");
-			issueSelfCreditResponse.setSuccess(false);
-			logActivityError(user, orderId, issueSelfCreditResponse);
-			return issueSelfCreditResponse;
-		}
-    	
-    	StringBuilder content = new StringBuilder();
+        StringBuilder content = new StringBuilder();
         BufferedReader input = null;
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-        	String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeSelfCreditUrl()).toString();
-            URL url = new URL(backofficeUrl);
+            URL url = new URL(FDStoreProperties.getBkofficeSelfCreditUrl());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("requestcontext", objectMapper.writeValueAsString(collectRequestContext(user)));
 
             OutputStream output = connection.getOutputStream();
+            ObjectMapper objectMapper = new ObjectMapper();
             String issueCreditRequestAsString = objectMapper.writeValueAsString(issueSelfCreditRequest);
             output.write(issueCreditRequestAsString.getBytes("UTF-8"));
 
@@ -87,7 +63,7 @@ public class BackOfficeSelfCreditService {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    LOGGER.error("Exception while closing connection with Backoffice Self-Credit service.", e);
+                    LOGGER.error("Exception while closing conenction with Backoffice Self-Credit service.", e);
                 }
             }
         }
@@ -103,71 +79,6 @@ public class BackOfficeSelfCreditService {
 		} catch (IOException e) {
 			LOGGER.error("Exception while mapping issue self-complaint response.", e);
 		}
-		
-		if (!issueSelfCreditResponse.isSuccess()) {
-			logActivityError(user, orderId, issueSelfCreditResponse);
-		} else {
-			LOGGER.debug(issueSelfCreditResponse.getMessage());
-		}
         return issueSelfCreditResponse;
     }
-
-    private boolean validateSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
-		final String orderId = issueSelfCreditRequest.getOrderId();
-		final boolean isOrderIdValid = validateOrder(orderId, user);
-		final boolean hasCartonNumbers = validateCartonNumbers(issueSelfCreditRequest.getOrderLineParams(), orderId);
-		return isOrderIdValid && hasCartonNumbers;
-	}
-
-	private boolean validateOrder(String orderId, FDUserI user) {
-		boolean isOrderIdValid = false;
-		try {
-			isOrderIdValid = FDCustomerManager.orderBelongsToUser(user.getIdentity(), orderId);
-		} catch (FDResourceException e1) {
-			LOGGER.error("Error while checking if user " + user.getUserId() + " has Self-credit order id: " + orderId);
-		}
-		if (!isOrderIdValid) {
-			LOGGER.error("Self-credit order id: " + orderId + " does not belong to user: " + user.getUserId());
-		}
-		return isOrderIdValid;
-	}
-	
-	private boolean validateCartonNumbers(List<SelfCreditOrderItemRequestData> selfCreditItems, String orderId) {
-		for (SelfCreditOrderItemRequestData selfCreditItem : selfCreditItems) {
-			if (null == selfCreditItem.getCartonNumbers() || selfCreditItem.getCartonNumbers().isEmpty() ) {
-				LOGGER.error("Unable to issue self-complaint for order " + orderId + " due to missing carton numbers.");
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private void logActivityError(FDUserI user, String orderId, IssueSelfCreditResponse issueSelfCreditResponse) {
-		LOGGER.error("Unable to issue self-complaint for order " + orderId + ".");
-    	LOGGER.error(issueSelfCreditResponse.getMessage());
-
-		String customerId = user.getIdentity().getErpCustomerPK();
-		EnumTransactionSource transactionSource = user.getApplication();
-		String note = new StringBuilder(EnumAccountActivityType.SELF_CREDIT_ERROR.getName()).append(", orderId: ").append(orderId).toString();
-		
-		ErpActivityRecord erpActivityRecord = new ErpActivityRecord();
-		erpActivityRecord.setCustomerId(customerId);
-		erpActivityRecord.setActivityType(EnumAccountActivityType.SELF_CREDIT_ERROR);
-		erpActivityRecord.setDate(new Date());
-		erpActivityRecord.setSource(transactionSource);
-		erpActivityRecord.setNote(note);
-		try {
-			ActivityLog.getInstance().logActivity(erpActivityRecord);
-		} catch (FDResourceException e) {
-			LOGGER.error("Could not create activity log with order ID: " + orderId);
-		}
-	}
-	
-    private RequestContext collectRequestContext(FDUserI user) {
-        RequestContext requestContext = new RequestContext();
-        requestContext.setInitiator(EnumTransactionSource.SYSTEM.getCode());
-        requestContext.setSource(user.getApplication().getCode());
-        return requestContext;
-    }
-
 }

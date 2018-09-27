@@ -33,10 +33,10 @@ var FreshDirect = window.FreshDirect || {};
       value: "selfCreditInit"
     },
     ariaDescribedby: {
-      value: "selfcredit-describe"
+      value: "selfcredit"
     },
     ariaLabelledby: {
-      value: "selfcredit-label"
+      value: ""
     },
     overlayConfig: {
       value: {
@@ -44,28 +44,23 @@ var FreshDirect = window.FreshDirect || {};
       }
     },
     customClass: {
-      value: "overlay-small selfcredit-overlay"
+      value: "overlay-medium selfcredit-overlay"
     },
     openPopup: {
       value: function() {
-        if(fd.user && fd.user.userId.length && !fd.user.recognized) {
-          this.refresh();
-          this.overlayEl = $("#" + this.overlayId);
-          // set close callback
-          this.overlayEl.attr(
-            "data-close-cb",
-            "FreshDirect.components.selfCreditInitPopup.closeCB"
-          );
-  
-          $(".spinner-overlay").addClass("active");
-          DISPATCHER.signal("server", {
-            url: API_URL,
-            method: "GET"
-          });
-          fd.gtm.updateDataLayer({
-            selfCreditRequestACredit: null
-          });
-        };
+        this.refresh();
+        this.overlayEl = $("#" + this.overlayId);
+        // set close callback
+        this.overlayEl.attr(
+          "data-close-cb",
+          "FreshDirect.components.selfCreditInitPopup.closeCB"
+        );
+
+        $(".spinner-overlay").addClass("active");
+        DISPATCHER.signal("server", {
+          url: API_URL,
+          method: "GET"
+        });
       }
     },
     callback: {
@@ -90,15 +85,12 @@ var FreshDirect = window.FreshDirect || {};
         var selectEl = $("#self-credit-order-select");
         selectEl.change(
           function() {
-            setTimeout(function () {
-              if (selectEl.val() !== "") {
-                var tabindex = this.overlayEl.find('.overlay-close-icon').first().attr('tabindex') || 1000;
-                this.overlayEl
-                  .find('button[value="Continue"]')
-                  .prop("disabled", false)
-                  .prop("tabindex", +tabindex - 1);
-              }
-            }.bind(this), 100);
+            if (selectEl.val() !== "") {
+              this.overlayEl
+                .find('button[value="Continue"]')
+                .prop("disabled", false)
+                .prop("tabindex", 1);
+            }
           }.bind(this)
         );
       }
@@ -110,15 +102,12 @@ var FreshDirect = window.FreshDirect || {};
     },
     submit: {
       value: function() {
-        fd.gtm.updateDataLayer({
-          selfCreditContinueToReviewCredit: null
-        });
         var orderId = $("#self-credit-order-select").val();
         if (!orderId) return;
         var order = $.grep(this.orders, function(order) {
           return parseInt(order.orderId) === parseInt(orderId);
         })[0];
-        
+
         this.close({ currentTarget: this.overlayEl });
 
         fd.components.selfCreditIssueReportPopup.openPopup(order);

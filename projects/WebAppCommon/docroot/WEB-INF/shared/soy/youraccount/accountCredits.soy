@@ -18,7 +18,7 @@
         <div class="credit">${$totalAmount}</div>
         <spam class="total">total available credits</spam>
       </div>
-      {if ($totalAmountFD != '0,00' and $totalAmountFD != '0.00') and ($totalAmountFK != '0,00' and $totalAmountFK != '0.00')}
+      {if isNonnull($totalAmountFD) and isNonnull($totalAmountFK)}
         <div class="credit-info">
         FreshDirect (FD) and FoodKick (FK) credits are combined. They will automatically be deducted from your next order.
         </div>
@@ -76,14 +76,16 @@
         <div class="status">{$status}</div>
       </div>
     </div>
-    <div class="credit-line-container end {$store} {$status}">
-      <div class="value">
+    <div class="credit-line-container end">
+      <div class="value {$store} {$status}">
       {if $status == 'Credit redeemed'}
         <span class="credit-redeemed-sign">-</span>
       {/if}
       <span class="credit-line--amount">${$amount}</span>
       </div>
-      <div class="receipt"><a href="order_details.jsp?orderId={$order}">View Receipt</a></div>
+      {if $store == 'FD' and $status != 'Referral Credit'}
+        <div class="receipt"><a href="order_details.jsp?orderId={$order}">View Receipt</a></div>
+      {/if}
     </div>
   </div>
 {/template}

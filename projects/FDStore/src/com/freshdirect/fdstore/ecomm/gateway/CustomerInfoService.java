@@ -91,6 +91,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String SET_ACTIVE = "customerInfo/setActive";
 	private static final String UPDATE_CUSTOMER_INFO = "customerInfo/update";
 	private static final String UPDATE_CUSTOMER_ESTORE = "customerInfo/estore/update";
+    private static final String GET_PENDING_CREDIT_HISTORY = "customerInfo/getPendingCreditHistory";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -926,4 +927,17 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 
 		return erpOrderlines;
 	}
+
+    @Override
+    public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws FDResourceException {
+        Response<List<FDCustomerCreditModel>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_PENDING_CREDIT_HISTORY + "/" + identity.getErpCustomerPK()),
+                new TypeReference<Response<List<FDCustomerCreditModel>>>() {
+                });
+        if (!response.getResponseCode().equals("OK")) {
+            LOGGER.error("Error in CustomerInfoService.getPendingCreditHistory: identity=" + identity);
+            throw new FDResourceException(response.getMessage());
+        }
+        FDCustomerCreditHistoryModel creditHistory = new FDCustomerCreditHistoryModel(identity, response.getData());
+        return creditHistory;
+    }
 }

@@ -17,11 +17,6 @@ public class SelfCreditOrderItemData {
     private boolean sample;
     private boolean free;
     private boolean mealBundle;
-    private List<String> cartonNumbers;
-    private double finalPrice;
-    private boolean substituted;
-    private double taxDepositSum;
-    private double savedAmount;
 
     public SelfCreditOrderItemData(com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData selfCreditOrderItemData) {
         this.orderLineId = selfCreditOrderItemData.getOrderLineId();
@@ -36,11 +31,6 @@ public class SelfCreditOrderItemData {
         this.sample = selfCreditOrderItemData.isSample();
         this.free = selfCreditOrderItemData.isFree();
         this.mealBundle = selfCreditOrderItemData.isMealBundle();
-        this.cartonNumbers = selfCreditOrderItemData.getCartonNumbers();
-        this.finalPrice = selfCreditOrderItemData.getFinalPrice();
-        this.substituted = selfCreditOrderItemData.isSubstituted();
-        this.taxDepositSum = selfCreditOrderItemData.getTaxDepositSum();
-        this.savedAmount = selfCreditOrderItemData.getSavedAmount();
     }
 
     public static List<SelfCreditOrderItemData> wrap(
@@ -148,43 +138,4 @@ public class SelfCreditOrderItemData {
         this.mealBundle = mealBundle;
     }
 
-	public List<String> getCartonNumbers() {
-		return cartonNumbers;
-	}
-
-	public void setCartonNumbers(List<String> cartonNumbers) {
-		this.cartonNumbers = cartonNumbers;
-	}
-
-	public double getFinalPrice() {
-		return finalPrice;
-	}
-
-	public void setFinalPrice(double finalPrice) {
-		this.finalPrice = finalPrice;
-	}
-
-    public boolean isSubstituted() {
-        return substituted;
-    }
-
-    public void setSubstituted(boolean substituted) {
-        this.substituted = substituted;
-    }
-
-    public double getTaxDepositSum() {
-        return taxDepositSum;
-    }
-
-    public void setTaxDepositSum(double taxDepositSum) {
-        this.taxDepositSum = taxDepositSum;
-    }
-
-    public double getSavedAmount() {
-        return savedAmount;
-    }
-
-    public void setSavedAmount(double savedAmount) {
-        this.savedAmount = savedAmount;
-    }
 }

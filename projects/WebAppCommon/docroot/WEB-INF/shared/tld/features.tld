@@ -47,4 +47,18 @@
 			<required>false</required>
 		</attribute>
 	</tag>
+	<tag>
+		<name>redirectUnauthorizedFeature</name>
+		<tagclass>com.freshdirect.webapp.features.tags.UnauthorizedFeatureRedirectorTag</tagclass>
+		<attribute>
+	       <name>featureActive</name>
+	       <required>true</required>
+	       <rtexprvalue>true</rtexprvalue>
+	   </attribute>
+	   <attribute>
+	       <name>featureName</name>
+	       <required>true</required>
+	       <rtexprvalue>true</rtexprvalue>
+	   </attribute>
+	</tag>
 </taglib>
