@@ -131,13 +131,7 @@ public class PDPRedirector extends BodyTagSupport {
             
         } catch (IOException ioe) {
             throw new JspException(ioe.getMessage());
-        } finally {
-        	try {
-				pageContext.getOut().close();
-			} catch (IOException e) {
-	            throw new JspException(e.getMessage());
-			}
-		}
+        } 
     }
     
     @Override

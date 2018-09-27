@@ -98,12 +98,6 @@ public class AgeVerificationControllerTag extends com.freshdirect.framework.weba
 					//writer.close();
 				} catch (IOException ioe) {
 					throw new JspException(ioe.getMessage());
-				} finally {
-		        	try {
-						pageContext.getOut().close();
-					} catch (IOException e) {
-			            throw new JspException(e.getMessage());
-					}
 				}
 
 				return SKIP_BODY;
