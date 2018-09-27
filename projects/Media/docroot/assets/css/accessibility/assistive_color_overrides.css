@@ -464,7 +464,7 @@
 .assistive-mode #locabar_addresses{
 	background-color:#fff !important;
 }
-.assistive-mode :not(.cssbutton).orange{
+.assistive-mode *:not(.cssbutton).orange{
 	color: #AF3D08 !important;
 }
 .assistive-mode .unrecognized.error-message span.orange{
