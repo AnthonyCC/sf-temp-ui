@@ -5,12 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.JsonParseException;
 
 public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 
@@ -19,14 +19,9 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 	@Override
 	public Date deserialize(JsonParser jp, DeserializationContext context) throws IOException, JsonProcessingException {
 		JsonNode node = getJsonNode(jp);
-		final String date = getTextValue(jp, node);
+		final Date date = getDateFromTextValue(jp, node);
 		if (date != null) {
-			try {
-				return simpleDateFormat.parse(date);
-			} catch (ParseException e) {
-				throw new JsonParseException(
-						"Unparseable date: " + date + ". Supported formats: yyyy-MM-dd, unix-timestamp", e);
-			}
+			return date;
 		} else {
 			// try long value, date could be unix time
 			final long timestamp = getLongValue(jp, node);
@@ -34,7 +29,7 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 				return new Date(timestamp);
 			}
 		}
-		throw new JsonParseException("Unparseable date: " + date + ". Supported formats: yyyy-MM-dd, unix-timestamp");
+		throw new JsonParseException("Unparseable date: " + date + ". Supported formats: yyyy-MM-dd, unix-timestamp", null);
 	}
 
 	private JsonNode getJsonNode(JsonParser jp) {
@@ -45,12 +40,19 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 		}
 	}
 
-	private String getTextValue(JsonParser jp, JsonNode node) throws IOException {
+	private Date getDateFromTextValue(JsonParser jp, JsonNode node) throws IOException {
+		String dateTextValue;
 		if (node != null) {
-			return node.textValue();
+			dateTextValue = node.textValue();
 		} else {
-			return jp.getText();
+			dateTextValue = jp.getText();
 		}
+		try {
+			return simpleDateFormat.parse(dateTextValue);
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	private long getLongValue(JsonParser jp, JsonNode node) throws IOException {
