@@ -5242,6 +5242,7 @@
 
 	<tag>
 		<name>SelfCreditCronTag</name>
+		<body-content>empty</body-content>
 		<tagclass>com.freshdirect.webapp.taglib.selfcredit.SelfCreditCronTag</tagclass>
 		<info></info>
 	</tag>
