@@ -344,6 +344,7 @@
 	<tag>
 		<name>selfCreditOrderHistory</name>
 		<tagclass>com.freshdirect.webapp.taglib.selfcredit.SelfCreditOrderHistoryPotatoTag</tagclass>
+		<body-content>empty</body-content>
 		<info></info>
 		<attribute>
 			<name>name</name>
