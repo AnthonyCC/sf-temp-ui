@@ -253,13 +253,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             this.redirected = true;
         } catch (IOException ioe) {
             throw new JspException(ioe.getMessage());
-        } finally {
-        	try {
-				pageContext.getOut().close();
-			} catch (IOException e) {
-	            throw new JspException(e.getMessage());
-			}
-		}
+        }
     }
 
     protected String getRedirectURL(boolean firstRequest) {

@@ -308,12 +308,6 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 			//writer.close();
 		} catch (IOException ioe) {
 			//   throw new JspException(ioe.getMessage());
-		} finally {
-        	try {
-				pageContext.getOut().close();
-			} catch (IOException e) {
-				LOGGER.error("Exception while redirection", e);
-			}
 		}
 	}
 

@@ -262,12 +262,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				return SKIP_BODY;
 			} catch (IOException ioe) {
 				throw new JspException(ioe.getMessage());
-			} finally {
-	        	try {
-					pageContext.getOut().close();
-				} catch (IOException e) {
-		            throw new JspException(e.getMessage());
-				}
 			}
 		}
 
