@@ -3221,15 +3221,6 @@ public class FDStoreProperties {
         return get(WINDOW_STEERING_PROMOTION_PREFIX);
     }
 
-    /**
-     * OSCACHE should be disabled when we are in some development environment. ( = annotation or preview mode ) Jsp-s can refer to this when deciding to use oscache or not.
-     *
-     * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)
-     */
-    public static boolean useOscache() {
-        return !(isAnnotationMode() || getPreviewMode());
-    }
-
     public static boolean isStandingOrdersEnabled() {
         return Boolean.valueOf(get(SO_GLOBAL_ENABLER)).booleanValue();
     }
