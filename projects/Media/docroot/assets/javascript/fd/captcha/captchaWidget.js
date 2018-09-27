@@ -76,7 +76,7 @@ var FreshDirect = FreshDirect || {};
 	function isValid(widgetName) {
 		try {
 			return !isEnabled(widgetName) || !!grecaptcha.getResponse(getWidgetSettings(widgetName).id);
-		} catch {
+		} catch(e) {
 			hasError = true;
 			return true;
 		}
