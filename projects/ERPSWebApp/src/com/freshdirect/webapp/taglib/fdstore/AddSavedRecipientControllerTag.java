@@ -214,7 +214,13 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                     // if there was a problem redirecting, continue and evaluate/skip tag body as usual
                     //
                     LOGGER.warn("IOException during redirect", ioe);
-                }
+                } finally {
+                	try {
+        				pageContext.getOut().close();
+        			} catch (IOException e) {
+        	            throw new JspException(e.getMessage());
+        			}
+        		}
             }
         } else  if (("GET".equalsIgnoreCase(request.getMethod()))) {
 
@@ -266,7 +272,13 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                     // if there was a problem redirecting, continue and evaluate/skip tag body as usual
                     //
                     LOGGER.warn("IOException during redirect", ioe);
-                }
+                } finally {
+                	try {
+        				pageContext.getOut().close();
+        			} catch (IOException e) {
+        	            throw new JspException(e.getMessage());
+        			}
+        		}
             }
         	
         }

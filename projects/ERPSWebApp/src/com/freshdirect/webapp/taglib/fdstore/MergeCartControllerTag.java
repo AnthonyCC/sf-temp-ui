@@ -125,7 +125,13 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
                 //writer.close();
             } catch (IOException ioe) {
                 throw new JspException(ioe.getMessage());
-            }
+            } finally {
+            	try {
+    				pageContext.getOut().close();
+    			} catch (IOException e) {
+    	            throw new JspException(e.getMessage());
+    			}
+    		}
 			return SKIP_BODY;
 		}
 	

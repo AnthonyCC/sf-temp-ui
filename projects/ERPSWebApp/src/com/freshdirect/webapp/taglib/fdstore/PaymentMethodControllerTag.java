@@ -194,7 +194,13 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                 } catch (IOException ioe) {
                     // if there was a problem redirecting, well.. it can't get any worse :)
                     throw new JspException("Error redirecting "+ioe.getMessage());
-                }
+                } finally {
+                	try {
+        				pageContext.getOut().close();
+        			} catch (IOException e) {
+        	            throw new JspException(e.getMessage());
+        			}
+        		}
             }
             else if(request.getSession().getAttribute("verifyFail")!=null) {
             	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
@@ -206,7 +212,13 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                 } catch (IOException ioe) {
                     // if there was a problem redirecting, well.. it can't get any worse :)
                     throw new JspException("Error redirecting "+ioe.getMessage());
-                }
+                } finally {
+                	try {
+        				pageContext.getOut().close();
+        			} catch (IOException e) {
+        	            throw new JspException(e.getMessage());
+        			}
+        		}
             }
             if(actionResult.isFailure() && (!actionResult.getErrors().isEmpty()) && (actionResult.getError(DEACTIVATED_ACCOUNT_ERROR_TYPE)!=null) && DEACTIVATED_ACCOUNT_ERROR_TYPE.equals( actionResult.getError(DEACTIVATED_ACCOUNT_ERROR_TYPE).getType()))  {
             	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
@@ -218,7 +230,13 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                 } catch (IOException ioe) {
                     // if there was a problem redirecting, well.. it can't get any worse :)
                     throw new JspException("Error redirecting "+ioe.getMessage());
-                }
+                } finally {
+                	try {
+        				pageContext.getOut().close();
+        			} catch (IOException e) {
+        	            throw new JspException(e.getMessage());
+        			}
+        		}
             }
         }
 
