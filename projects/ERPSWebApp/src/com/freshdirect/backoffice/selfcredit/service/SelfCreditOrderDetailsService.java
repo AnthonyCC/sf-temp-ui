@@ -80,8 +80,12 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-    private String collectProductName(String brand, String description) {
-		return description.substring(brand.length()).trim();
+    private String collectProductName(String brandName, String description) {
+    	String productNameNoBrand = description;
+    	if (brandName != null && brandName.length() > 0 && description.length() >= brandName.length() && description.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
+            productNameNoBrand = description.substring(brandName.length()).trim();
+        }
+    	return productNameNoBrand;
 	}
 
 	private List<SelfCreditComplaintReason> collectComplaintReasons(
