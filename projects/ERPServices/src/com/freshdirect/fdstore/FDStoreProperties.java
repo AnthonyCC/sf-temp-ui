@@ -2082,8 +2082,8 @@ public class FDStoreProperties {
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
 
-        defaults.put(PROP_BKOFFICE_SELF_CREDIT_URL, "http://bsl.stdev14.nj01/FDService/service/V0/issueselfcredit");
-        defaults.put(PROP_BKOFFICE_COMPLAINT_REASONS_URL, "http://bsl.stdev14.nj01/FDService/service/V0/complaintreasons/true");
+        defaults.put(PROP_BKOFFICE_SELF_CREDIT_URL, "/FDService/service/V0/issueselfcredit");
+        defaults.put(PROP_BKOFFICE_COMPLAINT_REASONS_URL, "/FDService/service/V0/complaintreasons/true");
 
         defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
         defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");
@@ -2097,7 +2097,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
         
-        defaults.put(PROP_BKOFFICE_CARTON_INFO_URL, "http://bsl.stdev14.nj01/FDService/service/v0/arecartonsdelivered");
+        defaults.put(PROP_BKOFFICE_CARTON_INFO_URL, "/FDService/service/v0/arecartonsdelivered");
 
         defaults.put(PROP_ORDER_COMPLAINT_DROPDOWN_LIMIT, "5");
 

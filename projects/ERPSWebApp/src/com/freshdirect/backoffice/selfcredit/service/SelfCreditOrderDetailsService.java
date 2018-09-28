@@ -115,7 +115,8 @@ public class SelfCreditOrderDetailsService {
 
         StringBuilder content = new StringBuilder();
         BufferedReader input = null;
-        URL url = new URL(FDStoreProperties.getBkofficeComplaintReasonsUrl());
+        String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeComplaintReasonsUrl()).toString();
+        URL url = new URL(backofficeUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
