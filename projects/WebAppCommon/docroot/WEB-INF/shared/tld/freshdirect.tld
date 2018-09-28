@@ -5280,12 +5280,6 @@
 		</attribute>
 	</tag>
 
-	<tag>
-		<name>SelfCreditCronTag</name>
-		<tagclass>com.freshdirect.webapp.taglib.selfcredit.SelfCreditCronTag</tagclass>
-		<info></info>
-	</tag>
-
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/shared/tags/common/metatags.tag</path>
