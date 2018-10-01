@@ -1423,7 +1423,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		StringBuilder content = new StringBuilder();
         BufferedReader input = null;
         try {
-        	String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeComplaintReasonsUrl())
+        	String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeCartonInfoUrl())
         			.append("/").append(complaintId).toString();
             URL url = new URL(backofficeUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
