@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.customer.EnumComplaintLineMethod;
+import com.freshdirect.framework.util.FormatterUtil;
 
 /** @author ekracoff */
 public class FDCustomerCreditHistoryModel implements Serializable {
@@ -98,6 +99,6 @@ public class FDCustomerCreditHistoryModel implements Serializable {
                 remainingAmount = remainingAmount + credit.getRemainingAmount();
             }
         }
-        return remainingAmount;
+        return FormatterUtil.formatDecimal(remainingAmount);
     }
 }
