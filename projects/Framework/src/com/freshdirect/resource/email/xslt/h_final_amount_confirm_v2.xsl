@@ -129,7 +129,7 @@
 						<p style="margin: 10px 0 0 0;">
 							<xsl:choose>
 								<xsl:when test="order/hasSubstitutes = 'true'"><b>Heads up! We've upgraded your substituted items at no additional cost. You have not been charged for any item(s) we were unable to substitute.</b></xsl:when>
-								<xsl:otherwise><b>Heads up! You have not been charged for these unavailable item(s).</b></xsl:otherwise>
+								<xsl:otherwise><b>Please note that you have not been charged for these unavailable item(s).</b></xsl:otherwise>
 							</xsl:choose>
 						</p>
 													

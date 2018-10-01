@@ -36,7 +36,8 @@ public class BackOfficeSelfCreditService {
         StringBuilder content = new StringBuilder();
         BufferedReader input = null;
         try {
-            URL url = new URL(FDStoreProperties.getBkofficeSelfCreditUrl());
+        	String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeSelfCreditUrl()).toString();
+            URL url = new URL(backofficeUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);

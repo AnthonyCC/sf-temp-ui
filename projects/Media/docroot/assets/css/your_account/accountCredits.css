@@ -177,28 +177,26 @@
 .account-credits
 .all-credits
 .credit-line-col
-.credit-line-container
-.value.FK,
+.credit-line-container.FK .receipt,
 #accountCredits
 .account-credits
 .all-credits
 .credit-line-col
-.credit-line-container
-.value.Referral.Credit {
-  margin-right: 124px;
+.credit-line-container.Referral.Credit .receipt {
+  visibility: hidden;
 }
 #accountCredits
   .account-credits
   .under-review
   .credit-line-col
-  .credit-line-container
-  .value.redeemed,
+  .credit-line-container.redeemed
+  .value,
 #accountCredits
   .account-credits
   .all-credits
   .credit-line-col
-  .credit-line-container
-  .value.redeemed {
+  .credit-line-container.redeemed
+  .value {
   color: #757575;
 }
 #accountCredits
@@ -363,19 +361,5 @@
     .account-credits
     .total-credit {
     margin-top: 0;
-  }
-  #accountCredits
-    .account-credits
-    .all-credits
-    .credit-line-col
-    .credit-line-container
-    .value.FK,
-    #accountCredits
-    .account-credits
-    .all-credits
-    .credit-line-col
-    .credit-line-container
-    .value.Referral.Credit {
-      margin-right: 0px;
   }
 }
