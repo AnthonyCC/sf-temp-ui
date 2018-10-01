@@ -2114,6 +2114,8 @@ public class FDStoreProperties {
         //APPDEV-7480
         defaults.put(PROP_JAVASCRIPT_FIRST_ENABLED, "false");
         
+        defaults.put(PROP_BACK_OFFICE_API_URL, "http://bsl.stdev14.nj01");
+        
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
      		if(hostName!=null && hostName.indexOf(".")!=-1) {
