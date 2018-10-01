@@ -2097,7 +2097,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
         
-        defaults.put(PROP_BKOFFICE_CARTON_INFO_URL, "/FDService/service/v0/arecartonsdelivered");
+        defaults.put(PROP_BKOFFICE_CARTON_INFO_URL, "/FDService/service/V0/arecartonsdelivered");
 
         defaults.put(PROP_ORDER_COMPLAINT_DROPDOWN_LIMIT, "5");
 
