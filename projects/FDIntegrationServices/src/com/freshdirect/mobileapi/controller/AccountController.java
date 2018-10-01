@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -290,6 +291,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 	    	responseMessage.setDefaultPaymentMethodPK(user.getFDSessionUser()!=null&&user.getFDSessionUser().getFDCustomer()!=null?
 	    												user.getFDSessionUser().getFDCustomer().getDefaultPaymentMethodPK():null);
 	    	responseMessage.setIsMidweekPass(user.getFDSessionUser().hasMidWeekDlvPass());
+	    	responseMessage.setNumberOfOrders(dpmodel.getUsedCount());
 	        setResponseMessage(model, responseMessage, user);
     	}else
     	{
