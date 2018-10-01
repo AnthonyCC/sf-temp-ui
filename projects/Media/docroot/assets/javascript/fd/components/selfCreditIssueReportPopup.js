@@ -169,6 +169,10 @@ var FreshDirect = window.FreshDirect || {};
             }, 300);
             $(".self-credit-footer").addClass("form-instructions-active");
           }
+          this.submitButton = $('.credit-request-submit-button');
+          setTimeout(function() {
+            this.submitButton.focus();
+          }.bind(this), 100);
         }
       },
       editRequest: {

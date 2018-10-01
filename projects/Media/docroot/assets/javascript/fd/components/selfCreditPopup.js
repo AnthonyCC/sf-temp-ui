@@ -89,7 +89,7 @@ var FreshDirect = window.FreshDirect || {};
               this.overlayEl
                 .find('button[value="Continue"]')
                 .prop("disabled", false)
-                .prop("tabindex", 1);
+                .prop("tabindex", 2);
             }
           }.bind(this)
         );

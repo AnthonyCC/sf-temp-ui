@@ -19,12 +19,11 @@
       <label for="order-id">Your Order</label>
       <i class="form-field-info-flag">Required</i>
       <div>
-        <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-          <option value="" disabled selected>Select an Order</option>
+          <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width">
+          <option value="" disabled selected>Select An Order</option>
           {foreach $order in $orders}
-          // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}{$order.standingOrderName}{/if}
           <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
-          {else}[br][b]Order #: {$order.orderId}[/b]{/if}
+          {else}Order #: {$order.orderId}{/if}
           </option>
           {/foreach}
         </select>
@@ -186,7 +185,7 @@
             {/call}
           </button></div>
           <div class="sc-submit-button">
-            <button class="cssbutton green" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
+            <button class="cssbutton green credit-request-submit-button" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
               {call .ariaReview}
                 {param title: 'Submit Request' /}
                 {param reviewData: $reviewData /}
@@ -259,7 +258,7 @@
   <img src="/media_stat/images/common/check-radio-selected.svg" width="100" height="100" alt="Credit Request Submitted">
   <h1 class="credit-request-submit" id="creditRequestCompleteHeader" aria-label="Credit Request Submitted.">Credit Request Submitted</h1>
   <div class="status" id="creditRequestCompleteDetails">You can view the status of your claim in the <a href="/your_account/credits.jsp">Store Credits</a> page.</div>
-  <button onclick="FreshDirect.components.selfCreditRequestCompletePopup.closePopup(event)"class='cssbutton full-width green selfcredit-button'>Ok</button>
+  <button onclick="FreshDirect.components.selfCreditRequestCompletePopup.closePopup(event)"class='cssbutton full-width green selfcredit-button ok-button'>Ok</button>
 {/template}
 
 /**
