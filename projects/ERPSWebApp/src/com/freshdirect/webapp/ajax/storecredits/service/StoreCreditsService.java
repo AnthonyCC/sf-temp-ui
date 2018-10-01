@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.referral.FDReferralManager;
+import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.webapp.ajax.storecredits.data.StoreCreditData;
 import com.freshdirect.webapp.ajax.storecredits.data.StoreCredits;
 
@@ -35,7 +36,7 @@ public class StoreCreditsService {
 
     public StoreCredits collectStoreCredits(FDUserI user, boolean isSelfCreditFeatureActive) throws FDResourceException {
 
-        FDIdentity customerIdentity = user.getIdentity();
+    	FDIdentity customerIdentity = user.getIdentity();
 
         StoreCredits storeCredits = new StoreCredits();
         storeCredits.setSort("date");
@@ -63,7 +64,7 @@ public class StoreCreditsService {
             storeCreditData.setDate(cm.getcDate());
             storeCreditData.setStore(collectStoreName(cm.geteStore()));
             storeCreditData.setStatus(collectStatus(cm.getDepartment()));
-            storeCreditData.setAmount(Double.toString(cm.getAmount()));
+            storeCreditData.setAmount(FormatterUtil.formatToTwoDecimal(cm.getAmount()));
             storeCreditData.setType(cm.getDepartment());
             storeCreditData.setOrder("Referral Credit".equals(cm.getDepartment()) ? "" : cm.getSaleId());
             approvedCredits.add(storeCreditData);
@@ -78,7 +79,7 @@ public class StoreCreditsService {
                 storeCreditData.setDate(pendingCreditDateFormatter.format(credit.getCreateDate()));
             storeCreditData.setStore(collectStoreName(credit.geteStore()));
                 storeCreditData.setStatus(PENDING_CREDIT_STATUS);
-            storeCreditData.setAmount(Double.toString(credit.getAmount()));
+            storeCreditData.setAmount(FormatterUtil.formatToTwoDecimal(credit.getAmount()));
                 storeCreditData.setType(credit.getMethod().getName());
                 storeCreditData.setOrder(credit.getSaleId());
                 pendingCredits.add(storeCreditData);

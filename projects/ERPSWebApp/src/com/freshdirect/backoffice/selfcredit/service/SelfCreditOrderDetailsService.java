@@ -80,8 +80,12 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-    private String collectProductName(String brand, String description) {
-		return description.substring(brand.length()).trim();
+    private String collectProductName(String brandName, String description) {
+    	String productNameNoBrand = description;
+    	if (brandName != null && brandName.length() > 0 && description.length() >= brandName.length() && description.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
+            productNameNoBrand = description.substring(brandName.length()).trim();
+        }
+    	return productNameNoBrand;
 	}
 
 	private List<SelfCreditComplaintReason> collectComplaintReasons(
@@ -111,7 +115,8 @@ public class SelfCreditOrderDetailsService {
 
         StringBuilder content = new StringBuilder();
         BufferedReader input = null;
-        URL url = new URL(FDStoreProperties.getBkofficeComplaintReasonsUrl());
+        String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeComplaintReasonsUrl()).toString();
+        URL url = new URL(backofficeUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");

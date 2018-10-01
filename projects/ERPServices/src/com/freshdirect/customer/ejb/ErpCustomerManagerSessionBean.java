@@ -1423,9 +1423,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		StringBuilder content = new StringBuilder();
         BufferedReader input = null;
         try {
-        	StringBuilder stringBuilder = new StringBuilder(FDStoreProperties.getBkofficeCartonInfoUrl());
-            stringBuilder.append("/").append(complaintId);
-            URL url = new URL(stringBuilder.toString());
+        	String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeCartonInfoUrl())
+        			.append("/").append(complaintId).toString();
+            URL url = new URL(backofficeUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");

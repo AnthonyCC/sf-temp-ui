@@ -8827,7 +8827,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         try {
             conn = this.getConnection();
             ps = conn.prepareStatement("select c.create_date, s.id as sale_id, s.e_store, c.status, c.amount, c.complaint_type "
-                    + "from cust.complaint c left join cust.sale s on s.id = c.sale_id where c.status = 'PEN' and s.customer_id=? order by 1 desc");
+                    + "from cust.complaint c inner join cust.sale s on s.id = c.sale_id where c.status = 'PEN' and s.customer_id=? order by 1 desc");
             ps.setString(1, identity.getErpCustomerPK());
             rs = ps.executeQuery();
 
