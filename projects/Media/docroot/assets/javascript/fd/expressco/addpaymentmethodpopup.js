@@ -135,7 +135,7 @@ var FreshDirect = FreshDirect || {};
 	
 				if (FreshDirect.metaData.countryCodeIndexMap.hasOwnProperty(curVal)) {
 					$(ee).html( FreshDirect.metaData.country[FreshDirect.metaData.countryCodeIndexMap[curVal]].states
-						.reduce(function(a,c,i,d) { return a + '<option value="'+c.key+'"'+((c.selected)?" selected":"")+'>'+c.value+'</option>'; },'<option>--</option>') 
+						.reduce(function(a,c,i,d) { return a + '<option value="'+c.key+'"'+((c.selected)?" selected":"")+'>'+c.value+'</option>'; },'<option value="">--</option>') 
 					);
 	
 				}

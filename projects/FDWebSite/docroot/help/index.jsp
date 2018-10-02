@@ -179,7 +179,9 @@
 							}
 						%>
 					</li>
-					<li><a href="#" data-component="self-credit-open-button">Request a Credit</a></li>
+					<c:if test="${selfcredit}">
+						<li><a href="#" data-component="self-credit-open-button">Request a Credit</a></li>
+					</c:if>
 					<%-- NO TARGET, comment out for now <li><a href="#">Legal</a></li> --%>
 				</ul>
 			</div>

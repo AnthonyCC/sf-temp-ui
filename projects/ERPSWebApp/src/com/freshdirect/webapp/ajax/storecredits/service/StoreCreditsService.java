@@ -53,9 +53,9 @@ public class StoreCreditsService {
             double totalAmountFK = fdCustomerCreditHistoryModel.getRemainingAmountByEStore(EnumEStoreId.FDX.getContentId());
             double totalAmount = totalAmountFD + totalAmountFK;
 
-            storeCredits.setTotalAmountFD(totalAmountFD);
-            storeCredits.setTotalAmountFK(totalAmountFK);
-            storeCredits.setTotalAmount(totalAmount);
+            storeCredits.setTotalAmountFD(FormatterUtil.formatToTwoDecimal(totalAmountFD));
+            storeCredits.setTotalAmountFK(FormatterUtil.formatToTwoDecimal(totalAmountFK));
+            storeCredits.setTotalAmount(FormatterUtil.formatToTwoDecimal(totalAmount));
         }
 
         List<StoreCreditData> approvedCredits = new ArrayList<StoreCreditData>();
