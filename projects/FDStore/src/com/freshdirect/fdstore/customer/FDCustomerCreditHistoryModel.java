@@ -99,6 +99,6 @@ public class FDCustomerCreditHistoryModel implements Serializable {
                 remainingAmount = remainingAmount + credit.getRemainingAmount();
             }
         }
-        return FormatterUtil.formatDecimal(remainingAmount);
+        return remainingAmount;
     }
 }
