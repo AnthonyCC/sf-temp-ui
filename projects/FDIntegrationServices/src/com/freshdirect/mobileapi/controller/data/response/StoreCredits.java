@@ -10,9 +10,9 @@ public class StoreCredits extends Message {
     private String dir;
     private List<StoreCreditData> pendingCredits;
     private List<StoreCreditData> approvedCredits;
-    private double totalAmount;
-    private double totalAmountFD;
-    private double totalAmountFK;
+    private String totalAmount;
+    private String totalAmountFD;
+    private String totalAmountFK;
 
     public StoreCredits(com.freshdirect.webapp.ajax.storecredits.data.StoreCredits storeCredits) {
         this.sort = storeCredits.getSort();
@@ -56,27 +56,28 @@ public class StoreCredits extends Message {
         this.approvedCredits = approvedCredits;
     }
 
-    public double getTotalAmount() {
-        return totalAmount;
-    }
+	public String getTotalAmount() {
+		return totalAmount;
+	}
 
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
+	public void setTotalAmount(String totalAmount) {
+		this.totalAmount = totalAmount;
+	}
 
-    public double getTotalAmountFD() {
-        return totalAmountFD;
-    }
+	public String getTotalAmountFD() {
+		return totalAmountFD;
+	}
 
-    public void setTotalAmountFD(double totalAmountFD) {
-        this.totalAmountFD = totalAmountFD;
-    }
+	public void setTotalAmountFD(String totalAmountFD) {
+		this.totalAmountFD = totalAmountFD;
+	}
 
-    public double getTotalAmountFK() {
-        return totalAmountFK;
-    }
+	public String getTotalAmountFK() {
+		return totalAmountFK;
+	}
 
-    public void setTotalAmountFK(double totalAmountFK) {
-        this.totalAmountFK = totalAmountFK;
-    }
+	public void setTotalAmountFK(String totalAmountFK) {
+		this.totalAmountFK = totalAmountFK;
+	}
+
 }
