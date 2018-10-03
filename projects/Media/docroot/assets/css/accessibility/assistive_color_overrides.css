@@ -644,7 +644,12 @@
 .assistive-mode .pdp-atc #pdp-atc-addtolist,
 .assistive-mode #customizePopup .buttons .addtolist,
 .assistive-mode .pdp .pdp-atc .subtotal a,
-.assistive-mode .dpn-footer-no a{
+.assistive-mode .dpn-footer-no a,
+.assistive-mode .mm-page .dpn-footer-no-logged a,
+.assistive-mode .mm-page .dpn-footer-no a, 
+.assistive-mode .mm-page-overlay .dpn-footer-no a, 
+.assistive-mode .mm-page .dpn-footer-no-logged a, 
+.assistive-mode .mm-page-overlay .dpn-footer-no-logged a{
 	color:#5d5f36 !important;
 }
 .assistive-mode .dpn-center-header{
@@ -746,7 +751,7 @@
 {
 	color:#333 !important;
 }
-.assistive-mode #topSearchField{
+.assistive-mode:not([data-ismobweb="true"]) #topSearchField{
 	background-color: #fff;
 	border: 2px solid #999; 
 	height:30px !important;
@@ -972,7 +977,9 @@ color: #B93D3F;
 .assistive-mode input[type="text"], 
 .assistive-mode input[type="email"], 
 .assistive-mode input[type="password"],
-.assistive-mode section.main .breadcrumbs{
+.assistive-mode section.main .breadcrumbs,
+.assistive-mode section.main .breadcrumbs li a,
+.assistive-mode  section.main .breadcrumbs li a:link{
 	color:#333;
 }
 .assistive-mode .nav li{
@@ -983,4 +990,12 @@ color: #B93D3F;
 }
 .assistive-mode .nav li:hover{
 	background-color:#098A1E;
+}
+.assistive-mode a.free-link{
+	color:#333;
+	text-decoration:underline;
+}
+.assistive-mode #addpaymentmethod_masterpass a{
+	color:#333;
+	text-decoration:underline;
 }
