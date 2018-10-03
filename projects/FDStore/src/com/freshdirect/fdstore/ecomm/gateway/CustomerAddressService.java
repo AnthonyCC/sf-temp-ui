@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -176,6 +177,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
 			rootNode.put("checkUniqueness", checkUniqueness);
 			rootNode.set("address", getMapper().convertValue(address, JsonNode.class));
