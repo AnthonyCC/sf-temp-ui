@@ -1,10 +1,28 @@
+#FDCustomSelect.browse-popup.selectlight {
+  padding: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  border: 2px solid #d4d4d4;
+}
+
 .selectButton {
   padding-right: 5px;
+}
+
+.selectButton.selectlight {
+  height: 35px;
+  padding: 0;
+  padding-left: 10px;
 }
 
 .selectButton > span {
   display: inline-block;
   text-align: left;
+}
+
+.selectButton.selectlight > span .title {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: normal;
 }
 
 .selectButton span.popupcontent {
@@ -27,6 +45,10 @@ ul.customselect,
   padding: 0;
 }
 
+#FDCustomSelect.selectlight ul.customselect {
+  width: 100%;
+}
+
 #FDCustomSelect li {
   cursor: pointer;
   padding: 0 5px;
@@ -44,6 +66,11 @@ ul.customselect,
 
 #FDCustomSelect li button:focus,
 #FDCustomSelect li:hover button {
+  text-decoration: underline;
+}
+
+#FDCustomSelect .selectlight li button:focus,
+#FDCustomSelect .selectlight li:hover button {
   text-decoration: underline;
 }
 
@@ -87,46 +114,92 @@ select.selected + .fdselect > .selectButton.selectlight {
 
 .fdselect .selectButton.selectlight {
   background-color: #fff;
-  color: #444444;
   border: solid 2px #d4d4d4;
-}
-.fdselect .selectButton.selectlight::after,
-.popupcontentghost > .selectButton.selectlight::after {
-  content: "";
-  background-color: transparent;
-  position: absolute;
-  top: 0px;
-  width: 8px;
-  border-bottom: 2px solid #919191;
-  height: 8px;
-  border-right: 2px solid #919191;
-  transform: rotate(45deg);
+  color: #444444;
 }
 
-#FDCustomSelect.browse-popup.selectlight .browse-popup-content ul:first-child {
+.fdselect .selectButton.selectlight span b.title b {
+  display: none;
+}
+
+.fdselect .selectButton.selectlight::after,
+.popupcontentghost > .selectButton.selectlight::after {
+  background-color: transparent;
+  border-bottom: 2px solid #919191;
+  border-right: 2px solid #919191;
+  content: "";
+  height: 8px;
+  position: absolute;
+  top: -5px;
+  transform: rotate(45deg);
+  width: 8px;
+}
+
+.popupcontentghost .selectButton.selectlight span .title b {
+  display: none;
+}
+
+#FDCustomSelect.browse-popup.selectlight .browse-popup-content ul.multiple-options li:first-child {
+  display: none;
+}
+
+#FDCustomSelect.browse-popup.selectlight .browse-popup-content ul.empty-options:first-child button {
+  font-size: 14px;
+  font-family: "Verdana", sans-serif;
+  height: 100%;
+  padding: 0 10px;
+}
+
+#FDCustomSelect.browse-popup.selectlight .browse-popup-content ul.empty-options:first-child button:hover,
+#FDCustomSelect.browse-popup.selectlight .browse-popup-content ul.empty-options:first-child button:focus {
+  text-decoration: none;
+}
+
+#FDCustomSelect.browse-popup.selectlight .browse-popup-content ul.customselect {
   margin-left: 0;
 }
 
 #FDCustomSelect.browse-popup.selectlight .popupcontent .customselect li {
-  height: 51px;
-  padding: 0 11px;
   border-top: 1px solid #d4d4d4;
+  display: flex;
+  align-items: center;
+  height: 51px;
+  padding: 0;
+}
+
+#FDCustomSelect.browse-popup.selectlight .popupcontent .customselect li:nth-child(2) {
+  border-top: none;
+}
+
+#FDCustomSelect.browse-popup.selectlight .popupcontent .customselect li button:focus,
+#FDCustomSelect.selectlight li:hover {
+  background: #eee;
+  text-decoration: none;
 }
 
 #FDCustomSelect.browse-popup.selectlight .popupcontent .customselect li button {
   font-size: 14px;
   font-family: "Verdana", sans-serif;
-  position: relative;
-  transform: translateY(25%);
+  height: 100%;
+  padding: 0 10px;
+  width: 100%;
+}
+
+#FDCustomSelect.browse-popup.selectlight .popupcontent .customselect li button b {
+  letter-spacing: 0.5px;
 }
 
 @media (max-width: 768px) {
   .browse-popup.shown {
-    top: 10%;
-    bottom: 10%;
-    left: 9%;
-    right: 9%;
+    top: 14%;
+    bottom: 14%;
+    left: 2%;
+    right: 2%;
     max-height: 80%;
     overflow-y: auto;
+  }
+
+  .selectButton.cssbutton.selectlight {
+    height: 35px;
   }
 }

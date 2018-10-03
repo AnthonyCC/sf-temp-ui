@@ -19,11 +19,11 @@
       <label for="order-id">Your Order</label>
       <i class="form-field-info-flag">Required</i>
       <div>
-          <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width">
+          <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
           <option value="" disabled selected>Select An Order</option>
           {foreach $order in $orders}
           <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
-          {else}Order #: {$order.orderId}{/if}
+          {else}[br][b]Order #: {$order.orderId}[/b]{/if}
           </option>
           {/foreach}
         </select>
@@ -231,7 +231,7 @@
       </div>
       <div class="order-line-col order-line-qty">
         <select class="customsimpleselect" name="qty-{$orderline.orderLineId}" aria-label="Select quantity for {$orderline.description}">
-          <option value="" {if not $orderline.complaint}selected{/if}>Quantity</option>
+          <option value="" {if not $orderline.complaint}selected{/if}>Qty</option>
           {for $index in range(1, $orderline.quantity + 1)}
             <option value="{$index}" {if $orderline.complaint and $orderline.complaint.qty == $index}selected{/if}>{$index}</option>
           {/for}

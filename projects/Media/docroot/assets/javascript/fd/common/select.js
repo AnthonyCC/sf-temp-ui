@@ -20,10 +20,9 @@ var FreshDirect = FreshDirect || {};
 
   Select.prototype.getWidget = function () {
     var widgetNode;
-
     if (this.el.next() && this.el.next().hasClass(this.config.cssClass)) {
       return this.el.next();
-    } else if(!!this.el.attr('data-custom-select-light-class')) {
+    } else if(this.el.attr('data-custom-select-light-class') !== typeof undefined && this.el.attr('data-custom-select-light-class') !== false) {
       widgetNode = $('<span class="'+(this.config.cssClass || '')+' '+(this.el.attr('data-custom-select-class') || '')+'"><button class="selectButton cssbutton '+(this.el.attr('data-custom-select-button-class') || '')+' '+(this.el.attr('data-custom-select-light-class'))+'" aria-haspopup="true"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
       this.el.after(widgetNode);
       return widgetNode;
@@ -54,7 +53,7 @@ var FreshDirect = FreshDirect || {};
   Select.prototype.open = function () {
     this.popup.$el.find('.browse-popup-content').html('').append(this.widget.find('.popupcontent').clone());
     $('.selectButton.selectlight').addClass('overlay-open');
-    this.popup.showWithDelay(this.widget.find('.selectButton'), 'bl-tl-p');
+    this.popup.showWithDelay(this.widget.find('.selectButton'), 'bl-tl');
     this.bindClick(this.popup.$el.find('.popupcontent'));
   };
 
@@ -92,8 +91,13 @@ var FreshDirect = FreshDirect || {};
         popupcontent = '';
 
     widget.find('.title').first().html(Select.unescape(title));
-
-    popupcontent += '<ul class="customselect" data-value="'+selected.val()+'">';
+    var optionsExistClass;
+    if (options.length > 1) {
+      optionsExistClass = 'multiple-options';
+    } else {
+      optionsExistClass = 'empty-options';
+    }
+    popupcontent += '<ul class="customselect '+optionsExistClass+'" data-value="'+selected.val()+'">';
     options.each(function (i, option) {
       var cssClass = "",
           $option = $(option);
@@ -104,7 +108,11 @@ var FreshDirect = FreshDirect || {};
       if (selected.val() === $option.val()) {
         cssClass += ' selected';
       }
-      popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
+      if (options.length === 1) {
+        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">No eligible orders found</button></li>';          
+      } else {
+        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
+      }
     });
     popupcontent += '</ul>';
 
