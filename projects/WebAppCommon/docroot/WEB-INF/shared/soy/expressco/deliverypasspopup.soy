@@ -80,7 +80,7 @@
 			{else}
 				onclick="$jq('.deliverypass_form').attr('data-selected-product-id','{if $product}{$product.productId}{/if}').attr('data-selected-dp-title','{$title}{if $midWeekSku} Midweek{/if} Membership');"
 			{/if} 
-		>Sign Up</button>
+		>Sign Up<span class="offscreen">{if $title}{$title}{/if} delivery pass for {if $totalPrice}${$totalPrice}{/if}+Tax </span></button>
 		{if $product}
 			<div class="deliverypass_product" data-component="product" data-product-id="{$product.productId}">
 				{call common.productData data="$product" /}
