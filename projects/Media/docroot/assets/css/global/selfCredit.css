@@ -27,11 +27,6 @@
   margin-bottom: 0;
 }
 
-#FDCustomSelect.browse-popup.selectlight {
-  left: 761px;
-  right: 761px;
-}
-
 #selfCreditIssueReport.overlay-medium .self-credit-body .body-info {
   display: flex;
   flex-direction: row;
@@ -256,6 +251,12 @@
   button {
   width: 100%;
 }
+
+#selfCreditIssueReport.overlay-medium
+  .self-credit-footer
+  .cssbutton.button-triangle {
+  width: 255px;
+}
 #selfCreditIssueReport.overlay-medium
   .self-credit-footer
   .section-container
@@ -409,11 +410,19 @@
 }
 
 .selfcredit-overlay .self-credit-init-row {
-  margin-bottom: 20px;
+  margin-bottom: 23px;
+}
+
+.selfcredit-overlay .self-credit-init-row:first-child {
+  margin-bottom: 16px;
 }
 
 .selfcredit-overlay .self-credit-init-row-last {
   margin-bottom: 30px;
+}
+
+.selfcredit-overlay .self-credit-init-row-last + div {
+  height: 48px;
 }
 
 .selfcredit-overlay .selfcredit-button {
@@ -422,8 +431,11 @@
 }
 
 .selfcredit-overlay h1 {
-  font-weight: bolder;
-  margin-bottom: 0.7em;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 30px;
 }
 
 .selfcredit-overlay i,
@@ -456,11 +468,13 @@
 }
 
 .selfcredit-overlay.overlay-fullscreen .form-header {
+  color: #444444;
   font-size: 20px;
-  margin: 36px 0 0 0;
+  margin: 28px 0 32px 0;
 }
 
 @media screen and (max-width: 740px) {
+
   .selfcredit-overlay.overlay-fullscreen .form-header {
     font-size: 18px;
     margin: 19px 0 0 0;
@@ -485,20 +499,35 @@
   flex-wrap: nowrap;
   overflow: auto;
 }
+
+@media screen and (max-width: 740px) {
+  .selfcredit-overlay.overlay-fullscreen .form-instructions .self-credit-container {
+    padding-right: 0;
+    height: 33px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   label {
+  color: #444444;
   display: block;
   font-size: 12px;
-  letter-spacing: 0.05em;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  line-height: 20px;
   text-transform: uppercase;
 }
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   span {
+  color: #222222;
   font-size: 16px;
+  line-height: 20px;
 }
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
@@ -613,11 +642,11 @@
   background: #ddd;
 }
 
-.selfcredit-overlay.overlay-fullscreen
+/* .selfcredit-overlay.overlay-fullscreen
   .form-instructions
   .self-credit-container {
   padding-right: 15px;
-}
+} */
 
 .selfcredit-overlay.overlay-fullscreen .form-instructions,
 .selfcredit-overlay.overlay-fullscreen .button-triangle::before {
@@ -743,7 +772,12 @@
 
 @media screen and (max-width: 740px) {
   .selfcredit-overlay .button-triangle-container {
-    padding: 17px 20px;
+    padding: 17px 20px 8px;
+  }
+  
+  .cssbutton.button-triangle {
+    position: relative;
+    top: -3px;
   }
 }
 
@@ -770,7 +804,7 @@
 .order-line {
   display: flex;
   flex-direction: row;
-  margin: 15px 0;
+  margin: 16px 0;
 }
 .order-line .order-line-col {
   display: flex;
@@ -790,6 +824,11 @@
 .order-line .order-line-product label {
   font-weight: bold;
 }
+.order-line .order-line-product .product-desc,
+.order-line .order-line-product .sale-unit {
+  letter-spacing: 0.2px;
+  color: #333333;
+}
 .order-line .order-line-product .sale-unit, .complaint-info .sale-unit {
   font-size: 12px;
   text-transform: lowercase;
@@ -799,7 +838,7 @@
   flex-basis: 35%;
 }
 
-.order-line-reason .select-wrapper {
+.order-line-reason .select-wrapper, .order-line-qty .select-wrapper {
   width: 100%;
 }
 
@@ -815,7 +854,8 @@
 }
 
 .order-line .order-line-qty {
-  flex-basis: 15%;
+  /* flex-basis: 15%; */
+  flex-basis: 7%;
 }
 .order-line .disable-order-line {
   margin: 0 15px;
