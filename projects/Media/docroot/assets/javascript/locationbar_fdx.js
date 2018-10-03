@@ -449,11 +449,19 @@ $jq('#locabar_user_trigger').on('blur mouseleave', function(event) {
 	$jq('.locabar-user-section').css('background-color', COLOR_NONSELECTED);
 });
 
-$jq('#locabar_popupcart_trigger').on('focus mouseover', function(event) {
+$jq('#locabar_popupcart_trigger').on('mouseover', function(event) {
 	$jq('.locabar-popupcart-section').css('background-color', COLOR_SELECTED);
 });
 
-$jq('#locabar_popupcart_trigger').on('blur mouseleave', function(event) {
+$jq('#popup_cart').on('focus', function(event) {
+	$jq('.locabar-popupcart-section').css('background-color', COLOR_SELECTED);
+});
+
+$jq('#popup_cart').on('blur', function(event) {
+	$jq('.locabar-popupcart-section').css('background-color', COLOR_NONSELECTED);
+});
+
+$jq('#locabar_popupcart_trigger').on('mouseleave', function(event) {
 	$jq('.locabar-popupcart-section').css('background-color', COLOR_NONSELECTED);
 });
 

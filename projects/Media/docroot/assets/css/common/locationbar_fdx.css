@@ -2158,3 +2158,6 @@ option.address-icon {
 .modify-order-bar #locabar_user_trigger > a:visited {
 	color: #fff;
 }
+a#popup_cart:focus {
+    outline: none;
+}
