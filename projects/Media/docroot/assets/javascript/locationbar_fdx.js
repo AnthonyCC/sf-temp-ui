@@ -161,7 +161,8 @@ if ($jq.ui) { /* requires jquery ui */
 						} else if (data.submitForm.result.redirectUrl){
 							window.location = data.submitForm.result.redirectUrl;
 						} else { //just reload the page
-							window.location.reload();
+							 //bug fix for location bar change of address for time slot reservation.
+							window.location=window.location;
 						}
 						
 					},
