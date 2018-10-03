@@ -382,7 +382,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 				handleErrorOrderResponse(response);
 			}
 			return response.getData();
-		} catch (Exception e) {
+		} catch (FDEcommServiceException e) {
 			LOGGER.error("Error in placeOrder: inputJson=" + inputJson, e);
 			throw new RemoteException(e.getMessage(), e);
 			
@@ -423,7 +423,10 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 
 				handleErrorOrderResponse(response);
 			}
-		} catch (Exception e) {
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in modifyOrder: inputJson=" + inputJson, e);
+			throw new RemoteException(e.getMessage(), e);
+		}catch (ReservationException e) {
 			LOGGER.error("Error in modifyOrder: inputJson=" + inputJson, e);
 			throw new RemoteException(e.getMessage(), e);
 		}
