@@ -670,7 +670,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             this.getShoppingCart().recalculateTaxAndBottleDeposit(getZipCode());
             this.getShoppingCart().updateSurcharges(new FDRulesContextImpl(this));
             /* APPDEV-1888 */
-            if (this.getReferralPromoList().size() == 0) {
+            if (null == this.getReferralPromoList() ||this.getReferralPromoList().size() == 0) {
                 this.setReferralPromoList();
             }
             this.applyPromotions();
