@@ -269,6 +269,8 @@ var FreshDirect = window.FreshDirect || {};
           return reason.id === complaint.reasonId;
         })[0].reason;
         orderline.complaint = complaint;
+      } else {
+        orderline.complaint = null;
       }
     });
   }
