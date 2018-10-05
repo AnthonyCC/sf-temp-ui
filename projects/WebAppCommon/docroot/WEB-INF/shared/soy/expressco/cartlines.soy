@@ -654,7 +654,7 @@
 			</label>
 			<button class="cssbutton transparent green icon-reorder-icon-before" data-component="update-cart">Update cart</button>
 			<button role="alertdialog" class='questions__empty cssbutton transparent green' data-component='emptycart'>
-				<img src="/media_stat/images/icon-trash.png" alt="" class='questions__emptycart-image' />Empty Cart
+				<img src="/media_stat/images/icon-trash.png" alt="" class='questions__emptycart-image' />Empty Cart<span class="offscreen">remove all items from your cart</span>
 			</button>
 		</div>
 	</div>
@@ -1524,25 +1524,24 @@
 									
 			</div>
 			<div class="subtotal__rowcell-mid {if not $displayCheckout}cartetip-container{/if}">
-			<label for="tipDropdown">
-				<span class="offscreen">Optional Tip:</span>
-				<select class="tipDropdown" name="tipAmount" aria-label="select tip amount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
+			<label {if not $displayCheckout}for="tipDropdown"{else}for="tipDropdownbottom"{/if}>
+				<span class="offscreen">select tip amount</span></label>
+				<select class="tipDropdown" {if not $displayCheckout}id="tipDropdown"{else}id="tipdropdownbottom"{/if} name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
 					{foreach $option in $tipAmounts}
 						<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ( ('$' + $etipTotal) == $option) or (($tipApplied == false) and $option == '$0')}selected{/if}>
 						{$option}</option>
 					{/foreach}  
 				</select>
-			</label>
+			
 
-			<label for="tipTextBox">
-				<span class="offscreen">Other Tip Amount:</span>
-									
-				<input type="text" aria-label="enter custome tip amount" class="tipTextBox" placeholder="0.00" name="otherTipAmount"
+			<label {if not $displayCheckout}for="tipTextBox"{else}for="tipTextBoxbottom"{/if}>
+				<span class="offscreen">enter custom tip amount</span></label>
+				<input type="text" {if not $displayCheckout}id="tipTextBox"{else}id="tipTextBoxbottom"{/if} class="tipTextBox" placeholder="0.00" name="otherTipAmount"
 					{if not $customTip}style="display:none"{/if}
 					{if $etipTotal and $customTip}value="{$etipTotal}"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if} data-component="tooltip"/>
 									
 				<div class="toolTipTextBox tooltip" data-component="tooltipContent" role="tooltip"></div>
-			</label>
+			
 								
 			{if $tipAppliedTick}
 				<img class="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Tick" />

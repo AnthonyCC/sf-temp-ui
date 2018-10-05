@@ -15,6 +15,7 @@
 		<div class="qs-popup-content" {if $eventSource}data-eventsource="{$eventSource}"{/if}>
 			<div class="MBRD-order">
 				<div class="select-wrapper">
+				   <label for="MBRDOrder"><span class="offscreen">choose which order to modify</span></label>
 					<select id="MBRDOrder" class="customsimpleselect">
 						{foreach $order in $orderInfos}
 							<option value="{$order.erpSalesId}">{$order.formattedDeliveryTime}</option>
