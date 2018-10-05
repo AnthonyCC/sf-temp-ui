@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.response.recommender.CartRecommenderResponse;
@@ -20,6 +21,7 @@ import com.freshdirect.mobileapi.controller.data.response.recommender.Recommenda
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.MessageCodes;
+import com.freshdirect.mobileapi.model.RecommenderTitleAndDescription;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ProductRecommenderService;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -54,9 +56,10 @@ public class ProductRecommenderController extends BaseController {
 
                 Recommendations recommendations = recommenderService.recommendDYFForFoodKickCart(customer);
                 if (recommendations != null) {
-                    List<ProductRecommendationData> listOfRecommendations = new ArrayList<ProductRecommendationData>();
+                    RecommenderTitleAndDescription displayableFields = recommenderService.getRecommenderDisplayableFields(recommendations.getVariant());
+                    ProductRecommendationData dyfRecommendation = buildResponseDataFromRecommendations(recommendations, displayableFields, request, customer);
 
-                    ProductRecommendationData dyfRecommendation = buildResponseDataFromRecommendations(recommendations, "Custom Title", "Custom Deal Info", request, customer);
+                    List<ProductRecommendationData> listOfRecommendations = new ArrayList<ProductRecommendationData>();
                     listOfRecommendations.add(dyfRecommendation);
 
                     responseMessage = new CartRecommenderResponse(listOfRecommendations);
@@ -73,12 +76,13 @@ public class ProductRecommenderController extends BaseController {
         return model;
     }
 
-    private ProductRecommendationData buildResponseDataFromRecommendations(Recommendations recommendations, String title, String dealInfo, HttpServletRequest request, FDUserI customer) {
+    private ProductRecommendationData buildResponseDataFromRecommendations(Recommendations recommendations, RecommenderTitleAndDescription displayableFields, HttpServletRequest request, FDUserI customer) {
         ProductRecommendationData responsePayload = new ProductRecommendationData();
 
-        responsePayload.setId(recommendations.getVariant().getSiteFeature().getName());
-        responsePayload.setTitle(title);
-        responsePayload.setDealInfo(dealInfo);
+        final EnumSiteFeature siteFeature = recommendations.getVariant().getSiteFeature();
+        responsePayload.setId(siteFeature.getName());
+        responsePayload.setTitle(displayableFields.getTitle());
+        responsePayload.setDealInfo(displayableFields.getDescription());
         populateRecommenderResponseWithProducts(responsePayload, recommendations, customer, isExtraResponseRequested(request));
 
         // append recommendation tracking data for analytics
