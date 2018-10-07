@@ -48,14 +48,11 @@ public class HttpSessionWrapper implements HttpSession {
     @Override
     public Object getAttribute(String name) {
         //Coding defensively. Is something unexpected happens, throw exception
-        Object attribute = null;
         if (!expectedGets.contains(name)) {
-            throw new IllegalAccessError("getAttribute with param name: [" + name
+        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: getAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
-        } else {
-            attribute = backingMap.get(name);
         }
-        return attribute;
+        return backingMap.get(name);
     }
 
     private Object getAttributeUnchecked(String name) {
@@ -130,11 +127,10 @@ public class HttpSessionWrapper implements HttpSession {
     public void removeAttribute(String name) {
         //Coding defensively. Is something unexpected happens, throw exception
         if (!expectedSets.contains(name)) {
-            throw new IllegalAccessError("setAttribute with param name: [" + name
+        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: setAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
-        } else {
-            backingMap.remove(name);
         }
+        backingMap.remove(name);
     }
 
     @Override
@@ -162,11 +158,10 @@ public class HttpSessionWrapper implements HttpSession {
     public void setAttribute(String name, Object value) {
         //Coding defensively. Is something unexpected happens, throw exception
         if (!expectedSets.contains(name)) {
-            throw new IllegalAccessError("setAttribute with param name: [" + name
+        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: setAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
-        } else {
-            backingMap.put(name, value);
         }
+        backingMap.put(name, value);
     }
 
     @Override
