@@ -71,9 +71,6 @@ public class ProductRecommenderService {
     private String extractRecommenderDescription(Variant variant) {
         String description = variant.getServiceConfig().getPresentationDescription();
         EnumSiteFeature siteFeature = variant.getSiteFeature();
-        if (description == null) {
-            description = siteFeature.getPresentationDescription();
-        }
         if (PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature.getName())) {
             description = description.replace("%%N%%", String.valueOf(FDStoreProperties.getProductSamplesMaxBuyProductsLimit()));
             description = description.replace("%%Q%%", String.valueOf(FDStoreProperties.getProductSamplesMaxQuantityLimit()));
@@ -85,10 +82,7 @@ public class ProductRecommenderService {
         String prezTitle = variant.getServiceConfig().getPresentationTitle();
         if (prezTitle == null) {
             EnumSiteFeature siteFeature = variant.getSiteFeature();
-            prezTitle = siteFeature.getPresentationTitle();
-            if (prezTitle == null) {
-                prezTitle = siteFeature.getTitle();
-            }
+            prezTitle = siteFeature.getTitle();
             if (prezTitle == null) {
                 prezTitle = siteFeature.getName();
             }
