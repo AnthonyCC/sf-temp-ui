@@ -489,8 +489,7 @@ var FreshDirect = FreshDirect || {};
         top:position.top+'px',
         left:position.left+'px',
         right:'auto',
-        bottom:'auto',
-        width: width
+        bottom:'auto'
       });
 
       this.$el.attr('data-align', align);
