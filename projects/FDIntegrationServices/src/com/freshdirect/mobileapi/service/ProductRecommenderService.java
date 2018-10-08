@@ -1,5 +1,9 @@
 package com.freshdirect.mobileapi.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -21,18 +25,40 @@ public class ProductRecommenderService {
 
     private boolean debugRecommender = false;
 
-    public Recommendations recommendDYFForFoodKickCart(FDUserI customer) {
-        if (customer == null) {
-            LOGGER.error("Recommender invoked with null customer parameter!");
-            return null;
+    public List<Recommendations> recommendForFoodKickCart(FDUserI customer, boolean newCustomer) {
+        List<String> siteFeatureIds = FDStoreProperties.getSiteFeatureListForFoodKickViewCartPage(newCustomer);
+        if (siteFeatureIds == null || siteFeatureIds.isEmpty()) {
+            return Collections.emptyList();
         }
 
-        final SessionInput input = new SessionInput(customer);
-        input.setMaxRecommendations(10);
-        input.setExcludeAlcoholicContent(false);
-        input.setTraceMode(debugRecommender);
+        // collect list of site features configured for FK view cart page
+        List<EnumSiteFeature> siteFeatures = decodeSiteFeatureIDs(siteFeatureIds);
 
-        return doRecommend(EnumSiteFeature.getEnum("DYF_FK"), input, customer);
+        List<Recommendations> cartRecommendations = new ArrayList<Recommendations>(siteFeatures.size());
+        for (EnumSiteFeature siteFeature: siteFeatures) {
+            final SessionInput input = new SessionInput(customer);
+            input.setMaxRecommendations(10);
+            input.setExcludeAlcoholicContent(false);
+            input.setTraceMode(debugRecommender);
+
+            Recommendations deliveredRecommendations = doRecommend(siteFeature, input, customer);
+            if (deliveredRecommendations != null) {
+                cartRecommendations.add(deliveredRecommendations);
+            }
+        }
+
+        return cartRecommendations;
+    }
+
+    private List<EnumSiteFeature> decodeSiteFeatureIDs(List<String> siteFeatureTokens) {
+        List<EnumSiteFeature> decodedSiteFeatures = new ArrayList<EnumSiteFeature>();
+        for (String siteFeatureId : siteFeatureTokens) {
+            EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(siteFeatureId);
+            if (siteFeature != null && !EnumSiteFeature.NIL.equals(siteFeature)) {
+                decodedSiteFeatures.add(siteFeature);
+            }
+        }
+        return decodedSiteFeatures;
     }
 
     public RecommenderTitleAndDescription getRecommenderDisplayableFields(Variant variant) {
