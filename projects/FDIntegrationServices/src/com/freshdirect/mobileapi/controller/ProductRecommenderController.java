@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -51,21 +53,9 @@ public class ProductRecommenderController extends BaseController {
             responseMessage.setStatus(Message.STATUS_FAILED);
             responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
         } else {
+            final FDUserI customer = user.getFDSessionUser();
             if (ACTION_FK_CART.equals(action)) {
-                FDUserI customer = user.getFDSessionUser();
-
-                Recommendations recommendations = recommenderService.recommendDYFForFoodKickCart(customer);
-                if (recommendations != null) {
-                    RecommenderTitleAndDescription displayableFields = recommenderService.getRecommenderDisplayableFields(recommendations.getVariant());
-                    ProductRecommendationData dyfRecommendation = buildResponseDataFromRecommendations(recommendations, displayableFields, request, customer);
-
-                    List<ProductRecommendationData> listOfRecommendations = new ArrayList<ProductRecommendationData>();
-                    listOfRecommendations.add(dyfRecommendation);
-
-                    responseMessage = new CartRecommenderResponse(listOfRecommendations);
-                } else {
-                    responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, "FK Cart Recommender failed.");
-                }
+                responseMessage = processRecommendForCartRequest(request, customer);
             } else {
                 final String error = String.format("Unrecognized action '%s'.", (action != null ? action : "<null>"));
                 responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, error);
@@ -74,6 +64,25 @@ public class ProductRecommenderController extends BaseController {
 
         setResponseMessage(model, responseMessage, user);
         return model;
+    }
+
+    private Message processRecommendForCartRequest(HttpServletRequest request, FDUserI customer) {
+        Message responseMessage;
+        final boolean newCustomer = isUserAlreadyOrdered(customer);
+
+        List<Recommendations> whatWeHaveNow = recommenderService.recommendForFoodKickCart(customer, newCustomer);
+        if (whatWeHaveNow != null && !whatWeHaveNow.isEmpty()) {
+            List<ProductRecommendationData> payload = new ArrayList<ProductRecommendationData>();
+            for (Recommendations recommendations: whatWeHaveNow) {
+                RecommenderTitleAndDescription displayableFields = recommenderService.getRecommenderDisplayableFields(recommendations.getVariant());
+                ProductRecommendationData recommendationData = buildResponseDataFromRecommendations(recommendations, displayableFields, request, customer);
+                payload.add(recommendationData);
+            }
+            responseMessage = new CartRecommenderResponse(payload);
+        } else {
+            responseMessage = new CartRecommenderResponse(null);
+        }
+        return responseMessage;
     }
 
     private ProductRecommendationData buildResponseDataFromRecommendations(Recommendations recommendations, RecommenderTitleAndDescription displayableFields, HttpServletRequest request, FDUserI customer) {
@@ -117,6 +126,16 @@ public class ProductRecommenderController extends BaseController {
         data.setCohortName(customer.getCohortName());
 
         return data;
+    }
+
+    private boolean isUserAlreadyOrdered(FDUserI user) {
+        boolean currentUser = false;
+        try {
+            currentUser = user.getLevel() > FDUserI.RECOGNIZED && user.getAdjustedValidOrderCount(EnumEStoreId.FD) >= 3;
+        } catch (FDResourceException e) {
+            currentUser = false;
+        }
+        return currentUser;
     }
 
     /**
