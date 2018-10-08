@@ -14,15 +14,17 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditRequest;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class BackOfficeSelfCreditService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(BackOfficeSelfCreditService.class);
     private static final BackOfficeSelfCreditService INSTANCE = new BackOfficeSelfCreditService();
-
-    private static final String SELF_CREDIT_CASE_MEDIA = "Self Credit";
 
     private BackOfficeSelfCreditService() {
     }
@@ -31,9 +33,17 @@ public class BackOfficeSelfCreditService {
         return INSTANCE;
     }
 
-    public IssueSelfCreditResponse postSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest) {
+    public IssueSelfCreditResponse postSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
 
-        StringBuilder content = new StringBuilder();
+        final boolean isOrderIdValid = isOrderIdValid(issueSelfCreditRequest, user);
+        if (!isOrderIdValid) {
+			IssueSelfCreditResponse issueSelfCreditResponse = new IssueSelfCreditResponse();
+			issueSelfCreditResponse.setMessage("ERROR");
+			issueSelfCreditResponse.setSuccess(false);
+			return issueSelfCreditResponse;
+		}
+    	
+    	StringBuilder content = new StringBuilder();
         BufferedReader input = null;
         try {
         	String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeSelfCreditUrl()).toString();
@@ -82,4 +92,19 @@ public class BackOfficeSelfCreditService {
 		}
         return issueSelfCreditResponse;
     }
+
+	private boolean isOrderIdValid(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
+		
+		String orderId = issueSelfCreditRequest.getOrderId();
+		FDOrderAdapter orderDetailsToDisplay = null;
+		try {
+			orderDetailsToDisplay = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), orderId);
+		} catch (FDResourceException e) {
+			LOGGER.error("Self-credit order id: " + issueSelfCreditRequest.getOrderId() + " does not belong to user.");
+			return false;
+		}
+		return null != orderDetailsToDisplay;
+	}
+	
+	
 }

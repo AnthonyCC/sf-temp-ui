@@ -48,7 +48,7 @@ public class SelfCreditController extends BaseController {
             String orderId = request.getParameter("orderId");
             responseMessage = getOrderDetails(request, user, orderId);
         } else if (ACTION_POST_ISSUE_SELF_CREDIT.equals(action)) {
-            responseMessage = issueSelfCredit(request, response);
+            responseMessage = issueSelfCredit(request, response, user);
         }
 
         setResponseMessage(model, responseMessage, user);
@@ -56,10 +56,10 @@ public class SelfCreditController extends BaseController {
         return model;
     }
 
-    private Message issueSelfCredit(HttpServletRequest request, HttpServletResponse response) throws JsonException {
+    private Message issueSelfCredit(HttpServletRequest request, HttpServletResponse response, SessionUser user) throws JsonException {
         IssueSelfCreditRequest issueSelfCreditRequest = parseRequestObject(request, response, IssueSelfCreditRequest.class);
         com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse issueSelfCreditResponse = BackOfficeSelfCreditService.defaultService()
-                .postSelfCreditRequest(issueSelfCreditRequest);
+                .postSelfCreditRequest(issueSelfCreditRequest,user.getFDSessionUser());
         return new IssueSelfCreditResponse(issueSelfCreditResponse);
     }
 
