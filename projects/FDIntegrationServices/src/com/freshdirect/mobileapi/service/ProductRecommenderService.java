@@ -60,10 +60,12 @@ public class ProductRecommenderService {
         if (prezTitle == null) {
             EnumSiteFeature siteFeature = variant.getSiteFeature();
             prezTitle = siteFeature.getPresentationTitle();
-            if (prezTitle == null)
+            if (prezTitle == null) {
                 prezTitle = siteFeature.getTitle();
-            if (prezTitle == null)
+            }
+            if (prezTitle == null) {
                 prezTitle = siteFeature.getName();
+            }
         }
         return prezTitle;
     }
