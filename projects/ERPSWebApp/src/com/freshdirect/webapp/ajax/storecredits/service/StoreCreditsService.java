@@ -36,7 +36,7 @@ public class StoreCreditsService {
 
     public StoreCredits collectStoreCredits(FDUserI user, boolean isSelfCreditFeatureActive) throws FDResourceException {
 
-    	FDIdentity customerIdentity = user.getIdentity();
+        FDIdentity customerIdentity = user.getIdentity();
 
         StoreCredits storeCredits = new StoreCredits();
         storeCredits.setSort("date");

@@ -158,7 +158,10 @@ private final static Category LOGGER = LoggerFactory.getInstance(StandingOrdersS
 		return new FDSku(skuData.getSkuCode(), skuData.getVersion());
 	}
 	private FDConfiguration buildConfiguration(FDConfigurationData configurationData) {
-		FDConfiguration configuration = new FDConfiguration(configurationData.getQuantity(), configurationData.getSalesUnit());
+		FDConfiguration configuration=null;
+				
+		if(configurationData!=null)
+		configuration = new FDConfiguration(configurationData.getQuantity(), configurationData.getSalesUnit());
 		return configuration;
 	}
 	private UnAvailabilityDetails buildUnavailabilityDeatils(UnAvailabilityDetailsData unAvailabilityDetailsData) {

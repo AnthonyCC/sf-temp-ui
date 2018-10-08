@@ -217,6 +217,7 @@ public class AddressForm implements WebFormI { // , AddressName
         // Restored this phone number check for FD store in APPDEV-5072 with the permission of Siva. It was removed in https://door3nyc.atlassian.net/browse/FDX-965
         if (CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FD)) {
             result.addError(homePhone == null || PhoneNumber.normalize(homePhone).length() != 10, EnumUserInfoName.DLV_HOME_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
+            result.addError(altContactPhone == null || !(PhoneNumber.normalize(altContactPhone).length() == 10 || PhoneNumber.normalize(altContactPhone).length() == 0), EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
         }
 
         result.addError(homePhone != null && PhoneNumber.normalize(homePhone).startsWith("0"), EnumUserInfoName.DLV_HOME_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);

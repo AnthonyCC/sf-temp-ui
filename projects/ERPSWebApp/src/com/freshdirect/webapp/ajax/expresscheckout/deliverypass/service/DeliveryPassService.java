@@ -9,9 +9,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.deliverypass.DeliveryPassType;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -22,6 +30,7 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.template.TemplateException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -29,15 +38,19 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassProductData;
+import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
+import com.freshdirect.webapp.ajax.location.LocationHandlerService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class DeliveryPassService {
 
 	private static final DeliveryPassService INSTANCE = new DeliveryPassService();
+	private static final Logger LOGGER = LoggerFactory.getInstance(DeliveryPassService.class);
 
 	private DeliveryPassService() {
 	}
@@ -126,6 +139,7 @@ public class DeliveryPassService {
 		deliveryPassConfiguration.put("termsAndConditions", loadTermsAndConditions());
 		deliveryPassConfiguration.put("customerContact", populateCustomerServiceContact(user));
 		deliveryPassConfiguration.put("freeTrialEligible", user.isDPFreeTrialOptInEligible());
+		deliveryPassConfiguration.put("zipCheckFkDeliveryPassMsg", zipCheckFkDeliveryPassMsg(user));
 		return data;
 	}
 
@@ -197,4 +211,24 @@ public class DeliveryPassService {
 	private String populateCustomerServiceContact(FDUserI user) {
         return UserUtil.getCustomerServiceContact(user);
     }
+	
+	//	DP17-266 Add geo-appropriate FK messaging to Plans page/pop up
+	private boolean zipCheckFkDeliveryPassMsg(FDUserI user) {
+		String zipCode = user.getZipCode();
+		try {
+			FDDeliveryServiceSelectionResult result = FDDeliveryManager.getInstance()
+					.getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FDX);
+			Set<EnumServiceType> availServices = result.getAvailableServices();
+
+			// remove pickup
+			availServices.remove(EnumServiceType.PICKUP);
+			if (availServices.contains(EnumServiceType.FDX)) {
+				return true;
+			}
+
+		} catch (FDResourceException e) {
+			LOGGER.debug(e);
+		}
+		return false;
+	}
 }

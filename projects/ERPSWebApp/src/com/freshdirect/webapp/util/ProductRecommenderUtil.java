@@ -580,15 +580,7 @@ public class ProductRecommenderUtil {
     	int indexOfPopularity = ScoreProvider.getInstance().getGlobalIndexes().get("Popularity");
     	for (Map.Entry<ContentKey, double[]> entry : globalProductScores.entrySet()) {			
     		double[] value = entry.getValue();
-    		
-    		System.out.println("value[0] ========================="+value[0]);
-            System.out.println("value[1] ========================="+value[1]);
-            System.out.println("value[2] ========================="+value[2]);
-            System.out.println("value[3] ========================="+value[3]);
-            System.out.println("value[4] ========================="+value[4]);
-            System.out.println("popularityBaseLine ========================="+popularityBaseLine);
-            System.out.println("entry.getKey() ========================="+entry.getKey());
-    		
+
     		if( value[indexOfPopularity] >= popularityBaseLine) {
     			productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
     			if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine, considerNew, considerBackInStock)) {
