@@ -86,12 +86,13 @@ request.setAttribute("noyui", true);
 		
 		<jwr:style src="/homepage.css" media="all" />
 	</tmpl:put>
-	<tmpl:put name="extraCss"><%-- MOBILE --%>
+	<%-- MOBILE --%>
+	<tmpl:put name="extraCss">
 	</tmpl:put>
 	<tmpl:put name="customJsBottom">
-
 	</tmpl:put>
-	<tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>
+	<%-- MOBILE, end of body --%>
+	<tmpl:put name="extraJsFooter">
 	</tmpl:put>
 	
 	<tmpl:put name='containerExtraClass' direct='true'>homepage</tmpl:put>
