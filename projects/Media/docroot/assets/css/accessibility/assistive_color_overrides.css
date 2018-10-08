@@ -823,7 +823,7 @@
 .assistive-mode div#subtotalbox1 a,
 .assistive-mode div#subtotalbox2 a{
 	color: #5d5f36;
-	text-decoration:none;
+	text-decoration:underline;
 }
 
 .assistive-mode .subtotal__row .free-link:hover,
@@ -998,4 +998,16 @@ color: #B93D3F;
 .assistive-mode #addpaymentmethod_masterpass a{
 	color:#333;
 	text-decoration:underline;
+}
+.assistive-mode .fdCoupon_msg{
+	color:#333;
+}
+.assistive-mode [data-boxid="automaticheaderdiscount"] .subtotal__rowcell-mid,
+.assistive-mode [data-boxid="redemptionPromo"] .subtotal__rowcell-mid,
+.assistive-mode [data-boxid="freefood"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="discount"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="redemptionfailure"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="giftcardbalance"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="credits"] .subtotal__rowcell-mid{
+	    color: #5d5f36;
 }

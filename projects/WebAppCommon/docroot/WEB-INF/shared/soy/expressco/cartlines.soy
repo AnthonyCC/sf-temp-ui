@@ -1251,9 +1251,9 @@
 	{if $corporateUser}
 		<div class='promotion-item'>
 			<form fdform="checkout" action="#">
-				<p class='promotion-text'>Billing reference/Client code</p>
+				<p class='promotion-text'><label for="billing_code">Billing reference/Client code</label></p>
 				<div>
-					<input type="text" aria-label="enter billing reference or client code" class="promotion-input" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
+					<input type="text" class="promotion-input" id="billing_code" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
 				</div>
 			</form>
 		</div>

@@ -2,11 +2,13 @@
 
 /**
  * @param couponName coupon data
+ * @param coupon coupon data
  * @param isClipped is coupon clipped (checkbox will be disabled)
  */
 {template .clipBoxHtml autoescape="false"}
 <span name="{$couponName}_cbCont" class="fdCoupon_cbCont {if $isClipped}isClipped{/if}">
-<input type="checkbox" aria-label="apply fd coupon" name="{$couponName}_cb" class="fdCoupon_cb" {if $isClipped}checked="checked" disabled="disabled"{/if}>
+<label for="{$couponName}_cb" class="customcheckboxlabel"><span class="offscreen">apply freshdirect coupon {$coupon.displayDescription}</span></label>
+<input type="checkbox" id="{$couponName}_cb" name="{$couponName}_cb" class="fdCoupon_cb" {if $isClipped}checked="checked" disabled="disabled"{/if}>
 </span>
 {/template}
 
