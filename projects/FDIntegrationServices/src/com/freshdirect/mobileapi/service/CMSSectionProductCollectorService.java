@@ -47,7 +47,6 @@ public class CMSSectionProductCollectorService {
             List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
             List<String> errorProductKeys = new ArrayList<String>();
             for (final CMSSectionModel section : page.getSections()) {
-                LOGGER.debug("Loading section data: " + section.getName());
                 final CMSPotatoSectionModel potatoSection = CMSPotatoSectionModel.withSection(section);
                 potatoSection.setProducts(collectProductPotatos(user, section.getProductList(), errorProductKeys));
                 potatoSection.getProducts().addAll(collectProductPotatosFromCategories(user, potatoSection));
@@ -67,7 +66,7 @@ public class CMSSectionProductCollectorService {
         if (products != null) {
             for (final ProductModel product : products) {
                 final ProductPotatoData data = ProductPotatoUtil.getProductPotato(product, user.getFDSessionUser(), false, FDStoreProperties.getPreviewMode());
-                if (data != null && data.getProductData() != null && data.getProductData().isAvailable()) {
+                if (data != null) {
                     potatoes.add(data);
                 }
             }
@@ -77,21 +76,17 @@ public class CMSSectionProductCollectorService {
 
     private List<ProductPotatoData> collectProductPotatos(SessionUser user, List<String> productKeys, List<String> errorProductKeys) {
         final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
-        List<String> productKeysToRemove = new ArrayList<String>();
         if (productKeys != null) {
             for (final String productKey : productKeys) {
                 // extract CMS id
                 final String prodId = productKey.substring(FDContentTypes.PRODUCT.name().length() + 1);
                 final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
-                if (data != null && data.getProductData() != null && data.getProductData().isAvailable()) {
+                if (data != null) {
                     potatoes.add(data);
                 } else {
                     errorProductKeys.add(productKey);
-                    LOGGER.debug("Removing product key = " + productKey);
-                    productKeysToRemove.add(productKey);
                 }
             }
-            productKeys.removeAll(productKeysToRemove);
         }
         return potatoes;
     }
