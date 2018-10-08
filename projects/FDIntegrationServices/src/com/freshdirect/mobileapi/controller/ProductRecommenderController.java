@@ -12,7 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.response.recommender.CartRecommenderResponse;
@@ -21,7 +20,6 @@ import com.freshdirect.mobileapi.controller.data.response.recommender.Recommenda
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.MessageCodes;
-import com.freshdirect.mobileapi.model.RecommenderTitleAndDescription;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ProductRecommenderService;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -51,9 +49,20 @@ public class ProductRecommenderController extends BaseController {
             responseMessage.setStatus(Message.STATUS_FAILED);
             responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
         } else {
-            final FDUserI customer = user.getFDSessionUser();
             if (ACTION_FK_CART.equals(action)) {
-                responseMessage = processRecommendForCartRequest(request, customer);
+                FDUserI customer = user.getFDSessionUser();
+
+                Recommendations recommendations = recommenderService.recommendDYFForFoodKickCart(customer);
+                if (recommendations != null) {
+                    List<ProductRecommendationData> listOfRecommendations = new ArrayList<ProductRecommendationData>();
+
+                    ProductRecommendationData dyfRecommendation = buildResponseDataFromRecommendations(recommendations, "Custom Title", "Custom Deal Info", request, customer);
+                    listOfRecommendations.add(dyfRecommendation);
+
+                    responseMessage = new CartRecommenderResponse(listOfRecommendations);
+                } else {
+                    responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, "FK Cart Recommender failed.");
+                }
             } else {
                 final String error = String.format("Unrecognized action '%s'.", (action != null ? action : "<null>"));
                 responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, error);
@@ -64,31 +73,12 @@ public class ProductRecommenderController extends BaseController {
         return model;
     }
 
-    private Message processRecommendForCartRequest(HttpServletRequest request, FDUserI customer) {
-        Message responseMessage;
-
-        List<Recommendations> currentRecommendations = recommenderService.recommendForFoodKickCart(customer);
-        if (currentRecommendations != null && !currentRecommendations.isEmpty()) {
-            List<ProductRecommendationData> payload = new ArrayList<ProductRecommendationData>();
-            for (Recommendations recommendations: currentRecommendations) {
-                RecommenderTitleAndDescription displayableFields = recommenderService.getRecommenderDisplayableFields(recommendations.getVariant());
-                ProductRecommendationData recommendationData = buildResponseDataFromRecommendations(recommendations, displayableFields, request, customer);
-                payload.add(recommendationData);
-            }
-            responseMessage = new CartRecommenderResponse(payload);
-        } else {
-            responseMessage = new CartRecommenderResponse(null);
-        }
-        return responseMessage;
-    }
-
-    private ProductRecommendationData buildResponseDataFromRecommendations(Recommendations recommendations, RecommenderTitleAndDescription displayableFields, HttpServletRequest request, FDUserI customer) {
+    private ProductRecommendationData buildResponseDataFromRecommendations(Recommendations recommendations, String title, String dealInfo, HttpServletRequest request, FDUserI customer) {
         ProductRecommendationData responsePayload = new ProductRecommendationData();
 
-        final EnumSiteFeature siteFeature = recommendations.getVariant().getSiteFeature();
-        responsePayload.setId(siteFeature.getName());
-        responsePayload.setTitle(displayableFields.getTitle());
-        responsePayload.setDealInfo(displayableFields.getDescription());
+        responsePayload.setId(recommendations.getVariant().getSiteFeature().getName());
+        responsePayload.setTitle(title);
+        responsePayload.setDealInfo(dealInfo);
         populateRecommenderResponseWithProducts(responsePayload, recommendations, customer, isExtraResponseRequested(request));
 
         // append recommendation tracking data for analytics

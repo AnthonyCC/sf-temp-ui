@@ -33,12 +33,16 @@ import com.freshdirect.cms.ui.editor.reports.repository.ReportsRepository;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
 
 @Service
 public class ReportingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportingService.class);
+
+    private static final ContentKey ARCHIVE_DEPARTMENT_KEY = ContentKeyFactory.get(ContentType.Department, "Archive");
 
     // direct subfolders of CMSReports
     public static final ContentKey CMS_REPORTS_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1009");
@@ -79,6 +83,8 @@ public class ReportingService {
             .toList();
 
     public static final Set<ContentKey> ALL_REPORTING_KEYS = new HashSet<ContentKey>() {
+        private static final long serialVersionUID = 1671795856320147621L;
+
         {
             this.add(CMS_REPORTS_FOLDER_KEY);
             this.add(SMARTSTORE_REPORTS_FOLDER_KEY);
@@ -87,6 +93,47 @@ public class ReportingService {
             this.addAll(CMS_REPORT_NODE_KEYS);
             this.addAll(SMARTSTORE_REPORT_NODE_KEYS);
             this.addAll(CMS_QUERY_NODE_KEYS);
+        }
+    };
+
+    private final Predicate<Map<Attribute, Object>> orphanContentFilter = new Predicate<Map<Attribute,Object>>() {
+        @Override
+        public boolean apply(Map<Attribute, Object> reportEntry) {
+            // extract key from artificially composed attribute name "KEY|"<contentkey>
+            ContentKey contentKey = extractContentKeyFromTableAttributeDefinition(reportEntry.keySet().iterator().next());
+
+            // orphans don't apply
+            final boolean orphan = contentProviderService.isOrphan(contentKey, RootContentKey.STORE_FRESHDIRECT.contentKey);
+            if (orphan) {
+                LOGGER.debug("Removing ORPHAN content " + contentKey);
+            }
+
+            return !orphan;
+        }
+    };
+
+    private final Predicate<Map<Attribute, Object>> archiveContentsFilter = new Predicate<Map<Attribute,Object>>() {
+        @Override
+        public boolean apply(Map<Attribute, Object> reportEntry) {
+            // extract key from artificially composed attribute name "KEY|"<contentkey>
+            ContentKey contentKey = extractContentKeyFromTableAttributeDefinition(reportEntry.keySet().iterator().next());
+
+            final List<List<ContentKey>> contexts = contentProviderService.findContextsOf(contentKey);
+
+            boolean archived = false;
+
+            // non-orphan contents can have one or more contexts
+            // we presume that archived items reside only under Archive department
+            // and they do not maintain position elsewhere (applies only to products)
+            if (contexts.size() == 1) {
+                List<ContentKey> singleContext = contexts.get(0);
+
+                archived = singleContext.contains(ARCHIVE_DEPARTMENT_KEY);
+                if (archived) {
+                    LOGGER.debug("Removing ARCHIVE smart category " + contentKey);
+                }
+            }
+            return !archived;
         }
     };
 
@@ -136,8 +183,8 @@ public class ReportingService {
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentHiddenProducts"), "Recent Hidden Products");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "scarabRules"), "Scarab merchandising rules");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Smart categories");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "ymalSets"), "YMAL sets");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Active Smart categories");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "ymalSets"), "Active YMAL sets");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsQuery, "orphans"), "Orphan Store Objects");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsQuery, "recent"), "Recently modified");
@@ -297,13 +344,27 @@ public class ReportingService {
         } else if ("ymalSets".equals(contentKey.id)) {
             List<Map<Attribute,Object>> result = repository.fetchYmalSets();
 
-            values.put(ReportAttributes.CmsReport.name, "YMAL sets");
+            // Strip off inactive YMAL set holders
+            Iterables.filter(result, orphanContentFilter);
+            Iterables.filter(result, archiveContentsFilter);
+
+            values.put(ReportAttributes.CmsReport.name, "Active YMAL sets");
             values.put(ReportAttributes.CmsReport.description, "Smart YMAL sets");
             values.put(ReportAttributes.CmsReport.results, result);
         } else if ("smartCatRecs".equals(contentKey.id)) {
             List<Map<Attribute,Object>> result = repository.fetchSmartCategoryRecommenders();
 
-            values.put(ReportAttributes.CmsReport.name, "Smart categories");
+            final int smartCategoryCount = result.size();
+
+            // Strip off inactive categories
+            Iterables.filter(result, orphanContentFilter);
+            Iterables.filter(result, archiveContentsFilter);
+
+            final int filteredSmartCategoryCount = result.size();
+
+            LOGGER.debug("Retained " + filteredSmartCategoryCount + " smart categories from total " + smartCategoryCount);
+
+            values.put(ReportAttributes.CmsReport.name, "Active Smart categories");
             values.put(ReportAttributes.CmsReport.description, "Smart category recommenders");
             values.put(ReportAttributes.CmsReport.results, result);
         } else if ("brokenMediaLinks".equals(contentKey.id)) {
@@ -398,5 +459,9 @@ public class ReportingService {
         LOGGER.debug("Skipped " + archivedProducts + " archived products from the report");
 
         return reportPayload;
+    }
+
+    private ContentKey extractContentKeyFromTableAttributeDefinition(Attribute attributeDef) {
+        return ContentKeyFactory.get(attributeDef.getName().split("\\|")[1]);
     }
 }

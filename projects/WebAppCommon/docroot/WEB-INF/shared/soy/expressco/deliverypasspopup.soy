@@ -14,6 +14,7 @@
 		<span class="deliverypasspopup__header-text-circle">&#9679;</span> Timeslot Reservations <br class="deliverypasspopup-mobweb" />
 		<span class="deliverypasspopup__header-text-circle deliverypasspopup-mobweb">&#9679;</span> Exclusive DeliveryPass Perks</div>
   </div>
+  {if $data.zipCheckFkDeliveryPassMsg}<img src="/media/layout/nav/globalnav/fdx/fddpfk.gif" alt="foodkick delivery pass" style="width:100%; height:100%;"/>{/if}
   <div data-component='deliverypasspopup-page'>
     {if $data.freeTrialEligible}<div class="deliverypasspopup__freetrial"><a href="/freetrial.jsp">New to DeliveryPass? Sign up for the Free Trial!</a></div>{/if}
     <form class="deliverypass_form" fdform="deliverypass" action="#" data-eventsource="{$data.eventSource ? $data.eventSource : 'BROWSE'}">

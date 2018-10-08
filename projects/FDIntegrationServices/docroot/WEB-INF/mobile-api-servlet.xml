@@ -121,6 +121,11 @@
     <bean id="selfCreditController" class="com.freshdirect.mobileapi.controller.SelfCreditController"
 		parent="baseController" />
 
+    <bean id="productRecommenderController" class="com.freshdirect.mobileapi.controller.ProductRecommenderController"
+        parent="baseController">
+        <property name="recommenderService" ref="productRecommenderService" />
+    </bean>
+
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
@@ -162,7 +167,7 @@
 				<prop key="ewalletexpresscheckout.do">ewalletExpressController</prop> -->
 				<prop key="**/ewalletstdcheckout.do">ewalletStandardController</prop>
                 <prop key="**/ad.do">adController</prop>
-                <prop key="**/selfcredit.do">selfCreditController</prop>
+                <prop key="**/recommend.do">productRecommenderController</prop>
 			</props>
 		</property>
 	</bean>
