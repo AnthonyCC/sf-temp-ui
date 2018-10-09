@@ -262,6 +262,14 @@
 {/template}
 
 /**
+*/
+{template .selfCreditRequestError autoescape="false"}
+  <img src="/media_stat/images/common/warning_icon.svg" width="65" height="60" alt="Credit Request Error">
+  <div class="status" id="creditRequestCompleteDetails">We were unable to submit your credit request. Finish your claim by calling us at <span itemprop="telephone"><a class="call-phone-number" href="tel:+1-866-283-7373" rel="nofollow">1-866-283-7373.</a></span></div>
+  <button onclick="FreshDirect.components.selfCreditRequestErrorPopup.closePopup(event)"class='cssbutton full-width green selfcredit-button ok-button'>Ok</button>
+{/template}
+
+/**
   @param title
   @param reviewData
 */

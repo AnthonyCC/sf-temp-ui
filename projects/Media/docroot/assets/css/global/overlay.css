@@ -226,18 +226,22 @@ body.overlay-opened {
     filter: brightness(0) invert(1);
   }
 
-  .overlay.overlay-medium.selfcredit-overlay .overlay-header-helper {
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-header-helper {
     background-color: transparent;
   }
 
-  .overlay.overlay-medium.selfcredit-overlay .overlay-close-icon {
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-close-icon {
     filter: none;
+  }
+
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-close-icon,
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-container {
     top: calc(20% - 50px);
   }
 
-  .overlay.overlay-medium.selfcredit-overlay .overlay-container {
+  /* .overlay.overlay-medium.selfcredit-overlay .overlay-container {
     top: calc(20% - 50px);
-  }
+  } */
 
   .overlay.overlay-medium.selfcredit-overlay .overlay-content {
     padding: 30px 20px;

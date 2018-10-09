@@ -109,7 +109,11 @@ var FreshDirect = window.FreshDirect || {};
             this.extendedRefresh(this.data);
           } else if (signalSource === "selfcreditresponse") {
             this.close({ currentTarget: this.overlayEl });
-            fd.components.selfCreditRequestCompletePopup.openPopup();
+            if(!!result.success) {
+              fd.components.selfCreditRequestCompletePopup.openPopup();
+            } else {
+              fd.components.selfCreditRequestErrorPopup.openPopup();
+            }
           }
         }
       },

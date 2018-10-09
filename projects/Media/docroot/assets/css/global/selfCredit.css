@@ -15,7 +15,7 @@
 }
 #selfCreditIssueReport.overlay-medium .self-credit-header p {
   font-size: 14px;
-  width: 80%;
+  /* width: 80%; */
 }
 #selfCreditIssueReport.overlay-medium .self-credit-header h1 {
   font-size: 22px;
@@ -315,17 +315,27 @@
     .section-container {
     margin: 10px;
   }
+  #selfCreditIssueReport .self-credit-form-alert {
+    font-size: 13px;
+  }
 }
 
-#selfCreditRequestComplete .overlay-content {
+#selfCreditRequestComplete .overlay-content,
+#selfCreditRequestError .overlay-content {
   text-align: center;
   padding: 40px 70px;
 }
 
+#selfCreditRequestError .overlay-content img {
+  margin-bottom: 38px;
+}
+
 @media screen and (max-width: 700px) {
-  #selfCreditRequestComplete .overlay-content {
-    padding: 40px;
-  }x
+  #selfCreditRequestComplete .overlay-content, 
+  #selfCreditRequestError .overlay-content {
+    padding: 40px 0;
+    box-shadow: none;
+  }
 }
 
 #selfCreditRequestComplete .credit-request-submit {
@@ -340,7 +350,8 @@
   margin-top: 5px;
 }
 
-#selfCreditRequestComplete .status {
+#selfCreditRequestComplete .status,
+#selfCreditRequestError .status {
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
@@ -350,6 +361,24 @@
   text-align: center;
   color: #444;
   margin: 20px 0 50px 0;
+}
+
+#selfCreditRequestError .status {
+  margin: 20px 15px 50px;
+}
+
+#selfCreditRequestError .status a {
+  display: block;
+  color: black;
+  font-weight: bold;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+@media(max-width: 700px) {
+  #selfCreditRequestError .status {
+    margin: 0 0 50px;
+  }
 }
 
 .selfcredit-overlay .spinner-overlay {
@@ -911,10 +940,10 @@
     margin: 0;
     padding: 0 15px 0 0;
     box-sizing: border-box;
-    flex-basis: 80%;
+    flex-basis: 75%;
   }
   .order-line .order-line-qty {
-    flex-basis: 20%;
+    flex-basis: 25%;
   }
   .order-line .disable-order-line {
     margin: 0;
