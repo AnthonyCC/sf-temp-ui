@@ -416,7 +416,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 			throw new RemoteException(e.getMessage());
 		
 		}
-		return response.getData();
+		return new HashSet<String>(response.getData());
 	}
 
 	@Override
