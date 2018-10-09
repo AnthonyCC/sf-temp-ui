@@ -43,7 +43,7 @@ public class BackOfficeSelfCreditService {
 			LOGGER.error("Error while checking if user has Self-credit order id: " + orderId);
 		}
         if (!isOrderIdValid) {
-        	LOGGER.error("Self-credit order id: " + orderId + " does not belong to user.");
+        	LOGGER.error("Self-credit order id: " + orderId + " does not belong to user: " + user.getIdentity().getFDCustomerPK());
 			IssueSelfCreditResponse issueSelfCreditResponse = new IssueSelfCreditResponse();
 			issueSelfCreditResponse.setMessage("ERROR");
 			issueSelfCreditResponse.setSuccess(false);
