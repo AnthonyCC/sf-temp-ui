@@ -9,9 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -68,9 +66,8 @@ public class ProductRecommenderController extends BaseController {
 
     private Message processRecommendForCartRequest(HttpServletRequest request, FDUserI customer) {
         Message responseMessage;
-        final boolean newCustomer = isUserAlreadyOrdered(customer);
 
-        List<Recommendations> actualRecommendations = recommenderService.recommendForFoodKickCart(customer, newCustomer);
+        List<Recommendations> actualRecommendations = recommenderService.recommendForFoodKickCart(customer);
         if (actualRecommendations != null && !actualRecommendations.isEmpty()) {
             List<ProductRecommendationData> payload = new ArrayList<ProductRecommendationData>();
             for (Recommendations recommendations: actualRecommendations) {
@@ -126,16 +123,6 @@ public class ProductRecommenderController extends BaseController {
         data.setCohortName(customer.getCohortName());
 
         return data;
-    }
-
-    private boolean isUserAlreadyOrdered(FDUserI user) {
-        boolean currentUser = false;
-        try {
-            currentUser = user.getLevel() > FDUserI.RECOGNIZED && user.getAdjustedValidOrderCount(EnumEStoreId.FD) >= 3;
-        } catch (FDResourceException e) {
-            currentUser = false;
-        }
-        return currentUser;
     }
 
     /**

@@ -110,7 +110,7 @@ public class ViewCartCarouselService extends AbstractCarouselService {
     protected List<String> getSiteFeatures(FDUserI user) {
         List<String> siteFeatures = null;
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
-            boolean isCurrentUser = isUserAlreadyOrdered(user);
+            boolean isCurrentUser = user.isHavingEnoughValidOrders();
             siteFeatures = isCurrentUser ? FDStoreProperties.getViewcartCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getViewcartNewCustomerCarouselSiteFeatures();
             replaceSampleSiteFeatures(siteFeatures);
         } else {
@@ -120,8 +120,7 @@ public class ViewCartCarouselService extends AbstractCarouselService {
     }
 
     public String getDefaultErrorSiteFeature(FDUserI user) {
-        boolean isCurrentUser = isUserAlreadyOrdered(user);
-        return isCurrentUser ? "DYF" : "FAVORITES";
+        return user.isHavingEnoughValidOrders() ? "DYF" : "FAVORITES";
     }
 
 }

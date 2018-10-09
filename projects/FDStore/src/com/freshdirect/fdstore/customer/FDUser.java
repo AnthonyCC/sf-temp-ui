@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.customer;
 
 import java.text.ChoiceFormat;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,7 +98,6 @@ import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
@@ -325,16 +323,16 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean refreshNewSoFeature = true;
 
     private boolean soFeatureOverlay = false;
-    
+
     private Collection<FDStandingOrder> activeSO3s = new ArrayList<FDStandingOrder>();
-    
+
     //Added as part of DP17-147
     private boolean dlvPassTimeslotNotMatched = false;
 
     private String multiSearchList;
-    
+
     private List<UnbxdAutosuggestResults> unbxdAustoSuggestions;
-    
+
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -1124,7 +1122,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             return customer.getProfile().isChefsTable();
         }
     }
-    
+
     @Override
     public boolean isFDLabsCustomer() throws FDResourceException {
         if (this.identity == null) {
@@ -1137,7 +1135,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             return customer.getProfile().isFDLabsCustomer();
         }
     }
-    
+
 
     @Override
     public boolean isVoucherHolder() throws FDResourceException {
@@ -1579,7 +1577,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public boolean isDlvPassActive() {
     	dlvPassTimeslotNotMatched = false;
-       
+
         if (dlvPassInfo == null) {
             return false;
         }
@@ -1590,15 +1588,15 @@ public class FDUser extends ModelSupport implements FDUserI {
              * modifies the order still the BSGS pass should be applied even if the status is expired pending. Thats why this.getShoppingCart().isDlvPassAlreadyApplied() check is
              * made.
              */
-        	
+
         	return isDlvPassContextMatched() && (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) || (this.isDlvPassExpiredPending() && this.getShoppingCart().isDlvPassAlreadyApplied()));
-        	
+
         }
         // Changes as part of DP17-158
         /* When the Mid-week DP property is enabled - we will evaluate the below logic
-         * 1. Compare the user selected day of the week from the timeslot with the list of eligbile days from the Deliverypass 
+         * 1. Compare the user selected day of the week from the timeslot with the list of eligbile days from the Deliverypass
          */
-				
+
         if(null != getDlvPassInfo() && null != getDlvPassInfo().getTypePurchased() && null != getDlvPassInfo().getTypePurchased()
 				.getEligibleDlvDays() && !getDlvPassInfo().getTypePurchased().getEligibleDlvDays().isEmpty() && (getDlvPassInfo().getTypePurchased().getEligibleDlvDays().size() < 7)){
         	if(null!=this.getShoppingCart() && null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
@@ -1611,8 +1609,8 @@ public class FDUser extends ModelSupport implements FDUserI {
         			dlvPassTimeslotNotMatched = true;
         			return false;
         		} //end evaluation of weekly recurring reservation
-        	} 
-        	
+        	}
+
         }
         // Unlimited Pass.
         if (isDlvPassContextMatched() && EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())) {
@@ -1734,7 +1732,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         if (profileType.equals(EnumDlvPassProfileType.NOT_ELIGIBLE)){
             return false;
         }
-        else{        
+        else{
 	    	EnumEStoreId eStore = CmsManager.getInstance().getEStoreEnum();
 	    	if(null !=eStore && EnumEStoreId.FDX.equals(eStore) && FDStoreProperties.isDlvPassFDXEnabled()){
 	    		Date firstOrderDate = getFirstOrderDateByStore(eStore);
@@ -1747,7 +1745,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		        		return true;
 		        	}
 	        	}
-		        return false;  //No first order, Not eligible to buy FK DP. 
+		        return false;  //No first order, Not eligible to buy FK DP.
 	        }
         }
         return true;
@@ -2272,7 +2270,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setGiftCart(FDCartModel dcart) {
         this.dummyCart = dcart;
     }
-    
+
     @Override
     public FDCartModel getDlvPassCart() {
         return this.dlvPassCart;
@@ -2504,7 +2502,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					} catch (Exception e) {
 						LOGGER.error("ERROR-USERCONTEXT-3: Exception while populating usercontext for user:"+getIdentity(), e);
 					}
-                } 
+                }
 				if (null == address && this.getAddress() != null) {
                     address = new ErpAddressModel(this.getAddress());
                 }
@@ -2609,8 +2607,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 
 		// Weekly or One time reservation has higher precedence than Standard reservation
-		if (address!=null && null != weeklyOrOneTimeReservationDeliveryDate && null != weeklyOrOneTimeReservationAddress && this.getReservation() != null 
-				&& this.getReservation().getAddressId()!=null 
+		if (address!=null && null != weeklyOrOneTimeReservationDeliveryDate && null != weeklyOrOneTimeReservationAddress && this.getReservation() != null
+				&& this.getReservation().getAddressId()!=null
 				&& this.getReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
@@ -2688,21 +2686,24 @@ public class FDUser extends ModelSupport implements FDUserI {
                 fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdxSalesOrg());
                 fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdxDistributionChannel());
                 zoneInfo = new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdxSalesOrg(), FDStoreProperties.getDefaultFdxDistributionChannel(),
-                        ZoneInfo.PricingIndicator.BASE, new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdxSalesOrgParent(),
-                                FDStoreProperties.getDefaultFdxDistributionChannelParent()));
+                        ZoneInfo.PricingIndicator.BASE,
+                        new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdxSalesOrgParent(), FDStoreProperties.getDefaultFdxDistributionChannelParent()));
             } else {
-                /*fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
+                /*
+                 * fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID()); fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());
+                 * fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel()); zoneInfo = new ZoneInfo(pricingZoneId,
+                 * FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel());
+                 */
+                fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
                 fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());
                 fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel());
-                zoneInfo = new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel());*/
-            	fulfillmentContext.setPlantId("1400");
-                fulfillmentContext.setSalesOrg("1400");
-                fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel());
-                zoneInfo = new ZoneInfo(pricingZoneId, "1400", FDStoreProperties.getDefaultFdDistributionChannel(),
-                        ZoneInfo.PricingIndicator.SALE, new ZoneInfo(pricingZoneId, "0001",FDStoreProperties.getDefaultFdDistributionChannel()));
+                zoneInfo = new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel(),
+                        ZoneInfo.PricingIndicator.SALE, new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel()));
             }
 
         } else {
+            if ("1400".equals(fulfillmentInfo.getSalesArea().getSalesOrg())) {fulfillmentInfo.getSalesArea().setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());}
+            if ("1310".equals(fulfillmentInfo.getSalesArea().getSalesOrg())) {fulfillmentInfo.getSalesArea().setSalesOrg(FDStoreProperties.getDefaultFdxSalesOrg());}
             fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
             fulfillmentContext.setSalesOrg(fulfillmentInfo.getSalesArea().getSalesOrg());
             fulfillmentContext.setDistChannel(fulfillmentInfo.getSalesArea().getDistChannel());
@@ -3093,7 +3094,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             referralFlag = getOrderHistory().hasSettledOrders(estoreId);
             if (this.getIdentity() != null) {
                 LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
-            }            
+            }
         } catch (FDResourceException e) {
             LOGGER.error("Exception getting totalCredit", e);
         }
@@ -3465,7 +3466,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public boolean isPaymentechEnabled() {
         if (FDStoreProperties.isPaymentechGatewayEnabled())
             return true;
-       
+
         return false;
     }
 
@@ -3993,7 +3994,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 				LOGGER.warn("Error in getDpFreeTrialOptin() " + e);
 			}
 		}
-		
+
 		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
 
 			return this.cachedFDCustomer.getCustomerEStoreModel().getDpFreeTrialOptin();
@@ -4021,7 +4022,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
         return dateFmtDisplay.format(dpFreeTrialOptinStDate);
     }
-	
+
 	@Override
 	public boolean isDPFreeTrialOptInEligible(){
 		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && !this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || (this.isDlvPassNone() && !this.getDlvPassInfo().isFreeTrialRestricted()));
@@ -4043,13 +4044,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 
-	public int getInformOrderModifyViewCount() { /* current estore, auto increment */
+	@Override
+    public int getInformOrderModifyViewCount() { /* current estore, auto increment */
 		return getInformOrderModifyViewCount(null, true);
 	}
-	public int getInformOrderModifyViewCount(EnumEStoreId eStore) { /* auto increment */
+	@Override
+    public int getInformOrderModifyViewCount(EnumEStoreId eStore) { /* auto increment */
 		return getInformOrderModifyViewCount(eStore, true);
 	}
-	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment) {
+	@Override
+    public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment) {
 		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
 			return this.cachedFDCustomer.getCustomerEStoreModel().getInformOrderModifyViewCount(eStore, increment);
 		} else {
@@ -4057,7 +4061,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 	}
 
-	public void setInformOrderModifyViewCount(EnumEStoreId eStore, int informOrderModify) {
+	@Override
+    public void setInformOrderModifyViewCount(EnumEStoreId eStore, int informOrderModify) {
 		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
 			this.cachedFDCustomer.getCustomerEStoreModel().setInformOrderModifyViewCount(eStore, informOrderModify);
 		}
@@ -4072,10 +4077,11 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setMultiSearchList(String searchTermList) {
         multiSearchList = searchTermList;
     }
-    
-    public ErpPaymentMethodI getDefaultPaymentMethod() throws FDResourceException{        
+
+    @Override
+    public ErpPaymentMethodI getDefaultPaymentMethod() throws FDResourceException{
         if(null !=this.getFDCustomer() && null !=this.getFDCustomer().getDefaultPaymentMethodPK()){
-            String defaultPaymentMethodPk = this.getFDCustomer().getDefaultPaymentMethodPK();    
+            String defaultPaymentMethodPk = this.getFDCustomer().getDefaultPaymentMethodPK();
             Collection<ErpPaymentMethodI> paymentMethods = this.getPaymentMethods();
             if(null !=paymentMethods){
                 for(Iterator<ErpPaymentMethodI> i=paymentMethods.iterator(); i.hasNext();){
@@ -4083,18 +4089,20 @@ public class FDUser extends ModelSupport implements FDUserI {
                     if(defaultPaymentMethodPk.equals(pmethod.getPK().getId())){
                         return pmethod;
                     }
-                }            
+                }
             }
         }
        return null;
     }
 
-	public boolean isDlvPassTimeslotNotMatched() {
+	@Override
+    public boolean isDlvPassTimeslotNotMatched() {
 		return dlvPassTimeslotNotMatched;
 	}
 
-	
-	public boolean isMidWeekDlvPassApplicable(Date date){
+
+	@Override
+    public boolean isMidWeekDlvPassApplicable(Date date){
 		int dayOfWeek=DateUtil.getDayOfWeek(date);
 		if(hasMidWeekDlvPass() && getDlvPassInfo().getTypePurchased().getEligibleDlvDays().contains(dayOfWeek)){
 			return true;
@@ -4102,7 +4110,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return false;
 		}
 
-	public boolean hasMidWeekDlvPass() {
+	@Override
+    public boolean hasMidWeekDlvPass() {
 		if (null != getDlvPassInfo()
 				&& getSelectedServiceType() == EnumServiceType.HOME
 				&& EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())
@@ -4130,14 +4139,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 							isDlvPassContextMatched = false;
 				}
 		}
-		
+
 		return isDlvPassContextMatched;
 	}
-	
+
 	//To check/honour the expired deliverypass during order modification, if the original order has the deliverypass applied.
 	public boolean checkExpDlvPassForOrderMod(){
 		boolean canDlvPassBeApplied = false;
-	
+
 		try {
 			if ((this.getShoppingCart() instanceof FDModifyCartModel) && (this.getDlvPassInfo().isUnlimited())) {
 
@@ -4150,7 +4159,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			            dlvPass = (DeliveryPassModel) passes.get(i);
 
 			            if (today.after(dlvPass.getExpirationDate()) && EnumDlvPassStatus.ACTIVE.equals(dlvPass.getStatus()) && dlvPass.getId().equals(dpId) && isDlvPassContextMatched(dlvPass)) {
-			            	canDlvPassBeApplied = true; 
+			            	canDlvPassBeApplied = true;
 			            	this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPass.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
 			            	break;
 			            }
@@ -4162,10 +4171,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return canDlvPassBeApplied;
 	}
-	
+
 	public boolean isDlvPassContextMatched(DeliveryPassModel dlvPass){
 		boolean isDlvPassContextMatched = true;
-		if(null !=dlvPass){//'Delivery Type' specific pass check.				
+		if(null !=dlvPass){//'Delivery Type' specific pass check.
 			if(null != this.getShoppingCart() && null != this.getShoppingCart().getDeliveryAddress() && null != dlvPass.getType()
 					&& null != dlvPass.getType().getDeliveryTypes() && !dlvPass.getType().getDeliveryTypes().contains(this.getShoppingCart().getDeliveryType())){
 						isDlvPassContextMatched = false;
@@ -4176,18 +4185,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 						isDlvPassContextMatched = false;
 					}
 				}
-						
+
 			}
 		}
-		
+
 		return isDlvPassContextMatched;
 	}
 
-	public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions() {
+	@Override
+    public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions() {
 		return unbxdAustoSuggestions;
 	}
 
-	public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
+	@Override
+    public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
 		this.unbxdAustoSuggestions = unbxdAustoSuggestions;
 	}
 
@@ -4202,5 +4213,17 @@ public class FDUser extends ModelSupport implements FDUserI {
             }
         }
         return "";
+    }
+
+    @Override
+    public boolean isHavingEnoughValidOrders() {
+        boolean isHavingEnoughValidOrders = false;
+        EnumEStoreId storeId = CmsManager.getInstance().getEStoreEnum();
+        try {
+            isHavingEnoughValidOrders = getLevel() > FDUserI.RECOGNIZED && getAdjustedValidOrderCount(storeId) >= 3;
+        } catch (FDResourceException e) {
+            isHavingEnoughValidOrders = false;
+        }
+        return isHavingEnoughValidOrders;
     }
 }

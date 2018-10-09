@@ -211,7 +211,7 @@ public interface FDUserI extends java.io.Serializable {
     public void setReservation(FDReservation reservation);
 
     public boolean isChefsTable() throws FDResourceException;
-    
+
     public boolean isFDLabsCustomer() throws FDResourceException;
 
     public String getChefsTableInduction() throws FDResourceException;
@@ -420,7 +420,7 @@ public interface FDUserI extends java.io.Serializable {
     public FDCartModel getGiftCart();
 
     public void setGiftCart(FDCartModel dcart);
-    
+
     public FDCartModel getDlvPassCart();
 
     public void setDlvPassCart(FDCartModel dcart);
@@ -786,19 +786,20 @@ public interface FDUserI extends java.io.Serializable {
 
     public String getMultiSearchList();
     public void setMultiSearchList(String searchTermList);
-    
+
     public ErpPaymentMethodI getDefaultPaymentMethod() throws FDResourceException;
-    
+
     public boolean isDlvPassTimeslotNotMatched();
-	    
+
     public boolean isMidWeekDlvPassApplicable(Date dayOfWeek);
-    
+
     public boolean hasMidWeekDlvPass();
-    
+
     public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions();
-    
+
     public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions);
 
 	public String getDlvPassSegmentValue() throws FDResourceException;
 
+	public boolean isHavingEnoughValidOrders();
 }

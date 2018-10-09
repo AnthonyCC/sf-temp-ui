@@ -25,8 +25,8 @@ public class ProductRecommenderService {
 
     private boolean debugRecommender = false;
 
-    public List<Recommendations> recommendForFoodKickCart(FDUserI customer, boolean newCustomer) {
-        List<String> siteFeatureIds = readSiteFeatureListConfiguration(newCustomer);
+    public List<Recommendations> recommendForFoodKickCart(FDUserI customer) {
+        List<String> siteFeatureIds = readSiteFeatureListConfiguration(customer.isHavingEnoughValidOrders());
         if (siteFeatureIds == null || siteFeatureIds.isEmpty()) {
             return Collections.emptyList();
         }
