@@ -936,6 +936,7 @@ public class FDStoreProperties {
 
     private static final String PROP_FK_VIEWCART_PAGE_NEW_CUSTOMER_SITE_FEATURES = "fkstore.viewcart.new.customer.carousel.site.features";
     private static final String PROP_FK_VIEWCART_PAGE_CURRENT_CUSTOMER_SITE_FEATURES = "fkstore.viewcart.current.customer.carousel.site.features";
+    private static final String PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT = "fkstore.viewcart.recommendation.limit";
 
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
@@ -2118,6 +2119,8 @@ public class FDStoreProperties {
         defaults.put(PROP_JAVASCRIPT_FIRST_ENABLED, "false");
 
         defaults.put(PROP_BACK_OFFICE_API_URL, "http://bsl.stdev14.nj01");
+
+        defaults.put(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT, "10");
 
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5456,5 +5459,9 @@ public class FDStoreProperties {
         }
 
         return result;
+    }
+
+    public static int getMaxProductsOnFoodKickViewCartRecommenders() {
+        return Integer.parseInt(get(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT));
     }
 }

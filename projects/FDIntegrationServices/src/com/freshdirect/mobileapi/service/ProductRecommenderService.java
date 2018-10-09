@@ -31,13 +31,15 @@ public class ProductRecommenderService {
             return Collections.emptyList();
         }
 
+        final int maxRecommendations = FDStoreProperties.getMaxProductsOnFoodKickViewCartRecommenders();
+
         // collect list of site features configured for FK view cart page
         List<EnumSiteFeature> siteFeatures = decodeSiteFeatureIDs(siteFeatureIds);
 
         List<Recommendations> cartRecommendations = new ArrayList<Recommendations>(siteFeatures.size());
         for (EnumSiteFeature siteFeature: siteFeatures) {
             final SessionInput input = new SessionInput(customer);
-            input.setMaxRecommendations(10);
+            input.setMaxRecommendations(maxRecommendations);
             input.setExcludeAlcoholicContent(false);
             input.setTraceMode(debugRecommender);
 
