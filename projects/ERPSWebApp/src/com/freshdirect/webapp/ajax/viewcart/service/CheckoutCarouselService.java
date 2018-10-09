@@ -106,7 +106,7 @@ public class CheckoutCarouselService extends AbstractCarouselService {
     protected List<String> getSiteFeatures(FDUserI user) {
         List<String> siteFeatures = null;
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
-            boolean isCurrentUser = isUserAlreadyOrdered(user);
+            boolean isCurrentUser = user.isHavingEnoughValidOrders();
             siteFeatures = isCurrentUser ? FDStoreProperties.getCheckoutCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getCheckoutNewCustomerCarouselSiteFeatures();
             replaceSampleSiteFeatures(siteFeatures);
         } else {
@@ -116,8 +116,7 @@ public class CheckoutCarouselService extends AbstractCarouselService {
     }
 
     private String getDefaultSiteFeature(FDUserI user) {
-        boolean isCurrentUser = isUserAlreadyOrdered(user);
-        return isCurrentUser ? getFreeProductSiteFeature() : "C_YMAL";
+        return user.isHavingEnoughValidOrders() ? getFreeProductSiteFeature() : "C_YMAL";
     }
 
 }
