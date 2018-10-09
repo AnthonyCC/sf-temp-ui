@@ -70,10 +70,10 @@ public class ProductRecommenderController extends BaseController {
         Message responseMessage;
         final boolean newCustomer = isUserAlreadyOrdered(customer);
 
-        List<Recommendations> whatWeHaveNow = recommenderService.recommendForFoodKickCart(customer, newCustomer);
-        if (whatWeHaveNow != null && !whatWeHaveNow.isEmpty()) {
+        List<Recommendations> actualRecommendations = recommenderService.recommendForFoodKickCart(customer, newCustomer);
+        if (actualRecommendations != null && !actualRecommendations.isEmpty()) {
             List<ProductRecommendationData> payload = new ArrayList<ProductRecommendationData>();
-            for (Recommendations recommendations: whatWeHaveNow) {
+            for (Recommendations recommendations: actualRecommendations) {
                 RecommenderTitleAndDescription displayableFields = recommenderService.getRecommenderDisplayableFields(recommendations.getVariant());
                 ProductRecommendationData recommendationData = buildResponseDataFromRecommendations(recommendations, displayableFields, request, customer);
                 payload.add(recommendationData);
