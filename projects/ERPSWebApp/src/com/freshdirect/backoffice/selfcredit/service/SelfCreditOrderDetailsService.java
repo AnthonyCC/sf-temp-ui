@@ -62,7 +62,7 @@ public class SelfCreditOrderDetailsService {
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == fdCartLine.lookupProduct()) ?"" : fdCartLine.lookupProduct().getPrimaryBrandName());
                 item.setProductName(collectProductName(item.getBrand(), fdCartLine.getDescription()));
-                item.setQuantity(fdCartLine.getQuantity());
+                item.setQuantity(Double.parseDouble(fdCartLine.getDeliveredQuantity()));
                 item.setProductImage((null == fdCartLine.lookupProduct()) ? "" : fdCartLine.lookupProduct().getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
