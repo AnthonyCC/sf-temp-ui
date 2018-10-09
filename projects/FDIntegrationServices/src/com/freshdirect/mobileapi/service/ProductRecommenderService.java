@@ -26,7 +26,7 @@ public class ProductRecommenderService {
     private boolean debugRecommender = false;
 
     public List<Recommendations> recommendForFoodKickCart(FDUserI customer, boolean newCustomer) {
-        List<String> siteFeatureIds = FDStoreProperties.getSiteFeatureListForFoodKickViewCartPage(newCustomer);
+        List<String> siteFeatureIds = readSiteFeatureListConfiguration(newCustomer);
         if (siteFeatureIds == null || siteFeatureIds.isEmpty()) {
             return Collections.emptyList();
         }
@@ -48,6 +48,14 @@ public class ProductRecommenderService {
         }
 
         return cartRecommendations;
+    }
+
+    private List<String> readSiteFeatureListConfiguration(boolean newCustomer) {
+        List<String> siteFeatureIds = newCustomer
+                ? FDStoreProperties.getSiteFeatureListOnFoodKickViewCartPageForNewCustomers()
+                : FDStoreProperties.getSiteFeatureListOnFoodKickViewCartPageForExistingCustomers();
+
+        return siteFeatureIds;
     }
 
     private List<EnumSiteFeature> decodeSiteFeatureIDs(List<String> siteFeatureTokens) {

@@ -5430,14 +5430,10 @@ public class FDStoreProperties {
 		}
 	}
 
-	public static List<String> getSiteFeatureListForFoodKickViewCartPage(boolean forNewUser) {
-	    final String propertyName = forNewUser
-	            ? PROP_FK_VIEWCART_PAGE_NEW_CUSTOMER_SITE_FEATURES
-	            : PROP_FK_VIEWCART_PAGE_CURRENT_CUSTOMER_SITE_FEATURES;
-
+	public static List<String> getSiteFeatureListOnFoodKickViewCartPageForNewCustomers() {
         List<String> result = new ArrayList<String>();
 
-        String propertyValue = get(propertyName);
+        String propertyValue = get(PROP_FK_VIEWCART_PAGE_NEW_CUSTOMER_SITE_FEATURES);
         if (StringUtils.isNotBlank(propertyValue)) {
             String[] siteFeatureIdentifiers = propertyValue.split(",");
             for (String siteFeatureId : siteFeatureIdentifiers) {
@@ -5447,4 +5443,18 @@ public class FDStoreProperties {
 
 	    return result;
 	}
+
+    public static List<String> getSiteFeatureListOnFoodKickViewCartPageForExistingCustomers() {
+        List<String> result = new ArrayList<String>();
+
+        String propertyValue = get(PROP_FK_VIEWCART_PAGE_CURRENT_CUSTOMER_SITE_FEATURES);
+        if (StringUtils.isNotBlank(propertyValue)) {
+            String[] siteFeatureIdentifiers = propertyValue.split(",");
+            for (String siteFeatureId : siteFeatureIdentifiers) {
+                result.add(siteFeatureId.trim());
+            }
+        }
+
+        return result;
+    }
 }
