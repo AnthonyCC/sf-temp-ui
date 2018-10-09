@@ -67,10 +67,10 @@ public class ProductRecommenderController extends BaseController {
     private Message processRecommendForCartRequest(HttpServletRequest request, FDUserI customer) {
         Message responseMessage;
 
-        List<Recommendations> actualRecommendations = recommenderService.recommendForFoodKickCart(customer);
-        if (actualRecommendations != null && !actualRecommendations.isEmpty()) {
+        List<Recommendations> currentRecommendations = recommenderService.recommendForFoodKickCart(customer);
+        if (currentRecommendations != null && !currentRecommendations.isEmpty()) {
             List<ProductRecommendationData> payload = new ArrayList<ProductRecommendationData>();
-            for (Recommendations recommendations: actualRecommendations) {
+            for (Recommendations recommendations: currentRecommendations) {
                 RecommenderTitleAndDescription displayableFields = recommenderService.getRecommenderDisplayableFields(recommendations.getVariant());
                 ProductRecommendationData recommendationData = buildResponseDataFromRecommendations(recommendations, displayableFields, request, customer);
                 payload.add(recommendationData);
