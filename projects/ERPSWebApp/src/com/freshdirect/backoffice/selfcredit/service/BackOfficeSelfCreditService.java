@@ -35,8 +35,15 @@ public class BackOfficeSelfCreditService {
 
     public IssueSelfCreditResponse postSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
 
-        final boolean isOrderIdValid = isOrderIdValid(issueSelfCreditRequest, user);
+    	final String orderId = issueSelfCreditRequest.getOrderId();
+        boolean isOrderIdValid = false;
+		try {
+			isOrderIdValid = FDCustomerManager.orderBelongsToUser(user.getIdentity(), orderId);
+		} catch (FDResourceException e1) {
+			LOGGER.error("Error while checking if user has Self-credit order id: " + orderId);
+		}
         if (!isOrderIdValid) {
+        	LOGGER.error("Self-credit order id: " + orderId + " does not belong to user.");
 			IssueSelfCreditResponse issueSelfCreditResponse = new IssueSelfCreditResponse();
 			issueSelfCreditResponse.setMessage("ERROR");
 			issueSelfCreditResponse.setSuccess(false);
@@ -93,18 +100,4 @@ public class BackOfficeSelfCreditService {
         return issueSelfCreditResponse;
     }
 
-	private boolean isOrderIdValid(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
-		
-		String orderId = issueSelfCreditRequest.getOrderId();
-		FDOrderAdapter orderDetailsToDisplay = null;
-		try {
-			orderDetailsToDisplay = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), orderId);
-		} catch (FDResourceException e) {
-			LOGGER.error("Self-credit order id: " + issueSelfCreditRequest.getOrderId() + " does not belong to user.");
-			return false;
-		}
-		return null != orderDetailsToDisplay;
-	}
-	
-	
 }

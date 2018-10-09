@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditRequest;
+import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderHistoryData;
 import com.freshdirect.backoffice.selfcredit.service.BackOfficeSelfCreditService;
 import com.freshdirect.backoffice.selfcredit.service.SelfCreditOrderDetailsService;
@@ -21,7 +22,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.response.IssueSelfCreditResponse;
 import com.freshdirect.mobileapi.controller.data.response.SelfCreditOrderDetailsData;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -58,9 +58,16 @@ public class SelfCreditController extends BaseController {
 
     private Message issueSelfCredit(HttpServletRequest request, HttpServletResponse response, SessionUser user) throws JsonException {
         IssueSelfCreditRequest issueSelfCreditRequest = parseRequestObject(request, response, IssueSelfCreditRequest.class);
-        com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse issueSelfCreditResponse = BackOfficeSelfCreditService.defaultService()
+        IssueSelfCreditResponse issueSelfCreditResponse = BackOfficeSelfCreditService.defaultService()
                 .postSelfCreditRequest(issueSelfCreditRequest,user.getFDSessionUser());
-        return new IssueSelfCreditResponse(issueSelfCreditResponse);
+        
+        Message message = new Message();
+        if (issueSelfCreditResponse.isSuccess()) {
+        	message.setSuccessMessage(issueSelfCreditResponse.getMessage());
+		} else {
+			message.setFailureMessage(issueSelfCreditResponse.getMessage());
+		}
+        return message;
     }
 
     private Message getOrderHistory(SessionUser user) throws FDResourceException {
