@@ -2702,8 +2702,6 @@ public class FDUser extends ModelSupport implements FDUserI {
             }
 
         } else {
-            if ("1400".equals(fulfillmentInfo.getSalesArea().getSalesOrg())) {fulfillmentInfo.getSalesArea().setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());}
-            if ("1310".equals(fulfillmentInfo.getSalesArea().getSalesOrg())) {fulfillmentInfo.getSalesArea().setSalesOrg(FDStoreProperties.getDefaultFdxSalesOrg());}
             fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
             fulfillmentContext.setSalesOrg(fulfillmentInfo.getSalesArea().getSalesOrg());
             fulfillmentContext.setDistChannel(fulfillmentInfo.getSalesArea().getDistChannel());
