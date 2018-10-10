@@ -982,6 +982,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public boolean isECheckRestricted() throws FDResourceException {
         return (user != null) ? user.isECheckRestricted() : false;
     }
+    
+    @Override
+	public boolean isCreditRestricted() throws FDResourceException {
+    	return (user != null) ? user.isCreditRestricted() : false;
+	}
 
     public String getRegRefTrackingCode() {
         return (user != null) ? user.getRegRefTrackingCode() : "";

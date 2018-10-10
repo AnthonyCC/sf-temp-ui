@@ -2843,6 +2843,20 @@ public class FDCustomerManager {
 		}
 	}
 	
+	public static boolean isCreditRestricted(FDIdentity identity) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.isCreditRestricted(identity);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
 	public static List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,EnumEStoreId eStoreId) throws FDResourceException {
 		
 		try {

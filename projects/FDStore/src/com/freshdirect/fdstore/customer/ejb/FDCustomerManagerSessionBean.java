@@ -5125,6 +5125,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public boolean isReferrerRestricted(FDIdentity identity) throws FDResourceException {
 		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.REFERRER.getName());
 	}
+	
+	public boolean isCreditRestricted(FDIdentity identity) throws FDResourceException {
+		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.CREDIT.getName());
+	}
 
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException {
 		Connection conn = null;

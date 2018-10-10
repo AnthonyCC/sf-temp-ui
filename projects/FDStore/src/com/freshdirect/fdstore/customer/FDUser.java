@@ -1486,6 +1486,14 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return isEcheckRestricted.booleanValue();
     }
+    
+	@Override
+	public boolean isCreditRestricted() throws FDResourceException {
+    	 if (this.identity == null) {
+             return false;
+         }
+         return FDCustomerManager.isCreditRestricted(this.identity);
+	}
 
     public String getRegRefTrackingCode() {
         try {

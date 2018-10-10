@@ -111,6 +111,9 @@
 		}
 	}
 %>
+
+<c:set var = "creditRestricted" value = "<%= user.isCreditRestricted() %>"/>
+
 <tmpl:insert template='<%= pageTemplate %>'>
 <%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put> --%>
 	<tmpl:put name="seoMetaTag" direct="true">
@@ -179,7 +182,7 @@
 							}
 						%>
 					</li>
-					<c:if test="${selfcredit}">
+					<c:if test="${selfcredit && !creditRestricted}">
 						<li><a href="#" data-component="self-credit-open-button">Request a Credit</a></li>
 					</c:if>
 					<%-- NO TARGET, comment out for now <li><a href="#">Legal</a></li> --%>
@@ -218,7 +221,7 @@
 						<li><a href="/your_account/signin_information.jsp">Update account, mobile and email information</a></li>
 					</ul>
 					
-					<c:if test="${selfcredit}">
+					<c:if test="${selfcredit && !creditRestricted}">
      					<button class="cssbutton green" type="button" data-component="self-credit-open-button">Request a Credit</button>
 					</c:if>
 					

@@ -598,6 +598,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public boolean isECheckRestricted(FDIdentity identity)  throws FDResourceException, RemoteException;
 	@Deprecated
 	public boolean isReferrerRestricted(FDIdentity identity)  throws FDResourceException, RemoteException;
+	
+	public boolean isCreditRestricted(FDIdentity identity) throws FDResourceException, RemoteException;
+	
 	@Deprecated
 	public String getNextId(String schema, String sequence) throws FDResourceException, RemoteException;
 	@Deprecated

@@ -271,6 +271,8 @@ public interface FDUserI extends java.io.Serializable {
     public boolean isReferrerEligible() throws FDResourceException;
 
     public boolean isECheckRestricted() throws FDResourceException;
+    
+    public boolean isCreditRestricted() throws FDResourceException;
 
     public String getDefaultCounty() throws FDResourceException;
 
