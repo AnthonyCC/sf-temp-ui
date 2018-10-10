@@ -3,6 +3,10 @@ package com.freshdirect.framework.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Category;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -10,6 +14,8 @@ import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 public class AsyncDBRefreshEhCache<K, V> {
+	
+	private static Category LOGGER = LoggerFactory.getInstance(AsyncDBRefreshEhCache.class);
 	private final Cache cache;
 
 	public AsyncDBRefreshEhCache(String name, int capacity) {
@@ -93,10 +99,11 @@ public class AsyncDBRefreshEhCache<K, V> {
 						refresh(lastRefreshTimeStamp);
 						lastRefreshTimeStamp = now;
 					} catch (Exception e) {
-						// do nothing to lastRefreshTimeStamp
+						LOGGER.error(this.getName(),e);
 					}
 				}
 			} catch (InterruptedException iex) {
+				LOGGER.error("Interrupted "+this.getName(),iex);
 				// should never happen, only if this thread is interrupted
 			}
 		}

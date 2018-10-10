@@ -324,7 +324,7 @@ public class CMSContentFactory {
 				}
 			}
 		}
-		return request.limitSections(sections);
+        return sections;
 	}
 
 	private List<CMSComponentModel> getSectionComponents(ContentNodeI sectionNode, CMSPageRequest request) {
