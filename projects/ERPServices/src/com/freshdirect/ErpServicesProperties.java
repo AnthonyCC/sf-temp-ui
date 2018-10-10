@@ -553,11 +553,11 @@ public class ErpServicesProperties {
         defaults.put(PROP_HL_PDP_UPDATE_URL, "http://uat1.hlserve.com/delivery/api/product?");
         defaults.put(PROP_HL_PDPPAGE_MAXMES_COUNT, "2");
 
-        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_PER_COMPLAINT, "20.0");
-        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_QUANTITY_DAY_RANGE_LIMIT, "1");
-        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_QUANTITY_PER_DAY_RANGE, "3");
-        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_DAY_RANGE_LIMIT, "1");
-        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_AMOUNT_PER_DAY_RANGE, "40.0");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_PER_COMPLAINT, "75.0");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_QUANTITY_DAY_RANGE_LIMIT, "30");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_QUANTITY_PER_DAY_RANGE, "6");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_AMOUNT_DAY_RANGE_LIMIT, "30");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_AMOUNT_PER_DAY_RANGE, "150.0");
         defaults.put(PROP_SELF_CREDIT_ALLOW_CASHBACK, "false");
         defaults.put(PROP_SELF_CREDIT_AGENT, "self");
 
