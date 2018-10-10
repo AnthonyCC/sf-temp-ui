@@ -82,7 +82,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	private FDCartLineI createSampleLine(String promotionCode, UserContext userCtx) throws FDResourceException {
 		ProductModel product = null;	
 		try{
-            product = ProductPricingFactory.getInstance().getPricingAdapter(this.sampleProduct.lookupProductModel());
+            product = ProductPricingFactory.getInstance().getPricingAdapter(this.getProductReference().lookupProductModel());
 
 		}catch(Exception ex){
 			// This is to handle when a invalid category id or product id is set to the sampe promo. 
@@ -90,13 +90,13 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		}
 		
 		if (product == null) {
-			LOGGER.info("Sample product " + this.sampleProduct + " not in store");
+			LOGGER.info("Sample product " + this.getProductReference() + " not in store");
 			return null;
 		}
 
 		SkuModel sku = product.getDefaultSku();
 		if (sku == null) {
-			LOGGER.info("Default SKU not found for " + this.sampleProduct);
+			LOGGER.info("Default SKU not found for " + this.getProductReference());
 			return null;
 		}
 
@@ -127,6 +127,13 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		return cartLine;
 	}
 
+	public ProductReference getProductReference() {
+		if(null ==sampleProduct){
+			sampleProduct = new ProductReferenceImpl(categoryId,productId);
+		}
+	    return this.sampleProduct;
+	}
+	
 	public double getMinSubtotal() {
 		return this.minSubtotal;
 	}
