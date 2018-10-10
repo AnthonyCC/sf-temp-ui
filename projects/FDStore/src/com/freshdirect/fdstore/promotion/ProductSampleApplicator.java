@@ -46,7 +46,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				return isApplied;
 			}else{
 				FDCartModel cart= context.getShoppingCart();
-                isApplied = cart.updateProductSampleDiscount(sampleProduct.getContentKey(), promotionCode);
+                isApplied = cart.updateProductSampleDiscount(getProductReference().getContentKey(), promotionCode);
 			}
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
