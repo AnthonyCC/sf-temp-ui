@@ -40,10 +40,10 @@ public class BackOfficeSelfCreditService {
 		try {
 			isOrderIdValid = FDCustomerManager.orderBelongsToUser(user.getIdentity(), orderId);
 		} catch (FDResourceException e1) {
-			LOGGER.error("Error while checking if user has Self-credit order id: " + orderId);
+			LOGGER.error("Error while checking if user " + user.getUserId() + " has Self-credit order id: " + orderId);
 		}
         if (!isOrderIdValid) {
-        	LOGGER.error("Self-credit order id: " + orderId + " does not belong to user: " + user.getIdentity().getFDCustomerPK());
+        	LOGGER.error("Self-credit order id: " + orderId + " does not belong to user: " + user.getUserId());
 			IssueSelfCreditResponse issueSelfCreditResponse = new IssueSelfCreditResponse();
 			issueSelfCreditResponse.setMessage("ERROR");
 			issueSelfCreditResponse.setSuccess(false);
