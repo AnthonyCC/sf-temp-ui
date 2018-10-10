@@ -49,6 +49,11 @@ var FreshDirect = FreshDirect || {};
 
       this.close();
     }.bind(this));
+
+    el.on('click', '.close-icon', function(e) {
+      e.stopPropagation();
+      this.close();
+    }.bind(this));
   };
 
   Select.prototype.open = function () {
@@ -56,6 +61,12 @@ var FreshDirect = FreshDirect || {};
     $('.selectButton.selectlight').addClass('overlay-open');
     this.popup.showWithDelay(this.widget.find('.selectButton'), 'bl-tl-p');
     this.bindClick(this.popup.$el.find('.popupcontent'));
+    
+    if(this.el.hasClass('custom-select-light')) {
+      $('#FDCustomSelect.browse-popup').addClass('selectlight');
+    }else{
+      $('#FDCustomSelect.browse-popup').removeClass('selectlight');
+    }
   };
 
   Select.prototype.close = function () {
@@ -73,10 +84,8 @@ var FreshDirect = FreshDirect || {};
         $('.customselect button'),
         Select.POPUP_CONFIG
         );
-        if($('.selectButton.cssbutton').hasClass('selectlight')) {
-          $('#FDCustomSelect.browse-popup').addClass('selectlight');
-        }
-    }
+      }
+      
 
     return Select.popup;
   };
@@ -92,8 +101,18 @@ var FreshDirect = FreshDirect || {};
         popupcontent = '';
 
     widget.find('.title').first().html(Select.unescape(title));
-
     popupcontent += '<ul class="customselect" data-value="'+selected.val()+'">';
+    if (el.hasClass('custom-select-light') !== false) {
+      popupcontent = '<div class="overlay-container"></div>'
+      var optionsExistClass;
+      if (options.length > 1) {
+        optionsExistClass = 'multiple-options';
+        popupcontent = '<ul class="customselect '+optionsExistClass+'" data-value="'+selected.val()+'">';
+      } else {
+        optionsExistClass = 'empty-options';
+        popupcontent = '<ul class="customselect '+optionsExistClass+'" data-value="'+selected.val()+'">';
+      }
+    }
     options.each(function (i, option) {
       var cssClass = "",
           $option = $(option);
@@ -104,7 +123,11 @@ var FreshDirect = FreshDirect || {};
       if (selected.val() === $option.val()) {
         cssClass += ' selected';
       }
-      popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
+      if (options.length === 1 && el.hasClass('custom-select-light') !== false) {
+        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">No eligible orders found</button></li>';          
+      } else {
+        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
+      }
     });
     popupcontent += '</ul>';
 
@@ -129,9 +152,11 @@ var FreshDirect = FreshDirect || {};
 
   Select.selectize = function (root) {
     var root = root || $(document.body),
-        els = root.find('select.customselect.custom-select-light') || root.find('select.customselect'),
-        select;
-
+    //els,        
+    //els = root.find('select.customselect'),
+    els = root.find('select.customselect'),        
+    select;
+    
     els.each(function (i, el) {
       if (!$(el).attr('data-selectized')) {
         select = new Select(el);

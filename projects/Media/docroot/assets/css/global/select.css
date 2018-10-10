@@ -47,6 +47,11 @@ ul.customselect,
   text-decoration: underline;
 }
 
+#FDCustomSelect.selectlight li button:focus,
+#FDCustomSelect.selectlight li:hover button {
+  text-decoration: none;
+}
+
 #FDCustomSelect li.default {
   font-weight: bold;
 }
