@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.freshdirect.cms.core.domain.Attribute;
@@ -13,10 +14,11 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
-import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
+import com.freshdirect.cms.draft.domain.NullValueBehavior;
 import com.freshdirect.cms.draft.service.DraftApplicatorService;
+import com.freshdirect.cms.draft.service.DraftContentProviderService;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
 import com.freshdirect.cms.draft.service.DraftService;
 import com.freshdirect.cms.validation.ValidationResult;
@@ -25,6 +27,7 @@ import com.freshdirect.cms.validation.ValidationResults;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
 import com.google.common.base.Optional;
 
+@Profile("database")
 @Service
 public class DraftValidatorService {
 
@@ -35,7 +38,7 @@ public class DraftValidatorService {
     private DraftService draftService;
 
     @Autowired
-    private ContextualContentProvider draftContentProviderService;
+    private DraftContentProviderService draftContentProviderService;
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
@@ -46,7 +49,7 @@ public class DraftValidatorService {
 
         for (DraftChange draftChange : draftChanges) {
             ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
-            payloadToValidate.put(key, draftContentProviderService.getAllAttributesForContentKey(key));
+            payloadToValidate.put(key, draftContentProviderService.getAllAttributesForContentKey(key, NullValueBehavior.INCLUDE_NULLS));
         }
 
         ValidationResults validationResults = new ValidationResults();
