@@ -1522,7 +1522,7 @@
 			<div class="subtotal__rowcell-mid {if not $displayCheckout}cartetip-container{/if}">
 			<label {if not $displayCheckout}for="tipDropdown"{else}for="tipDropdownbottom"{/if}>
 				<span class="offscreen">select tip amount</span></label>
-				<select class="tipDropdown" {if not $displayCheckout}id="tipDropdown"{else}id="tipdropdownbottom"{/if} name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
+				<select class="tipDropdown" {if not $displayCheckout}id="tipDropdown"{else}id="tipDropdownbottom"{/if} name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
 					{foreach $option in $tipAmounts}
 						<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ( ('$' + $etipTotal) == $option) or (($tipApplied == false) and $option == '$0')}selected{/if}>
 						{$option}</option>
