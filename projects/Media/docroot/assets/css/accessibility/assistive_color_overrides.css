@@ -1011,3 +1011,10 @@ color: #B93D3F;
 .assistive-mode [data-boxid="credits"] .subtotal__rowcell-mid{
 	    color: #5d5f36;
 }
+.assistive-mode .fdselect .sortSelectButton{
+	background-color:#757575;
+}
+.assistive-mode .popupcontentghost > .selectButton, 
+.assistive-mode select.selected + .fdselect > .selectButton{
+	background-color:#098A1E !important;
+}
