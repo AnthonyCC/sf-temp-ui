@@ -19,16 +19,20 @@
 				{/if}
 		{/if}
 		<div class="leftColumn">
-			
+			{if $data.productDetailImage and $data.productDetailImage != 'undefined'}
 			<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}" 
 			alt=" {if $data.productName}{$data.productName}{/if}
 			{if $data.akaName}{$data.akaName}{/if}
 			{if $data.packageDescription}{$data.packageDescription}{/if}">
+			{/if}
 		</div>
 		<div class="rightColumn">
+		{if $data.productName or $data.akaName or $data.packageDescription}
 			<h1>{if $data.productName}{$data.productName}{/if}
 			{if $data.akaName}<p class="productDisplay-akaName">"{$data.akaName}"</p>{/if}
-			{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}</h1>
+			{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}
+			</h1>
+		{/if}
 			{if isNonnull($data.atcItemId)}
 				<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$data.atcItemId}">
 			{/if}
