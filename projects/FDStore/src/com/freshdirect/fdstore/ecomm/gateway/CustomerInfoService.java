@@ -221,7 +221,14 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.set("user", getMapper().convertValue(fdUserToRecognizedUserData(user), JsonNode.class));
+			RecognizedUserData userData = null;
+			try {
+				userData = fdUserToRecognizedUserData(user);
+			} catch (Exception e) {
+				LOGGER.warn("Error occurs in fdUserToRecognizedUserData: user=" + user, e );
+				throw new FDResourceException(e);
+			}
+			rootNode.set("user", getMapper().convertValue(userData, JsonNode.class));
 
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);

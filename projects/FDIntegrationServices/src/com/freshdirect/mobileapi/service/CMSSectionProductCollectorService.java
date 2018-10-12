@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,7 @@ public class CMSSectionProductCollectorService {
     private static final Category LOGGER = LoggerFactory.getInstance(CMSSectionProductCollectorService.class);
 
     private static final CMSSectionProductCollectorService INSTANCE = new CMSSectionProductCollectorService();
+    private static final String[] SECTIONS_TYPES_THAT_SHOULD_HAVE_PRODUCTS = { "HorizontalPickList", "VerticalPickList" };
 
     public static CMSSectionProductCollectorService getDefaultService() {
         return INSTANCE;
@@ -178,14 +180,24 @@ public class CMSSectionProductCollectorService {
         Integer minimumLimit = (sectionModel.getMinimumProductLimit() == null) ? 0 : sectionModel.getMinimumProductLimit();
         int numberOfProducts = (sectionModel.getProductList() == null) ? 0 : sectionModel.getProductList().size();
         boolean sectionConformsMinimumLimit = numberOfProducts >= minimumLimit;
-        boolean shouldLimitProductNumber = shouldLimitProductNumber(sectionModel);
+        boolean shouldHaveProducts = sectionShouldHaveProduct(sectionModel);
+        boolean sectionSourceIsCategory = sectionHasCategorySource(sectionModel);
 
-        return !shouldLimitProductNumber || sectionConformsMinimumLimit;
+        return !shouldHaveProducts || (!sectionSourceIsCategory && shouldHaveProducts && numberOfProducts > 0)
+                || (sectionSourceIsCategory && shouldHaveProducts && sectionConformsMinimumLimit);
+    }
+
+    private boolean sectionShouldHaveProduct(CMSSectionModel sectionModel) {
+        return Arrays.asList(SECTIONS_TYPES_THAT_SHOULD_HAVE_PRODUCTS).contains(sectionModel.getDisplayType());
+    }
+
+    private boolean sectionHasCategorySource(CMSSectionModel sectionModel) {
+        return (sectionModel.getCategoryList() != null && !sectionModel.getCategoryList().isEmpty());
     }
 
     private boolean shouldLimitProductNumber(CMSSectionModel sectionModel) {
-        boolean sectionSourceIsCategory = sectionModel.getCategoryList() != null && !sectionModel.getCategoryList().isEmpty();
-        boolean sectionDisplayTypeNeedsLimit = "HorizontalPickList".equals(sectionModel.getDisplayType()) || "VerticalPickList".equals(sectionModel.getDisplayType());
+        boolean sectionSourceIsCategory = sectionHasCategorySource(sectionModel);
+        boolean sectionDisplayTypeNeedsLimit = sectionShouldHaveProduct(sectionModel);
 
         return (sectionSourceIsCategory && sectionDisplayTypeNeedsLimit);
     }
