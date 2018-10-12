@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderData;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderHistoryData;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -65,7 +66,8 @@ public class SelfCreditOrderHistoryService {
       final boolean isRecentOrder = isRecentOrder(fdOrderInfo.getCreateRequestedDate(), currentDate);
       final boolean makeGoodOrder = fdOrderInfo.isMakeGood();
       final boolean fdOrder = EnumEStoreId.FD.equals(fdOrderInfo.getEStoreId());
-      return orderStatusEligible && isRecentOrder && !makeGoodOrder && fdOrder;
+      final boolean giftCardOrder = EnumSaleType.GIFTCARD.equals(fdOrderInfo.getSaleType());
+      return orderStatusEligible && isRecentOrder && !makeGoodOrder && fdOrder && !giftCardOrder;
 	}
 
 	private boolean checkOrderDeliveredOrEnRoute(EnumSaleStatus orderStatus) {
