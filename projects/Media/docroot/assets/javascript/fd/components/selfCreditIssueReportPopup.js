@@ -57,7 +57,7 @@ var FreshDirect = window.FreshDirect || {};
       },
       overlayConfig: {
         value: {
-          zIndex: 460
+          zIndex: 2001
         }
       },
       customClass: {

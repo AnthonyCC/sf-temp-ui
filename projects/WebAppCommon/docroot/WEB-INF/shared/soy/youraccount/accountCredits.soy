@@ -18,7 +18,7 @@
         <div class="credit">${$totalAmount}</div>
         <spam class="total">total available credits</spam>
       </div>
-      {if $totalAmountFD != '0,00' and $totalAmountFK != '0,00'}
+      {if ($totalAmountFD != '0,00' and $totalAmountFD != '0.00') and ($totalAmountFK != '0,00' and $totalAmountFK != '0.00')}
         <div class="credit-info">
         FreshDirect (FD) and FoodKick (FK) credits are combined. They will automatically be deducted from your next order.
         </div>
