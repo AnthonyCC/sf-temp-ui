@@ -16,6 +16,7 @@ public class SelfCreditOrderItemData {
     private boolean sample;
     private boolean free;
     private boolean mealBundle;
+    private String cartonNumber;
     
 	public String getOrderLineId() {
 		return orderLineId;
@@ -112,5 +113,13 @@ public class SelfCreditOrderItemData {
     public void setMealBundle(boolean mealBundle) {
         this.mealBundle = mealBundle;
     }
+
+	public String getCartonNumber() {
+		return cartonNumber;
+	}
+
+	public void setCartonNumber(String cartonNumber) {
+		this.cartonNumber = cartonNumber;
+	}
 	
 }

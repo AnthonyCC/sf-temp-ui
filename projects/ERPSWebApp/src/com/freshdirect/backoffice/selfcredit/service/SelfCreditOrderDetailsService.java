@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -71,6 +72,7 @@ public class SelfCreditOrderDetailsService {
                 item.setSample(fdCartLine.isSample());
                 item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
                 item.setMealBundle(isItemMealBundle(fdCartLine));
+                item.setCartonNumber(collectCartonNumber(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
                 orderLines.add(item);
 			}
         }
@@ -80,7 +82,11 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-    private String collectProductName(String brandName, String description) {
+    private String collectCartonNumber(List<FDCartonInfo> cartonContents) {
+    	return cartonContents.isEmpty() ? "" : cartonContents.get(0).getCartonInfo().getCartonNumber();
+	}
+
+	private String collectProductName(String brandName, String description) {
     	String productNameNoBrand = description;
     	if (brandName != null && brandName.length() > 0 && description.length() >= brandName.length() && description.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
             productNameNoBrand = description.substring(brandName.length()).trim();
