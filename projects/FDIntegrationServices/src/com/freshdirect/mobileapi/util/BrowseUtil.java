@@ -1394,7 +1394,8 @@ public class BrowseUtil {
 
 		    	for(ProductModel p:pm) {
 
-		    		if(p.isTemporaryUnavailableOrAvailable() ) {
+		    		if((p.getContentKey()!=null && p.getContentKey().getId()!=null &&
+		    				p.getContentKey().getId().equals(FDStoreProperties.getFDXDPSku())) ||  p.isTemporaryUnavailableOrAvailable() ) {
 						//display(p);
 						if(!productSet.contains(p.getContentName())) {
 		    				com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder prodBuilder=new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(p.getContentName(),p.getFullName());
