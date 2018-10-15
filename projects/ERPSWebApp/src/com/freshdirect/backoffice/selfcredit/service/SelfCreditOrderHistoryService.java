@@ -57,7 +57,7 @@ public class SelfCreditOrderHistoryService {
         SelfCreditOrderHistoryData orderHistory = new SelfCreditOrderHistoryData();
         orderHistory.setUserFirstName(user.getFirstName());
         orderHistory.setUserLastName(user.getLastName());
-        orderHistory.setOrders(ordersToDisplay.subList(0, Math.min(15, ordersToDisplay.size())));
+        orderHistory.setOrders(ordersToDisplay.subList(0, Math.min(FDStoreProperties.getOrderComplaintDropdownLimit(), ordersToDisplay.size())));
         return orderHistory;
     }
 
