@@ -214,15 +214,15 @@ var FreshDirect = window.FreshDirect || {};
     var complaintLines = $.grep(data.orderlines, function(line, i) {
       if (line.complaint) {
         line.complaint.price = line.basePrice * Number(line.complaint.qty);
-        line.complaint.price = Number(parseFloat(line.complaint.price).toFixed(2));
         totalCredit += line.complaint.price;
+        line.complaint.price = parseFloat(line.complaint.price).toFixed(2);
       }
       return !!line.complaint;
     });
 
     return {
       complaintLines: complaintLines,
-      totalCredit: Number(parseFloat(totalCredit).toFixed(2))
+      totalCredit: parseFloat(totalCredit).toFixed(2)
     };
   }
 
