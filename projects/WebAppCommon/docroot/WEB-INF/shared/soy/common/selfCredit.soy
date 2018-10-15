@@ -44,8 +44,6 @@
   @param order
   @param? comment
   @param? orderlines
-  @param? sample
-  @param? free
   @param? reviewData
 
  */
@@ -78,8 +76,6 @@
           {foreach $orderline in $orderlines }
             {call .selfCreditProductLine}
               {param orderline: $orderline /}
-              {param sample: $sample /}
-              {param free: $free /}
             {/call}
           {/foreach}
         {/if}
@@ -204,8 +200,6 @@
 
 /**
   @param orderline
-  @param? sample
-  @param? free
 */
 {template .selfCreditProductLine autoescape="false"}
   <div class="order-line">
@@ -220,7 +214,7 @@
         <small class="sale-unit">{$orderline.configurationDescription} | ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
       </div>
     </div>
-    {if not ($sample or $free)}
+    {if not ($orderline.sample or $orderline.free)}
       <div class="order-line-col order-line-reason">
         <select class="customsimpleselect" name="reason-{$orderline.orderLineId}" aria-label="Select an issue for {$orderline.description}">
           <option value="" {if not $orderline.complaint}selected{/if}>Select an Issue</option>
@@ -238,10 +232,10 @@
         </select>
       </div>
     {/if}
-    {if $sample or $free}
+    {if $orderline.sample or $orderline.free}
       <div class="order-line-col disable-order-line">
         <div class="title">
-          {if $sample}
+          {if $orderline.sample}
             SAMPLE ITEM
           {else}
             FREE ITEM
