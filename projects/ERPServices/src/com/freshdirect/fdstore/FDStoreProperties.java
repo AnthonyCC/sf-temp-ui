@@ -2120,7 +2120,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_BACK_OFFICE_API_URL, "http://bsl.stdev14.nj01");
 
-        defaults.put(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT, "10");
+        defaults.put(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT, "12");
 
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
