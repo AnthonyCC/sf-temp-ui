@@ -113,7 +113,7 @@ public class ReportingService {
                 LOGGER.debug("Removing ORPHAN content " + contentKey);
             }
 
-            return !orphan;
+            return orphan;
         }
 
         protected boolean isArchived(ContentKey contentKey) {
@@ -146,7 +146,7 @@ public class ReportingService {
             }
             ContentKey contentKey = ContentKeyFactory.get(encodedContentKey);
 
-            return isOrphan(contentKey);
+            return !isOrphan(contentKey);
         }
     };
 
@@ -159,7 +159,7 @@ public class ReportingService {
             }
             ContentKey contentKey = ContentKeyFactory.get(encodedContentKey);
 
-            return isOrphan(contentKey);
+            return !isOrphan(contentKey);
         }
     };
 
