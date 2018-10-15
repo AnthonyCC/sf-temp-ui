@@ -371,7 +371,16 @@ public class CartDataService {
             FDUserI user) {
 
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
-        populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
+//        populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
+        String[] cartDataItem = cartLine.getUnitPrice().split("/");
+		if (null != cartDataItem && cartDataItem.length > 1) {
+			if (cartDataItem[0].contains("$")) {
+				item.setUnitPrice(cartDataItem[0].substring(1));
+			} else {
+				item.setUnitPrice(cartDataItem[0]);
+			}
+			item.setUnitScale(cartDataItem[1]);
+		}
         item.setMealBundle(isMealBundle(productNode));
         item.setImage((productNode.getProdImage() == null) ? "" : productNode.getProdImage().getPathWithPublishId()); // APPDEV-6014
         item.setProductId(productNode.getContentKey().getId());

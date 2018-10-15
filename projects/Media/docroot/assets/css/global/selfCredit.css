@@ -1,3 +1,6 @@
+#selfCreditInit ~ #FDCustomSelect {
+  width: 400px;
+}
 #selfCreditIssueReport.overlay-medium {
   font-family: "Verdana", sans-serif;
   letter-spacing: 0.3px;
@@ -782,6 +785,10 @@
   height: 70px;
   flex: 0 0 70px;
   margin-right: 12px;
+}
+.order-line .order-line-product-image img {
+  max-width: 100%;
+  max-height: 100%;
 }
 .order-line .order-line-product {
   flex-basis: 50%;
