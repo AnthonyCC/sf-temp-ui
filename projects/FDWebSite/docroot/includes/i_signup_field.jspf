@@ -112,7 +112,7 @@
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 		%>
 			<div style="width:500px;">
-				<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+				<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
 			</div>
 			<script language="javascript">
 				window.top.location="/index.jsp";
@@ -151,7 +151,7 @@
 		<div id="sulCont" class="signup-style-social social-singup">
 			<div class="social-login-spinner hidden">
 				<img src="/media_stat/images/navigation/spinner.gif"
-					class="fleft" />
+					alt="spinner" class="fleft" />
 			</div>
 			<div id="signup-success" class="signin-social-account-create-success hidden" data-signup-success="false">
 				<div class="form-side-social-header">Congratulations!</div>
@@ -244,8 +244,9 @@
 				                    <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %>
 				                    <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span>
 				                    	</fd:ErrorHandler><% } %>
-				                    
+				                            <label for="prevent_autofill"><span class="offscreen">prevent autofill</span></label>
 											<input type="text" name="prevent_autofill" id="prevent_autofill" value="" style="display:none;" />
+											<label for="password_fake"><span class="offscreen">password fake</span></label>
 											<input type="password" name="password_fake" id="password_fake" value="" style="display:none;" />
 										
 									
