@@ -157,7 +157,8 @@ var FreshDirect = window.FreshDirect || {};
               return {
                 orderLineId: lineId,
                 complaintId: complaint.reasonId,
-                quantity: complaint.qty
+                quantity: complaint.qty,
+                cartonNumber: complaint.cartonNumber
               };
             });
             mapComplaintsToOrderLines(this.complaints, this.data.orderlines, $);
@@ -255,9 +256,11 @@ var FreshDirect = window.FreshDirect || {};
       var lineId = key.replace("reason-", "");
       var qty = formData["qty-" + lineId];
       if (!qty) return false;
+      var cartonNumber = formData["carton-" + lineId];
       list[lineId] = {
         reasonId: formData["reason-" + lineId],
-        qty: qty
+        qty: qty,
+        cartonNumber: cartonNumber
       };
     });
     return list;
