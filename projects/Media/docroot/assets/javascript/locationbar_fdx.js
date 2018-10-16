@@ -283,9 +283,9 @@ $jq('.locabar_triggers').on('focus retClose', function(event) {
 $jq('.locabar_triggers').on('mouseenter', function(event) {
 	$jq(this).parent().addClass('mouse');
 });
-$jq('.locabar_triggers_menu ').on('mouseleave', function(event) {
+$jq('.locabar_triggers').on('mouseleave', function(event) {
 	//if keyboard <-> mouse
-	$jq(this).parent().removeClass('hover');
+	//$jq(this).parent().removeClass('mouse');
 });
 
 $jq('.locabar_triggers').on('keyup', function(event) {
@@ -419,9 +419,7 @@ $jq('.locabar_addresses-anon-deliverable-change-zip-toggle-btn').on('click', fun
 	
 	//return false;
 });
-$jq('#locabar_user_login_link').on('focus', function(event) {
-	$jq('#locabar_addresses_trigger').removeClass("hover");
-});
+
 
 
 $jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function() {
@@ -547,12 +545,12 @@ $jq('#locabar_addresses_trigger').on('keydown', function(event){
 	}
 });
 //reset the values of modify order section when we focus using mouse
-$jq(".locabar-modify-order-section").on('mouseover', function(){
+$jq(".locabar-modify-order-section").on('hover', function(){
 	$jq("#locabar_orders").css("opacity","");
 	$jq("#locabar_orders").css("visibility","");
 });
 
-$jq("#locabar_addresses_trigger").on('mouseover', function(){
+$jq("#locabar_addresses_trigger").on('hover', function(){
 		if (!$jq('#nodeliver-form:visible').length) {
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","");
@@ -619,12 +617,6 @@ $jq("#locabar_messages_trigger,#locabar_user_trigger[data-signedin='false']").on
 //$jq("#newziptext").focus();
 
 
-$jq(".locabar-logout").on('keydown', function(e){
-	var TABKEY = 9;
-	if (e.which == TABKEY) {
-	$jq("#locabar_user_trigger").removeClass("hover");
-	}
-});
 
 $jq(".locabar-modify-order-dropdown-container-delails:eq(0) ").on('keydown', function(e){
 	var TABKEY = 9;
@@ -782,7 +774,7 @@ $jq(function(){
   	});
   	
   	
-  	$jq(".locabar-addresses-section").on('mouseover', function(){
+  	$jq(".locabar-addresses-section").on('hover', function(){
   		if($jq("#location-alerts #sitemessage").css("display")=="block"){
   			$jq("#locabar_addresses").hide();
   		}

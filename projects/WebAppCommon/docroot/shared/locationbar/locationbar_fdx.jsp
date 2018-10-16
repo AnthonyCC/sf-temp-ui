@@ -400,7 +400,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 	        dlvInfoLink += ".jsp";
     	}
 	%>
-	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section" role="menubar">
+	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section">
 		<div id="locabar_addresses_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" role="menuitem">
 				<div class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
@@ -530,7 +530,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 			greetingsString += "!";
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
-      <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %>  aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
+      <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %> role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 		        <% if (!signedIn) {%>
 					<a id="locabar_user_login_link" class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage-current>
 		        <% } %>
@@ -621,7 +621,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 
 <%-- CART area --%>
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
-			<div id="locabar_popupcart_trigger" class="locabar_triggers" >
+			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem">
 				<div class="bold cursor-pointer locabar_triggers_menuitem">
           			<a id="popup_cart" href="/view_cart.jsp">
 						<span class="offscreen">ViewCart</span>
