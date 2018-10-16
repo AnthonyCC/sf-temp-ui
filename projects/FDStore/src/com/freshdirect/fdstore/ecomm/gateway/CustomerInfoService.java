@@ -92,6 +92,8 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String UPDATE_CUSTOMER_INFO = "customerInfo/update";
 	private static final String UPDATE_CUSTOMER_ESTORE = "customerInfo/estore/update";
     private static final String GET_PENDING_CREDIT_HISTORY = "customerInfo/getPendingCreditHistory";
+	private static final String IS_REFERRER_ESTRICTED = "customerInfo/isReferrerRestricted";
+	private static final String IS_CREDIT_ESTRICTED = "customerInfo/isCreditRestricted";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -946,5 +948,41 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
         }
         FDCustomerCreditHistoryModel creditHistory = new FDCustomerCreditHistoryModel(identity, response.getData());
         return creditHistory;
+    }
+
+	@Override
+	public boolean isReferrerRestricted(FDIdentity identity)
+			throws RemoteException {
+        Response<Boolean> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_REFERRER_ESTRICTED + "/" + identity.getErpCustomerPK()),
+			        new TypeReference<Response<Boolean>>() {
+			        });
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+        if (!response.getResponseCode().equals("OK")) {
+            LOGGER.error("Error in CustomerInfoService.isReferrerRestricted: identity=" + identity);
+            throw new RemoteException(response.getMessage());
+        }
+        return response.getData();
+    }
+
+	@Override
+	public boolean isCreditRestricted(FDIdentity identity)
+			throws RemoteException {
+        Response<Boolean> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_CREDIT_ESTRICTED + "/" + identity.getErpCustomerPK()),
+			        new TypeReference<Response<Boolean>>() {
+			        });
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+        if (!response.getResponseCode().equals("OK")) {
+            LOGGER.error("Error in CustomerInfoService.isReferrerRestricted: identity=" + identity);
+            throw new RemoteException(response.getMessage());
+        }
+        return response.getData();
     }
 }

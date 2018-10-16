@@ -2832,8 +2832,12 @@ public class FDCustomerManager {
 	public static boolean isReferrerRestricted(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("referaFriendChanges")) {
+				return CustomerInfoService.getInstance().isReferrerRestricted(identity);
+			}else {
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.isReferrerRestricted(identity);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -2845,9 +2849,12 @@ public class FDCustomerManager {
 	
 	public static boolean isCreditRestricted(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
-		try {
+		try {if (FDStoreProperties.isSF2_0_AndServiceEnabled("referaFriendChanges")) {
+			return CustomerInfoService.getInstance().isCreditRestricted(identity);
+		}else {
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.isCreditRestricted(identity);
+		}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

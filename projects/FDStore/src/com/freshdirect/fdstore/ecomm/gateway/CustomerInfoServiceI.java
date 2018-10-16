@@ -129,5 +129,9 @@ public interface CustomerInfoServiceI {
 	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException, RemoteException;
 
     public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws FDResourceException;
+
+	public boolean isReferrerRestricted(FDIdentity identity) throws RemoteException;
+
+	public boolean isCreditRestricted(FDIdentity identity)throws RemoteException;
 	
 }
