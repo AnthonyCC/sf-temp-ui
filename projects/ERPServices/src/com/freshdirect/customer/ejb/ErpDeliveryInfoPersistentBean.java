@@ -313,6 +313,9 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		if (unattendedDeliveryInstructions != null) {
 			address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
 			address.setUnattendedDeliveryInstructions(unattendedDeliveryInstructions);
+		} else {
+			address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_OUT);
+			address.setUnattendedDeliveryInstructions(null);
 		}
 		address.setCompanyName(rs.getString("COMPANY_NAME"));
 				
