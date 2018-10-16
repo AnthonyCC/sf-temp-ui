@@ -703,6 +703,32 @@ var FreshDirect = FreshDirect || {};
 
     return errors;
   });
+  
+//phone extension validator
+  forms.registerValidator('[fdform-v-phoneext]', function (field) {
+    var errors = [],
+        $field = $(field),
+        phoneext = $field.val();
+
+    if (phoneext!==null && phoneext!=="" && phoneext.length > 5 ) {
+      errors = addError(errors, field, 'Please provide valid phone extension!');
+    }
+
+    return errors;
+  });
+  
+//phone extension validator
+  forms.registerValidator('[fdform-v-deliveryinst]', function (field) {
+    var errors = [],
+        $field = $(field),
+        deliveryinst = $field.val();
+
+    if (deliveryinst!==null && deliveryinst!=="" && deliveryinst.length > 255 ) {
+      errors = addError(errors, field, 'Please provide valid delivery instructions!');
+    }
+
+    return errors;
+  });
 
 
   var checkPhoneInput = function (keyCode, e, mask, $el) {

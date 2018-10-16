@@ -88,7 +88,7 @@
     	<input type="tel" name="phone" id="addaddress_home_phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Phone Number" required value="{if $data.phone}{$data.phone}{/if}"/>
     </label>
     <label for="addaddress_home_phone_ext"  class="one-quarter-fieldset"> Ext.
-    	<input type="tel" id="addaddress_home_phone_ext" name="phone_ext" placeholder="Ext." value="{if $data.phone_ext}{$data.phone_ext}{/if}" />
+        <input type="tel" id="addaddress_home_phone_ext" name="phone_ext" placeholder="Ext." fdform-v-phoneext value="{if $data.phone_ext}{$data.phone_ext}{/if}" />
     </label>
     <span class="cssbutton red deletephonenumber" data-replacenumbers="true">x<span class="offscreen">remove alternate phone number fields</span></span> <span class="cssbutton green showaltphone">+<span class="offscreen">add alernate phone number fields</span></span>
     <span fdform-error-for="phone" class="three-quarter-fieldset"></span>
@@ -116,7 +116,7 @@
     </div>
   </div>
     <label for="addaddress_home_instructions">Delivery Instructions:</label>
-    <textarea name="instructions" id="addaddress_home_instructions" placeholder="Please provide any information necessary for us to get your order to your door. (i.e. cross streets, special requirements)">{if $data.instructions}{$data.instructions}{/if}</textarea>
+    <textarea name="instructions" id="addaddress_home_instructions" fdform-v-deliveryinst placeholder="Please provide any information necessary for us to get your order to your door. (i.e. cross streets, special requirements)">{if $data.instructions}{$data.instructions}{/if}</textarea>
   	<span fdform-error-for="instructions"></span>
   <div>
     <b>Backup Delivery Authorization</b>
@@ -250,7 +250,7 @@
     	<input name="phone" id="addaddress_office_phone" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Phone Number" required value="{if $data.phone}{$data.phone}{/if}"/>
    	</label>
    	<label for="addaddress_office_phone_ext" class="one-quarter-fieldset"> Ext.
-    	<input id="addaddress_office_phone_ext" name="phone_ext" placeholder="Ext." value="{if $data.phone_ext}{$data.phone_ext}{/if}" /> 
+    	<input id="addaddress_office_phone_ext" name="phone_ext" placeholder="Ext." fdform-v-phoneext value="{if $data.phone_ext}{$data.phone_ext}{/if}" /> 
   	</label>
   	<span class="cssbutton red deletephonenumber" data-replacenumbers="true">x</span> <span class="cssbutton green showaltphone">+</span>
   	<span fdform-error-for="phone" class="three-quarter-fieldset"></span>
@@ -269,7 +269,7 @@
   </div>
   <div>
     <label for="office_instructions">Location Details (optional):</label>
-    <textarea id="office_instructions" name="instructions" placeholder="Other instructions">{if $data.instructions}{$data.instructions}{/if}</textarea>
+    <textarea id="office_instructions" name="instructions" fdform-v-deliveryinst placeholder="Other instructions">{if $data.instructions}{$data.instructions}{/if}</textarea>
     <span fdform-error-for="instructions"></span>
   </div>
   <div class="buttons">
