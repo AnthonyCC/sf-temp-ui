@@ -1189,7 +1189,7 @@
 {let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
 <div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
 	<div class='total__subtotal total-right {if not $dlvPassCart}right{/if}'>
-		<div id="subtotalbox2" class="subtotalboxes">
+		<div id="subtotalbox2" class="subtotalboxes" tabindex="0" >
 				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' and $subTotalBox and $subTotalBox.estimatedTotalBox}	
 					{call .subTotalBox}
 						{param cartlineType: $cartlineType /}

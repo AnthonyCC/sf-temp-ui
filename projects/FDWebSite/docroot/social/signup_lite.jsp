@@ -163,7 +163,7 @@
 				<div class="form-side-social">
 					<div class="form-side-social-header">Create Account:</div>
 					<div class="bottom-links">
-						Already have an account? <a id="signin-link" href="/social/login.jsp?successPage=<%=successPage%>" data-hasevent="false">Sign In</a>
+						Already have an account? <a id="signin-link" href="/social/login.jsp?successPage=<%=successPage%>" data-hasevent="false"><span class="offscreen">Already have an account?</span>Sign In</a>
 					</div>
 					<!-- form_fields start here -->
 					<div id="form_feilds" style="text-align: center;">
@@ -186,19 +186,18 @@
 							<div class='error-message hidden'></div>
 
 							<% if (showAntsFields) { %>
-								<div>
+								<div><div id="sul_type_fields" aria-controls="collapsible-sul_cos_fields">
 									<fieldset>	
-				                   		<div id="sul_type_fields" aria-controls="collapsible-sul_cos_fields" aria-expanded="false">
-					                 		<span class="legend"><legend>Delivery For:</legend></span>
-					                 		<input type="radio" name="serviceType" id="sul_type_fields_HOME" value="HOME" <%= (	serviceType.equals("HOME"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_HOME"><span>Home</span><span class="offscreen"> Delivery</span></label><input type="radio" name="serviceType" id="sul_type_fields_CORPORATE" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_CORPORATE"><span>Business or School</span><span class="offscreen"> Delivery</span></label>
-				                   		</div>
-				                 	</fieldset>
+									<legend style="position: absolute;"><span class="legend">Delivery For:</span></legend>
+				                   		<div style="padding-left: 136px;"><input type="radio" name="serviceType" id="sul_type_fields_HOME" value="HOME" <%= (	serviceType.equals("HOME"))?"checked":"" %> /><label for="sul_type_fields_HOME"><span>Home</span><span class="offscreen"> address</span></label><input type="radio" name="serviceType" id="sul_type_fields_CORPORATE" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %> /><label for="sul_type_fields_CORPORATE"><span>Business or School</span><span class="offscreen"> address</span></label></div>
+				                   </fieldset>
+				                 	</div>
 								</div>
 							<% } %>
 						    <div id="collapsible-sul_cos_fields" class="signup-form">
 								<% if (showAntsFields) { %>
 									<%-- ANTS data --%>
-									<fieldset>
+									<fieldset><legend><span class="offscreen">Please enter the information for corporate address</span></legend>
 			                    		<div class="signup-form-row" id="sul_cos_fields" style='<%= (serviceType.equals("HOME"))?"display:none":"" %>' aria-hidden="true">
 			                    			<div class="form-element">
 			                    				<span class="error_img" id="companyName_img"></span>
@@ -229,7 +228,7 @@
 				                    </fieldset>
 								<% } %>
 			                    
-								<fieldset>
+								<fieldset><legend><span class="offscreen">please enter the information for home address</span></legend>
 									<div class="signup-form-row">
 										<div class="form-element">
 											<span class="error_img" id="email_img"></span>
