@@ -18,7 +18,6 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
 import com.freshdirect.fdstore.content.browse.filter.KosherFilter;
 import com.freshdirect.fdstore.content.browse.filter.NewProductFilter;
@@ -29,7 +28,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -316,20 +314,8 @@ public class NavigationUtil {
         List<String> excludeFilterGroupNames = NO_EXCLUDE_FILTER_GROUP_NAMES;
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
             excludeFilterGroupNames = EXCLUDE_FILTER_GROUP_NAMES;
-            List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
-
-            for (BrandModel brandModel : navigationModel.getBrandsOfSearchResults().values()) {
-                productFilters.add(new BrandFilter(brandModel, BRAND_FILTER_GROUP_ID));
-            }
-
-            ProductFilterGroup brandFilterGroup = new ProductFilterGroup();
-            brandFilterGroup.setProductFilters(productFilters);
-            brandFilterGroup.setId(BRAND_FILTER_GROUP_ID);
-            brandFilterGroup.setName("Brand");
-            brandFilterGroup.setType("POPUP");
-            brandFilterGroup.setAllSelectedLabel("All Brands");
-            brandFilterGroup.setDisplayOnCategoryListingPage(true);
-            productFilterGroups.add(brandFilterGroup);
+            List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(navigationModel.getBrandsOfSearchResults().values(), BRAND_FILTER_GROUP_ID);
+            productFilterGroups.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, true, false));
         }
 
         productFilterGroups.addAll(createFilterGroups(node, navigator, navigationModel.getUser(), excludeFilterGroupNames));
@@ -439,21 +425,8 @@ public class NavigationUtil {
 				}
 			}
 		}
-            productFilters = new ArrayList<ProductItemFilterI>();
-
-            for (BrandModel brandModel : navigationModel.getBrandsOfSearchResults().values()) {
-                productFilters.add(new BrandFilter(brandModel, BRAND_FILTER_GROUP_ID));
-            }
-
-            ProductFilterGroup brandFilterGroup = new ProductFilterGroup();
-            brandFilterGroup.setProductFilters(productFilters);
-            brandFilterGroup.setId(BRAND_FILTER_GROUP_ID);
-            brandFilterGroup.setName("Brand");
-            brandFilterGroup.setType("POPUP");
-            brandFilterGroup.setAllSelectedLabel("All Brands");
-            brandFilterGroup.setDisplayOnCategoryListingPage(false);
-
-            results.add(brandFilterGroup);
+            List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(navigationModel.getBrandsOfSearchResults().values(), BRAND_FILTER_GROUP_ID);
+            results.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, false, false));
 
         if (FilteringFlowType.SEARCH == navigator.getPageType() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
             FDUserI user = navigationModel.getUser();

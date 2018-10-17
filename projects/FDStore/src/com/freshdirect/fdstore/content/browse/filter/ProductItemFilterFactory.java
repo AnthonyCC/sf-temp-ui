@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.content.browse.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.AbstractProductItemFilter;
 import com.freshdirect.storeapi.content.AndFilter;
+import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.FilterCacheStrategy;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.OrFilter;
@@ -126,6 +128,18 @@ public class ProductItemFilterFactory {
 			return NULL_FILTER;
 		}		
 	}
+
+    public ProductItemFilterI getBrandFilter(BrandModel brandModel, String parentId) {
+        return new BrandFilter(brandModel, parentId);
+    }
+
+    public List<ProductItemFilterI> getBrandFilters(Collection<BrandModel> brandModels, String parentId) {
+        List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
+        for (BrandModel brandModel : brandModels) {
+            productFilters.add(getBrandFilter(brandModel, parentId));
+        }
+        return productFilters;
+    }
 	
 	private List<ProductItemFilterI> createInnerFilters(ProductFilterModel filterModel, FDUserI user){
 		
