@@ -1743,7 +1743,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         else{
 	    	EnumEStoreId eStore = CmsManager.getInstance().getEStoreEnum();
 	    	if(null !=eStore && EnumEStoreId.FDX.equals(eStore) && FDStoreProperties.isDlvPassFDXEnabled()){
-	    		if(!this.isDlvPassActive()){
+	    		if(!this.isDlvPassPending() && !this.isDlvPassActive()){
 		    		Date firstOrderDate = getFirstOrderDateByStore(eStore);
 			        if(firstOrderDate!=null){
 		        		Calendar cal = Calendar.getInstance();
