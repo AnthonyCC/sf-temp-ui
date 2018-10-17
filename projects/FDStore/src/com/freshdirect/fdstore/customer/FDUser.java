@@ -1743,16 +1743,18 @@ public class FDUser extends ModelSupport implements FDUserI {
         else{
 	    	EnumEStoreId eStore = CmsManager.getInstance().getEStoreEnum();
 	    	if(null !=eStore && EnumEStoreId.FDX.equals(eStore) && FDStoreProperties.isDlvPassFDXEnabled()){
-	    		Date firstOrderDate = getFirstOrderDateByStore(eStore);
-		        if(firstOrderDate!=null){
-	        		Calendar cal = Calendar.getInstance();
-		        	cal.setTime(firstOrderDate);
-		        	cal.add(Calendar.DATE, FDStoreProperties.getFDXDPFirstOrderEligibilityDays());
-		        	firstOrderDate = cal.getTime();
-		        	if(firstOrderDate.before(new Date())){
-		        		return true;
+	    		if(!this.isDlvPassActive()){
+		    		Date firstOrderDate = getFirstOrderDateByStore(eStore);
+			        if(firstOrderDate!=null){
+		        		Calendar cal = Calendar.getInstance();
+			        	cal.setTime(firstOrderDate);
+			        	cal.add(Calendar.DATE, FDStoreProperties.getFDXDPFirstOrderEligibilityDays());
+			        	firstOrderDate = cal.getTime();
+			        	if(firstOrderDate.before(new Date())){
+			        		return true;
+			        	}
 		        	}
-	        	}
+	    		}
 		        return false;  //No first order, Not eligible to buy FK DP.
 	        }
         }

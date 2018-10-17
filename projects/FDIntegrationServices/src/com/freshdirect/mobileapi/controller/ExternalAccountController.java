@@ -247,7 +247,11 @@ public class ExternalAccountController extends BaseController implements SystemM
 					responseMessage = setCurrentCartToTheUser(user, request, response);
 					((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 					((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
-					((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
+					boolean isPurchaseDlvPassEligible = user.getFDSessionUser().isEligibleForDeliveryPass();
+			        if(isPurchaseDlvPassEligible){
+			        	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
+			        }
+			        ((LoggedIn) responseMessage).setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
 					((LoggedIn) responseMessage).setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
 					checkTermsCond(getUserFromSession(request, response),responseMessage);
 					if (context.equalsIgnoreCase("CREATE")) {
