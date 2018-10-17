@@ -1554,7 +1554,7 @@ public class FDStoreProperties {
         defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
         defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 
-        defaults.put(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
+        defaults.put(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "5");
 
@@ -4937,9 +4937,14 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() &&
-        		FDEcommProperties.isServiceEnabled(beanName)) &&
-        		!isInEjbScope();
+    	return false;
+//    	if (beanName.equals(FDEcommProperties.FDCustomerIdentity))
+//    		return false;
+//    	if (beanName.equals(FDEcommProperties.FDCustomerInfo))
+//    		return true;
+//        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && 
+//        		FDEcommProperties.isServiceEnabled(beanName)) &&
+//        		!isInEjbScope();
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {

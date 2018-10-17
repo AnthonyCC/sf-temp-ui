@@ -244,10 +244,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        }
 	        // check cvv code only if the following conditions is true
 	        // 1) isPaymentMethodVerificationEnabled is true
-	        // 2) the form has cvv field
-	        // 3) payment is credit card
+	        // 2) payment is credit card
 			if (FDStoreProperties.isPaymentMethodVerificationEnabled() &&
-					csv != null &&
 					EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
 				result.addError(csv == null || csv.length() <= 0, PaymentMethodName.CSV,
 						SystemMessageList.MSG_REQUIRED);
@@ -465,9 +463,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			String csv = paymentMethod.getCVV();
 			// 1) isPaymentMethodVerificationEnabled = true
 			// 2) verifyCC = true
-			// 3) csv is passed from the form, if csv is null, that means the form doesn't have the csv field and itdoesn't require user to enter csv.
-			if (FDStoreProperties.isPaymentMethodVerificationEnabled() && verifyCC && csv != null) {
-				boolean isEmptyCvv = csv.isEmpty() || csv.trim().length() == 0;
+			if (FDStoreProperties.isPaymentMethodVerificationEnabled() && verifyCC) {
+				boolean isEmptyCvv = csv == null || csv.isEmpty() || csv.trim().length() == 0;
 				if (isEmptyCvv) {
 					result.addError(true, PaymentMethodName.CSV, SystemMessageList.MSG_REQUIRED);
 				} else if (EnumCardType.AMEX.equals(paymentMethod.getCardType())) {
