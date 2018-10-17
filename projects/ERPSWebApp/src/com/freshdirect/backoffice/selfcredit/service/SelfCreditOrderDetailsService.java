@@ -22,6 +22,8 @@ import com.freshdirect.backoffice.selfcredit.data.SelfCreditComplaintReason;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderDetailsData;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -58,6 +60,9 @@ public class SelfCreditOrderDetailsService {
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
         	final boolean isDeliverPass = fdCartLine.lookupFDProduct().isDeliveryPass();
+        	
+        	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
+        	
         	if (!isDeliverPass) {
             	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
@@ -67,7 +72,7 @@ public class SelfCreditOrderDetailsService {
                 item.setProductImage((null == fdCartLine.lookupProduct()) ? "" : fdCartLine.lookupProduct().getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
-                item.setBasePriceUnit(fdCartLine.getSalesUnit());
+                item.setBasePriceUnit(productInfo.getDefaultPriceUnit());
                 item.setConfigurationDescription(fdCartLine.getConfigurationDesc());
                 item.setSample(fdCartLine.isSample());
                 item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
