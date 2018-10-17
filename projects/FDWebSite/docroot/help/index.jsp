@@ -222,7 +222,7 @@
 					</ul>
 					
 					<c:if test="${selfcredit && !creditRestricted}">
-     					<button class="cssbutton green" type="button" data-component="self-credit-open-button">Request a Credit</button>
+     					<button class="cssbutton green" fd-login-required type="button" data-component="self-credit-open-button">Request a Credit</button>
 					</c:if>
 					
 					<%-- FAQs --%>
