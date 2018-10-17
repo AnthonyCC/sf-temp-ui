@@ -730,6 +730,18 @@ var FreshDirect = FreshDirect || {};
     return errors;
   });
 
+//billing reference validator
+  forms.registerValidator('[fdform-v-billingref]', function (field) {
+    var errors = [],
+        $field = $(field),
+        billingReference = $field.val();
+
+    if (billingReference!==null && billingReference!=="" && billingReference.length > 25 ) {
+      errors = addError(errors, field, 'Billing reference should not exceed 25 letters!');
+    }
+
+    return errors;
+  });
 
   var checkPhoneInput = function (keyCode, e, mask, $el) {
 	  var val = $el.val(),

@@ -1249,7 +1249,7 @@
 			<form fdform="checkout" action="#">
 				<p class='promotion-text'><label for="billing_code">Billing reference/Client code</label></p>
 				<div>
-					<input type="text" class="promotion-input" id="billing_code" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
+					<input type="text" class="promotion-input" id="billing_code" name="billingReference" fdform-v-billingref value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
 				</div>
 			</form>
 		</div>
