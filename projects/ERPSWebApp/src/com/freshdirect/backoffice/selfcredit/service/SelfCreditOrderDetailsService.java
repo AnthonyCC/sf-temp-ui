@@ -63,7 +63,7 @@ public class SelfCreditOrderDetailsService {
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == fdCartLine.lookupProduct()) ?"" : fdCartLine.lookupProduct().getPrimaryBrandName());
                 item.setProductName(collectProductName(item.getBrand(), fdCartLine.getDescription()));
-                item.setQuantity(Double.parseDouble(fdCartLine.getDeliveredQuantity()));
+                item.setQuantity(collectQuantity(fdCartLine));
                 item.setProductImage((null == fdCartLine.lookupProduct()) ? "" : fdCartLine.lookupProduct().getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
@@ -82,7 +82,12 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-    private String collectCartonNumber(List<FDCartonInfo> cartonContents) {
+    private double collectQuantity(FDCartLineI fdCartLine) {
+    	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
+    	return  Double.parseDouble(quantity);
+	}
+
+	private String collectCartonNumber(List<FDCartonInfo> cartonContents) {
     	return cartonContents.isEmpty() ? "" : cartonContents.get(0).getCartonInfo().getCartonNumber();
 	}
 
