@@ -5,10 +5,13 @@ import java.util.List;
 
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
+import com.freshdirect.mobileapi.model.ProductCatDept;
 
 public class QuickShop extends Message {
 	
 	private List<String> productIds;
+	
+	private List<ProductCatDept> productCatDeptList;
 	
     List<ProductConfiguration> products;
     
@@ -51,5 +54,13 @@ public class QuickShop extends Message {
 	public Integer getResultCount() {
         return products != null ? products.size() : 0;
     }
+
+	public List<ProductCatDept> getProductCatDeptList() {
+		return productCatDeptList;
+	}
+
+	public void setProductCatDeptList(List<ProductCatDept> productCatDeptList) {
+		this.productCatDeptList = productCatDeptList;
+	}
     
 }
