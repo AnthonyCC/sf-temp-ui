@@ -568,6 +568,7 @@ public class RegistrationController extends BaseController implements SystemMess
         	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
         }
         responseMessage.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
+        responseMessage.setShowDeliveryPassBanner(isPurchaseDlvPassEligible);
         if(isPurchaseDlvPassEligible){
         	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
         }

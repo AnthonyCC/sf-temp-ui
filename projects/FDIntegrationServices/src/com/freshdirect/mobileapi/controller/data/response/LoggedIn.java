@@ -53,6 +53,7 @@ public class LoggedIn extends Message {
     private String erpCustomerPK;
     
     private boolean purchaseDlvPassEligible;
+    private boolean showDeliveryPassBanner;
     private boolean fdxdpenabled;
     private List<String> dpskulist;
     private boolean dpActive;
@@ -346,5 +347,13 @@ public class LoggedIn extends Message {
 
 	public void setDpActive(boolean isDpActive) {
 		this.dpActive = isDpActive;
+	}
+
+	public boolean isShowDeliveryPassBanner() {
+		return showDeliveryPassBanner;
+	}
+
+	public void setShowDeliveryPassBanner(boolean showDeliveryPassBanner) {
+		this.showDeliveryPassBanner = showDeliveryPassBanner;
 	}
 }

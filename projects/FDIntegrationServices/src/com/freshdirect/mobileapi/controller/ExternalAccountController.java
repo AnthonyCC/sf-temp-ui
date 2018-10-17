@@ -252,6 +252,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 			        	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
 			        }
 			        ((LoggedIn) responseMessage).setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
+			        ((LoggedIn) responseMessage).setShowDeliveryPassBanner(isPurchaseDlvPassEligible);
 					((LoggedIn) responseMessage).setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
 					checkTermsCond(getUserFromSession(request, response),responseMessage);
 					if (context.equalsIgnoreCase("CREATE")) {
