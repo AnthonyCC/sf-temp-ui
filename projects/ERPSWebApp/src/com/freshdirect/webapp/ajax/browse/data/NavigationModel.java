@@ -15,7 +15,7 @@ import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductFilterGroupI;
+import com.freshdirect.storeapi.content.ProductFilterGroup;
 import com.freshdirect.storeapi.content.ProductItemFilterI;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.Recipe;
@@ -61,7 +61,7 @@ public class NavigationModel {
 	/**
 	 * All filters
 	 */
-	private List<ProductFilterGroupI> allFilters = new ArrayList<ProductFilterGroupI>();
+	private List<ProductFilterGroup> allFilters = new ArrayList<ProductFilterGroup>();
 	
 	/**
 	 * Selected filters
@@ -144,10 +144,10 @@ public class NavigationModel {
 	public void setUser(FDUserI user) {
 		this.user = user;
 	}
-	public List<ProductFilterGroupI> getAllFilters() {
+	public List<ProductFilterGroup> getAllFilters() {
 		return allFilters;
 	}
-	public void setAllFilters(List<ProductFilterGroupI> allFilters) {
+	public void setAllFilters(List<ProductFilterGroup> allFilters) {
 		this.allFilters = allFilters;
 	}
 	public boolean isProductListing() {

@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.CategorySectionModel;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -23,7 +20,7 @@ import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.PopulatorUtil;
 import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductFilterGroupI;
+import com.freshdirect.storeapi.content.ProductFilterGroup;
 import com.freshdirect.storeapi.content.ProductFilterGroupType;
 import com.freshdirect.storeapi.content.ProductItemFilterI;
 import com.freshdirect.storeapi.content.SuperDepartmentModel;
@@ -41,16 +38,13 @@ import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.SectionContext;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class MenuBuilderFactory {
-	private static final Logger LOGGER = LoggerFactory.getInstance( MenuBuilderFactory.class );
 
-	public static final MenuItemData MARKER;
-	public static final MenuItemData ALL_PRODUCTS_ITEM;
+	private static final MenuItemData MARKER;
+	private static final MenuItemData ALL_PRODUCTS_ITEM;
 
 	static{
-		
 		MARKER = new MenuItemData();
 		MARKER.setName("marker");
 		
@@ -59,17 +53,16 @@ public class MenuBuilderFactory {
 		ALL_PRODUCTS_ITEM.setName("ALL PRODUCTS");
 		ALL_PRODUCTS_ITEM.setSelected(false);
 		ALL_PRODUCTS_ITEM.setUrlParameter("all");
+	}
 
-	}
-	
-	private static MenuBuilderFactory factory;
-	
-	public static MenuBuilderFactory getInstance(){
-		if(factory == null){
-			factory = new MenuBuilderFactory();
-		}
-		return factory;
-	}
+    private static final MenuBuilderFactory INSTANCE = new MenuBuilderFactory();
+
+    public static MenuBuilderFactory getInstance() {
+        return INSTANCE;
+    }
+
+    private MenuBuilderFactory() {
+    }
 	
 	public static MenuBuilderI createBuilderByPageType(NavDepth depth, boolean hasSuperDepartment, SearchPageType searchPageType){
 		
@@ -111,7 +104,7 @@ public class MenuBuilderFactory {
 	
 	public class SearchLikePageMenuBuilder implements MenuBuilderI{
 		
-		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroup> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			if (
@@ -156,7 +149,7 @@ public class MenuBuilderFactory {
 	public class RecipePageMenuBuilder implements MenuBuilderI {
 
 		@Override
-		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav) {
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroup> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav) {
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			createRecipeFilterMenuDomains(filterGroups, navModel.getActiveFilters(), menu);
 			return menu;
@@ -166,7 +159,7 @@ public class MenuBuilderFactory {
 	
 	public class SuperDeptPageMenuBuilder implements MenuBuilderI{
 		
-		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroup> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
@@ -183,7 +176,7 @@ public class MenuBuilderFactory {
 
 	public class DeptPageMenuBuilder implements MenuBuilderI{
 		
-		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroup> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
@@ -259,7 +252,7 @@ public class MenuBuilderFactory {
 
 		
 		
-		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroup> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
@@ -664,12 +657,12 @@ public class MenuBuilderFactory {
 		return false;
 	}
 	
-	private void createFilterMenuDomains(List<ProductFilterGroupI> filterGroups, Set<ProductItemFilterI> activeFilters, List<MenuBoxData> menu, boolean productListingPage){
+	private void createFilterMenuDomains(List<ProductFilterGroup> filterGroups, Set<ProductItemFilterI> activeFilters, List<MenuBoxData> menu, boolean productListingPage){
 		
 		
 		
 		if (filterGroups != null){
-			for (ProductFilterGroupI filterGroup : filterGroups){
+			for (ProductFilterGroup filterGroup : filterGroups){
 				
 				if(filterGroup.isDisplayOnCategoryListingPage() || productListingPage){
 				
@@ -742,9 +735,9 @@ public class MenuBuilderFactory {
 
 
 
-	private void createRecipeFilterMenuDomains(List<ProductFilterGroupI> filterGroups, Set<ProductItemFilterI> activeFilters, List<MenuBoxData> menu){
+	private void createRecipeFilterMenuDomains(List<ProductFilterGroup> filterGroups, Set<ProductItemFilterI> activeFilters, List<MenuBoxData> menu){
 		if (filterGroups != null){
-			for (ProductFilterGroupI filterGroup : filterGroups){
+			for (ProductFilterGroup filterGroup : filterGroups){
 				MenuBoxData domain = new MenuBoxData();
 				domain.setId(filterGroup.getId());
 				domain.setName(filterGroup.getName());
@@ -790,7 +783,7 @@ public class MenuBuilderFactory {
 		}
 	}
 	
-	private boolean isBrandFilterBox(ProductFilterGroupI filterGroup){
+	private boolean isBrandFilterBox(ProductFilterGroup filterGroup){
 		
 		if(filterGroup.getProductFilters()==null){
 			return false;
@@ -996,9 +989,6 @@ public class MenuBuilderFactory {
 					
 					// create the pre filtered item list (filters belongs to this filtergroup will be removed)
 					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase, !FilteringFlowType.BROWSE.equals(browseData.getPageType()), isProductListing);
-					final int pfSize = preFilteredItems.size();
-					
-					final long t0 = System.currentTimeMillis();
 
 					// walk through on menu items in the box
 					Iterator<MenuItemData> it = box.getItems().iterator();

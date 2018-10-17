@@ -14,7 +14,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductFilterGroupI;
+import com.freshdirect.storeapi.content.ProductFilterGroup;
 import com.freshdirect.storeapi.content.ProductItemFilterI;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.Recipe;
@@ -193,11 +193,11 @@ public class ProductItemFilterUtil {
 	 * @return
 	 * convenience method for transforming filter container
 	 */
-	public static Map<String, ProductItemFilterI> prepareFilters(List<ProductFilterGroupI> filters){
+	public static Map<String, ProductItemFilterI> prepareFilters(List<ProductFilterGroup> filters){
 		
 		Map<String, ProductItemFilterI> result = new HashMap<String, ProductItemFilterI>();
 		
-		for(ProductFilterGroupI group : filters){
+		for(ProductFilterGroup group : filters){
 			for(ProductItemFilterI filter : group.getProductFilters()){
 				result.put(createCompositeId(group.getId(), filter.getId()), filter);
 			}
