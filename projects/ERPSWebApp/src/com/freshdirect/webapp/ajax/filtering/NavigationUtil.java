@@ -320,7 +320,11 @@ public class NavigationUtil {
 
         productFilterGroups.addAll(createFilterGroups(node, navigator, navigationModel.getUser(), excludeFilterGroupNames));
         productFilterGroups.addAll(createFilterMultiGroups(node, navigator));
-        Collections.sort(productFilterGroups, SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME);
+
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
+            Collections.sort(productFilterGroups, SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME);
+        }
+
         return productFilterGroups;
     }
 
