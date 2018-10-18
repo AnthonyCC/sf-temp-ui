@@ -923,7 +923,7 @@
 }
 
 .order-line .order-line-qty {
-  flex-basis: 7%;
+  flex-basis: 8%;
 }
 .order-line .disable-order-line {
   flex-basis: calc(42% + 15px);
