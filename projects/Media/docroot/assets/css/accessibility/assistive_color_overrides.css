@@ -1018,3 +1018,10 @@ color: #B93D3F;
 .assistive-mode select.selected + .fdselect > .selectButton{
 	background-color:#098A1E !important;
 }
+.assistive-mode #addaddresspopup [data-show="addaddress_home"] #addaddress_home_label, 
+.assistive-mode #addaddresspopup [data-show="addaddress_office"] #addaddress_office_label,
+.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_creditcard"] label[for="addpaymentmethod_creditcard_selector"], 
+.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_bank"] label[for="addpaymentmethod_bank_selector"], 
+.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_ebt"] label[for="addpaymentmethod_ebt_selector"]{
+	color:#096D19;
+}
