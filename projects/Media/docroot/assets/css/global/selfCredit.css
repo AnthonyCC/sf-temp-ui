@@ -926,8 +926,7 @@
   flex-basis: 7%;
 }
 .order-line .disable-order-line {
-  margin: 0 15px;
-  flex-basis: 50%;
+  flex-basis: calc(42% + 15px);
 }
 .order-line .disable-order-line .title {
   background-color: #f4f4f4;
