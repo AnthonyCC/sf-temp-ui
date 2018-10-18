@@ -1126,6 +1126,7 @@ public class CmsFilteringFlow {
         if (!navigationModel.isSuperDepartment() && !nav.populateSectionsOnly()) { // don't do these in case of super department page
             // menu availability check
             MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
+            reOrderAllMenuItemsByName(navigationModel);
         }
 
 
