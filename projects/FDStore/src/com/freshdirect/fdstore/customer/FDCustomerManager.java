@@ -2849,7 +2849,7 @@ public class FDCustomerManager {
 	
 	public static boolean isCreditRestricted(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
-		try {if (FDStoreProperties.isSF2_0_AndServiceEnabled("referaFriendChanges")) {
+		try {if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
 			return CustomerInfoService.getInstance().isCreditRestricted(identity);
 		}else {
 			FDCustomerManagerSB sb = managerHome.create();
