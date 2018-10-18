@@ -4937,16 +4937,11 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-    	return false;
-//    	if (beanName.equals(FDEcommProperties.FDCustomerIdentity))
-//    		return false;
-//    	if (beanName.equals(FDEcommProperties.FDCustomerInfo))
-//    		return true;
-//        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && 
-//        		FDEcommProperties.isServiceEnabled(beanName)) &&
-//        		!isInEjbScope();
+        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() &&
+        		FDEcommProperties.isServiceEnabled(beanName)) &&
+        		!isInEjbScope();
     }
-
+    
     public static boolean isMealBundleCartonLinkEnabled() {
         return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
     }
