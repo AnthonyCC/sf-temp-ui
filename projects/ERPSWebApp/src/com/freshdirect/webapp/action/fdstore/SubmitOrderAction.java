@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumNotificationType;
@@ -31,7 +29,6 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.dataloader.subscriptions.DeliveryPassFreeTrialCron;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -315,10 +312,12 @@ public class SubmitOrderAction extends WebActionSupport {
 				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getBulkRecipentList().getFDRecipentsList().getRecipients() );
 				// new order -> place it
 				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session, note ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
+                LOGGER.info("GiftCard bulk order, orderId=" + orderNumber);
 			} else {
 				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getRecipientList().getRecipients(user.getGiftCardType()) );
 				// new order -> place it
 				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session, note ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
+                LOGGER.info("GiftCard order, orderId=" + orderNumber);
 			}
 			
 			//update or create everyItemEverOrdered Customer List
@@ -359,7 +358,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			session.removeAttribute(SessionName.AUTHORIZED_PEOPLE);
 			session.removeAttribute(SessionName.PICKUP_AGREEMENT);
 			
-			// Set the order on the session			
+            // Set the order on the session
+            LOGGER.info("#doGCOrderExecute: Setting recent order number into session = " + orderNumber);
 			session.setAttribute(SessionName.RECENT_ORDER_NUMBER, orderNumber);
 			
 			//Remove the Delivery Pass Session ID If any.
@@ -632,6 +632,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				// modify order
 				FDModifyCartModel modCart = (FDModifyCartModel) cart;
 				orderNumber = modCart.getOriginalOrder().getErpSalesId();
+                LOGGER.info("Modifying order, original orderId=" + orderNumber);
 				
 				Date origCutoff = modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime();
 				
@@ -698,12 +699,14 @@ public class SubmitOrderAction extends WebActionSupport {
 					orderNumber = FDCustomerManager.placeSubscriptionOrder(
 							info, cart, appliedPromos, sendEmail, cra,
 							EnumDlvPassStatus.PENDING,true);
+                    LOGGER.info("DlvPass standalone order, orderId=" + orderNumber);
 					
 				} else {
 					validateAndReconcilePickingPlantId(user, cart);
 					orderNumber = FDCustomerManager.placeOrder(info, cart,
 							appliedPromos, sendEmail, cra, status,
 							isFriendReferred, fdcOrderCount);
+                    LOGGER.info("Place Order, orderId=" + orderNumber);
 				}
 				
 				//Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
@@ -827,6 +830,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				user.getSessionEvent().setOrderId(orderNumber);
 			}
 			// Set the order on the session
+            LOGGER.info("#doExecute: Setting recent order number into session = " + orderNumber);
 			session.setAttribute(SessionName.RECENT_ORDER_NUMBER, orderNumber);
 			/*
 			 * Reload delivery pass status to allow user to buy another delivery pass with in the
@@ -1214,7 +1218,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			String note = "Donation Order Created";
 
 			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session, note), cart, Collections.<String>emptySet(), sendEmail,cra,status,optIn );
-			
+            LOGGER.info("Donation order, orderId=" + orderNumber);
 			//update or create everyItemEverOrdered Customer List
 			try{
 				updateEIEO(user, cart, modifying);
@@ -1248,7 +1252,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			session.removeAttribute(SessionName.AUTHORIZED_PEOPLE);
 			session.removeAttribute(SessionName.PICKUP_AGREEMENT);
 			
-			// Set the order on the session			
+            // Set the order on the session
+            LOGGER.info("#doDonationOrderExecute: Setting recent order number into session = " + orderNumber);
 			session.setAttribute(SessionName.RECENT_ORDER_NUMBER, orderNumber);
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
