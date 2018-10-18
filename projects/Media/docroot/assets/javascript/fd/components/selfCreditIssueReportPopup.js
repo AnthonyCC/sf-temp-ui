@@ -27,7 +27,8 @@ var FreshDirect = window.FreshDirect || {};
             sample: data.sample,
             free: data.free,
             comment: data.comment,
-            reviewData: getReviewData(data)
+            reviewData: getReviewData(data),
+            mealBundles: data.mealBundles
           });
         }
       },
@@ -106,6 +107,7 @@ var FreshDirect = window.FreshDirect || {};
         value: function(result, signalSource) {
           if (signalSource === "orderdetails") {
             this.data.orderlines = result.orderLines;
+            this.data.mealBundles = filterOrderLines(this.data.orderlines);  
             this.extendedRefresh(this.data);
           } else if (signalSource === "selfcreditresponse") {
             this.close({ currentTarget: this.overlayEl });
@@ -246,6 +248,16 @@ var FreshDirect = window.FreshDirect || {};
       }
     }
     return hasValid;
+  }
+
+  function filterOrderLines(orderlines) {
+    var mealBundles = [];
+    for (var i = 0; i < orderlines.length; i++) {
+      if(orderlines[i].mealBundle) {
+        mealBundles.push(orderlines[i]);
+      }
+    }
+    return mealBundles;
   }
 
   function getValidComplaintLines(formData) {

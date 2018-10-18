@@ -1,6 +1,11 @@
 #selfCreditInit ~ #FDCustomSelect {
   width: 400px;
 }
+@media(max-width: 740px) {
+  #selfCreditInit ~ #FDCustomSelect {
+    width: auto;
+  }
+}
 #selfCreditIssueReport.overlay-medium {
   font-family: "Verdana", sans-serif;
   letter-spacing: 0.3px;
@@ -8,6 +13,9 @@
 #selfCreditIssueReport.overlay-medium .overlay-content {
   padding: 0;
   overflow: auto;
+}
+#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-content {
+  overflow: hidden;
 }
 #selfCreditIssueReport.overlay-medium .section-container {
   margin: 30px;
@@ -155,7 +163,7 @@
   .review-grid-container
   td:nth-child(2) {
   padding-left: 23px;
-  width: 70%;
+  width: 60%;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -213,6 +221,24 @@
   font-size: 14px;
   font-style: italic;
   margin-left: 5px;
+}
+#selfCreditIssueReport .meal-bundle-header {
+  border-top: 1px solid #cccccc;
+  padding-top: 28px;
+}
+#selfCreditIssueReport .call-helpline, {
+  font-style: italic;
+}
+#selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
+  color: #444444;
+  font-weight: bold;
+}
+@media(max-width: 700px) {
+  #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
+    font-weight: normal;
+    color: #408244;
+    text-decoration: none;
+  }
 }
 #selfCreditIssueReport.overlay-medium .self-credit-body .comment-container {
   margin-top: 20px;
@@ -309,7 +335,7 @@
   }
   #selfCreditIssueReport.overlay-medium .review .self-credit-footer button {
     padding: 15px 30px;
-    font-size: 16px;
+    font-size: 15px;
   }
   #selfCreditIssueReport.overlay-medium
     .review
@@ -319,6 +345,9 @@
   }
   #selfCreditIssueReport .self-credit-form-alert {
     font-size: 13px;
+  }
+  #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
+    text-decoration: underline;
   }
 }
 
@@ -504,7 +533,8 @@
   overflow-y: hidden;
 }
 
-.selfcredit-overlay.overlay-fullscreen .form-header {
+.selfcredit-overlay.overlay-fullscreen .form-header,
+#selfCreditIssueReport .meal-bundle-header {
   color: #444444;
   font-size: 20px;
   margin: 28px 0 32px 0;
@@ -512,7 +542,8 @@
 
 @media screen and (max-width: 740px) {
 
-  .selfcredit-overlay.overlay-fullscreen .form-header {
+  .selfcredit-overlay.overlay-fullscreen .form-header,
+  #selfCreditIssueReport .meal-bundle-header {
     font-size: 18px;
     margin: 19px 0 0 0;
   }
