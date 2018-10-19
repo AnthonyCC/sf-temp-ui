@@ -34,7 +34,7 @@ public class PopulatorUtil {
 		}
 
         if (product == null) {
-            LOGGER.info("Product was not found with categoryId = " + categoryId + ", productId = " + productId);
+            LOGGER.info("Product was not found with categoryId = '" + categoryId + "', productId = '" + productId + "'");
         }
 
         return product;
