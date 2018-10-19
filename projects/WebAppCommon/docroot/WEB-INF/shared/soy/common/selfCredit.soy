@@ -49,6 +49,7 @@
   @param order
   @param? comment
   @param? orderlines
+  @param? customerServiceContact
   @param? mealBundles
   @param? reviewData
 
@@ -87,7 +88,7 @@
             {/if}
           {/foreach}
           {if $mealBundles and $mealBundles.length > 0}
-            <h2 class="meal-bundle-header">Have an issue with any of the items below? <span class="call-helpline">Call us at </span><a itemprop="helpline-phone-number" class="helpline-phone-number italic" href="tel:+1-866-283-7373" rel="nofollow">1-866-283-7373.</a></h2>
+            <h2 class="meal-bundle-header">Have an issue with any of the items below? <span class="call-helpline">Call us at </span><a itemprop="helpline-phone-number" class="helpline-phone-number italic" href="tel:+1-866-283-7373" rel="nofollow">{$customerServiceContact}.</a></h2>
             {foreach $orderline in $mealBundles }
               {call .selfCreditProductLine}
                 {param orderline: $orderline /}

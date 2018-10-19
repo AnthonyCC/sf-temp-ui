@@ -28,7 +28,8 @@ var FreshDirect = window.FreshDirect || {};
             free: data.free,
             comment: data.comment,
             reviewData: getReviewData(data),
-            mealBundles: data.mealBundles
+            mealBundles: data.mealBundles,
+            customerServiceContact: data.customerServiceContact
           });
         }
       },
@@ -108,6 +109,7 @@ var FreshDirect = window.FreshDirect || {};
           if (signalSource === "orderdetails") {
             this.data.orderlines = result.orderLines;
             this.data.oderlines = transformCartonNumbersArray(this.data.orderlines);
+            this.data.customerServiceContact = result.customerServiceContact;
             this.data.mealBundles = filterMealBundles(this.data.orderlines);  
             this.extendedRefresh(this.data);
           } else if (signalSource === "selfcreditresponse") {
