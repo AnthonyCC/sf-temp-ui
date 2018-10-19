@@ -5,6 +5,7 @@ import java.util.List;
 public class SelfCreditOrderDetailsData {
 
 	private boolean customerChefsTableEnabled;
+	private String customerServiceContact;
     private List<SelfCreditOrderItemData> orderLines;
 
 	public boolean isCustomerChefsTableEnabled() {
@@ -13,6 +14,14 @@ public class SelfCreditOrderDetailsData {
 
 	public void setCustomerChefsTableEnabled(boolean customerChefsTableEnabled) {
 		this.customerChefsTableEnabled = customerChefsTableEnabled;
+	}
+
+	public String getCustomerServiceContact() {
+		return customerServiceContact;
+	}
+
+	public void setCustomerServiceContact(String customerServiceContact) {
+		this.customerServiceContact = customerServiceContact;
 	}
 
 	public List<SelfCreditOrderItemData> getOrderLines() {
