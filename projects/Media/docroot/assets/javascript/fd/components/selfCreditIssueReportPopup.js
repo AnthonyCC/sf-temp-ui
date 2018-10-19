@@ -107,7 +107,8 @@ var FreshDirect = window.FreshDirect || {};
         value: function(result, signalSource) {
           if (signalSource === "orderdetails") {
             this.data.orderlines = result.orderLines;
-            this.data.mealBundles = filterOrderLines(this.data.orderlines);  
+            this.data.oderlines = transformCartonNumbersArray(this.data.orderlines);
+            this.data.mealBundles = filterMealBundles(this.data.orderlines);  
             this.extendedRefresh(this.data);
           } else if (signalSource === "selfcreditresponse") {
             this.close({ currentTarget: this.overlayEl });
@@ -160,7 +161,7 @@ var FreshDirect = window.FreshDirect || {};
                 orderLineId: lineId,
                 complaintId: complaint.reasonId,
                 quantity: complaint.qty,
-                cartonNumber: complaint.cartonNumber
+                cartonNumbers: complaint.cartonNumbers
               };
             });
             mapComplaintsToOrderLines(this.complaints, this.data.orderlines, $);
@@ -250,7 +251,7 @@ var FreshDirect = window.FreshDirect || {};
     return hasValid;
   }
 
-  function filterOrderLines(orderlines) {
+  function filterMealBundles(orderlines) {
     var mealBundles = [];
     for (var i = 0; i < orderlines.length; i++) {
       if(orderlines[i].mealBundle) {
@@ -258,6 +259,17 @@ var FreshDirect = window.FreshDirect || {};
       }
     }
     return mealBundles;
+  }
+
+  function transformCartonNumbersArray(orderlines) {
+    for (var i = 0; i < orderlines.length; i++) {
+      if(Array.isArray(orderlines[i].cartonNumbers) && orderlines[i].cartonNumbers.length > 0) {
+        orderlines[i].cartonNumbers = orderlines[i].cartonNumbers.join('|')
+      } else if (orderlines[i].cartonNumbers.length === 0) {
+        orderlines[i].cartonNumbers = '';
+      }
+    }
+    return orderlines;
   }
 
   function getValidComplaintLines(formData) {
@@ -268,11 +280,15 @@ var FreshDirect = window.FreshDirect || {};
       var lineId = key.replace("reason-", "");
       var qty = formData["qty-" + lineId];
       if (!qty) return false;
-      var cartonNumber = formData["carton-" + lineId];
+      var cartonNumbers = formData["carton-" + lineId];
+      cartonNumbers = cartonNumbers.split('|')
+      if(typeof cartonNumbers === undefined) {
+        cartonNumbers = [];
+      }
       list[lineId] = {
         reasonId: formData["reason-" + lineId],
         qty: qty,
-        cartonNumber: cartonNumber
+        cartonNumbers: cartonNumbers
       };
     });
     return list;

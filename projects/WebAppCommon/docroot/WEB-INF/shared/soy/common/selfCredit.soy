@@ -247,7 +247,7 @@
           {/for}
         </select>
       </div>
-      <input class="aria-hidden" value="{$orderline.cartonNumber}" name="carton-{$orderline.orderLineId}"></input>
+      <input class="aria-hidden" value="{$orderline.cartonNumbers}" name="carton-{$orderline.orderLineId}"></input>
     {/if}
     {if $orderline.sample or $orderline.free}
       <div class="order-line-col disable-order-line">
