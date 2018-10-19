@@ -83,7 +83,6 @@ public class SelfCreditOrderDetailsService {
         }
 
         SelfCreditOrderDetailsData selfCreditOrderDetailsData = new SelfCreditOrderDetailsData();
-        selfCreditOrderDetailsData.setCustomerChefsTableEnabled(user.isChefsTable());
         selfCreditOrderDetailsData.setCustomerServiceContact(user.getCustomerServiceContact());
         selfCreditOrderDetailsData.setOrderLines(orderLines);
         return selfCreditOrderDetailsData;
