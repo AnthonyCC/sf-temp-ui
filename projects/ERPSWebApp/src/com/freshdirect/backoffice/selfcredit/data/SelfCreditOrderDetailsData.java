@@ -4,9 +4,18 @@ import java.util.List;
 
 public class SelfCreditOrderDetailsData {
 
+	private boolean customerChefsTableEnabled;
     private List<SelfCreditOrderItemData> orderLines;
 
-    public List<SelfCreditOrderItemData> getOrderLines() {
+	public boolean isCustomerChefsTableEnabled() {
+		return customerChefsTableEnabled;
+	}
+
+	public void setCustomerChefsTableEnabled(boolean customerChefsTableEnabled) {
+		this.customerChefsTableEnabled = customerChefsTableEnabled;
+	}
+
+	public List<SelfCreditOrderItemData> getOrderLines() {
         return orderLines;
     }
 
