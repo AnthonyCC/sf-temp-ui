@@ -1,6 +1,7 @@
 package com.freshdirect.backoffice.selfcredit.data;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class SelfCreditOrderItemRequestData implements Serializable{
 	
@@ -9,7 +10,7 @@ public class SelfCreditOrderItemRequestData implements Serializable{
 	private String orderLineId;
     private String complaintId;
     private double quantity;
-    private String cartonNumber;
+    private List<String> cartonNumbers;
     
 	public String getOrderLineId() {
 		return orderLineId;
@@ -35,11 +36,12 @@ public class SelfCreditOrderItemRequestData implements Serializable{
 		this.quantity = quantity;
 	}
 
-	public String getCartonNumber() {
-		return cartonNumber;
+	public List<String> getCartonNumbers() {
+		return cartonNumbers;
 	}
 
-	public void setCartonNumber(String cartonNumber) {
-		this.cartonNumber = cartonNumber;
+	public void setCartonNumbers(List<String> cartonNumbers) {
+		this.cartonNumbers = cartonNumbers;
 	}
+
 }

@@ -16,7 +16,7 @@ public class SelfCreditOrderItemData {
     private boolean sample;
     private boolean free;
     private boolean mealBundle;
-    private String cartonNumber;
+    private List<String> cartonNumbers;
     
 	public String getOrderLineId() {
 		return orderLineId;
@@ -114,12 +114,12 @@ public class SelfCreditOrderItemData {
         this.mealBundle = mealBundle;
     }
 
-	public String getCartonNumber() {
-		return cartonNumber;
+	public List<String> getCartonNumbers() {
+		return cartonNumbers;
 	}
 
-	public void setCartonNumber(String cartonNumber) {
-		this.cartonNumber = cartonNumber;
+	public void setCartonNumbers(List<String> cartonNumbers) {
+		this.cartonNumbers = cartonNumbers;
 	}
-	
+
 }

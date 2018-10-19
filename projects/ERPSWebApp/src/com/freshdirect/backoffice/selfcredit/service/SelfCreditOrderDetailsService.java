@@ -77,7 +77,7 @@ public class SelfCreditOrderDetailsService {
                 item.setSample(fdCartLine.isSample());
                 item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
                 item.setMealBundle(isItemMealBundle(fdCartLine));
-                item.setCartonNumber(collectCartonNumber(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
+                item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
                 orderLines.add(item);
 			}
         }
@@ -92,8 +92,12 @@ public class SelfCreditOrderDetailsService {
     	return  Double.parseDouble(quantity);
 	}
 
-	private String collectCartonNumber(List<FDCartonInfo> cartonContents) {
-    	return cartonContents.isEmpty() ? "" : cartonContents.get(0).getCartonInfo().getCartonNumber();
+	private List<String> collectCartonNumbers(List<FDCartonInfo> cartonContents) {
+    	List<String> cartonNumbers = new ArrayList<String>();
+    	for (FDCartonInfo cartonContent : cartonContents) {
+			cartonNumbers.add(cartonContent.getCartonInfo().getCartonNumber());
+		}
+		return cartonNumbers;
 	}
 
 	private String collectProductName(String brandName, String description) {
