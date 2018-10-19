@@ -69,7 +69,7 @@ public class NavigationUtil {
 
     private static final Comparator<ProductFilterGroup> SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME = new Comparator<ProductFilterGroup>() {
 
-        private PriorityComparator<String> searchFilterMenuPrefixComparator = new PriorityComparator<String>("department", "category", "subcategory", "brand", "popular", "nutrition");
+        private PriorityComparator<String> searchFilterMenuPrefixComparator = new PriorityComparator<String>("department", "category", "subcategory", "brand", "popular", "show me only", "nutrition");
 
         @Override
         public int compare(ProductFilterGroup o1, ProductFilterGroup o2) {
