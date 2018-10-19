@@ -6,14 +6,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.python.parser.ast.boolopType;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditRequest;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse;
+import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemRequestData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -36,14 +39,10 @@ public class BackOfficeSelfCreditService {
     public IssueSelfCreditResponse postSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
 
     	final String orderId = issueSelfCreditRequest.getOrderId();
-        boolean isOrderIdValid = false;
-		try {
-			isOrderIdValid = FDCustomerManager.orderBelongsToUser(user.getIdentity(), orderId);
-		} catch (FDResourceException e1) {
-			LOGGER.error("Error while checking if user " + user.getUserId() + " has Self-credit order id: " + orderId);
-		}
-        if (!isOrderIdValid) {
-        	LOGGER.error("Self-credit order id: " + orderId + " does not belong to user: " + user.getUserId());
+    	final boolean isSelfCreditRequestValid = validateSelfCreditRequest(issueSelfCreditRequest, user);
+		
+        if (!isSelfCreditRequestValid) {
+        	LOGGER.error("Unable to issue self-complaint for order " + orderId + ".");
 			IssueSelfCreditResponse issueSelfCreditResponse = new IssueSelfCreditResponse();
 			issueSelfCreditResponse.setMessage("ERROR");
 			issueSelfCreditResponse.setSuccess(false);
@@ -99,5 +98,35 @@ public class BackOfficeSelfCreditService {
 		}
         return issueSelfCreditResponse;
     }
+
+	private boolean validateSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
+		final String orderId = issueSelfCreditRequest.getOrderId();
+		final boolean isOrderIdValid = validateOrder(orderId, user);
+		final boolean hasCartonNumbers = validateCartonNumbers(issueSelfCreditRequest.getOrderLineParams(), orderId);
+		return isOrderIdValid && hasCartonNumbers;
+	}
+
+	private boolean validateOrder(String orderId, FDUserI user) {
+		boolean isOrderIdValid = false;
+		try {
+			isOrderIdValid = FDCustomerManager.orderBelongsToUser(user.getIdentity(), orderId);
+		} catch (FDResourceException e1) {
+			LOGGER.error("Error while checking if user " + user.getUserId() + " has Self-credit order id: " + orderId);
+		}
+		if (!isOrderIdValid) {
+			LOGGER.error("Self-credit order id: " + orderId + " does not belong to user: " + user.getUserId());
+		}
+		return isOrderIdValid;
+	}
+	
+	private boolean validateCartonNumbers(List<SelfCreditOrderItemRequestData> selfCreditItems, String orderId) {
+		for (SelfCreditOrderItemRequestData selfCreditItem : selfCreditItems) {
+			if (null == selfCreditItem.getCartonNumbers() || selfCreditItem.getCartonNumbers().isEmpty() ) {
+				LOGGER.error("Unable to issue self-complaint for order " + orderId + " due to missing carton numbers.");
+				return false;
+			}
+		}
+		return true;
+	}
 
 }
