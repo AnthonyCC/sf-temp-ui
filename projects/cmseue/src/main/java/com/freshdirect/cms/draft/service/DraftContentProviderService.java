@@ -36,6 +36,7 @@ import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.core.service.ParentIndexBuilder;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
+import com.freshdirect.cms.draft.domain.NullValueBehavior;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
@@ -136,6 +137,10 @@ public class DraftContentProviderService extends ContextualContentProvider {
 
     @Override
     public Map<Attribute, Object> getAllAttributesForContentKey(ContentKey contentKey) {
+        return getAllAttributesForContentKey(contentKey, NullValueBehavior.REMOVE_NULLS);
+    }
+
+    public Map<Attribute, Object> getAllAttributesForContentKey(ContentKey contentKey, NullValueBehavior nullValueBehavor) {
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
         DraftContext draftContext = draftContextHolder.getDraftContext();
         if (draftContext.isMainDraft()) {
@@ -147,7 +152,7 @@ public class DraftContentProviderService extends ContextualContentProvider {
         if (draftNode != null) {
             for (Map.Entry<Attribute, Object> draftEntry : draftNode.entrySet()) {
                 final Attribute attributeDef = draftEntry.getKey();
-                if (draftEntry.getValue() == null) {
+                if (NullValueBehavior.REMOVE_NULLS == nullValueBehavor && draftEntry.getValue() == null) {
                     resultNode.remove(attributeDef);
                 } else {
                     resultNode.put(attributeDef, draftEntry.getValue());

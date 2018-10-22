@@ -156,7 +156,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private String 	pdUserId;
 
     private Set<ContentKey> checkoutUnavailableProductKeys; // set of items which failed the ATP test
-    
+
     private String addCcUuid;
 
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
@@ -183,13 +183,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private boolean soFeatureOverlay = false;
 
 	private boolean isRefreshNewSoFeature = true;
-	
+
 	private boolean showInformOrderModify = false;
-	
+
 	private Map<String, Set<Long>> recentCartlineIdsMap = new HashMap<String, Set<Long>>();
-	
+
 	private List<UnbxdAutosuggestResults> unbxdAustoSuggestions;
-	
+
 	/* map setter/getter */
 	public Map<String, Set<Long>> getRecentCartlineIdsMap() {
 		return recentCartlineIdsMap;
@@ -199,7 +199,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	/* set setter/getter */
 	public Set<Long> getRecentCartlineIdsSet(String orderId) {
-		return (Set<Long>) ((this.recentCartlineIdsMap.containsKey(orderId)) ? this.recentCartlineIdsMap.get(orderId) : Collections.<Long> emptySet());
+		return (this.recentCartlineIdsMap.containsKey(orderId)) ? this.recentCartlineIdsMap.get(orderId) : Collections.<Long> emptySet();
 	}
 	public void setRecentCartlineIdsSet(String orderId, Set<Long> recentCartlineIdsSet) {
 		if (orderId != null) {
@@ -317,26 +317,26 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void valueUnbound(HttpSessionBindingEvent event) {
         LOGGER.debug("FDUser unbound from session " + event.getSession().getId() + " user cookie " + this.getCookie() + " username " + this.getUserId());
         if (!this.isRobot()) {
-        	        	
+
             this.saveCart(true);
             this.saveImpressions();
             this.releaseModificationLock();
-            
+
             /* store on session time out */
             try {
             	if (user != null && user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
                 	LOGGER.debug("Updating FDCustomerEStore (custId:"+user.getIdentity().getErpCustomerPK()+")");
-    				FDCustomerManager.updateFDCustomerEStoreInfo(this.getFDCustomer().getCustomerEStoreModel(), this.getFDCustomer().getId());	
+    				FDCustomerManager.updateFDCustomerEStoreInfo(this.getFDCustomer().getCustomerEStoreModel(), this.getFDCustomer().getId());
             	}
 			} catch (FDResourceException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-            
+
             if (FDStoreProperties.isSessionLoggingEnabled() && this.startDate != null) {
                 try {
                     if (user != null && user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
-                       
+
                     	if (user.getSessionEvent() != null) {
                             SessionEvent sessionEvent = user.getSessionEvent();
                             sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
@@ -862,7 +862,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public boolean isChefsTable() throws FDResourceException {
         return this.user.isChefsTable();
     }
-    
+
     @Override
     public boolean isFDLabsCustomer() throws FDResourceException {
         return this.user.isFDLabsCustomer();
@@ -982,6 +982,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public boolean isECheckRestricted() throws FDResourceException {
         return (user != null) ? user.isECheckRestricted() : false;
     }
+    
+    @Override
+	public boolean isCreditRestricted() throws FDResourceException {
+    	return (user != null) ? user.isCreditRestricted() : false;
+	}
 
     public String getRegRefTrackingCode() {
         return (user != null) ? user.getRegRefTrackingCode() : "";
@@ -1369,12 +1374,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setGiftCart(FDCartModel dcart) {
         this.user.setGiftCart(dcart);
     }
-    
+
     @Override
     public FDCartModel getDlvPassCart() {
         return this.user.getDlvPassCart();
     }
-    
+
     @Override
     public void setDlvPassCart(FDCartModel dlvpasscart) {
         this.user.setDlvPassCart(dlvpasscart);
@@ -2523,7 +2528,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public int getInformOrderModifyViewCount() { /* current estore, auto increment */
 		return this.user.getInformOrderModifyViewCount(null, true);
 	}
-	
+
 	@Override
 	public int getInformOrderModifyViewCount(EnumEStoreId EStore) { /* auto increment */
 		return this.user.getInformOrderModifyViewCount(EStore, true);
@@ -2567,11 +2572,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.isDlvPassTimeslotNotMatched();
 	}
 
-	public boolean isMidWeekDlvPassApplicable(Date dayOfWeek) {
+	@Override
+    public boolean isMidWeekDlvPassApplicable(Date dayOfWeek) {
 		return this.user.isMidWeekDlvPassApplicable(dayOfWeek);
     }
 
-	public boolean hasMidWeekDlvPass() {
+	@Override
+    public boolean hasMidWeekDlvPass() {
 		return this.user.hasMidWeekDlvPass();
 	}
 	public String getAddCcUuid() {
@@ -2580,14 +2587,21 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setAddCcUuid(String addCcUuid) {
 		this.addCcUuid = addCcUuid;
 	}
-	public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions() {
+	@Override
+    public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions() {
 		return unbxdAustoSuggestions;
 	}
-	public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
+	@Override
+    public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
 		this.unbxdAustoSuggestions = unbxdAustoSuggestions;
 	}
     @Override
     public String getDlvPassSegmentValue() throws FDResourceException {
         return this.user.getDlvPassSegmentValue();
+    }
+
+    @Override
+    public boolean isHavingEnoughValidOrders() {
+        return this.user.isHavingEnoughValidOrders();
     }
 }

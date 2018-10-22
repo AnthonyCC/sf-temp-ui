@@ -63,10 +63,5 @@ if (mobWeb) {
 			window.FreshDirect.storeCredits = <fd:ToJSON object="${storeCredits}" noHeaders="true"/>
 			console.log(window.FreshDirect.storeCredits);
 		</script>
-<script>
-	window.FreshDirect.storeCredits = <fd:ToJSON object="${storeCredits}" noHeaders="true"/>
-    console.log(window.FreshDirect.storeCredits);
-</script>
-
 	</tmpl:put>
 </tmpl:insert>

@@ -31,6 +31,8 @@ public class SearchQuery extends Message {
 	private String lat;
 	
 	private String platform;
+	
+	private boolean includedeptandcat;
 
 	public String getQuery() {
 		return query;
@@ -134,5 +136,13 @@ public class SearchQuery extends Message {
 
 	public void setPlatform(String platform) {
 		this.platform = platform;
+	}
+
+	public boolean isIncludedeptandcat() {
+		return includedeptandcat;
+	}
+
+	public void setIncludedeptandcat(boolean includedeptandcat) {
+		this.includedeptandcat = includedeptandcat;
 	}
 }

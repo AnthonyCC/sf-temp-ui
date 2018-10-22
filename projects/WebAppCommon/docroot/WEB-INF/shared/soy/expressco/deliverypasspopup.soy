@@ -7,7 +7,7 @@
 {template .deliverypasspopup autoescape="false"}
 <div>
   <div class='deliverypasspopup__header'>
-  	<div class="deliverypasspopup__header-fd"><img src="/media/layout/nav/globalnav/fdx/locabar-tab-fd-green.svg" /></div>
+  	<div class="deliverypasspopup__header-fd"><img src="/media/layout/nav/globalnav/fdx/locabar-tab-fd-green.svg" alt="freshdirect logo" /></div>
 	<div class="deliverypasspopup__header-dp">DeliveryPass<sup>&reg;</sup><span class="deliverypasspopup__header-truck"><img src="/media/editorial/site_pages/deliverypass/images/truck.svg" alt="truck"></span></div>
 	<div class="deliverypasspopup__header-text">
 		<span class="deliverypasspopup__header-text-circle deliverypasspopup-mobweb">&#9679;</span> Unlimited Free Deliveries <br class="deliverypasspopup-mobweb" />
@@ -80,7 +80,7 @@
 			{else}
 				onclick="$jq('.deliverypass_form').attr('data-selected-product-id','{if $product}{$product.productId}{/if}').attr('data-selected-dp-title','{$title}{if $midWeekSku} Midweek{/if} Membership');"
 			{/if} 
-		>Sign Up</button>
+		>Sign Up<span class="offscreen">{if $title}{$title}{/if} delivery pass for {if $totalPrice}${$totalPrice}{/if}+Tax </span></button>
 		{if $product}
 			<div class="deliverypass_product" data-component="product" data-product-id="{$product.productId}">
 				{call common.productData data="$product" /}
@@ -108,7 +108,7 @@
  */
 {template .deliverypasspopupsuccess}
 	<div class="deliverypasspopup_success">
-		<div class="deliverypasspopup_success-cart"><img src="/media/layout/nav/globalnav/fdx/locabar-cart-green.svg"/></div>
+		<div class="deliverypasspopup_success-cart"><img src="/media/layout/nav/globalnav/fdx/locabar-cart-green.svg" alt="" /></div>
 		<div class="deliverypasspopup_success-header">Added to Order</div>
 		<div class="deliverypasspopup_success-text">Place your order to begin your membership!</div>
 		<div class="deliverypasspopup_success-button"><button class="cssbutton cssbutton-flat green nontransparent close">Okay</button></div>

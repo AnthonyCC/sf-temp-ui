@@ -105,7 +105,7 @@ public class QuickShopHelper {
 		try {
 			productSelection.refreshConfiguration();
 		} catch (Exception e) {
-			LOG.error("Refresh configuration failed with configissue2: " + e);
+			LOG.info("Refresh configuration failed with configissue2: " + e);
 			return null;
 		}
 
@@ -215,9 +215,9 @@ public class QuickShopHelper {
 		try {
 			ProductDetailPopulator.populateSkuData(item, user, productModel, skuModel, latestFdProduct);
 		} catch (FDSkuNotFoundException e) {
-			LOG.error("Failed to populate sku data", e);
+			LOG.info("Failed to populate sku data", e);
 		} catch (HttpErrorResponse e) {
-			LOG.error("Failed to populate sku data", e);
+			LOG.info("Failed to populate sku data", e);
 		}
 
 		ProductDetailPopulator.postProcessPopulate(user, item, item.getSkuCode());
@@ -263,9 +263,9 @@ public class QuickShopHelper {
 			try {
 				ProductDetailPopulator.populateSkuData(item, user, productModel, skuModel, fdProduct);
 			} catch (FDSkuNotFoundException e) {
-				LOG.error("Failed to populate sku data", e);
+				LOG.info("Failed to populate sku data", e);
 			} catch (HttpErrorResponse e) {
-				LOG.error("Failed to populate sku data", e);
+				LOG.info("Failed to populate sku data", e);
 			}
 
 			ProductDetailPopulator.postProcessPopulate(user, item, item.getSkuCode());

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -48,6 +49,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		Response<ErpAddressModel> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 			rootNode.put("lastOrderId", lastOrderId);
@@ -60,12 +62,14 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.assumeDeliveryAddress: inputJson=" + inputJson);
+				LOGGER.warn("Error in CustomerAddressService.assumeDeliveryAddress: inputJson=" + inputJson
+						+ ", response=" + response);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService: ", e);
+			LOGGER.error("Error in CustomerAddressService.assumeDeliveryAddress: identity=" + identity
+					+ ", lastOrderId=" + lastOrderId, e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -79,7 +83,8 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 				new TypeReference<Response<String>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerAddressService.getParentOrderAddressId: parentOrderAddressId=" + parentOrderAddressId);
+			LOGGER.error("Error in CustomerAddressService.getParentOrderAddressId: parentOrderAddressId="
+					+ parentOrderAddressId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -92,6 +97,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		Response<ErpAddressModel> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 			rootNode.put("addressId", addressId);
@@ -104,12 +110,14 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.getAddress: data=" + inputJson);
+				LOGGER.error(
+						"Error in CustomerAddressService.getAddress: data=" + inputJson + ", response=" + response);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService: ", e);
+			LOGGER.error("Error in CustomerAddressService.getAddress: identity=" + identity + ", addressId" + addressId,
+					e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -119,6 +127,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		Response<List<ErpAddressModel>> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 
@@ -130,12 +139,13 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.getShippingAddresses: data=" + inputJson);
+				LOGGER.error("Error in CustomerAddressService.getShippingAddresses: data=" + inputJson + ", response="
+						+ response);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService: ", e);
+			LOGGER.error("Error in CustomerAddressService.getShippingAddresses: identity=" + identity, e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -146,6 +156,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		Response<Boolean> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
 			rootNode.put("checkUniqueness", checkUniqueness);
@@ -164,7 +175,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService: ", e);
+			LOGGER.error("Error in CustomerAddressService.addShippingAddress: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -175,6 +186,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		Response<Boolean> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
 			rootNode.put("checkUniqueness", checkUniqueness);
@@ -188,12 +200,13 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.updateShippingAddress: data=" + inputJson);
+				LOGGER.error("Error in CustomerAddressService.updateShippingAddress: data=" + inputJson + ", response="
+						+ response);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService: ", e);
+			LOGGER.error("Error in CustomerAddressService.updateShippingAddress: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -203,6 +216,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		Response<Void> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
 			rootNode.put("addressId", pk.getId());
@@ -215,11 +229,12 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.removeShippingAddress: data=" + inputJson);
+				LOGGER.error("Error in CustomerAddressService.removeShippingAddress: data=" + inputJson + ", response="
+						+ response);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.removeShippingAddress: info=" + info + ", pk="+pk, e);
+			LOGGER.error("Error in CustomerAddressService.removeShippingAddress: info=" + info + ", pk=" + pk, e);
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -234,7 +249,8 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerAddressService.getDefaultShipToAddressPK: identity=" + identity);
+			LOGGER.error("Error in CustomerAddressService.getDefaultShipToAddressPK: identity=" + identity
+					+ ", response=" + response);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -247,6 +263,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		Response<Void> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
+			getMapper().setSerializationInclusion(Include.NON_NULL);
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.put("customerId", identity.getFDCustomerPK());
 			rootNode.put("shippingAddressPK", shipToAddressPK);
@@ -259,11 +276,13 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.setDefaultShippingAddressPK: inputJson=" + inputJson);
+				LOGGER.error("Error in CustomerAddressService.setDefaultShippingAddressPK: inputJson=" + inputJson
+						+ ", response=" + response);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService: identity=" + identity + ", shipToAddressPK="+shipToAddressPK, e);
+			LOGGER.error("Error in CustomerAddressService.setDefaultShippingAddressPK: identity=" + identity
+					+ ", shipToAddressPK=" + shipToAddressPK, e);
 			throw new RemoteException(e.getMessage());
 		}
 

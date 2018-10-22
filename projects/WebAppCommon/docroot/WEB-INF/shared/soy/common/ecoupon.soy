@@ -11,7 +11,7 @@
 {if $couponDisplay } 
 	{let $couponName}fdCoupon_{$coupon.couponId}{/let}
 	<div name="{$couponName}_cont" class="fdCoupon_cont{if $couponClipped} isClipped{/if}" data-component="ecoupon" data-ecouponid="{$coupon.couponId}">
-	{call ecfragments.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$couponClipped /}{/call}
+	{call common.ecoupon.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$couponClipped /}{param coupon:$coupon /}{/call}
 	<img src="/media_stat/images/ecoupon/logo-small.png" alt="FD coupon" class="fdCoupon_img">
   {if $detailsFirst}
     {call ecfragments.detailsHtml}{param couponName:$couponName /}{/call}

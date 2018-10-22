@@ -174,18 +174,6 @@
   margin-right: 20px;
 }
 #accountCredits
-.account-credits
-.all-credits
-.credit-line-col
-.credit-line-container.FK .receipt,
-#accountCredits
-.account-credits
-.all-credits
-.credit-line-col
-.credit-line-container.Referral.Credit .receipt {
-  visibility: hidden;
-}
-#accountCredits
   .account-credits
   .under-review
   .credit-line-col
@@ -216,6 +204,16 @@
   font-size: 18px;
   line-height: 1.33;
   text-align: right;
+}
+#accountCredits
+.account-credits
+.credit-line-col
+.credit-line-container.FK .receipt,
+#accountCredits
+.account-credits
+.credit-line-col
+.credit-line-container.Referral.Credit .receipt {
+  visibility: hidden;
 }
 #accountCredits
   .account-credits--header {

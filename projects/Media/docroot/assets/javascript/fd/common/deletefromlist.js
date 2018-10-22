@@ -51,7 +51,7 @@ var FreshDirect = FreshDirect || {};
     /*APPDEV-4151 - Changes for displaying Spinning wheel : START*/ 
     	
   	  var listArea = $(this.popup.$trigger).closest('.itemlist-item').parent().parent(); 
-	  var spin = listArea.append('<img style="position:fixed;left:50%;top:50%;" id="load" src="/media_stat/images/navigation/spinner.gif"/>'); 
+	  var spin = listArea.append('<img style="position:fixed;left:50%;top:50%;" id="load" src="/media_stat/images/navigation/spinner.gif" alt="spinner"/>'); 
 	  listArea.css("opacity","0.2"); 
 	  
 	  var timeOutVar = setTimeout(function() { 

@@ -88,7 +88,7 @@
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 		
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
 			<script language="javascript">
 			if(typeof top.FreshDirect.terms !== "undefined"){
 					top.FreshDirect.terms=true;
@@ -120,7 +120,7 @@
 		} else if(session.getAttribute("TCAGREE_COMPLETE") != null){
 			
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
 			<script language="javascript">
 			if(typeof top.FreshDirect.terms !== "undefined"){
 				top.FreshDirect.terms=true;

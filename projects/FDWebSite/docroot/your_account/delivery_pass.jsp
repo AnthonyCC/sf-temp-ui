@@ -162,13 +162,11 @@ function deliveryPassAutoRenew(item){
 							<div class="dp-plan-activate-text"><%= null != user ? DeliveryPassUtil.getPurchaseDate(user):null %> </div>
 						</div>
 						
-						<fd:GetOrdersByDeliveryPass deliveryPassId='<%= viewContent.getId() %>' id='orderHistoryInfo'>
 						<div class="dp-plan-ordersplaced">
 							<div class="dp-plan-activate-header">Orders Placed:</div>
-							<div class="dp-plan-activate-text"><%= orderHistoryInfo.size() %></div>
+							<div class="dp-plan-activate-text"><%= viewContent.getModel().getUsageCount() %></div>
 						</div>
-						</fd:GetOrdersByDeliveryPass>
-					
+						
 						<% if( FDStoreProperties.isAmountSavedDpAccPageEnabled()) { 
 						 if(user.getDlvPassInfo().getDPSavings() > 0) { %> 
 						<div class="dp-plan-saved">

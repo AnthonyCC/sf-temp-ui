@@ -1,6 +1,10 @@
 package com.freshdirect.webapp.ajax.filtering;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,10 +14,10 @@ import java.util.Set;
 
 import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
 import com.freshdirect.fdstore.content.browse.filter.KosherFilter;
 import com.freshdirect.fdstore.content.browse.filter.NewProductFilter;
@@ -24,7 +28,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -34,18 +37,23 @@ import com.freshdirect.storeapi.content.DomainValue;
 import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
 import com.freshdirect.storeapi.content.GlobalNavigationModel;
 import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductFilterGroupI;
-import com.freshdirect.storeapi.content.ProductFilterGroupImpl;
+import com.freshdirect.storeapi.content.ProductFilterGroup;
+import com.freshdirect.storeapi.content.ProductFilterGroupModel;
+import com.freshdirect.storeapi.content.ProductFilterGroupType;
+import com.freshdirect.storeapi.content.ProductFilterModel;
 import com.freshdirect.storeapi.content.ProductFilterMultiGroupModel;
 import com.freshdirect.storeapi.content.ProductItemFilterI;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.Recipe;
 import com.freshdirect.storeapi.content.RecipeSearchPage;
 import com.freshdirect.storeapi.content.SuperDepartmentModel;
 import com.freshdirect.storeapi.content.TagModel;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.cache.EhCacheUtilWrapper;
 import com.freshdirect.webapp.globalnav.GlobalNavContextUtil;
+import com.google.common.collect.ComparisonChain;
 
 public class NavigationUtil {
 	
@@ -55,7 +63,41 @@ public class NavigationUtil {
 	public static final String DEPARTMENT_FILTER_GROUP_ID = "departmentFilterGroup";
 	public static final String CATEGORY_FILTER_GROUP_ID = "categoryFilterGroup";
 	public static final String SUBCATEGORY_FILTER_GROUP_ID = "subCategoryFilterGroup";
-	
+	private static final String FILTER_GROUP_ID = "FilterGroup";
+	private static final List<String> NO_EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList();
+	private static final List<String> EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList("Brand");
+
+    private static final Comparator<ProductFilterGroup> SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME = new Comparator<ProductFilterGroup>() {
+
+        private PriorityComparator<String> searchFilterMenuPrefixComparator = new PriorityComparator<String>("department", "category", "subcategory", "brand", "popular", "show me only", "nutrition");
+
+        @Override
+        public int compare(ProductFilterGroup o1, ProductFilterGroup o2) {
+            String left = o1.getName().toLowerCase();
+            String right = o2.getName().toLowerCase();
+            return ComparisonChain.start().compare(left, right, searchFilterMenuPrefixComparator).compare(left, right).result();
+        }
+        
+        class PriorityComparator<T> implements Comparator<T> {
+
+            private final List<T> values;
+
+            public PriorityComparator(T... values) {
+                this.values = Arrays.asList(values);
+            }
+
+            @Override
+            public int compare(T o1, T o2) {
+                int idx1 = values.indexOf(o1);
+                int idx2 = values.indexOf(o2);
+                if (idx1 > -1) {
+                    return idx2 > -1 ? idx1 - idx2 : -1;
+                }
+                return idx2 > -1 ? 1 : 0;
+            }
+        }
+    };
+
     public static NavigationModel createNavigationModel(ContentNodeModel node, CmsFilteringNavigator navigator, FDUserI user) throws InvalidFilteringArgumentException,
             FDResourceException {
 		
@@ -170,15 +212,26 @@ public class NavigationUtil {
 			model.setPreferenceCategories(prefCategories);
 			model.setCategorySections(department.getCategorySections());
 			
-			if(!navigator.isPdp()) {
-				//-- CREATE FILTERS --
-			
-				// create actual filters
-				model.setAllFilters(createFilterGroups((ProductContainer)node, navigator, user));
-				
-				// select active filters
-				model.setActiveFilters(selectActiveFilters(model.getAllFilters(), navigator));
-			}
+            if (!navigator.isPdp()) {
+                // -- CREATE FILTERS --
+
+                if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, user)) {
+                    for (CategoryModel categoryModel : regularCategories) {
+                        for (ProductModel productModel : categoryModel.getProducts()) {
+                            FilterCollector.defaultFilterCollector().collectBrandFilters(model, productModel);
+                        }
+                    }
+
+                    for (CategoryModel categoryModel : prefCategories) {
+                        for (ProductModel productModel : categoryModel.getProducts()) {
+                            FilterCollector.defaultFilterCollector().collectBrandFilters(model, productModel);
+                        }
+                    }
+                }
+
+                model.setAllFilters(createBrowseFilterGroups(model, navigator));
+                model.setActiveFilters(selectActiveFilters(model.getAllFilters(), navigator));
+            }
 			
 			if(((ProductContainer)node).isShowPopularCategories()){
 				
@@ -199,7 +252,7 @@ public class NavigationUtil {
 			model.setDepartmentsOfSuperDepartment(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
 			
 			//no filters in case of super department
-			model.setAllFilters(new ArrayList<ProductFilterGroupI>());
+			model.setAllFilters(new ArrayList<ProductFilterGroup>());
 			model.setActiveFilters(new HashSet<ProductItemFilterI>());
 			
 		}
@@ -225,15 +278,8 @@ public class NavigationUtil {
 		return model;
 	}
 	
-	/**
-	 * @param productContainer
-	 * @param navigator
-	 * @return
-	 * create the flat filter group structure
-	 */
-	public static List<ProductFilterGroupI> createFilterGroups(ProductContainer productContainer, CmsFilteringNavigator navigator, FDUserI user){
-		
-		// construct selectionMap from filter parameters
+    private static Map<String, List<TagModel>> collectMultigroupTags(ProductContainer productContainer, CmsFilteringNavigator navigator) {
+        // construct selectionMap from filter parameters
 		// check what filters are selected from a multigroup (multigroups can contain tagmodels only)
 		Map<String,List<TagModel>> selectionMap = new HashMap<String, List<TagModel>>();
 
@@ -258,24 +304,35 @@ public class NavigationUtil {
 				}
 			}
 		}
-		
-		// create a flat group hierarchy, create simple groups from the multigroups and create the x level for the selected multigroup filters (selectionMap)
-		return ProductItemFilterFactory.getInstance().getDefaultProductFilterGroups(productContainer, selectionMap, user);
-		
-	}
-	
-	public static List<ProductFilterGroupI> createSearchFilterGroups(NavigationModel navigationModel, CmsFilteringNavigator navigator, FDUserI user){
-		List<ProductFilterGroupI> list = new ArrayList<ProductFilterGroupI>();
+        return selectionMap;
+    }
+
+    public static List<ProductFilterGroup> createBrowseFilterGroups(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
+        List<ProductFilterGroup> productFilterGroups = new ArrayList<ProductFilterGroup>();
+
+        List<String> excludeFilterGroupNames = NO_EXCLUDE_FILTER_GROUP_NAMES;
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
+            excludeFilterGroupNames = EXCLUDE_FILTER_GROUP_NAMES;
+            List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(navigationModel.getBrandsOfSearchResults().values(), BRAND_FILTER_GROUP_ID);
+            productFilterGroups.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, true, false));
+        }
+
+        ProductContainer node = (ProductContainer) navigationModel.getSelectedContentNodeModel();
+        productFilterGroups.addAll(createFilterGroups(node, navigator, navigationModel.getUser(), excludeFilterGroupNames));
+        return productFilterGroups;
+    }
+
+	public static List<ProductFilterGroup> createSearchFilterGroups(NavigationModel navigationModel, CmsFilteringNavigator navigator){
+		List<ProductFilterGroup> productFilterGroups = new ArrayList<ProductFilterGroup>();
 		if (navigationModel.isProductListing()) {
-			list = createSearchFilterGroupsForProduct(navigationModel, navigator);
+		    productFilterGroups.addAll(createSearchFilterGroupsForProduct(navigationModel, navigator));
 		} else if (navigationModel.isRecipeListing()) {
-			list = createSearchFilterGroupsForRecipes(navigationModel, navigator);
+		    productFilterGroups.add(createSearchFilterGroupsForRecipes(navigationModel, navigator));
 		}
-		return list;
+		return productFilterGroups;
 	}
 
-	private static List<ProductFilterGroupI> createSearchFilterGroupsForRecipes(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
-		List<ProductFilterGroupI> results = new ArrayList<ProductFilterGroupI>();
+	private static ProductFilterGroup createSearchFilterGroupsForRecipes(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
 		List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
 		Map<String, DomainValue> domainValues = new HashMap<String, DomainValue>();
 		RecipeSearchPage recipeSearchPage = RecipeSearchPage.getDefault();
@@ -291,19 +348,18 @@ public class NavigationUtil {
 			DomainValue domainValue = domainValues.get(domainValueContentName);
 			productFilters.add(new ContentNodeFilter(domainValue, RECIPE_CATEGORY_FILTER_GROUP));
 		}
-		ProductFilterGroupImpl recipeCategoryFilterGroup = new ProductFilterGroupImpl();
+		ProductFilterGroup recipeCategoryFilterGroup = new ProductFilterGroup();
 		recipeCategoryFilterGroup.setProductFilters(productFilters);
 		recipeCategoryFilterGroup.setId(RECIPE_CATEGORY_FILTER_GROUP);
 		recipeCategoryFilterGroup.setName("Recipes");
 		recipeCategoryFilterGroup.setType("SINGLE");
 		recipeCategoryFilterGroup.setAllSelectedLabel("ALL RECIPES");
 		recipeCategoryFilterGroup.setDisplayOnCategoryListingPage(false);
-		results.add(recipeCategoryFilterGroup);
-		return results;
+		return recipeCategoryFilterGroup;
 	}
 
-	private static List<ProductFilterGroupI> createSearchFilterGroupsForProduct(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
-		List<ProductFilterGroupI> results = new ArrayList<ProductFilterGroupI>();
+	private static List<ProductFilterGroup> createSearchFilterGroupsForProduct(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
+		List<ProductFilterGroup> results = new ArrayList<ProductFilterGroup>();
 		List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
 
 		for (DepartmentModel departmentModel : navigationModel.getDepartmentsOfSearchResults().values()) {
@@ -311,7 +367,7 @@ public class NavigationUtil {
 			productFilters.add(new ContentNodeFilter(departmentModel, DEPARTMENT_FILTER_GROUP_ID));
 		}
 
-		ProductFilterGroupImpl departmentFilterGroup = new ProductFilterGroupImpl();
+		ProductFilterGroup departmentFilterGroup = new ProductFilterGroup();
 		departmentFilterGroup.setProductFilters(productFilters);
 		departmentFilterGroup.setId(DEPARTMENT_FILTER_GROUP_ID);
 		departmentFilterGroup.setName("DEPARTMENT");
@@ -331,7 +387,7 @@ public class NavigationUtil {
 				}
 			}
 
-			ProductFilterGroupImpl categoryFilterGroup = new ProductFilterGroupImpl();
+			ProductFilterGroup categoryFilterGroup = new ProductFilterGroup();
 			categoryFilterGroup.setProductFilters(productFilters);
 			categoryFilterGroup.setId(CATEGORY_FILTER_GROUP_ID);
 			categoryFilterGroup.setName("Category");
@@ -353,7 +409,7 @@ public class NavigationUtil {
 						productFilters.add(new ContentNodeFilter(subCategoryModel, SUBCATEGORY_FILTER_GROUP_ID));
 					}
 				}
-				ProductFilterGroupImpl subCategoryFilterGroup = new ProductFilterGroupImpl();
+				ProductFilterGroup subCategoryFilterGroup = new ProductFilterGroup();
 				subCategoryFilterGroup.setProductFilters(productFilters);
 				subCategoryFilterGroup.setId(SUBCATEGORY_FILTER_GROUP_ID);
 				subCategoryFilterGroup.setName("SubCategory");
@@ -367,53 +423,185 @@ public class NavigationUtil {
 				}
 			}
 		}
-		
-		productFilters = new ArrayList<ProductItemFilterI>();
+            List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(navigationModel.getBrandsOfSearchResults().values(), BRAND_FILTER_GROUP_ID);
+            results.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, false, false));
 
-		for (BrandModel brandModel : navigationModel.getBrandsOfSearchResults().values()) {
-			
-			productFilters.add(new BrandFilter(brandModel, BRAND_FILTER_GROUP_ID));
-		}
+        if (FilteringFlowType.SEARCH == navigator.getPageType() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
+            FDUserI user = navigationModel.getUser();
+            Collection<CategoryModel> categories = navigationModel.getCategoriesOfSearchResults().values();
+            results.addAll(createAggregatedFilterGroups(categories, user));
+            results.addAll(createAggregatedFilterMultiGroups(categories, navigator, user));
+            Collections.sort(results, SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME);
+        } else {
+            productFilters = new ArrayList<ProductItemFilterI>();
 
-		ProductFilterGroupImpl brandFilterGroup = new ProductFilterGroupImpl();
-		brandFilterGroup.setProductFilters(productFilters);
-		brandFilterGroup.setId(BRAND_FILTER_GROUP_ID);
-		brandFilterGroup.setName("Brand");
-		brandFilterGroup.setType("POPUP");
-		brandFilterGroup.setAllSelectedLabel("All Brands");
-		brandFilterGroup.setDisplayOnCategoryListingPage(false);
-		
-		results.add(brandFilterGroup);
-		
-		productFilters = new ArrayList<ProductItemFilterI>();
-		
-		for (String showMeOnlyItem : navigationModel.getShowMeOnlyOfSearchResults()) {
-			if (showMeOnlyItem.equals("new")) {
-				productFilters.add(new NewProductFilter("new", SHOW_ME_ONLY_FILTER_GROUP_ID, "New"));
-			}
-			if (showMeOnlyItem.equals("kosher")) {
-				productFilters.add(new KosherFilter("kosher", SHOW_ME_ONLY_FILTER_GROUP_ID, "Kosher"));
-			}
-			if (showMeOnlyItem.equals("onsale")) {
-				productFilters.add(new OnSaleFilter("onsale", SHOW_ME_ONLY_FILTER_GROUP_ID, "On Sale"));
-			}
-			if (showMeOnlyItem.equals("organic")) {
-				productFilters.add(new OrganicFilter("organic", SHOW_ME_ONLY_FILTER_GROUP_ID, "ORGANIC", "Organic, All Natural"));
-			}
-		}
-		
-		ProductFilterGroupImpl showMeOnlyFilterGroup = new ProductFilterGroupImpl();
-		showMeOnlyFilterGroup.setProductFilters(productFilters);
-		showMeOnlyFilterGroup.setId(SHOW_ME_ONLY_FILTER_GROUP_ID);
-		showMeOnlyFilterGroup.setName("SHOW ME ONLY");
-		showMeOnlyFilterGroup.setType("MULTI");
-		showMeOnlyFilterGroup.setDisplayOnCategoryListingPage(false);
-		
-		results.add(showMeOnlyFilterGroup);		
-		return results;
-	}
+            for (String showMeOnlyItem : navigationModel.getShowMeOnlyOfSearchResults()) {
+                if (showMeOnlyItem.equals("new")) {
+                    productFilters.add(new NewProductFilter("new", SHOW_ME_ONLY_FILTER_GROUP_ID, "New"));
+                }
+                if (showMeOnlyItem.equals("kosher")) {
+                    productFilters.add(new KosherFilter("kosher", SHOW_ME_ONLY_FILTER_GROUP_ID, "Kosher"));
+                }
+                if (showMeOnlyItem.equals("onsale")) {
+                    productFilters.add(new OnSaleFilter("onsale", SHOW_ME_ONLY_FILTER_GROUP_ID, "On Sale"));
+                }
+                if (showMeOnlyItem.equals("organic")) {
+                    productFilters.add(new OrganicFilter("organic", SHOW_ME_ONLY_FILTER_GROUP_ID, "ORGANIC", "Organic, All Natural"));
+                }
+            }
 
-	private static boolean isFilterActive(CmsFilteringNavigator navigator, ProductFilterGroupImpl productFilterGroup) {
+            ProductFilterGroup showMeOnlyFilterGroup = new ProductFilterGroup();
+            showMeOnlyFilterGroup.setProductFilters(productFilters);
+            showMeOnlyFilterGroup.setId(SHOW_ME_ONLY_FILTER_GROUP_ID);
+            showMeOnlyFilterGroup.setName("SHOW ME ONLY");
+            showMeOnlyFilterGroup.setType("MULTI");
+            showMeOnlyFilterGroup.setDisplayOnCategoryListingPage(false);
+
+            results.add(showMeOnlyFilterGroup);
+        }
+        return results;
+    }
+
+    private static List<ProductFilterGroup> createFilterGroups(ProductContainer productContainer, CmsFilteringNavigator navigator, FDUserI user, List<String> excludeFilterGroupNames) {
+        List<ProductFilterGroup> filterGroups = new ArrayList<ProductFilterGroup>();
+        for (ContentNodeModel item : productContainer.getProductFilterGroups()) {
+            if (item instanceof ProductFilterGroupModel) {
+                ProductFilterGroupModel model = (ProductFilterGroupModel) item;
+                if (!excludeProductFilterGroup(model, excludeFilterGroupNames)) {
+                    filterGroups.add(ProductItemFilterFactory.getInstance().getProductFilterGroup(model, user));
+                }
+            } else if (item instanceof ProductFilterMultiGroupModel) {
+                ProductFilterMultiGroupModel groupFilter = (ProductFilterMultiGroupModel) item;
+                // create a flat group hierarchy, create simple groups from the multigroups and create the x level for the selected multigroup filters (selectionMap)
+                Map<String, List<TagModel>> selection = collectMultigroupTags(productContainer, navigator);
+                filterGroups.addAll(ProductItemFilterFactory.getInstance().getProductFilterGroups(groupFilter, selection.get(item.getContentName())));
+            }
+        }
+        return filterGroups;
+    }
+
+    private static List<ProductFilterGroup> createAggregatedFilterGroups(Collection<? extends ProductContainer> productContainers, FDUserI user) {
+        List<ProductFilterGroup> filterGroups = new ArrayList<ProductFilterGroup>();
+
+        Map<String, List<ProductFilterGroupModel>> productFilterGroupByName = collectProductFilterGroupsByName(productContainers, user);
+        Set<ProductFilterModel> productFilterModels = collectProductFilterModels(productContainers, user);
+
+        for (Map.Entry<String, List<ProductFilterGroupModel>> entry : productFilterGroupByName.entrySet()) {
+            String filterGroupName = entry.getKey();
+            List<ProductFilterGroupModel> filterGroupModels = entry.getValue();
+
+            List<ProductItemFilterI> aggregatedItemFilters = new ArrayList<ProductItemFilterI>();
+            for (ProductFilterGroupModel filterGroupModel : filterGroupModels) {
+                for (ProductFilterModel filter : filterGroupModel.getProductFilterModels()) {
+                    if (productFilterModels.contains(filter)) {
+                        aggregatedItemFilters.add(ProductItemFilterFactory.getInstance().getProductFilter(filter, filterGroupName + FILTER_GROUP_ID, user));
+                        productFilterModels.remove(filter);
+                    }
+                }
+            }
+
+            if (!filterGroupModels.isEmpty() && !aggregatedItemFilters.isEmpty()) {
+                ProductFilterGroupModel firstFilterGroupModel = filterGroupModels.get(0);
+
+                boolean isSameType = true;
+                String type = firstFilterGroupModel.getType();
+                for (ProductFilterGroupModel filterGroupModel : filterGroupModels) {
+                    isSameType = filterGroupModel.getType().equals(type) && isSameType;
+                }
+
+                filterGroups.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(filterGroupName + FILTER_GROUP_ID, firstFilterGroupModel.getName(),
+                        (isSameType) ? firstFilterGroupModel.getType() : ProductFilterGroupType.MULTI.name(), firstFilterGroupModel.getAllSelectedLabel(), aggregatedItemFilters,
+                        firstFilterGroupModel.isDisplayOnCategoryListingPage(), false));
+            }
+        }
+        return filterGroups;
+    }
+
+    private static Set<ProductFilterGroup> createAggregatedFilterMultiGroups(Collection<? extends ProductContainer> productContainers, CmsFilteringNavigator navigator, FDUserI user) {
+        Set<ProductFilterGroup> filtersGroups = new HashSet<ProductFilterGroup>();
+        EnumServiceType serviceType = user.getSelectedServiceType();
+        EnumEStoreId eStoreId = user.getUserContext().getStoreContext().getEStoreId();
+        for (ProductContainer productContainer : productContainers) {
+            Map<String, List<TagModel>> selection = collectMultigroupTags(productContainer, navigator);
+            for (ContentNodeModel item : productContainer.getProductFilterGroups()) {
+                if (item instanceof ProductFilterMultiGroupModel) {
+                    ProductFilterMultiGroupModel groupFilter = (ProductFilterMultiGroupModel) item;
+                    if (!excludeProductFilterGroup(groupFilter, serviceType, eStoreId)) {
+                        filtersGroups.addAll(ProductItemFilterFactory.getInstance().getProductFilterGroups(groupFilter, selection.get(item.getContentName())));
+                    }
+                }
+            }
+        }
+        return filtersGroups;
+    }
+
+    private static Set<ProductFilterModel> collectProductFilterModels(Collection<? extends ProductContainer> productContainers, FDUserI user) {
+        Set<ProductFilterModel> productFilterModels = new HashSet<ProductFilterModel>();
+        EnumServiceType serviceType = user.getSelectedServiceType();
+        EnumEStoreId eStoreId = user.getUserContext().getStoreContext().getEStoreId();
+        for (ProductContainer container : productContainers) {
+            for (ContentNodeModel item : container.getProductFilterGroups()) {
+                if (item instanceof ProductFilterGroupModel) {
+                    ProductFilterGroupModel model = (ProductFilterGroupModel) item;
+                    if (!excludeProductFilterGroup(model, serviceType, eStoreId)) {
+                        productFilterModels.addAll(model.getProductFilterModels());
+                    }
+                }
+            }
+        }
+        return productFilterModels;
+    }
+
+    private static Map<String, List<ProductFilterGroupModel>> collectProductFilterGroupsByName(Collection<? extends ProductContainer> productContainers, FDUserI user) {
+        Map<String, List<ProductFilterGroupModel>> productFilterGroupByName = new HashMap<String, List<ProductFilterGroupModel>>();
+        EnumServiceType serviceType = user.getSelectedServiceType();
+        EnumEStoreId eStoreId = user.getUserContext().getStoreContext().getEStoreId();
+        for (ProductContainer container : productContainers) {
+            for (ContentNodeModel item : container.getProductFilterGroups()) {
+                if (item instanceof ProductFilterGroupModel) {
+                    ProductFilterGroupModel productFilterGroup = (ProductFilterGroupModel) item;
+                    if (!productFilterGroupByName.containsKey(productFilterGroup.getName())) {
+                        productFilterGroupByName.put(productFilterGroup.getName(), new ArrayList<ProductFilterGroupModel>());
+                    }
+                    List<ProductFilterGroupModel> productFilterGroups = productFilterGroupByName.get(productFilterGroup.getName());
+                    if (!excludeProductFilterGroup(productFilterGroup, serviceType, eStoreId)) {
+                        productFilterGroups.add(productFilterGroup);
+                    }
+                }
+            }
+        }
+        return productFilterGroupByName;
+    }
+
+    private static boolean excludeProductFilterGroup(ProductFilterGroupModel productFilterGroup, EnumServiceType serviceType, EnumEStoreId eStoreId) {
+        return excludeSearchProductFilterGroup(productFilterGroup.isExcludeResidentalSearch(), productFilterGroup.isExcludeCorporateSearch(),
+                productFilterGroup.isExcludeFoodKickSearch(), serviceType, eStoreId) || excludeProductFilterGroup(productFilterGroup, EXCLUDE_FILTER_GROUP_NAMES);
+    }
+
+    private static boolean excludeProductFilterGroup(ProductFilterMultiGroupModel productFilterGroup, EnumServiceType serviceType, EnumEStoreId eStoreId) {
+        return excludeSearchProductFilterGroup(productFilterGroup.isExcludeResidentalSearch(), productFilterGroup.isExcludeCorporateSearch(),
+                productFilterGroup.isExcludeFoodKickSearch(), serviceType, eStoreId);
+    }
+
+    private static boolean excludeProductFilterGroup(ProductFilterGroupModel productFilterGroup, List<String> excludeFilterGroupNames) {
+        return excludeFilterGroupNames != null && excludeFilterGroupNames.contains(productFilterGroup.getName());
+    }
+
+    private static boolean excludeSearchProductFilterGroup(boolean isExcludeCorporateSearch,boolean isExcludeResidentalSearch,boolean isExcludeFoodKickSearch, EnumServiceType serviceType, EnumEStoreId eStoreId) {
+        boolean exclude = false;
+        switch (eStoreId) {
+            case FD:
+                exclude = (EnumServiceType.CORPORATE==serviceType) ? isExcludeCorporateSearch : isExcludeResidentalSearch; 
+                break;
+
+            case FDX:
+                exclude = isExcludeFoodKickSearch; 
+                break;
+        }
+        return exclude;
+    }
+
+	private static boolean isFilterActive(CmsFilteringNavigator navigator, ProductFilterGroup productFilterGroup) {
 		if (navigator.getRequestFilterParams().get(productFilterGroup.getId()) != null &&
 				!navigator.getRequestFilterParams().get(productFilterGroup.getId()).contains("clearall")) {
 			return true;
@@ -428,11 +616,11 @@ public class NavigationUtil {
 	 * @return
 	 * select active filters
 	 */
-	public static Set<ProductItemFilterI> selectActiveFilters(List<ProductFilterGroupI> filterGroups, CmsFilteringNavigator navigator){
+	public static Set<ProductItemFilterI> selectActiveFilters(List<ProductFilterGroup> filterGroups, CmsFilteringNavigator navigator){
 		
 		Set<ProductItemFilterI> activeFilters = new HashSet<ProductItemFilterI>();
 		
-		for (ProductFilterGroupI filterGroup : filterGroups){
+		for (ProductFilterGroup filterGroup : filterGroups){
 
 			List<String> selectedFilterIds = navigator.getRequestFilterParams().get(filterGroup.getId());
 			

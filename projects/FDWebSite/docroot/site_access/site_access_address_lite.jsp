@@ -31,7 +31,7 @@
 			//phew finally complete
 			System.out.println("Did not come here  on site_access_address_lite.jsp?====================================================================================");
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
 			<script language="javascript">				
 				//	alert('in site_access_address_lite.jsp');
 				  //  if (top === window) {

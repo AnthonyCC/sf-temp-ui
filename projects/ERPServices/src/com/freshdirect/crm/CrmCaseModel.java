@@ -12,6 +12,11 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public class CrmCaseModel extends ModelSupport implements CrmCaseI {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1542930905263352742L;
+
 	private CrmCaseInfo caseInfo;
 
 	/** List of CrmCaseAction */
@@ -251,11 +256,11 @@ public class CrmCaseModel extends ModelSupport implements CrmCaseI {
 
 	
 
-	public List getCartonNumbers() {
+	public List<String> getCartonNumbers() {
 		return this.caseInfo.getCartonNumbers();
 	}
 
-	public void setCartonNumbers(List cartons) {
+	public void setCartonNumbers(List<String> cartons) {
 		this.caseInfo.setCartonNumbers(cartons);
 	}
 	

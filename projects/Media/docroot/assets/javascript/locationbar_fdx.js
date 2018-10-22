@@ -161,7 +161,8 @@ if ($jq.ui) { /* requires jquery ui */
 						} else if (data.submitForm.result.redirectUrl){
 							window.location = data.submitForm.result.redirectUrl;
 						} else { //just reload the page
-							window.location.reload();
+							 //bug fix for location bar change of address for time slot reservation.
+							window.location=window.location;
 						}
 						
 					},
@@ -449,11 +450,19 @@ $jq('#locabar_user_trigger').on('blur mouseleave', function(event) {
 	$jq('.locabar-user-section').css('background-color', COLOR_NONSELECTED);
 });
 
-$jq('#locabar_popupcart_trigger').on('focus mouseover', function(event) {
+$jq('#locabar_popupcart_trigger').on('mouseover', function(event) {
 	$jq('.locabar-popupcart-section').css('background-color', COLOR_SELECTED);
 });
 
-$jq('#locabar_popupcart_trigger').on('blur mouseleave', function(event) {
+$jq('#popup_cart').on('focus', function(event) {
+	$jq('.locabar-popupcart-section').css('background-color', COLOR_SELECTED);
+});
+
+$jq('#popup_cart').on('blur', function(event) {
+	$jq('.locabar-popupcart-section').css('background-color', COLOR_NONSELECTED);
+});
+
+$jq('#locabar_popupcart_trigger').on('mouseleave', function(event) {
 	$jq('.locabar-popupcart-section').css('background-color', COLOR_NONSELECTED);
 });
 

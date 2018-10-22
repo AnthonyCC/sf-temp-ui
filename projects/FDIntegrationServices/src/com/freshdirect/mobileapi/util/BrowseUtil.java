@@ -100,7 +100,7 @@ import com.freshdirect.storeapi.content.EnumLayoutType;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductFilterGroupI;
+import com.freshdirect.storeapi.content.ProductFilterGroup;
 import com.freshdirect.storeapi.content.ProductFilterGroupModel;
 import com.freshdirect.storeapi.content.ProductFilterModel;
 import com.freshdirect.storeapi.content.ProductFilterMultiGroupModel;
@@ -745,11 +745,11 @@ public class BrowseUtil {
     				List<TagModel> rootChildren = rootTag.getChildren();
     				if(rootChildren != null && rootChildren.size() > 0){
 
-						List<ProductFilterGroupI> pfglist = ProductItemFilterFactory.getInstance().getProductFilterGroups((ProductFilterMultiGroupModel)group, rootChildren);
+						List<ProductFilterGroup> pfglist = ProductItemFilterFactory.getInstance().getProductFilterGroups((ProductFilterMultiGroupModel)group, rootChildren);
 
 						if(pfglist != null & pfglist.size() > 0){
 
-							for(ProductFilterGroupI filterGroup : pfglist){
+							for(ProductFilterGroup filterGroup : pfglist){
 								List<ProductItemFilterI> filterItemList = filterGroup.getProductFilters();
 								if(filterItemList != null && filterItemList.size() > 0){
 									for(ProductItemFilterI itemFilter : filterItemList){

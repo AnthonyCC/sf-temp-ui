@@ -1044,6 +1044,9 @@ public final class AttributeLabels {
             put("MULTI", "Multi-select (additive)");
         }});
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.productFilters), "Product Filters");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.excludeResidentalSearch), "Exclude Residental Search");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.excludeCorporateSearch), "Exclude Corporate Search");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.excludeFoodKickSearch), "Exclude FoodKick Search");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilter, ContentTypes.ProductFilter.name), "Name");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilter, ContentTypes.ProductFilter.invert), "Invert");
@@ -1096,6 +1099,9 @@ public final class AttributeLabels {
             put("POPUP", "Popup");
         }});
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.rootTag), "Root Tag");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.excludeResidentalSearch), "Exclude Residental Search");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.excludeCorporateSearch), "Exclude Corporate Search");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.excludeFoodKickSearch), "Exclude FoodKick Search");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.SortOption, ContentTypes.SortOption.label), "Label");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.SortOption, ContentTypes.SortOption.selectedLabel), "Selected Label");

@@ -81,15 +81,14 @@ public class BrowseDataBuilderFactory {
 	private static final String BANNER_LOCATION_DEFAULT = "TOP";
 	private static final String CAROUSEL_POSITION_DEFAULT = "BOTTOM";
 
-	private static BrowseDataBuilderFactory factory;
+	private static final BrowseDataBuilderFactory INSTANCE = new BrowseDataBuilderFactory();
 
-	public static BrowseDataBuilderFactory getInstance(){
-		if(factory==null){
-			factory = new BrowseDataBuilderFactory();
-		}
+    public static BrowseDataBuilderFactory getInstance() {
+        return INSTANCE;
+    }
 
-		return factory;
-	}
+    private BrowseDataBuilderFactory() {
+    }
 
 	public static BrowseDataBuilderI createBuilder(NavDepth navDepth, boolean hasSuperDeparment, SearchPageType searchPageType){
 

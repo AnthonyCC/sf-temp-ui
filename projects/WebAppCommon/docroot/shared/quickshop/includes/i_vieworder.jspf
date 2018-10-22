@@ -275,7 +275,8 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
     List<SkuModel> skus = new ArrayList<SkuModel>();
     {
         List<String> skuSet = new ArrayList<String>();
-        for (int i=0; i<__qc.numberOfProducts(); i++) {                skuSet.add( __qc.getProduct(i).getSkuCode() );     
+        for (int i=0; i<__qc.numberOfProducts(); i++) {    
+            skuSet.add( __qc.getProduct(i).getSkuCode() );     
         }
         for (String skuCode : skuSet) {
             try {

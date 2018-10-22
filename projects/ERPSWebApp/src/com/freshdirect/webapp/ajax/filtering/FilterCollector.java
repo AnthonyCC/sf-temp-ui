@@ -23,6 +23,7 @@ import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.storeapi.util.ProductInfoUtil;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 
 public class FilterCollector {
@@ -30,22 +31,18 @@ public class FilterCollector {
 
 	private static final int NON_KOSHER_PRI = 999;
 
-	private boolean showMeOnlyNewDisabled;
-
 	private FilterCollector() {}
 
-	public static FilterCollector defaultFilterCollector(boolean showMeOnlyNewDisabled) {
-		INSTANCE.showMeOnlyNewDisabled = showMeOnlyNewDisabled;
+	public static FilterCollector defaultFilterCollector() {
 		return INSTANCE;
 	}
 
-	public void collectBrandAndShowMeOnlyFilters(NavigationModel navigationModel, ProductModel product)
+	public void collectShowMeOnlyFilters(NavigationModel navigationModel, ProductModel product, FilteringFlowType pageType)
 			throws FDResourceException, FDSkuNotFoundException {
-		collectBrandFilters(navigationModel, product);
 		Set<String> showMeOnlyOfSearchResults = navigationModel.getShowMeOnlyOfSearchResults();
-		if (!showMeOnlyOfSearchResults.contains("new")) {
-			collectShowMeOnlyNewFilter(product, showMeOnlyOfSearchResults);
-		}
+        if (!showMeOnlyOfSearchResults.contains("new")) {
+            collectShowMeOnlyNewFilter(showMeOnlyOfSearchResults, product, pageType);
+        }
 		// if "kosher", "organic" and "sale" are in the result already,
 		// we don't need to do additional check
 		if (showMeOnlyOfSearchResults.contains("kosher") && showMeOnlyOfSearchResults.contains("organic")
@@ -91,15 +88,7 @@ public class FilterCollector {
 		}
 	}
 
-	public boolean isShowMeOnlyNewDisabled() {
-		return showMeOnlyNewDisabled;
-	}
-
-	public void setShowMeOnlyNewDisabled(boolean showMeOnlyNewDisabled) {
-		this.showMeOnlyNewDisabled = showMeOnlyNewDisabled;
-	}
-
-	private void collectBrandFilters(NavigationModel navigationModel, ProductModel product) {
+	public void collectBrandFilters(NavigationModel navigationModel, ProductModel product) {
 		for (BrandModel brandModel : product.getBrands()) {
 			navigationModel.getBrandsOfSearchResults().put(brandModel.getContentName(), brandModel);
 		}
@@ -139,11 +128,11 @@ public class FilterCollector {
 		}
 	}
 
-	private void collectShowMeOnlyNewFilter(ProductModel product, Set<String> showMeOnlyOfSearchResults) {
-		if (!showMeOnlyNewDisabled && product.isNew()) {
-			showMeOnlyOfSearchResults.add("new");
-		}
-	}
+    private void collectShowMeOnlyNewFilter(Set<String> showMeOnlyOfSearchResults, ProductModel product, FilteringFlowType pageType) {
+        if (product.isNew() && !FilteringFlowType.NEWPRODUCTS.equals(pageType)) {
+            showMeOnlyOfSearchResults.add("new");
+        }
+    }
 
 	private void collectShowMeOnlyOnSaleFilter(ProductModel product, Set<String> showMeOnlyOfSearchResults) {
 		final PriceCalculator pricing = product.getPriceCalculator(ContentFactory.getInstance().getCurrentUserContext().getPricingContext());

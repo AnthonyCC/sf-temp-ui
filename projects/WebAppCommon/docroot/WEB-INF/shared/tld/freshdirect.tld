@@ -5239,14 +5239,6 @@
 		</attribute>
 		<bodycontent>empty</bodycontent>	
 	</tag>
-
-	<tag>
-		<name>SelfCreditCronTag</name>
-		<body-content>empty</body-content>
-		<tagclass>com.freshdirect.webapp.taglib.selfcredit.SelfCreditCronTag</tagclass>
-		<info></info>
-	</tag>
-
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/tags/common/metatags.tag</path>

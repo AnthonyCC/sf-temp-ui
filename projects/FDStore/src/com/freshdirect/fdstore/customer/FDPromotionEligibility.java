@@ -101,6 +101,15 @@ public class FDPromotionEligibility implements Serializable {
 		return s;
 	}
 
+	/** @return Set of String (promotionCode) */
+	public Set<String> getWaiveChargeTypePromotionCodes() {
+		Set<String> s = PromotionFactory.getInstance().getWaiveChargeTypePromotionCodes();
+		s.retainAll(this.eligibilePromos);
+		return s;
+	}
+
+	
+	
 	public boolean isEligibleForType(EnumPromotionType type) {
 		return this.getEligiblePromotionCodes(type).size() > 0;
 	}

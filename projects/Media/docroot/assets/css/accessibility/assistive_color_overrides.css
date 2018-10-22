@@ -464,7 +464,7 @@
 .assistive-mode #locabar_addresses{
 	background-color:#fff !important;
 }
-.assistive-mode :not(.cssbutton).orange{
+.assistive-mode *:not(.cssbutton).orange{
 	color: #AF3D08 !important;
 }
 .assistive-mode .unrecognized.error-message span.orange{
@@ -644,7 +644,12 @@
 .assistive-mode .pdp-atc #pdp-atc-addtolist,
 .assistive-mode #customizePopup .buttons .addtolist,
 .assistive-mode .pdp .pdp-atc .subtotal a,
-.assistive-mode .dpn-footer-no a{
+.assistive-mode .dpn-footer-no a,
+.assistive-mode .mm-page .dpn-footer-no-logged a,
+.assistive-mode .mm-page .dpn-footer-no a, 
+.assistive-mode .mm-page-overlay .dpn-footer-no a, 
+.assistive-mode .mm-page .dpn-footer-no-logged a, 
+.assistive-mode .mm-page-overlay .dpn-footer-no-logged a{
 	color:#5d5f36 !important;
 }
 .assistive-mode .dpn-center-header{
@@ -746,7 +751,7 @@
 {
 	color:#333 !important;
 }
-.assistive-mode #topSearchField{
+.assistive-mode:not([data-ismobweb="true"]) #topSearchField{
 	background-color: #fff;
 	border: 2px solid #999; 
 	height:30px !important;
@@ -818,7 +823,7 @@
 .assistive-mode div#subtotalbox1 a,
 .assistive-mode div#subtotalbox2 a{
 	color: #5d5f36;
-	text-decoration:none;
+	text-decoration:underline;
 }
 
 .assistive-mode .subtotal__row .free-link:hover,
@@ -972,7 +977,9 @@ color: #B93D3F;
 .assistive-mode input[type="text"], 
 .assistive-mode input[type="email"], 
 .assistive-mode input[type="password"],
-.assistive-mode section.main .breadcrumbs{
+.assistive-mode section.main .breadcrumbs,
+.assistive-mode section.main .breadcrumbs li a,
+.assistive-mode  section.main .breadcrumbs li a:link{
 	color:#333;
 }
 .assistive-mode .nav li{
@@ -983,4 +990,38 @@ color: #B93D3F;
 }
 .assistive-mode .nav li:hover{
 	background-color:#098A1E;
+}
+.assistive-mode a.free-link{
+	color:#333;
+	text-decoration:underline;
+}
+.assistive-mode #addpaymentmethod_masterpass a{
+	color:#333;
+	text-decoration:underline;
+}
+.assistive-mode .fdCoupon_msg{
+	color:#333;
+}
+.assistive-mode [data-boxid="automaticheaderdiscount"] .subtotal__rowcell-mid,
+.assistive-mode [data-boxid="redemptionPromo"] .subtotal__rowcell-mid,
+.assistive-mode [data-boxid="freefood"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="discount"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="redemptionfailure"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="giftcardbalance"] .subtotal__rowcell-mid, 
+.assistive-mode [data-boxid="credits"] .subtotal__rowcell-mid{
+	    color: #5d5f36;
+}
+.assistive-mode .fdselect .sortSelectButton{
+	background-color:#757575;
+}
+.assistive-mode .popupcontentghost > .selectButton, 
+.assistive-mode select.selected + .fdselect > .selectButton{
+	background-color:#098A1E !important;
+}
+.assistive-mode #addaddresspopup [data-show="addaddress_home"] #addaddress_home_label, 
+.assistive-mode #addaddresspopup [data-show="addaddress_office"] #addaddress_office_label,
+.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_creditcard"] label[for="addpaymentmethod_creditcard_selector"], 
+.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_bank"] label[for="addpaymentmethod_bank_selector"], 
+.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_ebt"] label[for="addpaymentmethod_ebt_selector"]{
+	color:#096D19;
 }

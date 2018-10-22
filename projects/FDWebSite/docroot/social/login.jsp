@@ -93,7 +93,7 @@
 							</div>
 							<div class="social-login-spinner hidden">
 								<img src="/media_stat/images/navigation/spinner.gif"
-									class="fleft" />
+									alt="spinner" class="fleft" />
 							</div>
 							<table border="0" cellpadding="5" cellspacing="8">
 								<tr>

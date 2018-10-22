@@ -8,7 +8,9 @@ import com.freshdirect.cms.core.domain.ContentKey;
 
 public class ProductFilterGroupModel extends ContentNodeModelImpl {
 
-	private List<ProductFilterModel> productFilters = new ArrayList<ProductFilterModel>();
+    private static final long serialVersionUID = 6029343728537326271L;
+
+    private List<ProductFilterModel> productFilters = new ArrayList<ProductFilterModel>();
 
     public ProductFilterGroupModel(ContentKey key) {
         super(key);
@@ -31,7 +33,19 @@ public class ProductFilterGroupModel extends ContentNodeModelImpl {
 		return (String) getCmsAttributeValue("allSelectedLabel");
 	}
 
-	public boolean isDisplayOnCategoryListingPage(){
-		return getAttribute("displayOnCategoryListingPage", false);
-	}
+    public boolean isDisplayOnCategoryListingPage() {
+        return getAttribute("displayOnCategoryListingPage", false);
+    }
+
+    public boolean isExcludeResidentalSearch() {
+        return getAttribute("excludeResidentalSearch", false);
+    }
+
+    public boolean isExcludeCorporateSearch() {
+        return getAttribute("excludeCorporateSearch", false);
+    }
+
+    public boolean isExcludeFoodKickSearch() {
+        return getAttribute("excludeFoodKickSearch", false);
+    }
 }

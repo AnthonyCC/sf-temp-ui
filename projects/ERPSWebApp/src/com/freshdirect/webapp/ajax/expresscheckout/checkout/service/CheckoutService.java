@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
@@ -18,7 +19,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
@@ -57,6 +57,7 @@ import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
@@ -102,11 +103,11 @@ public class CheckoutService {
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
-            
+
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null || !atpFailureData.getPasses().isEmpty()) {
                 unavailabilityData = atpFailureData;
             }
-            else {    
+            else {
             	if(FDStoreProperties.getAvalaraTaxEnabled()){
             	getAvalaraTax(cart);
             	}
@@ -120,7 +121,7 @@ public class CheckoutService {
 		avalaraContext.setCommit(false);
 		avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
 	}
-	
+
     public boolean checkAtpCheckEligibleByRestrictions(FormRestriction restriction) {
         return restriction == null || restriction.isPassed();
     }
@@ -130,18 +131,17 @@ public class CheckoutService {
 	}
 
 	public FormDataResponse submitOrder(final FDUserI user, FormDataRequest requestData, final HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		FDSessionUser sessionUser = (FDSessionUser) user;
+        FDSessionUser sessionUser = (FDSessionUser) user;
 		FormDataResponse responseData = createResponseData(requestData);
 		String actionName = FormDataService.defaultService().get(requestData, "action");
 		String deviceId = FormDataService.defaultService().get(requestData, "ppDeviceId");
         String billingReference = FormDataService.defaultService().get(requestData, "billingReference");
-        session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
         session.setAttribute(SessionName.PAYPAL_DEVICE_ID, deviceId);
 		boolean checkoutPageReloadNeeded = false;
 		FormRestriction restriction = null;
 		UnavailabilityData atpFailureData = null;
 		FormRestriction checkPlaceOrderResult = null;
-		ActionResult actionResult = new ActionResult();
+        ActionResult actionResult = new ActionResult();
 		boolean dlvPassCart = null !=FormDataService.defaultService().getBoolean(requestData, "dlvPassCart") ? FormDataService.defaultService().getBoolean(requestData, "dlvPassCart"): false;
 		FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
 		//FDCartModel cart = user.getShoppingCart();
@@ -168,6 +168,21 @@ public class CheckoutService {
 				}
 			}
 		}
+
+        if (user.isCorporateUser()) {
+            // billing reference is optional
+            if (StringUtils.isNotBlank(billingReference)) {
+                // validate billing reference
+                if (billingReference.length() <= 25) {
+                    session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
+                } else {
+                    actionResult.addError(true, "billingReference", SystemMessageList.MSG_CHECKOUT_BILLING_REF_TOO_LARGE);
+                }
+            } else {
+                session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
+            }
+        }
+
 		List<ValidationError> checkEbtAddressPaymentSelectionError = DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByZipCode(user, cart.getDeliveryAddress().getZipCode());
         DeliveryAddressManipulator.checkAddressRestriction(false, actionResult, cart.getDeliveryAddress());
         if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty() && actionResult.isSuccess()) {
@@ -197,7 +212,7 @@ public class CheckoutService {
 									session.removeAttribute( "makeGoodOrder" );
 									session.removeAttribute( "referencedOrder" );
 									session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
-									
+
 									if (masqueradeContext!=null){
 										masqueradeContext.clearMakeGoodContext();
 									}
@@ -227,14 +242,14 @@ public class CheckoutService {
 					String orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
                     responseData.getSubmitForm().getResult().put(SinglePageCheckoutFacade.REDIRECT_URL_JSON_KEY, "/expressco/success.jsp?orderId=" + orderId);
 					responseData.getSubmitForm().setSuccess(true);
-					
+
 					// Remove the EWallet Payment MEthod ID from session
 					if(session.getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
 						session.removeAttribute(EWALLET_SESSION_ATTRIBUTE_NAME);
 					}if(session.getAttribute(WALLET_SESSION_CARD_ID) != null){
 						session.removeAttribute(WALLET_SESSION_CARD_ID);
 					}
-					
+
 					session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
                     session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
                     session.setAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL, true);
@@ -249,10 +264,10 @@ public class CheckoutService {
 		}
 		if (checkoutPageReloadNeeded) {
 			SinglePageCheckoutData checkoutData = SinglePageCheckoutFacade.defaultFacade().load(user, request);
-			
+
 			removeOlderEwalletPaymentMethod(checkoutData.getPayment(),request);
 			checkEWalletCard(checkoutData.getPayment(),request);
-			
+
             checkoutData.setAtpFailure(atpFailureData);
 			if (checkPlaceOrderResult != null && !checkPlaceOrderResult.isPassed()) {
 				checkoutData.setRestriction(checkPlaceOrderResult);
@@ -289,7 +304,7 @@ public class CheckoutService {
 		responseData.setValidationResult(validationResult);
 		return responseData;
 	}
-	
+
 		/**
 		 * @param txNotifyModel
 		 */
@@ -297,7 +312,7 @@ public class CheckoutService {
 	    	FDCustomerManager.updateEWalletTxnNotify(txNotifyModel);
 	    }
 			*/
-	
+
 	/**
 	 * @param formpaymentData
 	 * @param request

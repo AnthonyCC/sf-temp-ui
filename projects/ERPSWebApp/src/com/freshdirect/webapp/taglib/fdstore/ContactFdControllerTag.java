@@ -187,7 +187,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards"),
 			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),
-			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
+			/*new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),*/
 			new Selection(CrmCaseSubject.CODE_PROMOTION, "Promotion"),
 			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Web Site/Technical")
 		};

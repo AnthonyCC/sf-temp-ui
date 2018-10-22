@@ -24,7 +24,12 @@ import com.freshdirect.framework.core.PrimaryKey;
  */
 public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     
-    private final PropertyChangeSupport change = new PropertyChangeSupport(this);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7559951530901887161L;
+
+	private final PropertyChangeSupport change = new PropertyChangeSupport(this);
     
     /** Holds value of property assignedAgentPK. */
     private PrimaryKey assignedAgentPK;
@@ -92,7 +97,7 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     private String customerTone;
 
     // holds assigned carton numbers (missing, misloaded, etc)
-    private List cartonNumbers;
+    private List<String> cartonNumbers;
     
     private boolean isPrivateCase;
     
@@ -437,7 +442,7 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	
 
 	// List<String>
-	public List getCartonNumbers() {
+	public List<String> getCartonNumbers() {
 		return this.cartonNumbers == null ? Collections.EMPTY_LIST : this.cartonNumbers;
 	}
 

@@ -723,6 +723,8 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 			return Double.parseDouble((String.valueOf(rhs)));
 		} else if (java.lang.Float.class.isAssignableFrom(valueType)) {
 			return Float.parseFloat(String.valueOf(rhs));
+		} else if (java.lang.Integer.class.isAssignableFrom(valueType)) {
+			return Integer.parseInt(String.valueOf(rhs));
 		} else if (boolean.class.isAssignableFrom(valueType) || java.lang.Boolean.class.isAssignableFrom(valueType)) {
 			return Boolean.parseBoolean(String.valueOf(rhs));
 		} else {

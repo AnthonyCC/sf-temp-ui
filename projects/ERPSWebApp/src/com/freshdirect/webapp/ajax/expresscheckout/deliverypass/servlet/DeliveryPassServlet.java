@@ -55,9 +55,12 @@ public class DeliveryPassServlet extends BaseJsonServlet {
 		try {
 			if (null != user && null != user.getIdentity() && user.getLevel() == FDUserI.SIGNED_IN) {
 				String actionName = request.getParameter("action");
-				if (null != user.getDlvPassInfo() && EnumDlvPassStatus.ACTIVE.equals(user.getDlvPassInfo().getStatus())) {
-					if (actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON") || actionName.equalsIgnoreCase("FLIP_AUTORENEW_OFF")) {
-						boolean autoRenewDpON = actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON") ? true: false;
+				if (null != user.getDlvPassInfo() && (EnumDlvPassStatus.ACTIVE.equals(user.getDlvPassInfo().getStatus())
+						|| EnumDlvPassStatus.PENDING.equals(user.getDlvPassInfo().getStatus())
+						|| EnumDlvPassStatus.READY_TO_USE.equals(user.getDlvPassInfo().getStatus()))) {
+					if (actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON")
+							|| actionName.equalsIgnoreCase("FLIP_AUTORENEW_OFF")) {
+						boolean autoRenewDpON = actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON") ? true : false;
 						FDIdentity identity = user.getIdentity();
 						String dpType = user.getDlvPassInfo().getAutoRenewDPType().getAutoRenewalSKU();
 						if (null != dpType) {

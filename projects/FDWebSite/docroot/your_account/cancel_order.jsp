@@ -40,9 +40,9 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Cancel Order"/>
   </tmpl:put>
-  <temp:put name="extraCss" direct="true">
+  <tmpl:put name="extraCss" direct="true">
 	<jwr:style src="/your_account.css" media="all"/>
-  </temp:put>
+  </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Cancel Order</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
     	<%=mobWeb?"<br>": "" %>

@@ -774,7 +774,7 @@ public class FDStoreProperties {
 
     // Set soft captcha is allowed
     private final static String PROP_CAPTCHA_MANDATORY = "fdstore.recaptcha.mandatory.";
-    
+
     // Limiting the quicksearch results in mobile
     private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
 
@@ -934,6 +934,10 @@ public class FDStoreProperties {
     private static final String PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.current.customer.carousel.site.features";
     private static final String PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER = "fdstore.checkout.cos.customer.display.delivery.fee";
 
+    private static final String PROP_FK_VIEWCART_PAGE_NEW_CUSTOMER_SITE_FEATURES = "fkstore.viewcart.new.customer.carousel.site.features";
+    private static final String PROP_FK_VIEWCART_PAGE_CURRENT_CUSTOMER_SITE_FEATURES = "fkstore.viewcart.current.customer.carousel.site.features";
+    private static final String PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT = "fkstore.viewcart.recommendation.limit";
+
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
 
@@ -1078,7 +1082,7 @@ public class FDStoreProperties {
     private static final String PROP_BKOFFICE_SELF_CREDIT_URL = "fdstore.bkoffice.selfcredit.url";
     private static final String PROP_BKOFFICE_COMPLAINT_REASONS_URL = "fdstore.bkoffice.complaint.reasons.url";
 
-	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled"; 
+	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled";
 
 	private static final String PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO = "fdstore.refresh.lookbackSecs.productInfo";
 	private static final String PROP_BACK_OFFICE_API_URL = "fdstore.backoffice.url";
@@ -1086,19 +1090,19 @@ public class FDStoreProperties {
     private static final String PROP_BACK_OFFICE_CONNECTION_TIMEOUT = "fdstore.backoffice.conn.timeout";
     private static final String PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.backoffice.conn.request.timeout";
     private static final String PROP_BACK_OFFICE_CONN_READ_TIMEOUT = "fdstore.backoffice.conn.read.timeout";
-    
+
     private static final String PROP_BKOFFICE_CARTON_INFO_URL = "fdstore.bkoffice.cartoninfo.url";
     private static final String PROP_ORDER_COMPLAINT_DROPDOWN_LIMIT = "fdstore.order.complaint.dropdown.limit";
 
     private static final String PROP_SECTION_PRODUCT_LIMIT_MINIMUM_DEFAULT = "fdstore.section.product.limit.minimum.default";
     private static final String PROP_SECTION_PRODUCT_LIMIT_MAXIMUM_DEFAULT = "fdstore.section.product.limit.maximum.default";
-    
+
 	public static final String PROP_FD_DEFAULT_BILLING_STREET = "fdstore.default.billing.street";
 	public static final String PROP_FD_DEFAULT_BILLING_TOWN = "fdstore.default.billing.town";
 	public static final String PROP_FD_DEFAULT_BILLING_POSTALCODE = "fdstore.default.billing.postalCode";
 	public static final String PROP_FD_DEFAULT_BILLING_STATE = "fdstore.default.billing.state";
 	public static final String PROP_FD_DEFAULT_BILLING_COUNTRY = "fdstore.default.billing.country";
-	
+
 	//APPDEV-7480
     private static final String PROP_JAVASCRIPT_FIRST_ENABLED = "fdstore.javascript.first.enabled";
 
@@ -1550,7 +1554,7 @@ public class FDStoreProperties {
         defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
         defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 
-        defaults.put(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
+        defaults.put(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "5");
 
@@ -1729,7 +1733,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
-        
+
         defaults.put("feature.rollout.productCard2018", "GLOBAL:ENABLED,false;");
 
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
@@ -1807,7 +1811,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_MAX_INVALID_SIGN_UP_ATTEMPT, "1");
         defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "1");
         defaults.put(PROP_CAPTCHA_MANDATORY + CaptchaType.PAYMENT + ".web", "true");
-        
+
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 
         defaults.put(SUB_DOMAIN, "");
@@ -2097,7 +2101,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BACK_OFFICE_CONNECTION_POOL, 5);
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
-        
+
         defaults.put(PROP_BKOFFICE_CARTON_INFO_URL, "/FDService/service/V0/arecartonsdelivered");
 
         defaults.put(PROP_ORDER_COMPLAINT_DROPDOWN_LIMIT, "5");
@@ -2114,9 +2118,11 @@ public class FDStoreProperties {
 
         //APPDEV-7480
         defaults.put(PROP_JAVASCRIPT_FIRST_ENABLED, "false");
-        
+
         defaults.put(PROP_BACK_OFFICE_API_URL, "http://bsl.stdev14.nj01");
-        
+
+        defaults.put(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT, "12");
+
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
      		if(hostName!=null && hostName.indexOf(".")!=-1) {
@@ -3917,9 +3923,9 @@ public class FDStoreProperties {
 
     public static Date getDlvPassNewTCDate() {
         Date date = null;
-        
+
         SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyy-MM-dd");
-                
+
         try {
             date = simpleFormatter.parse(get(DLV_PASS_NEW_TC_DATE));
         } catch (ParseException e) {
@@ -4548,7 +4554,7 @@ public class FDStoreProperties {
     public static boolean isAtpAvailabiltyLogEnabled() {
         return (Boolean.valueOf(get(PROP_ATP_AVAILABILTY_LOG_ENABLED))).booleanValue();
     }
-    
+
     public static String getCSContactDaysFDX() {
         return get(CUST_SERV_HOURS_DAYS_FDX);
     }
@@ -4932,11 +4938,11 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && 
+        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() &&
         		FDEcommProperties.isServiceEnabled(beanName)) &&
         		!isInEjbScope();
     }
-
+    
     public static boolean isMealBundleCartonLinkEnabled() {
         return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
     }
@@ -5327,11 +5333,11 @@ public class FDStoreProperties {
 	public static String getMidWeekSixMonthDeliveryPassSku() {
 		return get(PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU);
 	}
-	
+
 	 public static String getBackOfficeApiUrl() {
         return get(PROP_BACK_OFFICE_API_URL);
     }
-	 
+
 	 public static int getBackOfficeConnectionPool() {
 	        try {
 	            return Integer.parseInt(get(PROP_BACK_OFFICE_CONNECTION_POOL));
@@ -5353,7 +5359,7 @@ public class FDStoreProperties {
 	            return 60;
 	        }
 	    }
-	 
+
 	 public static int getBackOfficeConnectionReadTimeout() {
 	        try {
 	            return Integer.parseInt(get(PROP_BACK_OFFICE_CONN_READ_TIMEOUT));
@@ -5397,7 +5403,7 @@ public class FDStoreProperties {
 	public static String getFdDefaultBillingCountry() {
 		return get(PROP_FD_DEFAULT_BILLING_COUNTRY);
 	}
-	
+
 	public static boolean isJavascriptFirstEnabled() {
 		return (Boolean.valueOf(get(PROP_JAVASCRIPT_FIRST_ENABLED))).booleanValue();
 	}
@@ -5406,7 +5412,7 @@ public class FDStoreProperties {
 		long tid = Thread.currentThread().getId();
 		return METHODS_IN_EJB_SCOPE.get(tid) != null && METHODS_IN_EJB_SCOPE.get(tid) > 0;
 	}
-	
+
 	public static void setInEjbScrope(boolean isInEjbScope) {
 		long tid = Thread.currentThread().getId();
 		if (isInEjbScope) {
@@ -5427,4 +5433,36 @@ public class FDStoreProperties {
 			}
 		}
 	}
+
+	public static List<String> getSiteFeatureListOnFoodKickViewCartPageForNewCustomers() {
+        List<String> result = new ArrayList<String>();
+
+        String propertyValue = get(PROP_FK_VIEWCART_PAGE_NEW_CUSTOMER_SITE_FEATURES);
+        if (StringUtils.isNotBlank(propertyValue)) {
+            String[] siteFeatureIdentifiers = propertyValue.split(",");
+            for (String siteFeatureId : siteFeatureIdentifiers) {
+                result.add(siteFeatureId.trim());
+            }
+        }
+
+	    return result;
+	}
+
+    public static List<String> getSiteFeatureListOnFoodKickViewCartPageForExistingCustomers() {
+        List<String> result = new ArrayList<String>();
+
+        String propertyValue = get(PROP_FK_VIEWCART_PAGE_CURRENT_CUSTOMER_SITE_FEATURES);
+        if (StringUtils.isNotBlank(propertyValue)) {
+            String[] siteFeatureIdentifiers = propertyValue.split(",");
+            for (String siteFeatureId : siteFeatureIdentifiers) {
+                result.add(siteFeatureId.trim());
+            }
+        }
+
+        return result;
+    }
+
+    public static int getMaxProductsOnFoodKickViewCartRecommenders() {
+        return Integer.parseInt(get(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT));
+    }
 }

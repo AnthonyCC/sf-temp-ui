@@ -18,7 +18,7 @@
 		<img alt="freshdirect" src="/media_stat/images/template/quickshop/9managers_s.jpg">
 		<img alt="freshdirect" height="125" src="/media/images/navigation/department/local/dept_icons/dpt_local_whoslocal_map.gif">
 		<h1>Sitemap</h1>
-<!-- 		<img id="spinner" alt=spinner" src="/media_stat/images/navigation/spinner.gif"> -->
+<!-- 		<img id="spinner" alt="spinner" src="/media_stat/images/navigation/spinner.gif"> -->
 	</header>
 
 	<fd:Sitemap />

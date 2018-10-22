@@ -554,6 +554,7 @@ public class CmsFilteringFlow {
 
     private BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException {
         NavigationModel navigationModel = new NavigationModel();
+        navigationModel.setUser(user);
         SearchResults searchResults = null;
 
         switch (nav.getPageType()) {
@@ -605,7 +606,7 @@ public class CmsFilteringFlow {
         }
 
         if (nav.isMenuBoxAndFilterRequested()) {
-        	setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+            setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
         }
 
         BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel,
@@ -951,7 +952,7 @@ public class CmsFilteringFlow {
     }
 
     private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDUserI user, NavigationModel navigationModel) {
-        navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav, user));
+        navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav));
         navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
     }
 
@@ -1036,20 +1037,17 @@ public class CmsFilteringFlow {
         Iterator<FilteringSortingItem<ProductModel>> iterator = searchResults.getProducts().iterator();
         while (iterator.hasNext()) {
             FilteringSortingItem<ProductModel> result = iterator.next();
+            navigationModel.getSearchResults().add(result);
             ProductModel product = result.getModel();
-            boolean showMeOnlyNewDisabledOnNewProductsPage = FilteringFlowType.NEWPRODUCTS.equals(pageType);
             try {
-                FilterCollector.defaultFilterCollector(showMeOnlyNewDisabledOnNewProductsPage).collectBrandAndShowMeOnlyFilters(navigationModel, product); // TODO is this necessary
-                                                                                                                                                           // when
-                                                                                                                                                           // refreshResultDependantFilters()
-                                                                                                                                                           // will run as well?
+                // TODO is this necessary when refreshResultDependantFilters() will run as well?
+                FilterCollector.defaultFilterCollector().collectBrandFilters(navigationModel, product);
+                FilterCollector.defaultFilterCollector().collectShowMeOnlyFilters(navigationModel, product, pageType);
             } catch (FDException e) {
                 LOG.error("Filtering setup failed: " + e.getMessage());
                 iterator.remove();
             }
-
-            navigationModel.getSearchResults().add(result);
-            FilterCollector.defaultFilterCollector(showMeOnlyNewDisabledOnNewProductsPage).collectDepartmentAndCategoryFilters(navigationModel, product);
+            FilterCollector.defaultFilterCollector().collectDepartmentAndCategoryFilters(navigationModel, product);
         }
     }
 
@@ -1061,8 +1059,8 @@ public class CmsFilteringFlow {
             ProductModel product = iterator.next().getProductModel();
 
             try {
-                boolean showMeOnlyNewDisabledOnNewProductsPage = FilteringFlowType.NEWPRODUCTS.equals(pageType);
-                FilterCollector.defaultFilterCollector(showMeOnlyNewDisabledOnNewProductsPage).collectBrandAndShowMeOnlyFilters(navigationModel, product);
+                FilterCollector.defaultFilterCollector().collectBrandFilters(navigationModel, product);
+                FilterCollector.defaultFilterCollector().collectShowMeOnlyFilters(navigationModel, product, pageType);
             } catch (FDException e) {
                 LOG.error("Filtering setup failed: " + e.getMessage());
                 iterator.remove();
@@ -1128,6 +1126,7 @@ public class CmsFilteringFlow {
         if (!navigationModel.isSuperDepartment() && !nav.populateSectionsOnly()) { // don't do these in case of super department page
             // menu availability check
             MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
+            reOrderAllMenuItemsByName(navigationModel);
         }
 
 

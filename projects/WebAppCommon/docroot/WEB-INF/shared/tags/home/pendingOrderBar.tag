@@ -80,7 +80,7 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 					%>
 						<div class="pendingOrderBar-overlay-order">
 							<div class="pendingOrderBar-overlay-order-status-cont status-<%= item.getOrderStatus().getStatusCode() %>">
-								<div class="pendingOrderBar-overlay-order-status-icon"><img src="/media_stat/images/pendingOrder/status_<%= item.getOrderStatus().getStatusCode() %>.svg"></div>
+								<div class="pendingOrderBar-overlay-order-status-icon"><img src="/media_stat/images/pendingOrder/status_<%= item.getOrderStatus().getStatusCode() %>.svg" alt=""></div>
 								<div class="pendingOrderBar-overlay-order-status-value"><%= item.getOrderStatus().getDisplayName() %></div>
 							</div>
 							<div class="pendingOrderBar-overlay-order-detail-cont">

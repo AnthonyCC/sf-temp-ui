@@ -37,6 +37,9 @@ String addressId = NVL.apply(request.getParameter("addressId"), "");
 boolean isStaticSlot = false;
 boolean isCheckAddress =false;
 
+request.setAttribute("sitePage", "www.freshdirect.com/your_account");
+request.setAttribute("listPos", "SystemMessage,CategoryNote,TimeslotBottom");
+
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 // redirect, if not eligible

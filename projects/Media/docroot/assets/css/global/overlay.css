@@ -225,6 +225,29 @@ body.overlay-opened {
     float: right;
     filter: brightness(0) invert(1);
   }
+
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-header-helper {
+    background-color: transparent;
+  }
+
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-close-icon {
+    filter: none;
+  }
+
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-close-icon,
+  #selfCreditInit.overlay.overlay-medium.selfcredit-overlay .overlay-container {
+    top: calc(20% - 50px);
+  }
+
+  /* .overlay.overlay-medium.selfcredit-overlay .overlay-container {
+    top: calc(20% - 50px);
+  } */
+
+  .overlay.overlay-medium.selfcredit-overlay .overlay-content {
+    padding: 30px 20px;
+    margin: auto 20px;
+    box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.2);
+  }
 }
 
 @media (max-width: 825px) {

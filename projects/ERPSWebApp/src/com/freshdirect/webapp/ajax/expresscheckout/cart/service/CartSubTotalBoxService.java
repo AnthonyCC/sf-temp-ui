@@ -181,7 +181,7 @@ public class CartSubTotalBoxService {
         	deliveryPassPopupNeeded=false;
         }
         
-        if(user.isDlvPassTimeslotNotMatched()){
+        if(user.isDlvPassTimeslotNotMatched() || cart.getDeliveryPassCount() > 0){
         	deliveryPassPopupNeeded=false;
         }
         

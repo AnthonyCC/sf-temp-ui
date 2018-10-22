@@ -901,7 +901,7 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.getBrandNameForId = function (id) {
-    var el = document.querySelector('[data-product-id="'+id+'"] .portrait-item-header-name b');
+    var el = document.querySelector('[data-product-id="'+id+'"] > a > .portrait-item-header > .portrait-item-header-name > b');
 
     if (el) {
       return el.textContent;

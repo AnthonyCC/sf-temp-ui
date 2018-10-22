@@ -1227,8 +1227,11 @@ public class Cart {
 				cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
 			}
 		}
-
-		cartDetail.setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
+		boolean isPurchaseDlvPassEligible = user.getFDSessionUser().isEligibleForDeliveryPass();
+        if(isPurchaseDlvPassEligible){
+        	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
+        }
+        cartDetail.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
         return cartDetail;
     }
 

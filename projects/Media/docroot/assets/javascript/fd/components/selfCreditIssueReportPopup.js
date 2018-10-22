@@ -27,7 +27,9 @@ var FreshDirect = window.FreshDirect || {};
             sample: data.sample,
             free: data.free,
             comment: data.comment,
-            reviewData: getReviewData(data)
+            reviewData: getReviewData(data),
+            mealBundles: data.mealBundles,
+            customerServiceContact: data.customerServiceContact
           });
         }
       },
@@ -106,10 +108,17 @@ var FreshDirect = window.FreshDirect || {};
         value: function(result, signalSource) {
           if (signalSource === "orderdetails") {
             this.data.orderlines = result.orderLines;
+            this.data.oderlines = transformCartonNumbersArray(this.data.orderlines);
+            this.data.customerServiceContact = result.customerServiceContact;
+            this.data.mealBundles = filterMealBundles(this.data.orderlines);  
             this.extendedRefresh(this.data);
           } else if (signalSource === "selfcreditresponse") {
             this.close({ currentTarget: this.overlayEl });
-            fd.components.selfCreditRequestCompletePopup.openPopup();
+            if(!!result.success) {
+              fd.components.selfCreditRequestCompletePopup.openPopup();
+            } else {
+              fd.components.selfCreditRequestErrorPopup.openPopup();
+            }
           }
         }
       },
@@ -153,7 +162,8 @@ var FreshDirect = window.FreshDirect || {};
               return {
                 orderLineId: lineId,
                 complaintId: complaint.reasonId,
-                quantity: complaint.qty
+                quantity: complaint.qty,
+                cartonNumbers: complaint.cartonNumbers
               };
             });
             mapComplaintsToOrderLines(this.complaints, this.data.orderlines, $);
@@ -169,6 +179,10 @@ var FreshDirect = window.FreshDirect || {};
             }, 300);
             $(".self-credit-footer").addClass("form-instructions-active");
           }
+          this.submitButton = $('.credit-request-submit-button');
+          setTimeout(function() {
+            this.submitButton.focus();
+          }.bind(this), 100);
         }
       },
       editRequest: {
@@ -205,15 +219,15 @@ var FreshDirect = window.FreshDirect || {};
     var complaintLines = $.grep(data.orderlines, function(line, i) {
       if (line.complaint) {
         line.complaint.price = line.basePrice * Number(line.complaint.qty);
-        line.complaint.price = Number(parseFloat(line.complaint.price).toFixed(2));
         totalCredit += line.complaint.price;
+        line.complaint.price = parseFloat(line.complaint.price).toFixed(2);
       }
       return !!line.complaint;
     });
 
     return {
       complaintLines: complaintLines,
-      totalCredit: Number(parseFloat(totalCredit).toFixed(2))
+      totalCredit: parseFloat(totalCredit).toFixed(2)
     };
   }
 
@@ -239,6 +253,27 @@ var FreshDirect = window.FreshDirect || {};
     return hasValid;
   }
 
+  function filterMealBundles(orderlines) {
+    var mealBundles = [];
+    for (var i = 0; i < orderlines.length; i++) {
+      if(orderlines[i].mealBundle) {
+        mealBundles.push(orderlines[i]);
+      }
+    }
+    return mealBundles;
+  }
+
+  function transformCartonNumbersArray(orderlines) {
+    for (var i = 0; i < orderlines.length; i++) {
+      if(Array.isArray(orderlines[i].cartonNumbers) && orderlines[i].cartonNumbers.length > 0) {
+        orderlines[i].cartonNumbers = orderlines[i].cartonNumbers.join('|')
+      } else if (orderlines[i].cartonNumbers.length === 0) {
+        orderlines[i].cartonNumbers = '';
+      }
+    }
+    return orderlines;
+  }
+
   function getValidComplaintLines(formData) {
     var list = {};
 
@@ -247,9 +282,15 @@ var FreshDirect = window.FreshDirect || {};
       var lineId = key.replace("reason-", "");
       var qty = formData["qty-" + lineId];
       if (!qty) return false;
+      var cartonNumbers = formData["carton-" + lineId];
+      cartonNumbers = cartonNumbers.split('|')
+      if(typeof cartonNumbers === undefined) {
+        cartonNumbers = [];
+      }
       list[lineId] = {
         reasonId: formData["reason-" + lineId],
-        qty: qty
+        qty: qty,
+        cartonNumbers: cartonNumbers
       };
     });
     return list;
@@ -265,6 +306,8 @@ var FreshDirect = window.FreshDirect || {};
           return reason.id === complaint.reasonId;
         })[0].reason;
         orderline.complaint = complaint;
+      } else {
+        orderline.complaint = null;
       }
     });
   }

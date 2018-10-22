@@ -58,6 +58,7 @@ import com.freshdirect.mobileapi.model.Order;
 import com.freshdirect.mobileapi.model.OrderHistory;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.Product;
+import com.freshdirect.mobileapi.model.ProductCatDept;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
@@ -569,15 +570,31 @@ public class OrderController extends BaseController {
 		}
 		QuickShop quickShop = new QuickShop();
 //		quickShop.setProducts(productPage);
-		
-		List<String> productIds = new ArrayList<String>();
-		if(productPage!=null && !productPage.isEmpty()){
-			for(ProductConfiguration pc : productPage){
-				productIds.add(pc.getProductId());
+	
+		if(query.isIncludedeptandcat()){
+			List<ProductCatDept> productCatDeptList = new ArrayList<ProductCatDept>();
+			if(productPage!=null && !productPage.isEmpty()){
+				for(ProductConfiguration pc : productPage){
+					ProductCatDept productCatDept = new ProductCatDept();
+					productCatDept.setProductId(pc.getProductId());
+					productCatDept.setCategoryId(pc.getCategoryId());
+					productCatDept.setDepartmentId(pc.getProduct().getDepartmentId());
+					productCatDeptList.add(productCatDept);
+				}
 			}
+			quickShop.setProductCatDeptList(productCatDeptList);
+			quickShop.setTotalResultCount(productCatDeptList != null ? productCatDeptList.size() : 0);
+		}else{
+			List<String> productIds = new ArrayList<String>();
+			if(productPage!=null && !productPage.isEmpty()){
+				for(ProductConfiguration pc : productPage){
+					productIds.add(pc.getProductId());
+				}
+			}
+			quickShop.setProductIds(productIds);
+			quickShop.setTotalResultCount(productIds != null ? productIds.size() : 0);
 		}
-		quickShop.setProductIds(productIds);
-		quickShop.setTotalResultCount(productIds != null ? productIds.size() : 0);
+		
 		return quickShop;
 	}
     

@@ -6,7 +6,7 @@
 
 
   <div class="social-login-spinner">
-  	<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />  
+  	<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />  
   </div>
   
  <fd:CheckLoginStatus />
