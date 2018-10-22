@@ -1682,6 +1682,10 @@ li.cleanli .gen-arrow {
 		    float: left;
 		    -webkit-text-size-adjust: 100%;
 		}
+		[data-ec-page] .mm-page #ec-drawer .drawer-header ul{
+		    padding: 0;
+		    margin: 0;
+		}
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header,
 		[data-ec-page] .mm-page #ec-drawer [data-drawer-columns="1"] .drawer-row.auto-height .drawer-header{
 		    height: 100%;
@@ -1689,7 +1693,10 @@ li.cleanli .gen-arrow {
     		left: 0;
 		}
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header li,
-		[data-ec-page] .mm-page #ec-drawer [data-drawer-columns="1"] .drawer-row.auto-height .drawer-header li{
+		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header ul,
+		[data-ec-page] .mm-page #ec-drawer [data-drawer-columns="1"] .drawer-row.auto-height .drawer-header li,
+		[data-ec-page] .mm-page #ec-drawer [data-drawer-columns="1"] .drawer-row.auto-height .drawer-header ul
+		{
 			height: 100%;
 		}
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header li>div,
@@ -1808,15 +1815,15 @@ li.cleanli .gen-arrow {
 		}
 		[data-ec-page] .mm-page #ec-drawer .drawer__item__title,
 		[data-ec-page] .mm-page #ec-drawer .section__title,
-		[data-ec-page] .mm-page #ec-drawer .drawer-header > li > div,
+		[data-ec-page] .mm-page #ec-drawer .drawer-header > ul > li > div,
 		[data-ec-page] .mm-page .drawer__item__section .section__body p,
 		[data-ec-page] .mm-page  .drawer__previewitem__section .section__body p {
 			font-size: 14px;
 		}
-		[data-ec-page] .mm-page #ec-drawer [data-component="drawer"] .drawer-header > li > div {
+		[data-ec-page] .mm-page #ec-drawer [data-component="drawer"] .drawer-header > ul > li > div {
 			line-height: 77px;
 		}
-		[data-ec-page] .mm-page #ec-drawer [data-component="drawer"] .active .drawer-header > li > div {
+		[data-ec-page] .mm-page #ec-drawer [data-component="drawer"] .active .drawer-header > ul > li > div {
 			line-height: 65px;
 		    text-align: left;
     		padding-left: 10px;

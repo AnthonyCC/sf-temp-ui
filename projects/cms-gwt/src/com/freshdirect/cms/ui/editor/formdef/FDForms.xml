@@ -1910,6 +1910,14 @@
 							<CmsField><attribute>productFilters</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection>
+						<title>Exclude</title>
+						<fields>
+							<CmsField><attribute>excludeResidentalSearch</attribute></CmsField>
+							<CmsField><attribute>excludeCorporateSearch</attribute></CmsField>
+							<CmsField><attribute>excludeFoodKickSearch</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -1941,6 +1949,14 @@
 							<CmsField><attribute>level2Name</attribute></CmsField>
 							<CmsField><attribute>level2Type</attribute></CmsField>
 							<CmsField><attribute>level2AllSelectedLabel</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Exclude</title>
+						<fields>
+							<CmsField><attribute>excludeResidentalSearch</attribute></CmsField>
+							<CmsField><attribute>excludeCorporateSearch</attribute></CmsField>
+							<CmsField><attribute>excludeFoodKickSearch</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

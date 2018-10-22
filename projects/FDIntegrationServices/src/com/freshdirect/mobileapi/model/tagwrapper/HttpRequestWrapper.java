@@ -30,10 +30,15 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
 import org.apache.http.HttpHeaders;
+import org.apache.log4j.Category;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class HttpRequestWrapper implements HttpServletRequest {
 
-    Map<Object, Object> backingMap = new HashMap<Object, Object>();
+	private static final Category LOGGER = LoggerFactory.getInstance(HttpRequestWrapper.class);
+	
+	Map<Object, Object> backingMap = new HashMap<Object, Object>();
 
     HttpSessionWrapper session;
 
@@ -66,11 +71,10 @@ public class HttpRequestWrapper implements HttpServletRequest {
     public void addValue(Object name, Object value) {
         //Coding defensively. Is something unexpected happens, throw exception
         if (!expectedSets.contains(name)) {
-            throw new IllegalAccessError("setAttribute with param name: [" + name
+            LOGGER.warn("MOBLIEAPIOUTOFSYNC: setAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
-        } else {
-            backingMap.put(name, value);
         }
+        backingMap.put(name, value);
     }
 
     @Override
@@ -230,14 +234,12 @@ public class HttpRequestWrapper implements HttpServletRequest {
     @Override
     public Object getAttribute(String name) {
         //Coding defensively. Is something unexpected happens, throw exception
-        Object param = null;
         if (!expectedGets.contains(name)) {
-            throw new IllegalAccessError("getAttribute with param name: [" + name
+        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: getAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
-        } else {
-            param = backingMap.get(name);
         }
-        return param;
+        
+        return backingMap.get(name);
     }
 
     @Override
@@ -295,14 +297,13 @@ public class HttpRequestWrapper implements HttpServletRequest {
         //Coding defensively. Is something unexpected happens, throw exception
         String param = null;
         if (!expectedGets.contains(name)) {
-            throw new IllegalAccessError("getParameter with param name: [" + name
+        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: getParameter with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
+        }
+        if (null != backingMap.get(name)) {
+            param = backingMap.get(name).toString();
         } else {
-            if (null != backingMap.get(name)) {
-                param = backingMap.get(name).toString();
-            } else {
-                param = null;
-            }
+            param = null;
         }
         return param;
     }
@@ -421,11 +422,10 @@ public class HttpRequestWrapper implements HttpServletRequest {
     public void setAttribute(String name, Object value) {
         //Coding defensively. Is something unexpected happens, throw exception
         if (!expectedSets.contains(name)) {
-            throw new IllegalAccessError("setAttribute with param name: [" + name
+        	LOGGER.warn("MOBLIEAPIOUTOFSYNC: setAttribute with param name: [" + name
                     + "] was not expected.  Perhaps JSP and Mobile Middle Layer are out of sync?");
-        } else {
-            backingMap.put(name, value);
         }
+        backingMap.put(name, value);
     }
 
     @Override

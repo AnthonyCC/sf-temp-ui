@@ -674,9 +674,11 @@ label[for="dontupdatecartlines"] {
   color:#7d7d7d;
 }
 
-.questions__empty:hover {
-  text-decoration: underline;
-}
+/* Buttons do not have text decoration, style guide(ux) */
+
+/* .questions__empty:hover { */
+/*   text-decoration: underline; */
+/* } */
 
 .questions__emptycart-image{
   vertical-align: middle;

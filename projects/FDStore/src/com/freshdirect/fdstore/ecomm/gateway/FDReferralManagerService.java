@@ -300,7 +300,7 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 	public boolean isReferreSignUpComplete(String email, EnumEStoreId storeid)throws FDResourceException, RemoteException {
 		Response<Boolean> response = new Response<Boolean>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_REFERRAL_COMPLETE + email),  new TypeReference<Response<Boolean>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_REFERRAL_COMPLETE + email+"/estore/"+storeid.getContentId()),  new TypeReference<Response<Boolean>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				LOGGER.error("Error in FDReferralManagerService: email" + email + ", storeid="+ storeid);
 				throw new FDResourceException(response.getMessage());

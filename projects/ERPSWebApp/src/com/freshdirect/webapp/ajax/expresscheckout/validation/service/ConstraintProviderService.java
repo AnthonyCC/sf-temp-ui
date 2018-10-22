@@ -15,6 +15,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.CreditC
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.DeliveryInstructionsConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.NameConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PhoneConstraint;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PhoneExtensionConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PredefinedTextConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.RoutingNumberConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.StateConstraint;
@@ -57,11 +58,11 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.ZIP, new ZipCodeConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE, new PhoneConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new TextConstraint(true));
+            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new PhoneExtensionConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE, new PhoneConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_EXTENSION, new TextConstraint(true));
-            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new TextConstraint(true));
+            put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_EXTENSION, new PhoneExtensionConstraint(true));
+            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new DeliveryInstructionsConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_AUTHORIZATION, new PredefinedTextConstraint(true, BACKUP_DELIVERY_TYPE));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_FIRST_NAME, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_LAST_NAME, new TextConstraint(true));
@@ -84,10 +85,10 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.ZIP, new ZipCodeConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE, new PhoneConstraint(false));
             put(DeliveryAddressValidationConstants.PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new TextConstraint(true));
+            put(DeliveryAddressValidationConstants.PHONE_EXTENSION, new PhoneExtensionConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE, new PhoneConstraint(true));
             put(DeliveryAddressValidationConstants.ALTERNATIVE_PHONE_TYPE, new PredefinedTextConstraint(true, PHONE_TYPE_TYPE));
-            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new TextConstraint(true));
+            put(DeliveryAddressValidationConstants.INSTRUCTIONS, new DeliveryInstructionsConstraint(true));
         }
     };
 

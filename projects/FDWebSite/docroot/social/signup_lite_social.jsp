@@ -142,7 +142,7 @@
 			//System.out.println("Did not come here on signup_liste.jsp?====================================================================================");
 		%>
 			<div style="width:500px;">
-			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" style="align:center;"/>
+			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" style="align:center;"/>
 			</div>
 			<script language="javascript">
 				window.top.location="/index.jsp";

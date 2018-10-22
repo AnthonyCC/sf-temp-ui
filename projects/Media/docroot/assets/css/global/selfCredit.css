@@ -1,6 +1,11 @@
 #selfCreditInit ~ #FDCustomSelect {
   width: 400px;
 }
+@media(max-width: 740px) {
+  #selfCreditInit ~ #FDCustomSelect {
+    width: auto;
+  }
+}
 #selfCreditIssueReport.overlay-medium {
   font-family: "Verdana", sans-serif;
   letter-spacing: 0.3px;
@@ -8,6 +13,9 @@
 #selfCreditIssueReport.overlay-medium .overlay-content {
   padding: 0;
   overflow: auto;
+}
+#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-content {
+  overflow: hidden;
 }
 #selfCreditIssueReport.overlay-medium .section-container {
   margin: 30px;
@@ -18,6 +26,7 @@
 }
 #selfCreditIssueReport.overlay-medium .self-credit-header p {
   font-size: 14px;
+  /* width: 80%; */
 }
 #selfCreditIssueReport.overlay-medium .self-credit-header h1 {
   font-size: 22px;
@@ -26,25 +35,20 @@
   background: #f7f7f7;
 }
 #selfCreditIssueReport.overlay-medium .self-credit-body .section-container {
-  padding: 30px 0;
+  padding: 30px 0 40px;
   margin-bottom: 0;
-}
-
-#FDCustomSelect.browse-popup.selectlight {
-  left: 761px;
-  right: 761px;
 }
 
 #selfCreditIssueReport.overlay-medium .self-credit-body .body-info {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-bottom: 30px;
+  margin-bottom: 26px;
 }
 #selfCreditIssueReport.overlay-medium .body-header-col,
 #selfCreditIssueReport.overlay-medium .body-info-col {
   display: inline-block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   width: 50%;
 }
 #selfCreditIssueReport.overlay-medium .body-info-col:nth-of-type(1) {
@@ -62,6 +66,7 @@
   font-size: 14px;
   white-space: nowrap;
   letter-spacing: 0.02em;
+  line-height: 20px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
@@ -158,22 +163,22 @@
   .self-credit-body
   .review-grid-container
   td:nth-child(2) {
-  padding-left: 20px;
-  width: 70%;
+  padding-left: 23px;
+  width: 60%;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   tr:first-child
   td {
-  padding-top: 10px;
+  padding-top: 17px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   .complaint-item {
   overflow: auto;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -218,6 +223,24 @@
   font-style: italic;
   margin-left: 5px;
 }
+#selfCreditIssueReport .meal-bundle-header {
+  border-top: 1px solid #cccccc;
+  padding-top: 28px;
+}
+#selfCreditIssueReport .call-helpline, {
+  font-style: italic;
+}
+#selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
+  color: #444444;
+  font-weight: bold;
+}
+@media(max-width: 700px) {
+  #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
+    font-weight: normal;
+    color: #408244;
+    text-decoration: none;
+  }
+}
 #selfCreditIssueReport.overlay-medium .self-credit-body .comment-container {
   margin-top: 20px;
 }
@@ -258,6 +281,12 @@
   .sc-submit-button
   button {
   width: 100%;
+}
+
+#selfCreditIssueReport.overlay-medium
+  .self-credit-footer
+  .cssbutton.button-triangle {
+  width: 255px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-footer
@@ -307,7 +336,7 @@
   }
   #selfCreditIssueReport.overlay-medium .review .self-credit-footer button {
     padding: 15px 30px;
-    font-size: 16px;
+    font-size: 15px;
   }
   #selfCreditIssueReport.overlay-medium
     .review
@@ -315,17 +344,30 @@
     .section-container {
     margin: 10px;
   }
+  #selfCreditIssueReport .self-credit-form-alert {
+    font-size: 13px;
+  }
+  #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
+    text-decoration: underline;
+  }
 }
 
-#selfCreditRequestComplete .overlay-content {
+#selfCreditRequestComplete .overlay-content,
+#selfCreditRequestError .overlay-content {
   text-align: center;
   padding: 40px 70px;
 }
 
+#selfCreditRequestError .overlay-content img {
+  margin-bottom: 38px;
+}
+
 @media screen and (max-width: 700px) {
-  #selfCreditRequestComplete .overlay-content {
-    padding: 40px;
-  }x
+  #selfCreditRequestComplete .overlay-content, 
+  #selfCreditRequestError .overlay-content {
+    padding: 40px 0;
+    box-shadow: none;
+  }
 }
 
 #selfCreditRequestComplete .credit-request-submit {
@@ -340,7 +382,8 @@
   margin-top: 5px;
 }
 
-#selfCreditRequestComplete .status {
+#selfCreditRequestComplete .status,
+#selfCreditRequestError .status {
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
@@ -350,6 +393,24 @@
   text-align: center;
   color: #444;
   margin: 20px 0 50px 0;
+}
+
+#selfCreditRequestError .status {
+  margin: 20px 15px 50px;
+}
+
+#selfCreditRequestError .status a {
+  display: block;
+  color: black;
+  font-weight: bold;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+@media(max-width: 700px) {
+  #selfCreditRequestError .status {
+    margin: 0 0 50px;
+  }
 }
 
 .selfcredit-overlay .spinner-overlay {
@@ -412,11 +473,23 @@
 }
 
 .selfcredit-overlay .self-credit-init-row {
-  margin-bottom: 20px;
+  margin-bottom: 23px;
+}
+
+.selfcredit-overlay .self-credit-init-row:first-child {
+  margin-bottom: 16px;
+}
+
+.self-credit-init-row:first-child .user-info {
+  text-transform: capitalize;
 }
 
 .selfcredit-overlay .self-credit-init-row-last {
   margin-bottom: 30px;
+}
+
+.selfcredit-overlay .self-credit-init-row-last + div {
+  height: 48px;
 }
 
 .selfcredit-overlay .selfcredit-button {
@@ -425,8 +498,11 @@
 }
 
 .selfcredit-overlay h1 {
-  font-weight: bolder;
-  margin-bottom: 0.7em;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 30px;
 }
 
 .selfcredit-overlay i,
@@ -458,13 +534,17 @@
   overflow-y: hidden;
 }
 
-.selfcredit-overlay.overlay-fullscreen .form-header {
+.selfcredit-overlay.overlay-fullscreen .form-header,
+#selfCreditIssueReport .meal-bundle-header {
+  color: #444444;
   font-size: 20px;
-  margin: 36px 0 0 0;
+  margin: 28px 0 32px 0;
 }
 
 @media screen and (max-width: 740px) {
-  .selfcredit-overlay.overlay-fullscreen .form-header {
+
+  .selfcredit-overlay.overlay-fullscreen .form-header,
+  #selfCreditIssueReport .meal-bundle-header {
     font-size: 18px;
     margin: 19px 0 0 0;
   }
@@ -488,20 +568,35 @@
   flex-wrap: nowrap;
   overflow: auto;
 }
+
+@media screen and (max-width: 740px) {
+  .selfcredit-overlay.overlay-fullscreen .form-instructions .self-credit-container {
+    padding-right: 0;
+    height: 33px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   label {
+  color: #444444;
   display: block;
   font-size: 12px;
-  letter-spacing: 0.05em;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  line-height: 20px;
   text-transform: uppercase;
 }
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   span {
+  color: #222222;
   font-size: 16px;
+  line-height: 20px;
 }
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
@@ -616,12 +711,6 @@
   background: #ddd;
 }
 
-.selfcredit-overlay.overlay-fullscreen
-  .form-instructions
-  .self-credit-container {
-  padding-right: 15px;
-}
-
 .selfcredit-overlay.overlay-fullscreen .form-instructions,
 .selfcredit-overlay.overlay-fullscreen .button-triangle::before {
   opacity: 0;
@@ -702,13 +791,16 @@
   display: block;
 }
 
+.selfcredit-overlay .self-credit-comment-info {
+  margin-bottom: 26px;
+}
+
 .selfcredit-overlay .self-credit-comment-info button {
   background: none;
   border: none;
   color: #408244;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 24px;
   padding: 0;
   text-decoration: none;
 }
@@ -746,7 +838,12 @@
 
 @media screen and (max-width: 740px) {
   .selfcredit-overlay .button-triangle-container {
-    padding: 17px 20px;
+    padding: 17px 20px 8px;
+  }
+  
+  .cssbutton.button-triangle {
+    position: relative;
+    top: -3px;
   }
 }
 
@@ -773,7 +870,7 @@
 .order-line {
   display: flex;
   flex-direction: row;
-  margin: 15px 0;
+  margin: 16px 0;
 }
 .order-line .order-line-col {
   display: flex;
@@ -797,6 +894,11 @@
 .order-line .order-line-product label {
   font-weight: bold;
 }
+.order-line .order-line-product .product-desc,
+.order-line .order-line-product .sale-unit {
+  letter-spacing: 0.2px;
+  color: #333333;
+}
 .order-line .order-line-product .sale-unit, .complaint-info .sale-unit {
   font-size: 12px;
   text-transform: lowercase;
@@ -806,7 +908,7 @@
   flex-basis: 35%;
 }
 
-.order-line-reason .select-wrapper {
+.order-line-reason .select-wrapper, .order-line-qty .select-wrapper {
   width: 100%;
 }
 
@@ -822,11 +924,10 @@
 }
 
 .order-line .order-line-qty {
-  flex-basis: 15%;
+  flex-basis: 8%;
 }
 .order-line .disable-order-line {
-  margin: 0 15px;
-  flex-basis: 50%;
+  flex-basis: calc(42% + 15px);
 }
 .order-line .disable-order-line .title {
   background-color: #f4f4f4;
@@ -860,10 +961,13 @@
   width: 100%;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 740px) {
   .order-line {
     flex-wrap: wrap;
-    margin-bottom: 40px;
+    margin: 40px 0;
+  }
+  div.order-line:first-child {
+    margin-top: 30px;
   }
   .order-line .order-line-product {
     flex-basis: calc(100%-75px);
@@ -873,10 +977,10 @@
     margin: 0;
     padding: 0 15px 0 0;
     box-sizing: border-box;
-    flex-basis: 80%;
+    flex-basis: 75%;
   }
   .order-line .order-line-qty {
-    flex-basis: 20%;
+    flex-basis: 25%;
   }
   .order-line .disable-order-line {
     margin: 0;
@@ -884,14 +988,11 @@
     box-sizing: border-box;
     flex-basis: 100%;
   }
+  .overlay.overlay-fullscreen .overlay-container .overlay-header-helper {
+    padding: 0 14px;
+  }
 }
 
 .overlay.overlay-fullscreen .overlay-container .overlay-header-helper .fd-logo {
   display: none;
-}
-
-@media screen and (max-width: 740px) {
-  .overlay.overlay-fullscreen .overlay-container .overlay-header-helper {
-    padding: 0 14px;
-  }
 }

@@ -48,19 +48,21 @@ var FreshDirect = window.FreshDirect || {};
     },
     openPopup: {
       value: function() {
-        this.refresh();
-        this.overlayEl = $("#" + this.overlayId);
-        // set close callback
-        this.overlayEl.attr(
-          "data-close-cb",
-          "FreshDirect.components.selfCreditInitPopup.closeCB"
-        );
-
-        $(".spinner-overlay").addClass("active");
-        DISPATCHER.signal("server", {
-          url: API_URL,
-          method: "GET"
-        });
+        if(FreshDirect.user.userId.length != 0) {
+          this.refresh();
+          this.overlayEl = $("#" + this.overlayId);
+          // set close callback
+          this.overlayEl.attr(
+            "data-close-cb",
+            "FreshDirect.components.selfCreditInitPopup.closeCB"
+          );
+  
+          $(".spinner-overlay").addClass("active");
+          DISPATCHER.signal("server", {
+            url: API_URL,
+            method: "GET"
+          });
+        };
       }
     },
     callback: {
@@ -89,7 +91,7 @@ var FreshDirect = window.FreshDirect || {};
               this.overlayEl
                 .find('button[value="Continue"]')
                 .prop("disabled", false)
-                .prop("tabindex", 1);
+                .prop("tabindex", 2);
             }
           }.bind(this)
         );

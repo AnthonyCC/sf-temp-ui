@@ -121,7 +121,7 @@
 			//phew finally complete
 			//System.out.println("Did not come here on signup_liste.jsp?====================================================================================");
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
 			<script language="javascript">
 				//alert('in signup_lite.jsp');
 				  //  if (top === window) {

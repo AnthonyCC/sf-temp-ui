@@ -20,8 +20,12 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 
 	private final FDCustomerInfo customer;
 
+	@JsonProperty("htmlXsl")
 	private String htmlXsl;
+	
+	@JsonProperty("textXsl")
 	private String textXsl;
+	
 	
 	private boolean htmlEmail = true;
 	private String fromEmail;

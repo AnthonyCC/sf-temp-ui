@@ -82,7 +82,7 @@ public class FDTransactionalEmail extends FDInfoEmail {
 				/* email needs separate brand name and product name */
 				String brandName = productNode.getPrimaryBrandName();
 				String nameNoBrand = productNode.getFullName();
-				if (!"".equals(brandName)) {
+				if (brandName != null && brandName.trim().length() > 0 && nameNoBrand != null && nameNoBrand.length() > brandName.length() ) {
 					nameNoBrand = (nameNoBrand.substring(brandName.length())).trim();
 				}
 				prodInfo.put("brandName", brandName);

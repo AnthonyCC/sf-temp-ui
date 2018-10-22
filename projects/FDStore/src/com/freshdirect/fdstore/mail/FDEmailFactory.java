@@ -105,9 +105,9 @@ public class FDEmailFactory {
 			int totalShorts = order.getShortedItems().size() + order.getBundleShortItems().size() + order.getBundleCompleteShort().size();
 			if(totalShorts > 0) {
 				if(totalShorts == 1) {
-					email.setSubject("Heads Up! Item Missing From Your FoodKick Order");	
+					email.setSubject("We're Sorry | Item Missing From Your FoodKick Order");
 				} else {
-					email.setSubject("Heads Up! " + totalShorts + " Items Missing From Your FoodKick Order");
+					email.setSubject("We're Sorry | " + totalShorts + " Items Missing From Your FoodKick Order");
 				}
 			} else {
 				//no shorts, regular subject

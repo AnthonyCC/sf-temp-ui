@@ -1,9 +1,9 @@
 package com.freshdirect.fdstore.content.browse.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -12,13 +12,11 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.AbstractProductItemFilter;
 import com.freshdirect.storeapi.content.AndFilter;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.FilterCacheStrategy;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.OrFilter;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductFilterGroupI;
-import com.freshdirect.storeapi.content.ProductFilterGroupImpl;
+import com.freshdirect.storeapi.content.ProductFilterGroup;
 import com.freshdirect.storeapi.content.ProductFilterGroupModel;
 import com.freshdirect.storeapi.content.ProductFilterModel;
 import com.freshdirect.storeapi.content.ProductFilterMultiGroupModel;
@@ -30,15 +28,14 @@ public class ProductItemFilterFactory {
 	
 	private static final Logger LOGGER = LoggerFactory.getInstance(ProductItemFilterFactory.class);
 	
-	private static ProductItemFilterFactory instance;
+	private static final ProductItemFilterFactory INSTANCE = new ProductItemFilterFactory();
 	
 	public static ProductItemFilterFactory getInstance(){
-		
-		if(instance==null){
-			instance = new ProductItemFilterFactory();
-		}
-		
-		return instance;
+		return INSTANCE;
+	}
+
+	private ProductItemFilterFactory() {
+
 	}
 
 	private static final ProductItemFilterI NULL_FILTER = new AbstractProductItemFilter(){
@@ -131,6 +128,18 @@ public class ProductItemFilterFactory {
 			return NULL_FILTER;
 		}		
 	}
+
+    public ProductItemFilterI getBrandFilter(BrandModel brandModel, String parentId) {
+        return new BrandFilter(brandModel, parentId);
+    }
+
+    public List<ProductItemFilterI> getBrandFilters(Collection<BrandModel> brandModels, String parentId) {
+        List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
+        for (BrandModel brandModel : brandModels) {
+            productFilters.add(getBrandFilter(brandModel, parentId));
+        }
+        return productFilters;
+    }
 	
 	private List<ProductItemFilterI> createInnerFilters(ProductFilterModel filterModel, FDUserI user){
 		
@@ -142,62 +151,47 @@ public class ProductItemFilterFactory {
 		
 		return innerFilters;
 	}
-	
-	public ProductFilterGroupI getProductFilterGroup(ProductFilterGroupModel groupModel, FDUserI user){
-		
+
+    public ProductFilterGroup createProductFilterGroup(String id, String name, String type, String allSelectedLabel, List<ProductItemFilterI> productFilters,
+            boolean displayOnCategoryListingPage, boolean multiGroupModel) {
+        ProductFilterGroup group = new ProductFilterGroup();
+        group.setProductFilters(productFilters);
+        group.setId(id);
+        group.setName(name);
+        group.setType(type);
+        group.setAllSelectedLabel(allSelectedLabel);
+        group.setDisplayOnCategoryListingPage(displayOnCategoryListingPage);
+        return group;
+    }
+
+	public ProductFilterGroup getProductFilterGroup(ProductFilterGroupModel groupModel, FDUserI user){
 		List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
-		
+
 		String contentName = groupModel.getContentName();
 		for (ProductFilterModel filter : groupModel.getProductFilterModels()) {
 			productFilters.add(getProductFilter(filter, contentName, user));
 		}
 
-		ProductFilterGroupImpl group = new ProductFilterGroupImpl();
-		group.setProductFilters(productFilters);
-		group.setId(groupModel.getContentName());
-		group.setName(groupModel.getName());
-		group.setType(groupModel.getType());
-		group.setAllSelectedLabel(groupModel.getAllSelectedLabel());
-		group.setDisplayOnCategoryListingPage(groupModel.isDisplayOnCategoryListingPage());
-		return group;
+		return createProductFilterGroup(groupModel.getContentName(), groupModel.getName(), groupModel.getType(), groupModel.getAllSelectedLabel(), productFilters, groupModel.isDisplayOnCategoryListingPage(), false);
 	}
 	
-	
-	public List<ProductFilterGroupI> getProductFilterGroups(ProductFilterMultiGroupModel multiGroupModel, List<TagModel> selection){
-		List<ProductFilterGroupI> list = new ArrayList<ProductFilterGroupI>();
-		
-		//level 1
-		ProductFilterGroupImpl l1 = new ProductFilterGroupImpl();
-		l1.setName(multiGroupModel.getLevel1Name());
-		l1.setType(multiGroupModel.getLevel1Type());
-		l1.setAllSelectedLabel(multiGroupModel.getLevel1AllSelectedLabel());
-		l1.setId(multiGroupModel.getContentName()+"_l1");
-		l1.setMultiGroupModel(true);
-		
-		l1.setProductFilters(getProductFilters(multiGroupModel.getRootTag(), l1.getId()));
-		list.add(l1);
+    public List<ProductFilterGroup> getProductFilterGroups(ProductFilterMultiGroupModel multiGroupModel, List<TagModel> selection) {
+        List<ProductFilterGroup> list = new ArrayList<ProductFilterGroup>();
 
-		String l2Name = multiGroupModel.getLevel2Name();
-		if (l2Name != null && l2Name.length()>0){
-			
-			//level 2		
-			ProductFilterGroupImpl l2 = new ProductFilterGroupImpl();
-			l2.setName(l2Name);
-			l2.setType(multiGroupModel.getLevel2Type());
-			l2.setAllSelectedLabel(multiGroupModel.getLevel2AllSelectedLabel());
-			l2.setId(multiGroupModel.getContentName()+"_l2");
-			l2.setMultiGroupModel(true);
-			
-			if (selection==null || selection.size()<1){
-				l2.setProductFilters(Collections.<ProductItemFilterI>emptyList());
-			} else {
-				l2.setProductFilters(getProductFilters(selection.get(0), l2.getId()));
-				
-			}
-			list.add(l2);
-		}
-		return list;
-	}
+        // level 1
+        String level1Id = multiGroupModel.getContentName() + "_l1";
+        list.add(createProductFilterGroup(level1Id, multiGroupModel.getLevel1Name(), multiGroupModel.getLevel1Type(), multiGroupModel.getLevel1AllSelectedLabel(),
+                getProductFilters(multiGroupModel.getRootTag(), level1Id), false, true));
+
+        String l2Name = multiGroupModel.getLevel2Name();
+        if (l2Name != null && l2Name.length() > 0) {
+            // level 2
+            String level2Id = multiGroupModel.getContentName() + "_l2";
+            list.add(createProductFilterGroup(level2Id, l2Name, multiGroupModel.getLevel2Type(), multiGroupModel.getLevel2AllSelectedLabel(),
+                    (selection == null || selection.size() < 1) ? Collections.<ProductItemFilterI> emptyList() : getProductFilters(selection.get(0), level2Id), false, true));
+        }
+        return list;
+    }
 	
 	/**
 	 * @param tag
@@ -217,30 +211,6 @@ public class ProductItemFilterFactory {
 				}
 			}
 		}
-		return list;
-	}
-	
-	/**
-	 * @param productContainer
-	 * @param selectionMap
-	 * @return
-	 * 
-	 * create a flat group hierarchy, 
-	 * create simple groups from the multigroups and create the x level for the selected multigroup filters (selectionMap)
-	 */
-	public List<ProductFilterGroupI> getDefaultProductFilterGroups(ProductContainer productContainer, Map<String, List<TagModel>> selectionMap, FDUserI user){
-		
-		List<ProductFilterGroupI> list = new ArrayList<ProductFilterGroupI>();
-		
-		for (ContentNodeModel item : productContainer.getProductFilterGroups()){
-			if (item instanceof ProductFilterGroupModel){
-				list.add(getProductFilterGroup((ProductFilterGroupModel)item, user));
-			
-			} else if (item instanceof ProductFilterMultiGroupModel){
-				list.addAll(getProductFilterGroups((ProductFilterMultiGroupModel)item, selectionMap.get(item.getContentName())));
-			}
-		}
-		
 		return list;
 	}
 

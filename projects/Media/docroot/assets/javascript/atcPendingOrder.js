@@ -105,7 +105,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var content = "";
 		content += '<div id="modify_pending_choice_content_' + id + '" class="modify_pending_choice_content">\n';
 		content += '<div id="modify_pending_choice_progress_' + id + '" class="modify_pending_choice_progress">\n';
-		content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" width="50" height="50">\n';
+		content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" alt="spinner" width="50" height="50">\n';
 		content += '</div>\n';
 		content += '  <iframe id="modify_pending_choice_frame_' + id + '" class="modify_pending_choice_frame" frameborder="0" src="' + uri + '"></iframe>';
 		content += '</div>\n';

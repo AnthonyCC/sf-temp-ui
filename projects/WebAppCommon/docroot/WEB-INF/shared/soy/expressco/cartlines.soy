@@ -650,7 +650,7 @@
 		<div class='questions__right'>
 			<button class="cssbutton transparent green icon-reorder-icon-before" data-component="update-cart">Update cart</button>
 			<button  class='questions__empty cssbutton transparent green' data-component='emptycart'>
-				<img src="/media_stat/images/icon-trash.png" alt="" class='questions__emptycart-image' />Empty Cart
+				<img src="/media_stat/images/icon-trash.png" alt="" class='questions__emptycart-image' />Empty Cart<span class="offscreen">remove all items from your cart</span>
 			</button>
 		</div>
 	</div>
@@ -1189,7 +1189,7 @@
 {let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
 <div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
 	<div class='total__subtotal total-right {if not $dlvPassCart}right{/if}'>
-		<div id="subtotalbox2" class="subtotalboxes">
+		<div id="subtotalbox2" class="subtotalboxes" tabindex="0" >
 				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' and $subTotalBox and $subTotalBox.estimatedTotalBox}	
 					{call .subTotalBox}
 						{param cartlineType: $cartlineType /}
@@ -1246,9 +1246,9 @@
 	{if $corporateUser}
 		<div class='promotion-item'>
 			<form fdform="checkout" action="#">
-				<p class='promotion-text'>Billing reference/Client code</p>
+				<p class='promotion-text'><label for="billing_code">Billing reference/Client code</label></p>
 				<div>
-					<input type="text" aria-label="enter billing reference or client code" class="promotion-input" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
+					<input type="text" class="promotion-input" id="billing_code" name="billingReference" fdform-v-billingref value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
 				</div>
 			</form>
 		</div>
@@ -1520,23 +1520,22 @@
 			<div class="subtotal__rowcell-mid {if not $displayCheckout}cartetip-container{/if}">
 			<label {if not $displayCheckout}for="tipDropdown"{else}for="tipDropdownbottom"{/if}>
 				<span class="offscreen">select tip amount</span></label>
-				<select class="tipDropdown" {if not $displayCheckout}id="tipDropdown"{else}id="tipDropdownbottom"{/if} name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
+				<select class="tipDropdown" {if not $displayCheckout}id="tipDropdown"{else}id="tipdropdownbottom"{/if} name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
 					{foreach $option in $tipAmounts}
 						<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ( ('$' + $etipTotal) == $option) or (($tipApplied == false) and $option == '$0')}selected{/if}>
 						{$option}</option>
 					{/foreach}  
 				</select>
-			</label>
+			
 
-			<label for="tipTextBox">
-				<span class="offscreen">Other Tip Amount:</span>
-									
-				<input type="text" aria-label="enter custome tip amount" class="tipTextBox" placeholder="0.00" name="otherTipAmount"
+			<label {if not $displayCheckout}for="tipTextBox"{else}for="tipTextBoxbottom"{/if}>
+				<span class="offscreen">enter custom tip amount</span></label>
+				<input type="text" {if not $displayCheckout}id="tipTextBox"{else}id="tipTextBoxbottom"{/if} class="tipTextBox" placeholder="0.00" name="otherTipAmount"
 					{if not $customTip}style="display:none"{/if}
 					{if $etipTotal and $customTip}value="{$etipTotal}"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if} data-component="tooltip"/>
 									
 				<div class="toolTipTextBox tooltip" data-component="tooltipContent" role="tooltip"></div>
-			</label>
+			
 								
 			{if $tipAppliedTick}
 				<img class="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Tick" />

@@ -171,7 +171,7 @@ public class LuceneSearchService {
         BooleanQuery query = new BooleanQuery();
         QueryParser parser = new QueryParser(Version.LUCENE_30, IndexingConstants.FIELD_CONTENT_KEY, ANALYZER);
         String searchWords = StringUtils.join(searchTerm, " ");
-        String normalizedTerm = new SearchTermNormalizer(true).convert(searchWords);
+        String normalizedTerm = new SearchTermNormalizer(false).convert(searchWords);
         for (String field : fields) {
             Query q;
             String queryString = field.startsWith(IndexingConstants.NAME_PREFIX) ? normalizedTerm : searchWords;

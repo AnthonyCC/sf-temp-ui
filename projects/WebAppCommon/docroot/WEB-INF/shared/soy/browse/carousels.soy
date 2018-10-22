@@ -40,15 +40,19 @@
     <table role="presentation" class="{if $carousel1}hasCarousel1{else}noCarousel1{/if} {if $carousel2}hasCarousel2{else}noCarousel2{/if}">
       <tr class="header">
         <td class="c1">
+         {if $carousel1}
           <div>
             <h2>{if $carousel1}{$carousel1.name}{/if}</h2>
-          </div>
+         </div>
+        {/if}
         </td>
         <td class="spacer" rowspan="2"><div></div></td>
         <td class="c2">
-          <div>
+          {if $carousel2}
+           <div>
             <h2>{if $carousel2}{$carousel2.name}{/if}</h2>
-          </div>
+           </div>
+          {/if}
         </td>
       </tr>
       <tr class="ccontent">

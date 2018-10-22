@@ -13,7 +13,7 @@
 </head>
 <body>
   <div class="social-login-spinner">
-    <img src="/media_stat/images/navigation/spinner.gif" class="fleft" />  
+    <img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />  
   </div>
 
   <%@ include file="/common/template/includes/i_jsmodules.jspf" %>

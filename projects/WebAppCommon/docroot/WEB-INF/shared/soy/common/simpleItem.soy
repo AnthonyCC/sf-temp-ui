@@ -42,7 +42,7 @@
 		{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
 			<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
 		{/if}{/foreach}
-			<input class="qty" aria-label="quantity" type="hidden" value="{$item.quantity.quantity}" data-component="quantitybox.value" data-productdata-name="quantity">
+			<input class="qty" aria-label=" enter the quantity you required" type="hidden" value="{$item.quantity.quantity}" data-component="quantitybox.value" data-productdata-name="quantity">
 		</div>
 		{call common.productData}
 			{param productId:$item.productId /}

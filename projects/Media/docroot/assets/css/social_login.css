@@ -404,9 +404,10 @@ br.new_cust{
     font-family: verdana;
     color: #888;
 }
-#sul_type_fields .legend {
+body:not([data-ismobweb="true"]) #sul_type_fields .legend {
 	display: inline-block;
 	margin: 0 10px 0 20px;
+	padding-left: 28px;
 }
 #sul_type_fields input[type="radio"] + label {
     cursor: pointer;

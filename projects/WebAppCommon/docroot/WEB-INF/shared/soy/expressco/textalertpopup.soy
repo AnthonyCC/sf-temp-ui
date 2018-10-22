@@ -8,20 +8,20 @@
 <form id="textalert" fdform="textalert" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/textalert/submit">
   <div id="textalert_formbody">
     {if $data.header}{$data.header}{/if}
-    <p class="mobile">Mobile # <input name="mobile" type="tel" aria-label="enter your mobile number" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Mobile" required></p>
+    <p class="mobile"><label for="mobile">Mobile # </label><input name="mobile" id="mobile" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Mobile" required></p>
     <span fdform-error-for="mobile"><span>
     <p class="choices-title">Select Your Alerts</p>
     <span fdform-error-for="notices"></span>
     <ul class="choices">
-      <li><label><input type="checkbox" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="notices" checked/><span class="choice-title">Order Notices</span> - Receive a refined estimated time of delivery on the day-of as well as an alert when you're receiving the next delivery.</label></li>
-      <li><label><input type="checkbox" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="alerts" checked/><span class="choice-title">Order Alerts</span> - Recieve an alert when your order has been cancelled, an unsuccessful delivery attempt has been made or your order has been left with your doorman or according to your unattended delivery request.</label></li>
-      <li><label><input type="checkbox" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="perks" checked/><span class="choice-title">FreshDirect Perks</span> - Get the inside scoop on exciting new features, exclusive.</label></li>
+      <li><input type="checkbox" id="notices" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="notices" checked/><label class="customcheckboxlabel" for="notices"><span class="choice-title">Order Notices</span> - Receive a refined estimated time of delivery on the day-of as well as an alert when you're receiving the next delivery.</label></li>
+      <li><input type="checkbox" id="alerts" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="alerts" checked/><label class="customcheckboxlabel" for="alerts"><span class="choice-title">Order Alerts</span> - Recieve an alert when your order has been cancelled, an unsuccessful delivery attempt has been made or your order has been left with your doorman or according to your unattended delivery request.</label></li>
+      <li><input type="checkbox" id="perks" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="perks" checked/><label class="customcheckboxlabel" for="perks"><span class="choice-title">FreshDirect Perks</span> - Get the inside scoop on exciting new features, exclusive.</label></li>
     </ul>
     <p class="terms">By signing up you agree to the <a href="#" data-go="textalert_terms">Terms and Conditions</a></p>
     <div class="actions">
       <div class="nothanks-holder">
         <button class="cssbutton green transparent textalert-nothanks" type="submit" fdform-button="nothanks">No Thanks</button>
-        <label class="remindme"><input name="remindme" type="checkbox" class="customcheckbox" checked/>Remind me later</label>
+       <input name="remindme" id="remindme" type="checkbox" class="customcheckbox" checked/><label for="remindme" class="remindme customcheckboxlabel">Remind me later</label>
       </div>
       <button class="cssbutton green textalert-signup" type="submit">Sign Up</button>
     </div>

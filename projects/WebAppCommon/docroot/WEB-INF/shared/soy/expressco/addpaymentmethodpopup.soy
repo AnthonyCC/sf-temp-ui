@@ -10,7 +10,8 @@
     </div>
     {if not $data.id}
 	    <div class="formselector{if $data.metadata and $data.metadata.enableECheck and $data.metadata.paymentPromoOAS} selector-decoration{/if}">
-	      <label for="addpaymentmethod_creditcard_selector" class="tabs"><input type="radio" name="showform" id="addpaymentmethod_creditcard_selector" value="addpaymentmethod_creditcard"  class="credit_card_selector" {if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}checked{/if} />Credit&nbsp;/&nbsp;Debit&nbsp;Card</label>
+	      <label for="addpaymentmethod_creditcard_selector" class="tabs"><input type="radio" name="showform" id="addpaymentmethod_creditcard_selector" value="addpaymentmethod_creditcard"  class="credit_card_selector" 
+	      {if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}checked{/if} />Credit&nbsp;/&nbsp;Debit&nbsp;Card</label>
 	      {if not $data.metadata or $data.metadata.enableECheck}<label for="addpaymentmethod_bank_selector" class="tabs"><input type="radio" id="addpaymentmethod_bank_selector" name="showform" value="addpaymentmethod_bank" {if $data.paymentMethodType == 'EC'}checked{/if}/>Bank</label>{/if}
 	      {if not $data.metadata or $data.metadata.enableEbtCheck}<label for="addpaymentmethod_ebt_selector" class="tabs"><input type="radio" id="addpaymentmethod_ebt_selector" name="showform" value="addpaymentmethod_ebt" {if $data.paymentMethodType == 'ET'}checked{/if}/>EBT</label>{/if}
 	    </div>
@@ -45,8 +46,8 @@
 		<span fdform-error-for="cardHolderName"></span>
 	</div>
 	<div class="input-wrapper">
-		<label for="CC_cardHolderName">Card Information
-	    	<select class="customsimpleselect" name="cardBrand" required>
+		<label for="CC_cardBrand">Card Information
+	    	<select class="customsimpleselect" id="CC_cardBrand" name="cardBrand" required>
 	      		<option value="">Type of Card</option>
 			    	{if $data.metadata and $data.metadata.cardType}
 			       		{foreach $cardType in $data.metadata.cardType}
@@ -83,7 +84,7 @@
 		   	</select>
 		 </label>
 		 <label for="CC_cardYear" class="one-quarter-fieldset">Year
-	     	<select name="cardYear" class="customsimpleselect" required>
+	     	<select name="cardYear" id="CC_cardYear" class="customsimpleselect" required>
 	        	<option value="">--</option>
 		          {if $data.metadata and $data.metadata.expireYear}
 		            {foreach $expireYear in $data.metadata.expireYear}
@@ -103,7 +104,7 @@
   	</div>
 	<div class="input-wrapper">
 		<label for="CC_bil_country">Billing Address
-		    <select name="bil_country" class="customsimpleselect" required>
+		    <select name="bil_country" id="CC_bil_country" class="customsimpleselect" required>
 		      <option value="">--</option>
 		      {if $data.metadata and $data.metadata.country}
 		      	{foreach $country in $data.metadata.country}
@@ -127,7 +128,7 @@
  	 </div>
 	 <div class="input-wrapper">
 	 	<label for="CC_bil_address2">Address Line 2
-	    	<input name="bil_address2" placeholder="Address Line 2" value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
+	    	<input name="bil_address2" id="CC_bil_address2" placeholder="Address Line 2" value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
 	  	</label>
    	</div>
     <div class="input-wrapper">
@@ -190,10 +191,10 @@
     <h2>Account Details</h2>
     <div class="input-wrapper">
 		<label for="EC_bankAccountType_C" class="one-quarter-fieldset normal-label">
-	  		<input type="radio" class="customradio" name="bankAccountType" value="C" {if not $data.bankAccountType or $data.bankAccountType == 'C'}checked{/if} />Checking
+	  		<input id="EC_bankAccountType_C" type="radio" class="customradio" name="bankAccountType" value="C" {if not $data.bankAccountType or $data.bankAccountType == 'C'}checked{/if} />Checking
 	  </label>
 	  <label for="EC_bankAccountType_S" class="medium-fieldset normal-label">
-	  		<input type="radio" class="customradio" name="bankAccountType" value="S" {if $data.bankAccountType == 'S'}checked{/if}/>Savings
+	  		<input id="EC_bankAccountType_S" type="radio" class="customradio" name="bankAccountType" value="S" {if $data.bankAccountType == 'S'}checked{/if}/>Savings
 	  </label>
     </div>
     <div class="input-wrapper">
@@ -254,14 +255,14 @@
     </div>
     <div class="input-wrapper">
     	<label for="EC_bil_address2">Address Line 2
-      		<input name="bil_address2" placeholder="Address Line 2" value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
+      		<input name="bil_address2" id="EC_bil_address2" placeholder="Address Line 2" value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
       	</label>
     </div>
     <div class="input-wrapper">
-   		<label for="EC_bil_city" class="small-fieldset">
+   		<label for="EC_bil_city" class="small-fieldset"><span class="offscreen">enter the city</span>
       		<input name="bil_city" id="EC_bil_city" placeholder="City" value="{if $data.bil_city}{$data.bil_city}{/if}" required/>
       	</label>
-      	<label for="EC_bil_state" class="small-fieldset">
+      	<label for="EC_bil_state" class="small-fieldset"><span class="offscreen">please select the state</span>
 	    	<select name="bil_state" id="EC_bil_state" class="customsimpleselect" required fdform-fieldname="State">
 	        	<option value="">--</option>
 		        	{if $data.metadata and $data.metadata.state}
@@ -272,7 +273,7 @@
 		        	{/if}
 	     	</select>
 	    </label>
-	    <label for="EC_bil_zipcode" class="small-fieldset">
+	    <label for="EC_bil_zipcode" class="small-fieldset"><span class="offscreen">enter the zip code</span>
       		<input name="bil_zipcode" id="EC_bil_zipcode" placeholder="ZIP Code" fdform-v-zipcode value="{if $data.bil_zipcode}{$data.bil_zipcode}{/if}" required/>
       	</label>
       	<span fdform-error-for="bil_city" class="small-fieldset"></span>
@@ -286,9 +287,9 @@
     	<span fdform-error-for="phone"></span>
     </div>
     <div class="input-wrapper">
-    	<label for="EC_terms">
+    	
 	    	<input type="checkbox" name="terms" id="EC_terms" class="customcheckbox" {if $data.id}disabled{else}required{/if} />
-	      I have read and agree to the <a href='/registration/checkacct_terms.jsp' data-ifrpopup='/registration/checkacct_terms.jsp' data-ifrpopup-width='585' data-ifrpopup-height='400'>Customer Agreement (print)</a>
+	     <label for="EC_terms" class="customcheckboxlabel"> I have read and agree to the <a href='/registration/checkacct_terms.jsp' data-ifrpopup='/registration/checkacct_terms.jsp' data-ifrpopup-width='585' data-ifrpopup-height='400'>Customer Agreement (print)</a>
       	</label>
       	<span fdform-error-for="terms"></span>
     </div>
@@ -343,15 +344,15 @@
 	  <label for="ET_bil_address1" class="three-quarter-fieldset">Street Address
 	    <input name="bil_address1" id="ET_bil_address1" placeholder="Street Address"value="{if $data.bil_address1}{$data.bil_address1}{/if}" required/>
 	  </label>
-	  <label for="ET_bil_apartment" class="small-fieldset">
+	  <label for="ET_bil_apartment" class="small-fieldset"><span class="offscreen">enter your apartment number</span>
 	    <input name="bil_apartment" id="ET_bil_apartment" placeholder="Apt." value="{if $data.bil_apartment}{$data.bil_apartment}{/if}" />
 	  </label>
 	  <span fdform-error-for="bil_address1" class="three-quarter-fieldset"></span>
 	  <span fdform-error-for="bil_apartment" class="small-fieldset"></span>
   </div>
   <div class="input-wrapper">
-	  <label for="">Address Line 2
-	    <input name="bil_address2" placeholder="Address Line 2" value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
+	  <label for="ET_bil_address2">Address Line 2
+	    <input name="bil_address2" id="ET_bil_address2" placeholder="Address Line 2" value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
 	   </label>
   </div>
   <div class="input-wrapper">
@@ -377,7 +378,7 @@
     <span fdform-error-for="bil_zipcode" class="small-fieldset"></span>
   </div>
   <label for="ET_phone">Best # for billing inquiries
-    <input name="phone" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
+    <input name="phone" id="ET_phone" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
   </label>
   <span fdform-error-for="phone"></span>
 

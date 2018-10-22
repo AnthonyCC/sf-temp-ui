@@ -447,6 +447,7 @@ var FreshDirect = FreshDirect || {};
     };
     dateFormatter.shortDayName = function() {
       var dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      dayNames[-1] = "Sun";
       return dayNames[date.getDay() - 1];
     };
     dateFormatter.shortTime = function() {

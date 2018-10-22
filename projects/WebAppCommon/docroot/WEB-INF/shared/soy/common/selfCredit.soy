@@ -19,13 +19,17 @@
       <label for="order-id">Your Order</label>
       <i class="form-field-info-flag">Required</i>
       <div>
-        <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-          <option value="" disabled selected>Select an Order</option>
+          // custom two-line dropdown template
+          // <div id="customselect-close-container" style="display: none"><button nofocus="" id="customselect-close-icon" class="selfcredit overlay-close-icon" data-close-overlay="" style="z-index: 462;" tabindex="9">close</button></div>
+          // <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+          <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+          <option value="" disabled selected>Select An Order</option>
           {foreach $order in $orders}
-          // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}{$order.standingOrderName}{/if}
-          <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
-          {else}[br][b]Order #: {$order.orderId}[/b]{/if}
-          </option>
+          // custom two-line dropdown template
+          // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
+          // {else}[br][b]Order #: {$order.orderId}[/b]{/if}
+          // </option>
+          <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
           {/foreach}
         </select>
       </div>
@@ -45,6 +49,8 @@
   @param order
   @param? comment
   @param? orderlines
+  @param? customerServiceContact
+  @param? mealBundles
   @param? reviewData
 
  */
@@ -75,10 +81,20 @@
         <h2 class="form-header">Select an issue and quantity of each affected item.</h2>
         {if ($orderlines)}
           {foreach $orderline in $orderlines }
-            {call .selfCreditProductLine}
-              {param orderline: $orderline /}
-            {/call}
+            {if not $orderline.mealBundle}
+              {call .selfCreditProductLine}
+                {param orderline: $orderline /}
+              {/call}
+            {/if}
           {/foreach}
+          {if $mealBundles and $mealBundles.length > 0}
+            <h2 class="meal-bundle-header">Have an issue with any of the items below? <span class="call-helpline">Call us at </span><a itemprop="helpline-phone-number" class="helpline-phone-number italic" href="tel:+1-866-283-7373" rel="nofollow">{$customerServiceContact}.</a></h2>
+            {foreach $orderline in $mealBundles }
+              {call .selfCreditProductLine}
+                {param orderline: $orderline /}
+              {/call}
+            {/foreach}
+          {/if}
         {/if}
       </div>
     </div>
@@ -182,7 +198,7 @@
             {/call}
           </button></div>
           <div class="sc-submit-button">
-            <button class="cssbutton green" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
+            <button class="cssbutton green credit-request-submit-button" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
               {call .ariaReview}
                 {param title: 'Submit Request' /}
                 {param reviewData: $reviewData /}
@@ -215,7 +231,7 @@
         <small class="sale-unit">{$orderline.configurationDescription} | ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
       </div>
     </div>
-    {if not ($orderline.sample or $orderline.free)}
+    {if not ($orderline.sample or $orderline.free or $orderline.mealBundle)}
       <div class="order-line-col order-line-reason">
         <select class="customsimpleselect" name="reason-{$orderline.orderLineId}" aria-label="Select an issue for {$orderline.description}">
           <option value="" {if not $orderline.complaint}selected{/if}>Select an Issue</option>
@@ -226,19 +242,20 @@
       </div>
       <div class="order-line-col order-line-qty">
         <select class="customsimpleselect" name="qty-{$orderline.orderLineId}" aria-label="Select quantity for {$orderline.description}">
-          <option value="" {if not $orderline.complaint}selected{/if}>Quantity</option>
+          <option value="" {if not $orderline.complaint}selected{/if}>Qty</option>
           {for $index in range(1, $orderline.quantity + 1)}
             <option value="{$index}" {if $orderline.complaint and $orderline.complaint.qty == $index}selected{/if}>{$index}</option>
           {/for}
         </select>
       </div>
+      <input class="aria-hidden" value="{$orderline.cartonNumbers}" name="carton-{$orderline.orderLineId}"></input>
     {/if}
     {if $orderline.sample or $orderline.free}
       <div class="order-line-col disable-order-line">
         <div class="title">
           {if $orderline.sample}
             SAMPLE ITEM
-          {else}
+          {elseif $orderline.free}
             FREE ITEM
           {/if}
         </div>
@@ -253,7 +270,15 @@
   <img src="/media_stat/images/common/check-radio-selected.svg" width="100" height="100" alt="Credit Request Submitted">
   <h1 class="credit-request-submit" id="creditRequestCompleteHeader" aria-label="Credit Request Submitted.">Credit Request Submitted</h1>
   <div class="status" id="creditRequestCompleteDetails">You can view the status of your claim in the <a href="/your_account/credits.jsp">Store Credits</a> page.</div>
-  <button onclick="FreshDirect.components.selfCreditRequestCompletePopup.closePopup(event)"class='cssbutton full-width green selfcredit-button'>Ok</button>
+  <button onclick="FreshDirect.components.selfCreditRequestCompletePopup.closePopup(event)"class='cssbutton full-width green selfcredit-button ok-button'>Ok</button>
+{/template}
+
+/**
+*/
+{template .selfCreditRequestError autoescape="false"}
+  <img src="/media_stat/images/common/warning_icon.svg" width="65" height="60" alt="Credit Request Error">
+  <div class="status" id="creditRequestCompleteDetails">We were unable to submit your credit request. Finish your claim by calling us at <a itemprop="helpline-phone-number" class="helpline-phone-number" href="tel:+1-866-283-7373" rel="nofollow">1-866-283-7373.</a></div>
+  <button onclick="FreshDirect.components.selfCreditRequestErrorPopup.closePopup(event)"class='cssbutton full-width green selfcredit-button ok-button'>Ok</button>
 {/template}
 
 /**

@@ -61,11 +61,11 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 			<tr>
 				<td colspan="3" class="title16">
 					<% if (FDStoreProperties.isAdServerEnabled()) { %>
-        				<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
+						<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
 							<script>
 								OAS_AD('CategoryNote');
 							</script>
-        				</div>
+						</div>
 					<% } %>
 					<table>
 						<tr>
@@ -86,6 +86,13 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 		<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){ %>
 			<tr>
 				<td colspan="3" class="title16">
+					<% if (FDStoreProperties.isAdServerEnabled()) { %>
+						<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
+							<script>
+								OAS_AD('CategoryNote');
+							</script>
+						</div>
+					<% } %>
 					<table>
 						<tr>
 							<td class="title16" style="padding-left: 10px;">

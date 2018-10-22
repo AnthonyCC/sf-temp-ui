@@ -63,7 +63,7 @@
 				<c:if test="${productPotato.available}">
 					<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
 					<div class="pdp-ratings"><soy:render template="pdp.ratings" data="${productPotato}" /></div>
-					<div class="pdp-price">
+					<div class="pdp-price" tabindex="0">
 						<soy:render template="common.price" data="${productPotato}" />
 						<soy:render template="pdp.savestring" data="${productPotato}" />
 					</div>
@@ -191,7 +191,7 @@
 
 					<c:if test="${productPotato.available}">
 						<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
-						<div class="pdp-price">
+						<div class="pdp-price" tabindex="0">
 							<soy:render template="common.price" data="${productPotato}" />
 							<soy:render template="pdp.savestring" data="${productPotato}" />
 						</div>

@@ -85,6 +85,7 @@ var FreshDirect = FreshDirect || {};
         if(largeUrl && largeUrl.length > 0){
           var beacon = new Image();
           beacon.src = $(this).attr('data-large-url');
+          beacon.alt = '';
 
           beacon.onload = function(){
               // put it in the container

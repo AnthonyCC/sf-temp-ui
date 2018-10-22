@@ -1859,6 +1859,9 @@ public final class ContentTypes {
             .required()
             .navigable()
             .build();
+        public static final Attribute excludeResidentalSearch = booleanAttribute("excludeResidentalSearch").build();
+        public static final Attribute excludeCorporateSearch = booleanAttribute("excludeCorporateSearch").build();
+        public static final Attribute excludeFoodKickSearch = booleanAttribute("excludeFoodKickSearch").build();
     }
 
     public static final class ProductFilter {
@@ -1919,6 +1922,9 @@ public final class ContentTypes {
         public static final Attribute rootTag = linkOneOf(Tag).toName("rootTag")
             .required()
             .build();
+        public static final Attribute excludeResidentalSearch = booleanAttribute("excludeResidentalSearch").build();
+        public static final Attribute excludeCorporateSearch = booleanAttribute("excludeCorporateSearch").build();
+        public static final Attribute excludeFoodKickSearch = booleanAttribute("excludeFoodKickSearch").build();
     }
 
     public static final class SortOption {

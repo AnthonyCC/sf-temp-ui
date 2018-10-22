@@ -4,9 +4,18 @@ import java.util.List;
 
 public class SelfCreditOrderDetailsData {
 
+	private String customerServiceContact;
     private List<SelfCreditOrderItemData> orderLines;
 
-    public List<SelfCreditOrderItemData> getOrderLines() {
+	public String getCustomerServiceContact() {
+		return customerServiceContact;
+	}
+
+	public void setCustomerServiceContact(String customerServiceContact) {
+		this.customerServiceContact = customerServiceContact;
+	}
+
+	public List<SelfCreditOrderItemData> getOrderLines() {
         return orderLines;
     }
 

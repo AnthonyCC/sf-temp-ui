@@ -25,13 +25,13 @@
     border-bottom: 1px solid #dcdcdc;
 }
 
-[data-component="drawer"] .drawer-header > li > div {
+[data-component="drawer"] .drawer-header > ul > li > div {
     text-align: center;
     color: #575860;
     font-size: 16px;
     line-height: 40px;
 }
-[data-component="drawer"] .drawer-header > li.active > div {
+[data-component="drawer"] .drawer-header > ul > li.active > div {
 	line-height: 60px;
 }
 [data-component="drawer"] .drawer-header li+li {
@@ -76,52 +76,59 @@
 }
 
 [data-component="drawer"][data-drawer-columns="3"] [data-drawer-default] > li,
-[data-component="drawer"][data-drawer-columns="3"] .drawer-header > li {
+[data-component="drawer"][data-drawer-columns="3"] .drawer-header > ul > li {
   display: inline-block;
   padding: 0;
   vertical-align: top;
 }
 
 [data-component="drawer"][data-drawer-columns="3"] [data-drawer-default] > [data-drawer-default-content="address"], 
-[data-component="drawer"][data-drawer-columns="3"] .drawer-header > #address-tab,
+[data-component="drawer"][data-drawer-columns="3"] .drawer-header > ul > #address-tab,
 [data-component="drawer"][data-drawer-columns="3"] [data-drawer-default] > [data-drawer-default-content="timeslot"], 
-[data-component="drawer"][data-drawer-columns="3"] .drawer-header > #timeslot-tab 
+[data-component="drawer"][data-drawer-columns="3"] .drawer-header > ul > #timeslot-tab 
 {
     width: 31.75%;
 }
-
-[data-component="drawer"][data-drawer-columns="3"] [data-drawer-default] > li, [data-component="drawer"][data-drawer-columns="3"] .drawer-header > li {
+[data-component="drawer"][data-drawer-columns="3"] .drawer-header > ul{
+	padding: 0;
+	margin: 0;
+}
+[data-component="drawer"][data-drawer-columns="1"] .drawer-header > ul{
+	padding: 0;
+	margin: 0;
+}
+[data-component="drawer"][data-drawer-columns="3"] [data-drawer-default] > li, [data-component="drawer"][data-drawer-columns="3"] .drawer-header > ul > li {
     width: 36%;
 }
 
 [data-component="drawer"] [data-drawer-default] > li.active, 
-[data-component="drawer"] .drawer-header > li.active {
+[data-component="drawer"] .drawer-header > ul > li.active {
 	width: 100% !important;
 	border-left: none;
 	height: 63px;
 }
-[data-component="drawer"] .drawer-header > li.active .close,
+[data-component="drawer"] .drawer-header > ul > li.active .close,
 [data-component="drawer"] .drawer-row.active .close,
-[data-component="drawer"] .drawer-header > li.active .cancel,
+[data-component="drawer"] .drawer-header > ul > li.active .cancel,
 [data-component="drawer"] .drawer-row.active .cancel
 {
     top: 0;
     display: inline-block;
     position: absolute;
 }
-[data-component="drawer"] .drawer-header > li.active .close,
+[data-component="drawer"] .drawer-header > ul > li.active .close,
 [data-component="drawer"] .drawer-row.active .close{
 	right: 10px;
 }
-[data-component="drawer"] .drawer-header > li.active .cancel,
+[data-component="drawer"] .drawer-header > ul > li.active .cancel,
 [data-component="drawer"] .drawer-row.active .cancel {
 	right: 145px;
 }
-[data-component="drawer"] .drawer-header > li.active .close .close-button,
+[data-component="drawer"] .drawer-header > ul > li.active .close .close-button,
 [data-component="drawer"] .drawer-row.active .close .close-button{
 	width: 120px;
 }
-[data-component="drawer"] .drawer-header > li.active .cancel .cancel-button,
+[data-component="drawer"] .drawer-header > ul > li.active .cancel .cancel-button,
 [data-component="drawer"] .drawer-row.active .cancel .cancel-button{
 	width: 80px;
     padding: 16px 0 16px 0;

@@ -5125,6 +5125,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public boolean isReferrerRestricted(FDIdentity identity) throws FDResourceException {
 		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.REFERRER.getName());
 	}
+	
+	public boolean isCreditRestricted(FDIdentity identity) throws FDResourceException {
+		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.CREDIT.getName());
+	}
 
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException {
 		Connection conn = null;
@@ -8539,10 +8543,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
     }
 	
 	private static final String GET_REJECTAL_COMPLAINTS ="select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
-			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         (s.status = 'STF')  " + 
+			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         (s.status = 'STF')  "
+			+ "and c.CREATED_BY <> ? " + 
 			"               union all " + 
 			"select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
-			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         ( cu.ACTIVE ='0' )" ; 
+			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         ( cu.ACTIVE ='0' )"
+			+ " and c.CREATED_BY <> ?" ; 
 	
 	/* APPDEV-6785 		AutoCreditApprovalCron */
 	public List<String> getComplaintsToRejectCredits() throws FDResourceException {
@@ -8552,6 +8558,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			ps= conn.prepareStatement(GET_REJECTAL_COMPLAINTS);
+			ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
+			ps.setString(2, ErpServicesProperties.getSelfCreditAgent());
 			
 			rs= ps.executeQuery();
 			List<String> lst = new ArrayList<String>();

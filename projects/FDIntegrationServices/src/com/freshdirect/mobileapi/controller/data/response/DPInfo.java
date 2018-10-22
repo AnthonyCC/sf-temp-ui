@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
 import java.text.NumberFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -9,6 +10,7 @@ import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class DPInfo extends Message {
@@ -35,6 +37,7 @@ public class DPInfo extends Message {
 //	private double autoRenewPrice;
 	private String defaultPaymentMethodPK;
 	private Boolean isMidweekPass;
+	private int numberOfOrders;
 	
 	public String getDeliveryPassStatus() {
 		return deliveryPassStatus;
@@ -169,5 +172,13 @@ public class DPInfo extends Message {
 	}
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
+	}
+
+	public int getNumberOfOrders() {
+		return numberOfOrders;
+	}
+
+	public void setNumberOfOrders(int numberOfOrders) {
+		this.numberOfOrders = numberOfOrders;
 	}
 }

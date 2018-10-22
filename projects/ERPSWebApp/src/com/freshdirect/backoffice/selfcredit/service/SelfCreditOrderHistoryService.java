@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderData;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderHistoryData;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
@@ -40,9 +42,8 @@ public class SelfCreditOrderHistoryService {
         
         List<SelfCreditOrderData> ordersToDisplay = new ArrayList<SelfCreditOrderData>();
         for (FDOrderInfoI fdOrderInfo : orders) {
-        	final boolean isEligibleForSelfCredit = checkOrderDeliveredOrEnRoute(fdOrderInfo.getOrderStatus());
-            final boolean isRecentOrder = isRecentOrder(fdOrderInfo.getCreateRequestedDate(), currentDate);
-            if (isEligibleForSelfCredit && isRecentOrder && !fdOrderInfo.isMakeGood()) {
+        	final boolean eligibleForSelfCredit = isEligibleForSelfCredit(fdOrderInfo, currentDate);
+        	if(eligibleForSelfCredit) {
                 SelfCreditOrderData order = new SelfCreditOrderData();
                 order.setSaleId(fdOrderInfo.getErpSalesId());
                 order.setRequestedDate(fdOrderInfo.getRequestedDate());
@@ -60,7 +61,16 @@ public class SelfCreditOrderHistoryService {
         return orderHistory;
     }
 
-    private boolean checkOrderDeliveredOrEnRoute(EnumSaleStatus orderStatus) {
+    private boolean isEligibleForSelfCredit(FDOrderInfoI fdOrderInfo, Date currentDate) {
+      final boolean orderStatusEligible= checkOrderDeliveredOrEnRoute(fdOrderInfo.getOrderStatus());
+      final boolean isRecentOrder = isRecentOrder(fdOrderInfo.getCreateRequestedDate(), currentDate);
+      final boolean makeGoodOrder = fdOrderInfo.isMakeGood();
+      final boolean fdOrder = EnumEStoreId.FD.equals(fdOrderInfo.getEStoreId());
+      final boolean giftCardOrder = EnumSaleType.GIFTCARD.equals(fdOrderInfo.getSaleType());
+      return orderStatusEligible && isRecentOrder && !makeGoodOrder && fdOrder && !giftCardOrder;
+	}
+
+	private boolean checkOrderDeliveredOrEnRoute(EnumSaleStatus orderStatus) {
 		return EnumSaleStatus.SETTLED.equals(orderStatus) ||EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus) ||EnumSaleStatus.ENROUTE.equals(orderStatus);
 	}
 

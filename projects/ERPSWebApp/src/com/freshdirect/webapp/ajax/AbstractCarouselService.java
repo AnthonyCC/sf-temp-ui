@@ -19,7 +19,6 @@ import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.event.ImpressionLogger;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -56,7 +55,7 @@ public abstract class AbstractCarouselService {
 
     /**
      * Return tab recommendation variant
-     * 
+     *
      * @return
      */
     protected abstract Variant getTabVariant();
@@ -112,7 +111,7 @@ public abstract class AbstractCarouselService {
 
 	/**
      * Populate recommendation tab with carousel.
-     * 
+     *
      * @param session
      * @param request
      * @param user
@@ -120,7 +119,7 @@ public abstract class AbstractCarouselService {
      * @param parentImpressionId
      * @param parentVariantId
      * @param recommendations
-     * 
+     *
      * @throws FDResourceException
      */
     public CarouselData getCarouselData(HttpSession session, HttpServletRequest request, FDSessionUser user, Variant variant, String parentImpressionId,
@@ -151,7 +150,7 @@ public abstract class AbstractCarouselService {
         if (recommendations != null && !recommendations.isLogged()) {
             logImpressions(recommendations, user, request, parentImpressionId, parentVariantId);
             logRecommenderResults(recommendations.getProducts());
-        }    	
+        }
     }
 
     public RecommendationTab getRecommendationTab(HttpServletRequest request, FDUserI user, RecommendationRequestObject requestData)
@@ -182,7 +181,7 @@ public abstract class AbstractCarouselService {
 
 	/**
      * Populate view cart carousel tabs, gets recommendations and generate carousels.
-     * 
+     *
      * @param request
      * @return view cart specific JSON compatible carousel definition
      * @throws InvalidContentKeyException
@@ -305,7 +304,7 @@ public abstract class AbstractCarouselService {
 
     /**
      * Calculates the title based on variant or site feature.
-     * 
+     *
      * @param variant
      * @return title of site feature or variant
      */
@@ -392,7 +391,7 @@ public abstract class AbstractCarouselService {
 			return false;
 		}
     	boolean useCache = FDStoreProperties.isProductRecommendCheckCacheEnabled() && null != cacheId && !cacheId.isEmpty() && user.getPrimaryKey() != null;
-    	
+
     	if (useCache) {
 	    	cacheId = cacheId + user.getPrimaryKey();
             Boolean cachedValue = CmsServiceLocator.ehCacheUtil().getObjectFromCache(CmsCaches.RECOMMENDATION_CHECK_CACHE_NAME.cacheName, cacheId);
@@ -400,18 +399,18 @@ public abstract class AbstractCarouselService {
 				return cachedValue;
 			}
     	}
-    	
+
         SessionInput sessionInput = createSessionInput(user, request, 1);
         sessionInput.setOnlyTabHeader(true);
 		Recommendations recommendations = ProductRecommenderUtil.doRecommend(user, variant.getSiteFeature(), sessionInput);
-    	
+
     	boolean hasProduct = recommendations.getAllProducts().size() > 0;
     	if (useCache) {
             CmsServiceLocator.ehCacheUtil().putObjectToCache(CmsCaches.RECOMMENDATION_CHECK_CACHE_NAME.cacheName, cacheId, new Boolean(hasProduct));
     	}
         return hasProduct;
 	}
-    
+
     private Recommendations getRecommendations(Variant variant, HttpServletRequest request, HttpSession session, String cacheId, FDUserI user) throws FDResourceException {
 		if (variant == null) {
 			return null;
@@ -471,16 +470,6 @@ public abstract class AbstractCarouselService {
 			session.setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, previousRecommendations);
 		}
 	}
-
-    protected boolean isUserAlreadyOrdered(FDUserI user) {
-        boolean currentUser = false;
-        try {
-            currentUser = user.getLevel() > FDUserI.RECOGNIZED && user.getAdjustedValidOrderCount(EnumEStoreId.FD) >= 3;
-        } catch (FDResourceException e) {
-            currentUser = false;
-        }
-        return currentUser;
-    }
 
     protected int selectedTab(List<Variant> variants, String selectedSiteFeature) {
         int selected = 0;

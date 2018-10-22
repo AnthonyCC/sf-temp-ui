@@ -22,10 +22,13 @@ import com.freshdirect.backoffice.selfcredit.data.SelfCreditComplaintReason;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderDetailsData;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -57,30 +60,48 @@ public class SelfCreditOrderDetailsService {
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
         	final boolean isDeliverPass = fdCartLine.lookupFDProduct().isDeliveryPass();
+        	
+        	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
+        	
         	if (!isDeliverPass) {
             	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == fdCartLine.lookupProduct()) ?"" : fdCartLine.lookupProduct().getPrimaryBrandName());
                 item.setProductName(collectProductName(item.getBrand(), fdCartLine.getDescription()));
-                item.setQuantity(fdCartLine.getQuantity());
+                item.setQuantity(collectQuantity(fdCartLine));
                 item.setProductImage((null == fdCartLine.lookupProduct()) ? "" : fdCartLine.lookupProduct().getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
-                item.setBasePriceUnit(fdCartLine.getSalesUnit());
+                item.setBasePriceUnit(productInfo.getDefaultPriceUnit());
                 item.setConfigurationDescription(fdCartLine.getConfigurationDesc());
                 item.setSample(fdCartLine.isSample());
                 item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
                 item.setMealBundle(isItemMealBundle(fdCartLine));
+                item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
                 orderLines.add(item);
 			}
         }
 
         SelfCreditOrderDetailsData selfCreditOrderDetailsData = new SelfCreditOrderDetailsData();
+        selfCreditOrderDetailsData.setCustomerServiceContact(user.getCustomerServiceContact());
         selfCreditOrderDetailsData.setOrderLines(orderLines);
         return selfCreditOrderDetailsData;
     }
 
-    private String collectProductName(String brandName, String description) {
+    private double collectQuantity(FDCartLineI fdCartLine) {
+    	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
+    	return  Double.parseDouble(quantity);
+	}
+
+	private List<String> collectCartonNumbers(List<FDCartonInfo> cartonContents) {
+    	List<String> cartonNumbers = new ArrayList<String>();
+    	for (FDCartonInfo cartonContent : cartonContents) {
+			cartonNumbers.add(cartonContent.getCartonInfo().getCartonNumber());
+		}
+		return cartonNumbers;
+	}
+
+	private String collectProductName(String brandName, String description) {
     	String productNameNoBrand = description;
     	if (brandName != null && brandName.length() > 0 && description.length() >= brandName.length() && description.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
             productNameNoBrand = description.substring(brandName.length()).trim();

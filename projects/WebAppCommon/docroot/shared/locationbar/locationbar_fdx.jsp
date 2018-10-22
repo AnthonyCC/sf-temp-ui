@@ -75,31 +75,6 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 
 <tmpl:insert template="/shared/locationbar/locationbar_layout_fdx.jsp">
 	
-	<tmpl:put name="fdx_login_form">
-    	<div id="login_cont_formContent" style="display: none; z-index: 1002" class="locabar_login">
-    		<div class="handler close-handler" id="login_cont_formContent_close"></div>
-    		<div class="logo"><img src="/media/layout/nav/globalnav/fdx/logo.png"  alt="FreshDirect" /></div>
-    		<div class="sign-in">Sign in</div>
-    		<form id="login_cont_formContentForm">
-    			<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>
-    			<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>
-        		<div id="login_cont_formContentForm_signInCont">
-        			<div style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</div>
-        			<button id="login_cont_formContentForm_signIn" name="submit" class="cssbutton fdxgreen">Sign in</button>
-        		</div>
-    		</form>
-			<div class="errorMsg" style="display: none;">
-				<div class="header">Please re-enter your Email and Password.</div> 
-				The information you entered is incorrect. Please try again.
-			</div>
-    		<div id="login_cont_formContent_forgotpass"><a href="/login/forget_password.jsp">Forgot your password?</a></div>
-    	</div>
-    	<%-- this script chunk is necessary to move the login form out of toptoolbar, because of relative z-index issues --%>
-		<script>
-			$jq('body').append($jq('#login_cont_formContent'));
-		</script>
-	</tmpl:put>
-	
 <%-- MASQUERADE bar --%>
 	<% if (masqueradeContext != null) {
 		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
@@ -474,7 +449,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 						%>
 						<div class="section-header">
 							TIMESLOT
-							<a href="<%= dlvInfoLink %>" class="locabar_addresses-ts-info" title="Delivery Info"></a>
+							<a href="<%= dlvInfoLink %>" class="locabar_addresses-ts-info" title="Delivery Info"><span class="offscreen">view available timeslots information</span></a>
 						</div>
 						<% if (isEligibleForPreReservation) { %>
 							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals( ((selectedAddress!=null) ? selectedAddress.getId() : null) ) ) { %>
@@ -641,14 +616,14 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					</div>
 				</div>
 			</div>
-			<tmpl:get name="fdx_login_form" />
+		
 		</div></tmpl:put>
 
 <%-- CART area --%>
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
 			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
 				<div class="bold cursor-pointer locabar_triggers_menuitem">
-          			<a href="/view_cart.jsp" tabindex="-1" nofocus>
+          			<a id="popup_cart" href="/view_cart.jsp">
 						<span class="offscreen">ViewCart</span>
 						<div style="display: inline-block;">
 							<div class="locabar-cart-count-cont">

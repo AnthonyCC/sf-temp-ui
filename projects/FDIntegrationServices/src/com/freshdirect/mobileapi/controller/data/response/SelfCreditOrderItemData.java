@@ -17,6 +17,7 @@ public class SelfCreditOrderItemData {
     private boolean sample;
     private boolean free;
     private boolean mealBundle;
+    private List<String> cartonNumbers;
 
     public SelfCreditOrderItemData(com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData selfCreditOrderItemData) {
         this.orderLineId = selfCreditOrderItemData.getOrderLineId();
@@ -31,6 +32,7 @@ public class SelfCreditOrderItemData {
         this.sample = selfCreditOrderItemData.isSample();
         this.free = selfCreditOrderItemData.isFree();
         this.mealBundle = selfCreditOrderItemData.isMealBundle();
+        this.setCartonNumbers(selfCreditOrderItemData.getCartonNumbers());
     }
 
     public static List<SelfCreditOrderItemData> wrap(
@@ -138,4 +140,11 @@ public class SelfCreditOrderItemData {
         this.mealBundle = mealBundle;
     }
 
+	public List<String> getCartonNumbers() {
+		return cartonNumbers;
+	}
+
+	public void setCartonNumbers(List<String> cartonNumbers) {
+		this.cartonNumbers = cartonNumbers;
+	}
 }

@@ -48,7 +48,7 @@
 			//set a session attribute so we know registration completed successfully
 			session.setAttribute("regSuccess", true);
 		%>
-			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
 			<script language="javascript">
 				window.location.href="/index.jsp";
 			</script>
@@ -59,7 +59,7 @@
 			if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
 
 			%>
-				<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+				<img src="/media_stat/images/navigation/spinner.gif" alt="spinner" class="fleft" />
 				<script language="javascript">
 					window.location.href="/login/login_main.jsp?successPage=%2Findex.jsp";
 				</script>

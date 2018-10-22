@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -245,6 +246,16 @@ public class PromotionFactory {
 		Set<String> s = new HashSet<String>();
 		for ( PromotionI promo : getAllAutomaticPromotions() ) {
 			if (promo.getPromotionType().equals(type)) {
+				s.add(promo.getPromotionCode());
+			}
+		}
+		return s;
+	}
+	
+	public Set<String> getWaiveChargeTypePromotionCodes() {
+		Set<String> s = new HashSet<String>();
+		for ( PromotionI promo : getAllAutomaticPromotions() ) {
+			if (promo.isWaiveCharge()) {
 				s.add(promo.getPromotionCode());
 			}
 		}

@@ -46,7 +46,7 @@ public interface SystemMessageList {
 	public final static String MSG_RESTRICTED_ADDRESS 					= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:fd.components.zipCheckPopup.openZipCheckPopup()\">click here</a>.";
 	public final static String MSG_RESTRICTED_ADDRESS_LOCATION_BAR		= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. Please select another address or choose a Pickup option. To see where we deliver, <a href=\"javascript:fd.components.zipCheckPopup.openZipCheckPopup()\">click here</a>.";
 	public final static String MSG_CORP_ADDR_OUT_OF_ZONE				= "We're sorry; FreshDirect does not offer Corporate Office Service delivery at this location.";
-	
+
 
 	// checkout
 	public final static String MSG_CHECKOUT_AMOUNT_TOO_LARGE_FDX	= "For your protection, we do not accept orders over {0,number,$0} online. Please contact one of our SideKicks via chat to assist you in placing this order.";
@@ -65,6 +65,7 @@ public interface SystemMessageList {
 	public final static String MSG_CHECKOUT_GENERIC_FRAUD		= "Please call FreshDirect at {0} and a customer service representative will assist you in placing this order.";
 	public final static String MSG_CHECKOUT_MAKEGOOD_TOO_LARGE = "Make-good order amount too large. Please contact a supervisor to process the order.";
 	public final static String MSG_CHECKOUT_TIMESLOT_NA			= "Sorry, the selected timeslot is no longer available. Please try again.";
+    public final static String MSG_CHECKOUT_BILLING_REF_TOO_LARGE       = "Billing reference should not exceed 25 letters";
 	// Credit Card
 	public final static String MSG_INVALID_ACCOUNT_NUMBER 	= "This number is invalid, please double-check your account number and enter the information again.";
 	public final static String MSG_CARD_EXPIRATION_DATE			= "The selected payment method has expired. Please select the \"edit\" button and update your payment method.";
@@ -87,7 +88,7 @@ public interface SystemMessageList {
 	public final static String MSG_INVALID_ACCOUNT_NUMBER_VERIFY= "Account numbers don''t match.";
 	public final static String MSG_ACCOUNT_NUMBER_LENGTH 		= "Account number must have at least 5 digits.";
 	public final static String MSG_ACCOUNT_NUMBER_ILLEGAL_ALPHA 		= "Account number cannot contains alphabetical characters.";
-	
+
 	public final static String MSG_NOT_UNIQUE_INFO				= "Some of the information you provided matches an existing account, so we are unable to extend our current promotions to you (one per household). If you believe you should be eligible for promotions, please contact our Customer Service Team at {0} before completing Checkout.";
 
 	public final static String MSG_PASSWORD_REPEAT				= "Please enter your password again - it doesn't match what you entered above.";
@@ -107,16 +108,16 @@ public interface SystemMessageList {
 	public final static String MSG_CCL_COPY_QTY_REQUIRED		= "Please select a quantity before copying items to another List.";
 	public final static String MSG_IDENTIFY_CARTLINE			= "Unable to identify which cartLine to change.";
     public final static String MSG_CCL_QUANTITY_REQUIRED        = "Please select a quantity before adding items to a list";
-	
+
 	//common
 	public final static String MSG_SYSTEM_ERROR			= "There has been a problem in the system.";
 	public final static String MSG_NUM_REQ			= "Please enter a valid number";
-	
+
 	// password assistance (siteaccess)
 	public final static String MSG_INVALID_HINT			= "Invalid or missing hint.";
-	
+
 	public final static String MSG_AUTH_FAILED			= "Payment Authorization Failed.";
-	
+
 	// redemption promo messages
 	public final static String MSG_EMPTY_USER_INPUT_AT_PROMOTION_CODE = "Promotion Code is required";
 	public final static String MSG_INVALID_CODE = "We''re sorry, the code you entered ({0}) is not valid.";//"Sorry, this promotion code ({0}) is not valid.";
@@ -135,7 +136,7 @@ public interface SystemMessageList {
 	public final static String MSG_HOME_NO_COS_DLV_ADDRESS = "Sorry, according to our data this is a residential address, eligible for our Home Delivery service.";
 
 	public final static String MSG_EMAIL_TO_SELF			= "Sorry, you cannot enter your own email address.";
-	  
+
 	public final static String MSG_CONTAINS_DLV_PASS		= "We''re sorry! Your cart already contains a delivery pass. Please remove it to add a different one.";
 	public final static String MSG_INVALID_DLV_PASS = "The delivery pass is invalid. Please contact customer service at {0} to process the order.";
 	public final static String MSG_1_UNLIMITED_PASS_EXPIRED = "We''re sorry! Your unlimited delivery pass expired on ";
@@ -160,7 +161,7 @@ public interface SystemMessageList {
 	public final static String MSG_IDENTIFY_RECIPIENT = "Unable to identify which recipient to change.";
 	public final static String MSG_CHECKOUT_RECIPIENT_EMPTY		= "Please add at least one recipient to your cart to continue checkout.";
 	public final static String ACCOUNT_LOCKED_FOR_GC		= "Due to multiple incorrect entries, gift card usage has been locked. Please contact Customer Service for further assistance {0}.";
-	public final static String APPLY_GC_WARNING		= "Sorry, One more incorrect entry may lock your account from adding gift cards. For Further Assistance, Please contact Customer Service {0}."; 
+	public final static String APPLY_GC_WARNING		= "Sorry, One more incorrect entry may lock your account from adding gift cards. For Further Assistance, Please contact Customer Service {0}.";
 	public final static String MSG_CHECKOUT_GC_ORDER_TOO_LARGE = "You have exceeded the maximum allowable gift card purchase. Please contact Customer Service for further assistance {0}";
 	public final static String MSG_CHECKOUT_GC_ORDER_COUNT = "You have exceeded the maximum allowable gift card purchase. Please contact Customer Service for further assistance {0}.";
 	public final static String MSG_CHECKOUT_RECIPIENTS_EMPTY = "Recipient List cannot be empty. Please add one or more recipients to Continue.";
@@ -185,12 +186,12 @@ public interface SystemMessageList {
 	public final static String MSG_CART_REDEMPTION_EXCEEDED	= "We''re sorry, the code you entered ({0}) has reached its maximum redemption limit.";
 	public final static String MSG_CART_USAGE_LIMIT_ONE_EXCEEDED	= "We''re sorry, you have already used the promotion ({0}) on an order.";
 	public final static String MSG_CART_USAGE_LIMIT_MORE_EXCEEDED	= "We''re sorry, you have already reached the maximum allowable redemption on this promotion ({0}).";
-	
+
 	public final static String MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT = "PLEASE NOTE: Discount will be applied when qualifying timeslot is selected.";
 	public final static String MSG_REDEMPTION_NOTE_DLV_ADDRESS	= "NOTICE: Your code will be accepted when you select a valid delivery address.";
 	public final static String MSG_REDEMPTION_NOTE_TIMESLOT	= "NOTICE: Your code will be accepted when you select a valid delivery date and time.";
 	public final static String MSG_REDEMPTION_NOTE_PAYMENT	= "NOTICE: Your code will be accepted when you select a valid payment method.";
-	
+
 	public final static String MSG_CVV_INCORRECT="Your payment method cannot be processed. Please verify the information you entered below and try again.";
 	public final static String MSG_PYMT_VERIFY_FAIL_1="Sorry, the requested authorization has failed. Please check your payment method information and ensure sufficient funds are available. Your account will be locked after 3 unsuccessful tries, you have 2 tries remaining. If you think there is an error and require additional assistance, please contact customer service at {0}.Some of the information below is missing or was filled out incorrectly. Please check:";
 	public final static String MSG_PYMT_VERIFY_FAIL_2="Sorry, the requested authorization has failed. Please check your payment method information and ensure sufficient funds are available. Your account will be locked after 3 unsuccessful tries, you have 1 try remaining. If you think there is an error and require additional assistance, please contact customer service at {0}.Some of the information below is missing or was filled out incorrectly. Please check:";
@@ -199,22 +200,22 @@ public interface SystemMessageList {
 	public final static String MSG_PYMT_VERIFY_FAIL="Sorry, the requested authorization has failed. Please check your payment method information and ensure sufficient funds are available. Your account will be locked after {0} unsuccessful tries, you have {1} tries remaining. If you think there is an error and require additional assistance, please contact customer service at {2}.Some of the information below is missing or was filled out incorrectly. Please check:";
 	public final static String MSG_INVALID_CC_NAME="Please enter name exactly as it appears on card.";
 	public final static String MSG_INVALID_CHK_NAME="Please enter your name.";
-	
+
 	public final static String MSG_EBT_NOT_ALLOWED 	= "Payment by EBT is not available for the selected delivery address at this time. Please select another payment option to continue.";
 	public final static String MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS 	= "Payment by EBT is not allowed at this time because there is already an EBT order in your account that has not yet been settled. After the first EBT order completes, you may place another order with an EBT card. In the meantime, please select another payment option to continue.";
 	public final static String MSG_EBT_NOT_ALLOWED_ON_ALERT 	= "Payment by EBT is not allowed at this time. Please select another payment option to continue or contact customer service at {0}.";
-	
+
 	public final static String MSG_COUPONS_SYSTEM_NOT_AVAILABLE ="We apologize, but our coupon system is currently unavailable. Please check back soon. Sorry for any inconvenience.";
 	public final static String MSG_COUPONS_EXP_DELIVERY_DATE ="Some of your coupons are not valid on your chosen delivery date. All of your coupons will be valid if your delivery date is on or before the following date: ";
 	public final static String MSG_SMS_ERROR = "Sorry, There was an error sending the SMS Message. Please check your number or try again later.";
 	public final static String MSG_OPTIN_REQ = "To subscribe, select at least one SMS alert. If you're opting out, please remove the mobile number.";
 	public final static String MSG_TIMEOUT_ERROR = "We apologise for the inconvenience, There was a problem with the gateway, Please try again later.";
-	
+
     public final static String MSG_CAPTCHA = "Please select captcha";
 	public final static String MSG_INVALID_CAPTCHA = "Captcha is not valid. Please select captcha";
 	public static final String MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD = "This delivery address is not valid for an EBT payment method.";
 	public static final String MSG_GENERAL_UNDER_ORDER_MINIMUM_MESSAGE = "Your cart has not reached the order minimum of {0} (not including taxes and delivery fees). In order to check out, simply add more delicious items to your cart.";
-    
+
     public static final String MSG_SOCIAL_ACCOUNT_EXIST_SIGNIN = "You have an existing account. You are signed in";
     public static final String MSG_SOCIAL_AUTO_SIGNIN = "Auto Sign In";
     public static final String MSG_SOCIAL_EXISTING_LINK_SIGNIN = "You have an existing account. It is now linked to {0}";
@@ -227,21 +228,21 @@ public interface SystemMessageList {
     public static final String MSG_SOCIAL_INVALID_USERTOKEN="Invalid User Token";
     public static final String MSG_SOCIAL_PROFILE_NOT_FOUND="Social profile not found";
     public static final String MSG_SOCIAL_PROFILE_EMAIL_NOT_FOUND="Social account needs to have an email address for Signup/Login";
-    
+
 
     public static final String MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED = "This email is not valid for FoodKick orders.  Please register a new account to place a FoodKick order.";
-    // SmartStreets 
+    // SmartStreets
     public final static String MSG_ADDRESS_NOT_UNIQUE = "We are not able to find your address, Please choose one of the suggested address below or modify your address.";
     public final static String MSG_ADDRESS_APT_WRONG = "We're sorry, but the address has an invalid Apt. number.<br>Please update the address or add new Apt. number.";
     public final static String MSG_ADDRESS_APT_REQ = "We're sorry, an Apt. number is required for this address. Please add an Apt. number or update the address.";
 	public final static String MSG_APARTMENT_INVALID_MISSING	= "An Apt/Suite # is missing/invalid for this address.";
 	public final static String MSG_DONT_DELIVER_TO_ADDRESS_SS 	= "We're sorry, but you must have an address in one of our <a href=\"javascript:fd.components.zipCheckPopup.openZipCheckPopup()\">delivery zones</a>. Please update your address or enter a new address.";
-	
+
 	//PayPal
-	public final static String MSG_PAYPAL_AUTH_FAIL_ERR="PayPal Buyer Revoked Pre-Approved Payment Authorization. Please select a different payment method for this order and contact your card issuer for clarification.";	
+	public final static String MSG_PAYPAL_AUTH_FAIL_ERR="PayPal Buyer Revoked Pre-Approved Payment Authorization. Please select a different payment method for this order and contact your card issuer for clarification.";
 	public final static String MSG_PAYPAL_AUTH_FAIL_ERR_1="Paypal is unable to process your payment at this time.";
 	public final static String MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE="There is a problem with this payment method. Please update your payment information.";
-	
+
     public final static String MSG_EMAIL_PREFERENCE_LEVEL_LENGTH = "Please enter an email preference level that is one character long.";
     public final static String MSG_EMAIL_PREFERENCE_LEVEL_NUMBER = "Please enter an email preference level that contains only numeric characters.";
 

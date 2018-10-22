@@ -126,6 +126,12 @@
   background: url(/media_stat/images/close.png) no-repeat;
   background-size: 100%;
 }
+
+@media (max-height: 680px) {
+  .qs-popup-close-icon, .close-icon {
+    top: 0;
+  }
+}
 .qs-hidehelp .qs-popup-help-icon, .qs-hidehelp .help-icon, .help-icon {
   display: none;
 }
