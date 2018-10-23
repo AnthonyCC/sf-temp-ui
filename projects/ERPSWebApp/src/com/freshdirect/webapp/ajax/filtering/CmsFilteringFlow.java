@@ -560,7 +560,6 @@ public class CmsFilteringFlow {
         switch (nav.getPageType()) {
             case SEARCH:
                 String searchParams = nav.getSearchParams() == null ? "" : nav.getSearchParams();
-                System.out.println("searchParams==============================="+searchParams);
                 if (user.getMasqueradeContext() != null) {
                     List<String> listSearchParamsList = getSearchList(searchParams); // see if search term contains multiple terms
                     if (listSearchParamsList.size() > 1) {
