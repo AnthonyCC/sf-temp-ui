@@ -1735,6 +1735,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
 
         defaults.put("feature.rollout.productCard2018", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.aggregatedfilterimprovement2018", "GLOBAL:ENABLED,false;");
 
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
