@@ -169,7 +169,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		//
 		// set payment in cart and store cart if valid payment found
 		//
-        PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, user, true, EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
+        PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, user, false, EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
 
 		//Checking for CC a/c's or at least one valid CC. If NO, restricting the customer to place order using E-check
 		String app = (String) session.getAttribute( SessionName.APPLICATION);
