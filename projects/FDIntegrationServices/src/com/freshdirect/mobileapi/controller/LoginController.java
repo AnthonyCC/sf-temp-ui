@@ -45,6 +45,8 @@ import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -605,11 +607,26 @@ public class LoginController extends BaseController  implements SystemMessageLis
         responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
         responseMessage.setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
         boolean isPurchaseDlvPassEligible = user.getFDSessionUser().isEligibleForDeliveryPass();
-        if(isPurchaseDlvPassEligible){
-        	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
-        }
         responseMessage.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
-        responseMessage.setShowDeliveryPassBanner(isPurchaseDlvPassEligible);
+        
+        boolean isFreeDeliveryPromoEligible = false;
+        boolean isShowDeliveryPassBanner = false;
+        //If the customer is eligible to buy FK DP and also eligible for some 'Free Delivery' promotion then show the warning like "Hey there! You already have FREE FoodKick Delivery until..."
+        if(isPurchaseDlvPassEligible){
+        	isFreeDeliveryPromoEligible = (null !=user.getPromotionEligibility() && null !=user.getPromotionEligibility().getWaiveChargeTypePromotionCodes() & !user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());
+        	if(isFreeDeliveryPromoEligible){
+        		PromotionI promotion = PromotionFactory.getInstance().getPromotion(user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().iterator().next());
+        		Date promoExpirationDate = promotion.getExpirationDate();
+        		String dpFreeDeliveryPromoWarning="";
+        		//TODO: Format the promo expiration date,  construct message : "Hey there! You already have FREE FoodKick Delivery until 12/31", and set it in the response.
+        		responseMessage.setDpFreeDeliveryPromoWarning(dpFreeDeliveryPromoWarning);
+        		
+        	}
+        }
+        //If the customer is  eligible to buy FK DP, and not eligible for any 'Free Delivery' promotion, then show the banner.
+        isShowDeliveryPassBanner = isPurchaseDlvPassEligible &&  !isFreeDeliveryPromoEligible;
+        responseMessage.setShowDeliveryPassBanner(isShowDeliveryPassBanner);
+        
         if(isPurchaseDlvPassEligible){
         	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
         }

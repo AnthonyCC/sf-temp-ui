@@ -54,6 +54,7 @@ public class LoggedIn extends Message {
     
     private boolean purchaseDlvPassEligible;
     private boolean showDeliveryPassBanner;
+    private String dpFreeDeliveryPromoWarning;
     private boolean fdxdpenabled;
     private List<String> dpskulist;
     private boolean dpActive;
@@ -355,5 +356,13 @@ public class LoggedIn extends Message {
 
 	public void setShowDeliveryPassBanner(boolean showDeliveryPassBanner) {
 		this.showDeliveryPassBanner = showDeliveryPassBanner;
+	}
+
+	public String getDpFreeDeliveryPromoWarning() {
+		return dpFreeDeliveryPromoWarning;
+	}
+
+	public void setDpFreeDeliveryPromoWarning(String dpFreeDeliveryPromoWarning) {
+		this.dpFreeDeliveryPromoWarning = dpFreeDeliveryPromoWarning;
 	}
 }
