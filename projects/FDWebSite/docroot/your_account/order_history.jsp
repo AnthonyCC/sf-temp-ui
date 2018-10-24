@@ -139,13 +139,12 @@ if (user.isEligibleForClientCodes()) {
 <!-- client codes end -->
 <% } %>
 <br>
-<TABLE role="presentation" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0" class="order_history_table">
+<TABLE WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0" class="order_history_table">
 	<tr>
 		<th scope="col" class="text10bold order_history_table_id_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='125'" %>>Order #</th>
 		<th scope="col" class="text10bold order_history_table_date_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='175'" %>><%= (mobWeb)? "" : "&nbsp;&nbsp;&nbsp;&nbsp;" %>Delivery<%= (mobWeb)? "" : " Date" %></th>
 		<% if(!mobWeb){ %><th scope="col" class="text10bold" bgcolor="#DDDDDD" WIDTH="<%= (mobWeb)? "0" : "140" %>">Delivery Type</th><% } %>
 		<th scope="col" class="text10bold order_history_table_total_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='75'" %> align="right"><%= (mobWeb)? "" : "Order " %>Total</th>
-		<% if(!mobWeb){ %><th scope="col" bgcolor="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></th> <% } %>
 		<th scope="col" class="text10bold order_history_table_status_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='90'" %>><%= (mobWeb)? "" : "Order " %>Status</th>
 		<th scope="col" class="text10bold" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='250'" %>>Details</th>
 	</tr>
@@ -186,7 +185,6 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
         <% if(!mobWeb){ %><td class="text10"><%= deliveryType %></td><% } %>
 		<td class="text10 order_history_table_total" align=right><%= JspMethods.formatPrice( orderInfo.getTotal() ) %><%= (mobWeb)? "" : "&nbsp;&nbsp;&nbsp;&nbsp;" %></td>
 		
-		<% if(!mobWeb){ %><td></td><% } %>
 <%
 	String status = "";
 	boolean orderIsModifying = modifyingOrderId !=null && modifyingOrderId.equals(orderInfo.getErpSalesId());

@@ -3453,8 +3453,11 @@ table.order_history_table td,table.order_history_table th{
 
 .order_history_table .order_history_table_total_header{
 	width: 100px;
+	padding-right:20px;
 }
-
+td.text10.order_history_table_total{
+	padding-right:20px;
+}
 .order_history_table .order_history_table_status_header{
 	width: 110px;
 }
