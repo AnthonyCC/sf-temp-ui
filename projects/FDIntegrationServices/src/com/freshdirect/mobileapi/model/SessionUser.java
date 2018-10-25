@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.model;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -17,6 +18,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDException;
@@ -32,10 +34,12 @@ import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
+import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.tagwrapper.FDCustomerCreatedListTagWrapper;
@@ -787,5 +791,35 @@ public class SessionUser {
 	
 	public boolean isDlvPassTimeslotNotMatched(){
 		return sessionUser.isDlvPassTimeslotNotMatched();		
+	}
+	
+	public void setDeliveryPassFlags(LoggedIn responseMessage)
+			throws FDResourceException {
+		responseMessage.setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
+        boolean isPurchaseDlvPassEligible = this.getFDSessionUser().isEligibleForDeliveryPass();
+        responseMessage.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
+        
+        boolean isFreeDeliveryPromoEligible = false;
+        boolean isShowDeliveryPassBanner = false;
+        //If the customer is eligible to buy FK DP and also eligible for some 'Free Delivery' promotion then show the warning like "Hey there! You already have FREE FoodKick Delivery until..."
+        if(isPurchaseDlvPassEligible){
+        	isFreeDeliveryPromoEligible = (null !=this.getPromotionEligibility() && null !=this.getPromotionEligibility().getWaiveChargeTypePromotionCodes() & !this.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());
+        	if(isFreeDeliveryPromoEligible){
+        		PromotionI promotion = PromotionFactory.getInstance().getPromotion(this.getPromotionEligibility().getWaiveChargeTypePromotionCodes().iterator().next());
+        		Date promoExpirationDate = promotion.getExpirationDate();
+        		String dpFreeDeliveryPromoWarning= "Hey there! You already have FREE FoodKick Delivery until " + new SimpleDateFormat("MM/dd").format(promoExpirationDate);
+        		if(FDStoreProperties.getFDDPPromotionWarningMsg()){
+        			responseMessage.setDpFreeDeliveryPromoWarning(dpFreeDeliveryPromoWarning);	
+        		}
+        	}
+        }
+        //If the customer is  eligible to buy FK DP, and not eligible for any 'Free Delivery' promotion, then show the banner.
+        isShowDeliveryPassBanner = isPurchaseDlvPassEligible &&  !isFreeDeliveryPromoEligible;
+        responseMessage.setShowDeliveryPassBanner(isShowDeliveryPassBanner);
+        
+        if(isPurchaseDlvPassEligible){
+        	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
+        }
+        responseMessage.setDpActive(this.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
 	}
 }
