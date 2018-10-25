@@ -53,13 +53,10 @@ public class SapCheckAvailability implements SapCommandI {
 	}
 
 	public void execute() throws SapException {
-		
-		LOGGER.info("ATP-CHECK SapCheckAvailability for :"+ (null !=order & null !=order.getCustomer() ? order.getCustomer().getSapCustomerNumber(): ""));
 
 		AvailabilityBapiBuilder builder = new CompositeAvailabilityBuilder(order);
 
 		for (int i = 0; i < order.numberOfOrderLines(); i++) {
-			LOGGER.info("ATP-CHECK SapCheckAvailability for material: "+order.getOrderLine(i).getMaterialNumber()+", Quantity: "+order.getOrderLine(i).getQuantity());
 			builder.add(order.getOrderLine(i));
 		}
 
@@ -69,7 +66,6 @@ public class SapCheckAvailability implements SapCommandI {
 
 		builder.process();
 
-		LOGGER.info("ATP-CHECK SapCheckAvailability completed for :"+ (null !=order & null !=order.getCustomer() ? order.getCustomer().getSapCustomerNumber(): ""));
 	}
 
 	private static interface AvailabilityBapiBuilder {

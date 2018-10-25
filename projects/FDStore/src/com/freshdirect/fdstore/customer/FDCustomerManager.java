@@ -2180,7 +2180,6 @@ public class FDCustomerManager {
 	 */
 	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout,String isFromLogin) throws FDResourceException {
 		
-		LOGGER.info("ATP-CHECK for :"+ (null !=identity & null !=identity.getErpCustomerPK() ? identity.getErpCustomerPK():""));
 		try {
 			
 
@@ -2210,12 +2209,10 @@ public class FDCustomerManager {
 			Map<String, FDAvailabilityI> fdInvMap = null;
 			long timer = System.currentTimeMillis();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled("checkAvailability_Api")) {
-				LOGGER.info("ATP-CHECK for :"+ (null !=identity & null !=identity.getErpCustomerPK() ? identity.getErpCustomerPK():"")+" going to SF2_0");
 				fdInvMap = OrderResourceApiClient.getInstance().checkAvailability(identity, createOrder, timeout, isFromLogin);
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
-				LOGGER.info("ATP-CHECK for :"+ (null !=identity & null !=identity.getErpCustomerPK() ? identity.getErpCustomerPK():"")+" going to Legacy");
 				fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
 
 			}
