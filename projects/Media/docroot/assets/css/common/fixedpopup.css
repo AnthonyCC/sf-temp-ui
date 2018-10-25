@@ -35,6 +35,14 @@
 	display:inline-flex;
 	flex-direction:column;
 	-webkit-overflow-scrolling: touch;
+/* 	overflow-y:auto; */
+/* 	overflow-x:hidden; */
+/* 	height:100%; */
+}
+
+/* fix for the create account scroll bar in IE */
+#ajaxpopup .fixedPopupContent{
+	height:100%;
 }
 
 .fixedpopup .qs-popup-header {
