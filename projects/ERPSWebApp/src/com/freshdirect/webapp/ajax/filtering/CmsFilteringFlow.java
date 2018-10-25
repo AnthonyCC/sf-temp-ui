@@ -309,7 +309,7 @@ public class CmsFilteringFlow {
     	BrowseDataContext browseDataContext = null;
 
     	String plantId = user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?user.getUserContext().getFulfillmentContext().getPlantId():null;
-    	String cacheKey = user.getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab();
+        String cacheKey = user.getPrimaryKey() + "," + plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab() + "," + user.getSelectedServiceType();
     	browseDataContext = getBrowseDataContextFromCacheForPaging(nav, cacheKey);
 		if (browseDataContext == null) {
 			browseDataContext = doSearchLikeFlow(nav, user);
