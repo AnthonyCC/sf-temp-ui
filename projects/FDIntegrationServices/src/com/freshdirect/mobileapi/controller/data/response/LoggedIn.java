@@ -363,6 +363,6 @@ public class LoggedIn extends Message {
 	}
 
 	public void setDpFreeDeliveryPromoWarning(String dpFreeDeliveryPromoWarning) {
-		this.dpFreeDeliveryPromoWarning = dpFreeDeliveryPromoWarning;
+		this.dpFreeDeliveryPromoWarning = dpFreeDeliveryPromoWarning; 
 	}
 }
