@@ -1228,9 +1228,6 @@ public class Cart {
 			}
 		}
 		boolean isPurchaseDlvPassEligible = user.getFDSessionUser().isEligibleForDeliveryPass();
-        if(isPurchaseDlvPassEligible){
-        	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
-        }
         cartDetail.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
         return cartDetail;
     }

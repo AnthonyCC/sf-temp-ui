@@ -562,18 +562,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		responseMessage.setTotalOrderCount(user.getTotalOrderCount());
 		responseMessage.setTcAcknowledge(user.getTcAcknowledge());
         responseMessage.setZipCode(user.getZipCode());
-        responseMessage.setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
-        boolean isPurchaseDlvPassEligible = user.getFDSessionUser().isEligibleForDeliveryPass();
-        if(isPurchaseDlvPassEligible){
-        	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
-        }
-        responseMessage.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
-        responseMessage.setShowDeliveryPassBanner(isPurchaseDlvPassEligible);
-        if(isPurchaseDlvPassEligible){
-        	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
-        }
-        responseMessage.setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
-		
+        user.setDeliveryPassFlags(responseMessage);
 		return responseMessage;
 	}
 	

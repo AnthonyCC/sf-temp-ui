@@ -245,20 +245,20 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        // check cvv code only if the following conditions is true
 	        // 1) isPaymentMethodVerificationEnabled is true
 	        // 2) payment is credit card
-			if (FDStoreProperties.isPaymentMethodVerificationEnabled() &&
-					EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
-				result.addError(csv == null || csv.length() <= 0, PaymentMethodName.CSV,
-						SystemMessageList.MSG_REQUIRED);
+			if (FDStoreProperties.isPaymentMethodVerificationEnabled()
+					&& EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+
+				result.addError(csv == null || csv.isEmpty(), PaymentMethodName.CSV, SystemMessageList.MSG_REQUIRED);
 
 				if (EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
-					result.addError(csv != null & csv.length() != 0 & csv.length() != 4, PaymentMethodName.CSV,
+					result.addError(csv != null && csv.length() != 0 && csv.length() != 4, PaymentMethodName.CSV,
 							SystemMessageList.MSG_CVV_INCORRECT);
 				} else {
-					result.addError(csv != null & csv.length() != 0 & csv.length() != 3, PaymentMethodName.CSV,
+					result.addError(csv != null && csv.length() != 0 && csv.length() != 3, PaymentMethodName.CSV,
 							SystemMessageList.MSG_CVV_INCORRECT);
 				}
 
-			}       
+			}
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	        if (abaRouteNumber != null && !"".equals(abaRouteNumber)) {
 	        	abaRouteNumber = StringUtils.leftPad(abaRouteNumber, 9, "0");

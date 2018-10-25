@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -603,19 +604,10 @@ public class LoginController extends BaseController  implements SystemMessageLis
         boolean deliveryAddr = setDeliveryAddress(user);
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
         responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
-        responseMessage.setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
-        boolean isPurchaseDlvPassEligible = user.getFDSessionUser().isEligibleForDeliveryPass();
-        if(isPurchaseDlvPassEligible){
-        	isPurchaseDlvPassEligible = (null ==user.getPromotionEligibility() || null ==user.getPromotionEligibility().getWaiveChargeTypePromotionCodes()||user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());        	
-        }
-        responseMessage.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
-        responseMessage.setShowDeliveryPassBanner(isPurchaseDlvPassEligible);
-        if(isPurchaseDlvPassEligible){
-        	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
-        }
-        responseMessage.setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
+        user.setDeliveryPassFlags(responseMessage);
         return responseMessage;
     }
+
 
 	// FDX-1873 - Show timeslots for anonymous address
 	//FDX-2036 API - at login, if anon address exists in Address Book of user, select the Address Book address
