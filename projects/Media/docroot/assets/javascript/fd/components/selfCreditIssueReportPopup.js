@@ -266,7 +266,7 @@ var FreshDirect = window.FreshDirect || {};
   function transformCartonNumbersArray(orderlines) {
     for (var i = 0; i < orderlines.length; i++) {
       if(Array.isArray(orderlines[i].cartonNumbers) && orderlines[i].cartonNumbers.length > 0) {
-        orderlines[i].cartonNumbers = orderlines[i].cartonNumbers.join('|')
+        orderlines[i].cartonNumbers = orderlines[i].cartonNumbers.join("|")
       } else if (orderlines[i].cartonNumbers.length === 0) {
         orderlines[i].cartonNumbers = '';
       }
@@ -283,8 +283,9 @@ var FreshDirect = window.FreshDirect || {};
       var qty = formData["qty-" + lineId];
       if (!qty) return false;
       var cartonNumbers = formData["carton-" + lineId];
-      cartonNumbers = cartonNumbers.split('|')
-      if(typeof cartonNumbers === undefined) {
+      if (cartonNumbers.length > 0) {
+        cartonNumbers = cartonNumbers.split("|")
+      } else {
         cartonNumbers = [];
       }
       list[lineId] = {
