@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -605,34 +606,10 @@ public class LoginController extends BaseController  implements SystemMessageLis
         boolean deliveryAddr = setDeliveryAddress(user);
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
         responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
-        responseMessage.setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
-        boolean isPurchaseDlvPassEligible = user.getFDSessionUser().isEligibleForDeliveryPass();
-        responseMessage.setPurchaseDlvPassEligible(isPurchaseDlvPassEligible);
-        
-        boolean isFreeDeliveryPromoEligible = false;
-        boolean isShowDeliveryPassBanner = false;
-        //If the customer is eligible to buy FK DP and also eligible for some 'Free Delivery' promotion then show the warning like "Hey there! You already have FREE FoodKick Delivery until..."
-        if(isPurchaseDlvPassEligible){
-        	isFreeDeliveryPromoEligible = (null !=user.getPromotionEligibility() && null !=user.getPromotionEligibility().getWaiveChargeTypePromotionCodes() & !user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().isEmpty());
-        	if(isFreeDeliveryPromoEligible){
-        		PromotionI promotion = PromotionFactory.getInstance().getPromotion(user.getPromotionEligibility().getWaiveChargeTypePromotionCodes().iterator().next());
-        		Date promoExpirationDate = promotion.getExpirationDate();
-        		String dpFreeDeliveryPromoWarning="";
-        		//TODO: Format the promo expiration date,  construct message : "Hey there! You already have FREE FoodKick Delivery until 12/31", and set it in the response.
-        		responseMessage.setDpFreeDeliveryPromoWarning(dpFreeDeliveryPromoWarning);
-        		
-        	}
-        }
-        //If the customer is  eligible to buy FK DP, and not eligible for any 'Free Delivery' promotion, then show the banner.
-        isShowDeliveryPassBanner = isPurchaseDlvPassEligible &&  !isFreeDeliveryPromoEligible;
-        responseMessage.setShowDeliveryPassBanner(isShowDeliveryPassBanner);
-        
-        if(isPurchaseDlvPassEligible){
-        	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
-        }
-        responseMessage.setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
+        user.setDeliveryPassFlags(responseMessage);
         return responseMessage;
     }
+
 
 	// FDX-1873 - Show timeslots for anonymous address
 	//FDX-2036 API - at login, if anon address exists in Address Book of user, select the Address Book address
