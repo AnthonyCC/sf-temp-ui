@@ -808,8 +808,9 @@ public class SessionUser {
         		PromotionI promotion = PromotionFactory.getInstance().getPromotion(this.getPromotionEligibility().getWaiveChargeTypePromotionCodes().iterator().next());
         		Date promoExpirationDate = promotion.getExpirationDate();
         		String dpFreeDeliveryPromoWarning= "Hey there! You already have FREE FoodKick Delivery until " + new SimpleDateFormat("MM/dd").format(promoExpirationDate);
-        		responseMessage.setDpFreeDeliveryPromoWarning(dpFreeDeliveryPromoWarning);
-        		
+        		if(FDStoreProperties.getFDDPPromotionWarningMsg()){
+        			responseMessage.setDpFreeDeliveryPromoWarning(dpFreeDeliveryPromoWarning);	
+        		}
         	}
         }
         //If the customer is  eligible to buy FK DP, and not eligible for any 'Free Delivery' promotion, then show the banner.
