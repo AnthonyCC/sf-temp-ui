@@ -35,6 +35,7 @@ public class FDCustomerInfo implements java.io.Serializable {
     private double userGiftCardsBalance;
     private boolean goGreen;
     private int fdcOrderCount = -1;
+    private String secondEmailAddress;
 	
 	public FDCustomerInfo(@JsonProperty("firstName") String firstName,@JsonProperty("lastName") String lastName){
 		this.firstName = firstName;
@@ -222,6 +223,14 @@ public class FDCustomerInfo implements java.io.Serializable {
 	public void getUserInfo(FDUserI customerUser) throws FDResourceException {
 		this.setChefsTable(customerUser.isChefsTable());
 		this.setCustomerServiceContact(customerUser.getCustomerServiceContact());
+	}
+
+	public String getSecondEmailAddress() {
+		return secondEmailAddress;
+	}
+
+	public void setSecondEmailAddress(String secondEmailAddress) {
+		this.secondEmailAddress = secondEmailAddress;
 	}
 
 }
