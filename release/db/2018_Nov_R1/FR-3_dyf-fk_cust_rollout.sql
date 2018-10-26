@@ -16,6 +16,8 @@ Insert into CUST.SS_VARIANTS (ID,CONFIG_ID,FEATURE,TYPE,ALIAS_ID,ARCHIVED) value
 Insert into CUST.SS_VARIANT_PARAMS (ID,KEY,VALUE) values ('fk_scarab_cart','generator','RelatedItems_scarabCart(cartContents)');
 Insert into CUST.SS_VARIANT_PARAMS (ID,KEY,VALUE) values ('fk_scarab_cart','sampling_strat','power');
 Insert into CUST.SS_VARIANT_PARAMS (ID,KEY,VALUE) values ('fk_scarab_cart','exponent','0.4');
+Insert into CUST.SS_VARIANT_PARAMS (ID,KEY,VALUE) values ('fk_scarab_cart','prez_title','Did You Forget?');
+Insert into CUST.SS_VARIANT_PARAMS (ID,KEY,VALUE) values ('fk_scarab_cart','prez_desc','Did you miss one of these');
 
 Insert into CUST.SS_VARIANT_PARAMS (ID,KEY,VALUE) values ('fk_cart_toprated','exponent','0.4');
 Insert into CUST.SS_VARIANT_PARAMS (ID,KEY,VALUE) values ('fk_cart_toprated','generator','RecursiveNodes("fvg","msa"):atLeast(QualityRating_Discretized2,4)');
