@@ -44,7 +44,7 @@ var FreshDirect = window.FreshDirect || {};
       }
     },
     customClass: {
-      value: "overlay-medium selfcredit-overlay"
+      value: "overlay-small selfcredit-overlay"
     },
     openPopup: {
       value: function() {
