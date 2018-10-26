@@ -95,10 +95,6 @@
 #selfCreditIssueReport.overlay.overlay-fullscreen .overlay-header {
   font-size: 20px;
 }
-#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-container .overlay-header-helper,
-#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-container .overlay-content {
-  top: -22px;
-}
 #selfCreditIssueReport.overlay-medium .section-container {
   margin: 30px;
 }

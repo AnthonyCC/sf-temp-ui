@@ -59,9 +59,12 @@ body.overlay-opened {
 }
 
 .overlay.overlay-fullscreen .overlay-container {
+  position: absolute;
   top: 0;
-  width: 100%;
-  max-height: 100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
   display: flex;
   flex-direction: column;
 }
@@ -103,20 +106,21 @@ body.overlay-opened {
 
 .overlay.overlay-fullscreen .overlay-content {
   box-shadow: none;
+  box-sizing: border-box;
   height: 100%;
-  padding: 0;
+  padding: 45px 0 0 0;
   max-width: 970px;
   min-width: 970px;
-  position: relative;
-  top: -25px;
+  position: absolute;
+  top: 0;
   overflow: auto;
 }
 
 .overlay.overlay-fullscreen .overlay-container .overlay-header-helper {
   background-color: #4fa157;
   min-height: 45px;
-  position: relative;
-  top: -25px;
+  position: absolute;
+  top: 0;
   width: 100%;
 }
 
