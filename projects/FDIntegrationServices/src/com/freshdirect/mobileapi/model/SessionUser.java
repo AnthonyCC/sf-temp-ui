@@ -807,9 +807,12 @@ public class SessionUser {
         	if(isFreeDeliveryPromoEligible){
         		PromotionI promotion = PromotionFactory.getInstance().getPromotion(this.getPromotionEligibility().getWaiveChargeTypePromotionCodes().iterator().next());
         		Date promoExpirationDate = promotion.getExpirationDate();
-        		String dpFreeDeliveryPromoWarning= "Hey there! You already have FREE FoodKick Delivery until " + new SimpleDateFormat("MM/dd").format(promoExpirationDate);
+        		String dpFreeDeliveryPromoWarning1 = "Hey there! You already have FREE FoodKick Delivery until " + new SimpleDateFormat("MM/dd").format(promoExpirationDate);
+        		String dpFreeDeliveryPromoWarning2 = "included with your active FreshDirect DeliveryPass. If you want to cancel " +
+        												"it + sign up for FoodKick DeliveryPass only, contact Customer Service at " + FDStoreProperties.getFoodKickCustomerServiceContact() + ".";
         		if(FDStoreProperties.getFDDPPromotionWarningMsg()){
-        			responseMessage.setDpFreeDeliveryPromoWarning(dpFreeDeliveryPromoWarning);	
+        			responseMessage.setDpFreeDeliveryPromoWarning1(dpFreeDeliveryPromoWarning1);
+        			responseMessage.setDpFreeDeliveryPromoWarning2(dpFreeDeliveryPromoWarning2);
         		}
         	}
         }

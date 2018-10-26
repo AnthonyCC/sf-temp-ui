@@ -61,7 +61,7 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 			<tr>
 				<td colspan="3" class="title16">
 					<% if (FDStoreProperties.isAdServerEnabled()) { %>
-						<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
+						<div id='oas_CategoryNote' ad-fixed-size="true">
 							<script>
 								OAS_AD('CategoryNote');
 							</script>
@@ -87,7 +87,7 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 			<tr>
 				<td colspan="3" class="title16">
 					<% if (FDStoreProperties.isAdServerEnabled()) { %>
-						<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
+						<div id='oas_CategoryNote' ad-fixed-size="true">
 							<script>
 								OAS_AD('CategoryNote');
 							</script>
