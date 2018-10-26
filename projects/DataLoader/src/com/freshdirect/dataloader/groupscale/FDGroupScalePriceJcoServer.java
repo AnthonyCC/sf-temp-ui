@@ -160,11 +160,24 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 
 					groupTable.nextRow();
 				}
-				
+				Map<String, ErpGrpPriceModel> scaleGroups = null;
+				List<ErpGrpPriceModel> scaleGroupsList = new ArrayList<ErpGrpPriceModel>();
 				for (Iterator<String> iterator = salesAreaGroupScaleRecordMap.keySet().iterator(); iterator.hasNext();) {
 					Map<String, List<GroupScalePriceParameter>> groupScaleRecordMap = salesAreaGroupScaleRecordMap.get(iterator.next());
 					validateScaleGroupRecords(groupScaleRecordMap, result);
-					populateGroupScale(groupScaleRecordMap);
+					scaleGroups =populateGroupScale(groupScaleRecordMap,scaleGroups);
+				}
+				if(null !=scaleGroups && !scaleGroups.isEmpty()){
+					for (Iterator iterator = scaleGroups.values().iterator(); iterator
+							.hasNext();) {
+						ErpGrpPriceModel erpGrpPriceModel = (ErpGrpPriceModel) iterator.next();
+						scaleGroupsList.add(erpGrpPriceModel);
+						
+					}
+				}
+				
+				if(!scaleGroupsList.isEmpty()){
+					storeScaleGroups(scaleGroupsList);
 				}
 //				validateScaleGroupRecords(groupScaleRecordMap, result);
 
@@ -282,29 +295,37 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 		 * @param groupScaleRecordMap
 		 * @throws Exception
 		 */
-		private void populateGroupScale(final Map<String, List<GroupScalePriceParameter>> groupScaleRecordMap)
+		private Map<String, ErpGrpPriceModel> populateGroupScale(final Map<String, List<GroupScalePriceParameter>> groupScaleRecordMap, Map<String, ErpGrpPriceModel> scaleGroups)
 				throws Exception {
-			List<ErpGrpPriceModel> scaleGroups = new ArrayList<ErpGrpPriceModel>();
+			if(null == scaleGroups){
+				scaleGroups = new HashMap<String,  ErpGrpPriceModel>();
+			}
 			try {
 				
 				for (final Map.Entry<String, List<GroupScalePriceParameter>> scaleGroupRecordEntry : groupScaleRecordMap
 						.entrySet()) {
 					final String scaleGroupId = scaleGroupRecordEntry.getKey();
-
-					ErpGrpPriceModel scaleGroupModel = new ErpGrpPriceModel();
-					scaleGroups.add(scaleGroupModel);
-
-					scaleGroupModel.setGrpId(scaleGroupId);
-
-					final Boolean isScaleGroupExpired = toBooleanObject(
-							StringUtils.lowerCase(scaleGroupRecordEntry.getValue().get(0).getGrpExpiryIndicator()),
-							"x", "", null);
-
-					scaleGroupModel.setActive(!isScaleGroupExpired.booleanValue());
-					scaleGroupModel.setShortDesc(scaleGroupRecordEntry.getValue().get(0).getGrpShortDesc());
-					scaleGroupModel.setLongDesc(scaleGroupRecordEntry.getValue().get(0).getGrpLongDesc());
-
-					scaleGroupModel.setMatList(new HashSet<String>());
+					ErpGrpPriceModel scaleGroupModel =null;
+					if(!scaleGroups.containsKey(scaleGroupId)){
+						scaleGroupModel = new ErpGrpPriceModel();
+						scaleGroups.put(scaleGroupId, scaleGroupModel);
+					}else{
+						scaleGroupModel = scaleGroups.get(scaleGroupId);
+					}
+//						ErpGrpPriceModel scaleGroupModel = new ErpGrpPriceModel();
+//						scaleGroupsList.add(scaleGroupModel);
+	
+						scaleGroupModel.setGrpId(scaleGroupId);
+	
+						final Boolean isScaleGroupExpired = toBooleanObject(
+								StringUtils.lowerCase(scaleGroupRecordEntry.getValue().get(0).getGrpExpiryIndicator()),
+								"x", "", null);
+	
+						scaleGroupModel.setActive(!isScaleGroupExpired.booleanValue());
+						scaleGroupModel.setShortDesc(scaleGroupRecordEntry.getValue().get(0).getGrpShortDesc());
+						scaleGroupModel.setLongDesc(scaleGroupRecordEntry.getValue().get(0).getGrpLongDesc());
+	
+						scaleGroupModel.setMatList(new HashSet<String>());
 
 					
 
@@ -361,15 +382,16 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 					}
 				}
 
-				if (scaleGroups.size() > 0) {
+				/*if (scaleGroups.size() > 0) {
 					storeScaleGroups(scaleGroups);
-				}
+				}*/
 
 				LOG.info(String.format("Processing scale group successfull [%s] ", new Date()));
 			} catch (final Exception e) {
 				LOG.error("Processing scale group failed. Exception is ", e);
 				throw new Exception(e);
 			}
+			return scaleGroups;
 		}
 
 		/**
