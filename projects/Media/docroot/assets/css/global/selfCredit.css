@@ -1,10 +1,85 @@
+#selfCreditInit .self-credit-no-orders {
+  font-size: 14px;
+}
 #selfCreditInit ~ #FDCustomSelect {
-  width: 400px;
+  width: 340px;
+  box-shadow: none;
+  box-sizing: border-box;
+  padding: 0;
+}
+#selfCreditInit ~ #FDCustomSelect ul.customselect {
+  width: 100%;
+}
+#selfCreditInit ~ #FDCustomSelect .customselect li {
+  padding: 10px;
+}
+#selfCreditInit ~ #FDCustomSelect .customselect li button {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 14px;
+  color: #444444;
+}
+#selfCreditInit ~ #FDCustomSelect ul.customselect li.selected {
+  background-color: #edf5ee;
+}
+#selfCreditInit ~ #FDCustomSelect ul.customselect li.selected button {
+  text-decoration: underline;
+}
+#selfCreditInit ~ #FDCustomSelect .customselect li:hover,
+#selfCreditInit ~ #FDCustomSelect .customselect li button:hover {
+  text-decoration: none;
+  text-decoration-color: transparent;
+}
+#selfCreditInit ~ #FDCustomSelect li button {
+  padding: 0;
 }
 @media(max-width: 740px) {
   #selfCreditInit ~ #FDCustomSelect {
     width: auto;
   }
+
+  #customselect-close-container {         
+    position: relative;
+    top: 0;
+    right: 0;
+    z-index: 2003;
+    height: 50px;
+    width: 100vw;
+    background-color: #444444; 
+  }
+  #customselect-close-container button {
+    filter: brightness(0) invert(1);
+    top: 0;
+  }
+  #selfCreditInit ~ #FDCustomSelect.browse-popup.shown.selectlight {
+    top: 0;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+    border: none;
+    widows: 100%;
+  }
+  #selfCreditInit.overlay.selfcredit-overlay .popupcontentoverlay {
+    top: 46px;
+  }
+  #selfCreditInit ~ #FDCustomSelect .selectlight li {
+    height: 83px;
+  }
+  /* #selfCreditInit ~ #FDCustomSelect ul.customselect li span {
+    display: inline-flex;
+    width: 26px;
+    height: 26px;
+    border-radius: 50px;
+    border: 1px solid #dddddd;
+  }
+  #selfCreditInit ~ #FDCustomSelect ul.customselect li.selected {
+    background: #ffffff;
+  }
+  #selfCreditInit ~ #FDCustomSelect ul.customselect li.selected span {
+    background-image: url('/media_stat/images/common/check-radio-selected.svg');
+    background-position: center center;
+  } */
 }
 #selfCreditIssueReport.overlay-medium {
   font-family: "Verdana", sans-serif;
@@ -16,6 +91,13 @@
 }
 #selfCreditIssueReport.overlay.overlay-fullscreen .overlay-content {
   overflow: hidden;
+}
+#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-header {
+  font-size: 20px;
+}
+#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-container .overlay-header-helper,
+#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-container .overlay-content {
+  top: -22px;
 }
 #selfCreditIssueReport.overlay-medium .section-container {
   margin: 30px;
@@ -631,7 +713,7 @@
   display: block;
   max-width: 970px;
   position: relative;
-  top: 13px;
+  top: 10px;
   text-transform: none;
   color: white;
   font-family: "Verdana", sans-serif;
@@ -787,6 +869,7 @@
 }
 
 .selfcredit-overlay .self-credit-comment-info label {
+  font-weight: normal;
   display: block;
 }
 
@@ -817,6 +900,7 @@
   .self-credit-comment-container
   label {
   display: inline-block;
+  font-weight: bold;
 }
 .selfcredit-overlay
   .self-credit-comment-info
