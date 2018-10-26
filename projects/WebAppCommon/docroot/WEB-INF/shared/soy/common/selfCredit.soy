@@ -17,21 +17,24 @@
     </div>
     <div class="self-credit-init-row-last">
       <label for="order-id">Your Order</label>
-      <i class="form-field-info-flag">Required</i>
+      {if $orders.length > 0}<i class="form-field-info-flag">Required</i>{/if}
       <div>
           // custom two-line dropdown template
-          // <div id="customselect-close-container" style="display: none"><button nofocus="" id="customselect-close-icon" class="selfcredit overlay-close-icon" data-close-overlay="" style="z-index: 462;" tabindex="9">close</button></div>
-          // <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+          //<select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
           <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-          <option value="" disabled selected>Select An Order</option>
+          <option value="" disabled selected hidden>Select An Order</option>
+          {if $orders.length < 1}
+          <option value="" disabled>No eligible orders found</option>
+          {else}
           {foreach $order in $orders}
           // custom two-line dropdown template
           // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
           // {else}[br][b]Order #: {$order.orderId}[/b]{/if}
           // </option>
-          <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
+           <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
           {/foreach}
-        </select>
+          </select>
+        {/if}
       </div>
     </div>
     <div>
