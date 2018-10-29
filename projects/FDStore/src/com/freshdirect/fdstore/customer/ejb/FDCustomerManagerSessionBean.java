@@ -8616,7 +8616,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
             String customerId = pendingSelfComplaint.getCustomerId();
             Double selfComplaintAmount = pendingSelfComplaint.getComplaintAmount();
             
-            boolean isEligibleForAutoApproval = null == pendingSelfComplaint.getNote() ? true : !complaintHasNote(pendingSelfComplaint.getNote());
+            boolean isEligibleForAutoApproval = !isCustomerOnCreditAlert(customerId);
+            
+            if (isEligibleForAutoApproval && null != pendingSelfComplaint.getNote()) {
+                isEligibleForAutoApproval = !complaintHasNote(pendingSelfComplaint.getNote());
+			}
             
             if (isEligibleForAutoApproval && approvedComplaints.containsKey(customerId)) {
                 int customersApprovedComplaints = approvedComplaints.get(customerId).size();
@@ -8645,6 +8649,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
         }
     	return approvablePendingSelfComplaints;
+	}
+
+	private boolean isCustomerOnCreditAlert(String customerId) {
+		return isOnAlert(new PrimaryKey(customerId), EnumAlertType.CREDIT.getName());
 	}
 
 	private boolean complaintHasNote(String note) {
