@@ -216,7 +216,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		if(EnumCartType.DLV_PASS.equals(cartType)){
 			return this.user.getDlvPassCart();
 		}
-		return this.getShoppingCart();
+		return this.user.getShoppingCart();
 	}
 
 	public int getAdjustedValidOrderCount() {
