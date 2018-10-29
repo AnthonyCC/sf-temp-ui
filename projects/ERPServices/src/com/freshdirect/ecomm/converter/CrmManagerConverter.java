@@ -47,14 +47,12 @@ import com.freshdirect.ecommerce.data.crm.CrmCaseInfoData;
 import com.freshdirect.ecommerce.data.crm.CrmCaseOperationData;
 import com.freshdirect.ecommerce.data.crm.CrmCaseTemplateData;
 import com.freshdirect.ecommerce.data.crm.CrmCustomerHeaderInfoData;
-import com.freshdirect.ecommerce.data.crm.CrmDeliveryPassData;
 import com.freshdirect.ecommerce.data.crm.CrmLateIssueData;
 import com.freshdirect.ecommerce.data.crm.CrmQueueInfoData;
 import com.freshdirect.ecommerce.data.crm.CrmStatusData;
 import com.freshdirect.ecommerce.data.crm.CrmSystemCaseInfoData;
 import com.freshdirect.ecommerce.data.crm.DownloadCaseData;
 import com.freshdirect.ecommerce.data.crm.ErpTruckInfoData;
-import com.freshdirect.ecommerce.data.crm.IncrCountData;
 import com.freshdirect.ecommerce.data.crm.LoginAgentData;
 import com.freshdirect.ecommerce.data.crm.UpdateCaseData;
 import com.freshdirect.ecommerce.data.crm.ViewAccountData;
@@ -286,17 +284,6 @@ public class CrmManagerConverter {
 		return null;
 	}
 
-	public static CrmDeliveryPassData buildCrmDlvPassData(DeliveryPassModel model, CrmAgentModel agentmodel, String note,
-			String reasonCode, String saleId) {
-		CrmDeliveryPassData deliveryPassData = new CrmDeliveryPassData();
-		deliveryPassData.setAgentmodel(buildCrmAgentModelData(agentmodel));
-		deliveryPassData.setDeliveryPassModel(buildDlvPassData(model));
-		deliveryPassData.setNote(note);
-		deliveryPassData.setReasonCode(reasonCode);
-		deliveryPassData.setSaleId(saleId);
-		return deliveryPassData;
-	}
-
 	public static DeliveryPassData buildDlvPassData(DeliveryPassModel model) {
 		return ModelConverter.buildDeliveryPassData(model);
 	}
@@ -329,16 +316,6 @@ public class CrmManagerConverter {
 			crmCaseQueue.add(caseQueue.getName());
 		}
 		return crmCaseQueue;
-	}
-
-	public static ViewAccountData buildViewAccountData(CrmAgentModel agent,String customerID, EnumAccountActivityType activityType,
-			String maskedAcctNumber) {
-		ViewAccountData accountData = new ViewAccountData();
-		accountData.setActivityType(activityType.getName());
-		accountData.setAgent(buildCrmAgentModelData(agent));
-		accountData.setCustomerID(customerID);
-		accountData.setMaskedAcctNumber(maskedAcctNumber);
-		return accountData;
 	}
 
 	public static CannedTextData buildCannedTextData(ErpCannedText cannedText) {
@@ -561,19 +538,6 @@ public class CrmManagerConverter {
 		caseAction.setCaseActionCode(action.getType().getCode());
 		return caseAction;
 		
-	}
-
-	public static IncrCountData buildIncrCountData(DeliveryPassModel model,CrmAgentModel agentmodel, int delta, String note,
-			String reasonCode, String saleId , int noOfDays) {
-		IncrCountData data = new IncrCountData();
-		data.setAgentmodel(buildCrmAgentModelData(agentmodel));
-		data.setDelta(delta);
-		data.setModel(buildDlvPassData(model));
-		data.setNoOfDays(noOfDays);
-		data.setNote(note);
-		data.setReasonCode(reasonCode);
-		data.setSaleId(saleId);
-		return data;
 	}
 
 }
