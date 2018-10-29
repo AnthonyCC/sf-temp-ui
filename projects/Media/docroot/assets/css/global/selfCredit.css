@@ -481,7 +481,7 @@
 }
 
 #selfCreditRequestError .status {
-  margin: 20px 15px 50px;
+  margin: 0 0 50px;
 }
 
 #selfCreditRequestError .status a {
@@ -494,7 +494,7 @@
 
 @media(max-width: 700px) {
   #selfCreditRequestError .status {
-    margin: 0 0 50px;
+    margin: 0 0 54px;
   }
 }
 
