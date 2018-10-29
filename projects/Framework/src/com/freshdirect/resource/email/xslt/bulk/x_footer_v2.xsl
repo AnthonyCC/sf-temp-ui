@@ -16,7 +16,7 @@ Frequently Asked Questions
 http://www.freshdirect.com/help/faq_home.jsp
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-FreshDirect, LLC. 23-30 Borden Ave. Long Island City, NY 11101 
+FreshDirect, LLC. 2 St Ann's Ave Bronx, NY 10454 
 (c) 2002 - <xsl:value-of select="substring(//curYear,1,4)" /> FRESHDIRECT. All Rights Reserved. 
 	</xsl:template>
 </xsl:stylesheet>
