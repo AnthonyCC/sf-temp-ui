@@ -204,8 +204,6 @@ button.dpn-footer-login-button{
 	width: auto;
 }
 .deliverypass-payment .cartsection__title,
-.deliverypass-payment [fdform-container="promotion"],
-.deliverypass-payment .promotion-text span,
 .deliverypass-payment .cartsection__cartline .cartline-imageholder,
 .deliverypass-payment .cartline-titleholder .cartline-descriptor,
 .deliverypass-payment .cartsection__cartline .cartline-delete,
@@ -267,12 +265,18 @@ button.dpn-footer-login-button{
 	font-weight: normal;
 	color: #444444;
 }
+.deliverypass-payment #cartcontent .cartsection__totalwrapper #st_label_redemptionpromo{
+	width:196px;
+}
 .deliverypass-payment #cartcontent #subtotalbox1 .subtotal__rowcell-mid,
 .deliverypass-payment #cartcontent .subtotal__row .subtotal__rowcell-right{
 	width: 70px;
 	margin: 0;
 	font-weight: normal;
 	text-align: right;
+}
+.deliverypass-payment .checkout .eTippingEnabled a.note {
+	/* text-decoration:underline; */
 }
 .deliverypass-payment .total{
 	background: none;

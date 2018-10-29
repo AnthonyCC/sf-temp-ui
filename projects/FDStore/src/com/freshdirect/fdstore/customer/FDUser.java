@@ -38,6 +38,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
+import com.freshdirect.customer.EnumCartType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -671,8 +672,11 @@ public class FDUser extends ModelSupport implements FDUserI {
             if (null == this.getReferralPromoList() ||this.getReferralPromoList().size() == 0) {
                 this.setReferralPromoList();
             }
-            this.applyPromotions();
-            this.applyOrderMinimum();
+            this.applyPromotions(EnumCartType.REGULAR);
+			if(null != getDlvPassCart() && !getDlvPassCart().isEmpty()) {
+            	this.applyPromotions(EnumCartType.DLV_PASS);
+			}
+			this.applyOrderMinimum();
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e.getMessage());
         }
@@ -688,6 +692,10 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     private void applyPromotions() {
+    	this.applyPromotions(EnumCartType.REGULAR);
+    }
+    
+    /*private void applyPromotions() {
         // clear previous promotions
         this.setSignupDiscountRule(null);
         this.setPromotionAddressMismatch(false);
@@ -713,6 +721,41 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.promotionEligibility = new FDPromotionEligibility();
         // apply promotions
         this.promotionEligibility = FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(this), promotionEligibility);
+        // Add all applied promotion codes so far to this list. Used by MaxRedemptionStrategy
+        this.allAppliedPromos.addAll(promotionEligibility.getAppliedPromotionCodes());
+    }*/
+    
+    private void applyPromotions(EnumCartType cartType) {
+    	FDCartModel cart = this.getShoppingCart();
+    	if(EnumCartType.DLV_PASS.equals(cartType)){
+    		cart = this.getDlvPassCart();
+    	}
+        // clear previous promotions
+        this.setSignupDiscountRule(null);
+        this.setPromotionAddressMismatch(false);
+
+        cart.clearSampleLines();
+        cart.setDiscounts(new ArrayList<ErpDiscountLineModel>());
+        cart.clearSkuCount();
+        cart.clearLineItemDiscounts();
+        this.clearPromoErrorCodes();
+        cart.setDlvPassExtn(null);
+        cart.setDlvPromotionApplied(false);
+//        this.getShoppingCart().setDeliveryPassCount();
+//        this.getDlvPassCart().setDeliveryPassCount();
+		cart.setDeliveryPassCount();
+        if (cart.isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP()) ||checkExpDlvPassForOrderMod() ) {
+        	cart.setDlvPassApplied(true);
+        }else {
+        	cart.setDlvPassApplied(false);
+        }
+
+        // evaluate special dlv charge override
+        WaiveDeliveryCharge.apply(this);
+
+        this.promotionEligibility = new FDPromotionEligibility();
+        // apply promotions
+        this.promotionEligibility = FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(this,cartType), promotionEligibility);
         // Add all applied promotion codes so far to this list. Used by MaxRedemptionStrategy
         this.allAppliedPromos.addAll(promotionEligibility.getAppliedPromotionCodes());
     }

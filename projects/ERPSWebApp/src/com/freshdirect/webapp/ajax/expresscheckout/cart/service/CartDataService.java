@@ -353,6 +353,9 @@ public class CartDataService {
     private FDCartModel loadUserShoppingCart(HttpServletRequest request, FDUserI user, String userId) throws HttpErrorResponse {
         //FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : user.getShoppingCart();
     	boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+    	if(!dlvPassCart) {
+    		user.getDlvPassCart().clearOrderLines();
+    	}
         FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
 
         if (cart == null) {
