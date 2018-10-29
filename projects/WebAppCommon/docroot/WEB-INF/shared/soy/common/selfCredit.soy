@@ -17,24 +17,24 @@
     </div>
     <div class="self-credit-init-row-last">
       <label for="order-id">Your Order</label>
-      {if $orders.length > 0}<i class="form-field-info-flag">Required</i>{/if}
+      <i class="form-field-info-flag">Required</i>
       <div>
-          // custom two-line dropdown template
-          //<select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-          <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-          <option value="" disabled selected hidden>Select An Order</option>
-          {if $orders.length < 1}
+        // custom two-line dropdown template
+        //<select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+        <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+        <option value="" disabled selected hidden>Select An Order</option>
+        {if $orders.length < 1}
           <option value="" disabled>No eligible orders found</option>
-          {else}
+        {else}
           {foreach $order in $orders}
           // custom two-line dropdown template
           // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
           // {else}[br][b]Order #: {$order.orderId}[/b]{/if}
           // </option>
-           <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
+            <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
           {/foreach}
-          </select>
         {/if}
+        </select>
       </div>
     </div>
     <div>
