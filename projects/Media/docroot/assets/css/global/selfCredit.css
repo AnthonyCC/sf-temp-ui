@@ -432,7 +432,7 @@
 #selfCreditRequestComplete .overlay-content,
 #selfCreditRequestError .overlay-content {
   text-align: center;
-  padding: 40px 70px;
+  padding: 50px 63px;
 }
 
 #selfCreditRequestError .overlay-content img {
@@ -470,6 +470,14 @@
   text-align: center;
   color: #444;
   margin: 20px 0 50px 0;
+}
+
+#selfCreditRequestComplete #creditRequestCompleteDetails a {
+  text-decoration: underline;
+}
+
+#selfCreditRequestComplete .status {
+  padding: 0 10px;
 }
 
 #selfCreditRequestError .status {
