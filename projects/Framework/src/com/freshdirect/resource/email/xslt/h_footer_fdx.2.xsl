@@ -71,7 +71,7 @@
 							If you prefer not to receive promotional email messages from us, please <a style="color: #888;" href="http://e.freshdirect.com/FoodkickUnsubscribe">click here</a>.<br/><br/>
 							<!-- For FoodKick online Help or to contact us, please <a href="#">click here.</a><br /><br /> -->
 							For FoodKick online Help or to contact us, please <a href="mailto:sidekicks@foodkick.com" style="color: #888;">click here.</a><br/><br/>
-							FreshDirect, LLC. 23-30 Borden Ave. Long Island City, NY 11101<br/><br/>
+							FreshDirect, LLC. 2 St Ann's Ave Bronx, NY 10454<br/><br/>
 							<!-- <a href="#">Customer Agreement</a><br /> -->
 							
 							<a href="#" style="color: #888; text-decoration:none;">Customer Agreement</a><br/>

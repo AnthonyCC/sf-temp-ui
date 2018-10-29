@@ -286,7 +286,7 @@ underline">click here</span></a>.
                             <br/>For FreshDirect online Help or to contact us, please <a style="COLOR: rgb(51,102,0)" href="http://www.freshdirect.com/help/contact_fd.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: 
 underline">click here</span></a>.
                             <br/>
-                            <br/>23-30 Borden Ave. Long Island City, NY 11101
+                            <br/>2 St Ann's Ave Bronx, NY 10454
                             <br/>
                             <br/><a style="COLOR: #360" href="https://www.freshdirect.com/help/terms_of_service.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: 
 underline">Customer Agreement</span></a>
