@@ -60,7 +60,7 @@ public class ErpAddressModel extends ContactAddressModel {
 		private boolean  notifyOrderModifyToSecondEmail;
 		private boolean notifyOrderInvoiceToSecondEmail;
 		private boolean notifySoReminderToSecondEmail;
-		private boolean notifyCreditsSecondEmail;
+		private boolean notifyCreditsToSecondEmail;
 		private boolean notifyVoiceshotToSecondEmail;
 		
 	public String getScrubbedStreet() {
@@ -363,11 +363,11 @@ public class ErpAddressModel extends ContactAddressModel {
 	}
 
 	public boolean isNotifyCreditsToSecondEmail() {
-		return notifyCreditsSecondEmail;
+		return notifyCreditsToSecondEmail;
 	}
 
 	public void setNotifyCreditsToSecondEmail(boolean notifyCreditsSecondEmail) {
-		this.notifyCreditsSecondEmail = notifyCreditsSecondEmail;
+		this.notifyCreditsToSecondEmail = notifyCreditsSecondEmail;
 	}
 
 	public boolean isNotifyVoiceshotToSecondEmail() {
