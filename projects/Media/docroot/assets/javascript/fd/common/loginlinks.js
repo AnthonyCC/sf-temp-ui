@@ -76,7 +76,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   var socialLogin = function (target) {
-    showLoginAjaxPopup(target, '/social/login.jsp', 'login');
+    showLoginAjaxPopup(target, '/'+((fd.mobWeb)?'login':'social')+'/login.jsp', 'login');
   };
 
   var showLoginDialog = function (target, e) {
