@@ -44,7 +44,9 @@
 #ajaxpopup .fixedPopupContent{
 	height:100%;
 }
-
+#ajaxpopup .fixedPopupContent.success{
+	height:auto;
+}
 .fixedpopup .qs-popup-header {
 	background:transparent;
 	min-height:30px;
