@@ -319,7 +319,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 						<div class="locabar_addresses-anon-deliverable-change-zip-toggle-target" style="display:none;">
 							<tmpl:get name="address_change_zip"/>
 						</div>
-						<button type="button" class="cssbutton green locabar_addresses-anon-deliverable-add-address-btn">Add Delivery Address</button>
+						<button type="button" class="cssbutton green locabar_addresses-<%= (user_locationbar_fdx.getLevel() == FDUserI.GUEST) ? "anon" : "user" %>-deliverable-add-address-btn">Add Delivery Address</button>
 					</div>
 				</tmpl:put><%
 			} else { //non-recognized and not in deliverable zip or LOGGED IN USER, NO ADDRESSES AT ALL

@@ -1551,6 +1551,9 @@ option.address-icon {
 .locabar_addresses-anon-deliverable-add-address-btn {
 	width: 100%;
 }
+.locabar_addresses-user-deliverable-add-address-btn {
+	width: 100%;
+}
 .locabar_addresses-anon-deliverable-change-zip-toggle-cont {
 	padding: 0 0 15px 0;
 }

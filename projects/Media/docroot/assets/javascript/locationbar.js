@@ -170,7 +170,7 @@
 	}); 
 	//enter key press to add delivery address button
 
-	$document.on('keydown', '.locabar_addresses-anon-deliverable-add-address-btn', function (e) {
+	$document.on('keydown', '.locabar_addresses-anon-deliverable-add-address-btn,.locabar_addresses-user-deliverable-add-address-btn', function (e) {
 		if (e.keyCode === 13) {
 			$(this).click();
 		}
