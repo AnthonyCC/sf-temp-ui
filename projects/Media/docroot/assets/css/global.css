@@ -3537,3 +3537,9 @@ div#quickshop,.container.browse section.main,section.container.srch section.main
 	
 	outline:none !important;
 }
+.ddpp-item.radius-border.border-green ul{
+	padding-left: 0;
+}
+.hidelist{
+    list-style:none;
+}

@@ -30,7 +30,7 @@
 
 			<%} else {%>
 				<logic:iterate indexId='i' collection="<%= deliveryModel.getHolidayRestrictions() %>" id="restriction" type="com.freshdirect.delivery.restriction.RestrictionI">
-					<font class="text12"><%=restriction.getMessage()%></font>
+					<li class="text12 hidelist"><%=restriction.getMessage()%></li>
 				</logic:iterate>
 			<%}%>
 		</ul>
