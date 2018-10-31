@@ -6,7 +6,7 @@
  */
 {template .selfCreditInit autoescape="false"}
   <h1>Credit Request</h1>
-  <form fdform="self-credit-init-order-id">
+  <form fdform="self-credit-init-order-id" id="order-id">
     <div class="self-credit-init-row">
         <label>Name</label>
         {if $user.firstName and $user.lastName}<i class="user-info">{$user.firstName} {$user.lastName}</i>{/if}
@@ -20,17 +20,17 @@
       <i class="form-field-info-flag">Required</i>
       <div>
         // custom two-line dropdown template
-        //<select name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+        // <select name="order-id" id="self-credit-order-select" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
         <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-        <option value="" disabled selected hidden>Select An Order</option>
+        <option value="" disabled selected>Select An Order</option>
         {if $orders.length < 1}
           <option value="" disabled>No eligible orders found</option>
         {else}
           {foreach $order in $orders}
           //custom two-line dropdown template
-          //<option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
-          //{else}[br][b]Order #: {$order.orderId}[/b]{/if}
-          //</option>
+          // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
+          // {else}[br][b]Order #: {$order.orderId}[/b]{/if}
+          // </option>
             <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
           {/foreach}
         {/if}
@@ -232,7 +232,7 @@
       <div>
         {if $orderline.brand}<label>{$orderline.brand}</label>{/if}
         <div class="product-desc">{$orderline.productName}</div>
-        <small class="sale-unit">{$orderline.configurationDescription} | ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
+        <small class="sale-unit">{$orderline.configurationDescription} {if $orderline.configurationDescription.length > 0}<span>|<span>{/if} ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
       </div>
     </div>
     {if not ($orderline.sample or $orderline.free or $orderline.mealBundle)}
