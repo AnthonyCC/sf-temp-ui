@@ -8615,15 +8615,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
         for (PendingSelfComplaint pendingSelfComplaint : pendingSelfComplaints) {
         	String selfComplaintId = pendingSelfComplaint.getComplaintId();
-        	LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " was picked up for eligibility check.");
+        	LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " STARTED");
         	
             String customerId = pendingSelfComplaint.getCustomerId();
             Double selfComplaintAmount = pendingSelfComplaint.getComplaintAmount();
             
             boolean isEligibleForAutoApproval = !isCustomerOnCreditAlert(customerId);
+            if (!isEligibleForAutoApproval) {
+            	 LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. "
+            	 		+ "Customer of ID: " + customerId + " is on Credit alert.");
+			}
             
             if (isEligibleForAutoApproval && null != pendingSelfComplaint.getNote()) {
                 isEligibleForAutoApproval = !complaintHasNote(pendingSelfComplaint.getNote());
+                if (!isEligibleForAutoApproval) {
+               	 LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. Complaint contains note.");
+                }
 			}
             
             if (isEligibleForAutoApproval && approvedComplaints.containsKey(customerId)) {
@@ -8631,6 +8638,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
                 int selfCreditMaxAutoApproveQuantity = ErpServicesProperties.getSelfCreditAutoapproveMaxQuantityPerDayRange();
                 if (customersApprovedComplaints >= selfCreditMaxAutoApproveQuantity) {
                     isEligibleForAutoApproval = false;
+                    int selfComplaintMaxQuantityDayRange = ErpServicesProperties.getSelfCreditAutoapproveQuantityDayRangeLimit();
+                  	LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. "
+                  	 		+ "Customer of ID: "+ customerId + " has " + customersApprovedComplaints + " approved self-issued complaints in the last " + selfComplaintMaxQuantityDayRange + " days. "
+                  	 				+ "The limit is " + selfCreditMaxAutoApproveQuantity + " self-issued complaints.");
                 }
             }
 
@@ -8639,23 +8650,31 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
                 Double selfCreditMaxAutoApproveAmount = ErpServicesProperties.getSelfCreditAutoapproveMaxAmountPerDayRange();
                 if ((selfComplaintAmount + customersTotalApprovedAmount) > selfCreditMaxAutoApproveAmount) {
                     isEligibleForAutoApproval = false;
+                    int selfComplaintMaxAmountDayRange = ErpServicesProperties.getSelfCreditAutoapproveAmountDayRangeLimit();
+                  	LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. "
+                  	 		+ "Customer of ID: "+ customerId + " has approved self-issued complaints in the last " + selfComplaintMaxAmountDayRange + " days of " + customersTotalApprovedAmount + "$. "
+                  	 				+ "The limit is " + selfCreditMaxAutoApproveAmount + "$.");
                 }
             }
             
             if(isEligibleForAutoApproval) {
             	isEligibleForAutoApproval = isComplaintAutoApprove(selfComplaintId);
+            	if (!isEligibleForAutoApproval) {
+            		LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. Complaint reason of ID : " + selfComplaintId + "is not eligible for auto-approval");
+            		LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
+    	        			+ "Self-issued complaint is NOT eligible for auto-approval.");
+				}
             }
             
             if (isEligibleForAutoApproval) {
 				approvablePendingSelfComplaints.add(pendingSelfComplaint);
 				updateApprovedComplaints(approvedComplaints, pendingSelfComplaint);
 				updateApprovedAmount(approvedAmount, pendingSelfComplaint);
-				LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is eligible for auto-approval.");
-			} else {
-				LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is NOT eligible for auto-approval.");
-			}
+	        	LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
+	        			+ "Self-issued complaint is eligible for auto-approval.");
+			} 
         }
-        LOGGER.info("Filtering process of pending self-issued complaints FINISHED. " + approvablePendingSelfComplaints.size() + " are eligible for auto-approval.");
+        LOGGER.info("Filtering process of pending self-issued complaints FINISHED. " + approvablePendingSelfComplaints.size() + " self-issued complaints are eligible for auto-approval.");
     	return approvablePendingSelfComplaints;
 	}
 
