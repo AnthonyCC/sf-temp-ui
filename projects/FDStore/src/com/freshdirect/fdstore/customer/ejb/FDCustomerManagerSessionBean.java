@@ -8629,8 +8629,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				+ pendingSelfComplaints.size() + " self-issued complaints.");
 
 		List<PendingSelfComplaint> approvablePendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
-		Map<String, List<String>> approvedComplaints = collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange();
-		Map<String, Double> approvedAmount = collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange();
+		Map<String, List<String>> submittedSelfComplaints = collectSubmittedSelfComplaintsByCustomerIdWithinQuantityDayRange();
+		Map<String, Double> submittedSelfComplaintAmounts = collectSubmittedSelfComplaintsByCustomerIdWithinAmountDayRange();
 
 		for (PendingSelfComplaint pendingSelfComplaint : pendingSelfComplaints) {
 			String selfComplaintId = pendingSelfComplaint.getComplaintId();
@@ -8653,8 +8653,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 			}
 
-			if (isEligibleForAutoApproval && approvedComplaints.containsKey(customerId)) {
-				int customersApprovedComplaints = approvedComplaints.get(customerId).size();
+			if (isEligibleForAutoApproval && submittedSelfComplaints.containsKey(customerId)) {
+				int customersApprovedComplaints = submittedSelfComplaints.get(customerId).size();
 				int selfCreditMaxAutoApproveQuantity = ErpServicesProperties
 						.getSelfCreditAutoapproveMaxQuantityPerDayRange();
 				if (customersApprovedComplaints >= selfCreditMaxAutoApproveQuantity) {
@@ -8663,14 +8663,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							.getSelfCreditAutoapproveQuantityDayRangeLimit();
 					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
 							+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId + " has "
-							+ customersApprovedComplaints + " approved self-issued complaints in the last "
+							+ customersApprovedComplaints + " submitted self-issued complaints in the last "
 							+ selfComplaintMaxQuantityDayRange + " days. " + "The limit is "
 							+ selfCreditMaxAutoApproveQuantity + " self-issued complaints.");
 				}
 			}
 
-			if (isEligibleForAutoApproval && approvedAmount.containsKey(customerId)) {
-				Double customersTotalApprovedAmount = approvedAmount.get(customerId);
+			if (isEligibleForAutoApproval && submittedSelfComplaintAmounts.containsKey(customerId)) {
+				Double customersTotalApprovedAmount = submittedSelfComplaintAmounts.get(customerId);
 				Double selfCreditMaxAutoApproveAmount = ErpServicesProperties
 						.getSelfCreditAutoapproveMaxAmountPerDayRange();
 				if ((selfComplaintAmount + customersTotalApprovedAmount) > selfCreditMaxAutoApproveAmount) {
@@ -8679,7 +8679,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							.getSelfCreditAutoapproveAmountDayRangeLimit();
 					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
 							+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId
-							+ " has approved self-issued complaints in the last " + selfComplaintMaxAmountDayRange
+							+ " has submitted self-issued complaints in the last " + selfComplaintMaxAmountDayRange
 							+ " days of " + customersTotalApprovedAmount + "$. " + "The limit is "
 							+ selfCreditMaxAutoApproveAmount + "$.");
 				}
@@ -8698,8 +8698,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			if (isEligibleForAutoApproval) {
 				approvablePendingSelfComplaints.add(pendingSelfComplaint);
-				updateApprovedComplaints(approvedComplaints, pendingSelfComplaint);
-				updateApprovedAmount(approvedAmount, pendingSelfComplaint);
+				updateApprovedComplaints(submittedSelfComplaints, pendingSelfComplaint);
+				updateApprovedAmount(submittedSelfComplaintAmounts, pendingSelfComplaint);
 				LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
 						+ "Self-issued complaint is eligible for auto-approval.");
 			}
@@ -8760,11 +8760,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private static final String GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY = "select c.amount as complaint_amount, s.customer_id as customer_id"
+	private static final String GET_SUBMITTED_SELF_COMPLAINT_AMOUNTS_QUERY = "select c.amount as complaint_amount, s.customer_id as customer_id"
 			+ " from cust.complaint c left join cust.sale s on s.id = c.sale_id"
-			+ " where c.created_by = ? and c.status = 'APP' and c.approved_date >= ?";
+			+ " where c.created_by = ? and c.status in ('APP', 'PEN') and c.create_date >= ?";
 
-	private Map<String, Double> collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange()
+	private Map<String, Double> collectSubmittedSelfComplaintsByCustomerIdWithinAmountDayRange()
 			throws FDResourceException, RemoteException {
 
 		Connection conn = null;
@@ -8772,26 +8772,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY);
+			ps = conn.prepareStatement(GET_SUBMITTED_SELF_COMPLAINT_AMOUNTS_QUERY);
 
 			ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
 			ps.setDate(2, collectAmountDayLimitDate());
 
 			rs = ps.executeQuery();
 
-			Map<String, Double> approvedSelfComplaintAmountsByCustomerId = new HashMap<String, Double>();
+			Map<String, Double> submittedSelfComplaintAmountsByCustomerId = new HashMap<String, Double>();
 
 			while (rs.next()) {
 				String customerId = rs.getString("CUSTOMER_ID");
 				Double complaintAmount = rs.getDouble("COMPLAINT_AMOUNT");
 
-				if (approvedSelfComplaintAmountsByCustomerId.containsKey(customerId)) {
-					complaintAmount += approvedSelfComplaintAmountsByCustomerId.get(customerId);
+				if (submittedSelfComplaintAmountsByCustomerId.containsKey(customerId)) {
+					complaintAmount += submittedSelfComplaintAmountsByCustomerId.get(customerId);
 				}
-				approvedSelfComplaintAmountsByCustomerId.put(customerId, complaintAmount);
+				submittedSelfComplaintAmountsByCustomerId.put(customerId, complaintAmount);
 			}
 
-			return approvedSelfComplaintAmountsByCustomerId;
+			return submittedSelfComplaintAmountsByCustomerId;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
@@ -8807,11 +8807,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return new java.sql.Date(dateToQuery.getTime());
 	}
 
-	private static final String GET_APPROVED_SELF_COMPLAINTS_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id "
+	private static final String GET_SUBMITTED_SELF_COMPLAINTS_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id "
 			+ "from cust.complaint c " + "left join cust.sale s on s.id = c.sale_id "
-			+ "where c.created_by = ? and c.status = 'APP' " + "and c.approved_date >= ?";
+			+ "where c.created_by = ? and c.status in ('APP', 'PEN') " + "and c.create_date >= ?";
 
-	private Map<String, List<String>> collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange()
+	private Map<String, List<String>> collectSubmittedSelfComplaintsByCustomerIdWithinQuantityDayRange()
 			throws FDResourceException, RemoteException {
 
 		Connection conn = null;
@@ -8819,27 +8819,27 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINTS_QUERY);
+			ps = conn.prepareStatement(GET_SUBMITTED_SELF_COMPLAINTS_QUERY);
 
 			ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
 			ps.setDate(2, collectQuantityDayLimitDate());
 
 			rs = ps.executeQuery();
 
-			Map<String, List<String>> approvedSelfComplaints = new HashMap<String, List<String>>();
+			Map<String, List<String>> submittedSelfComplaints = new HashMap<String, List<String>>();
 
 			while (rs.next()) {
 				String selfComplaintId = rs.getString("SELF_COMPLAINT_ID");
 				String customerId = rs.getString("CUSTOMER_ID");
-				List<String> customersApprovedSelfComplaints = new ArrayList<String>();
-				if (approvedSelfComplaints.containsKey(customerId)) {
-					customersApprovedSelfComplaints = approvedSelfComplaints.get(customerId);
+				List<String> customersSubmittedSelfComplaints = new ArrayList<String>();
+				if (submittedSelfComplaints.containsKey(customerId)) {
+					customersSubmittedSelfComplaints = submittedSelfComplaints.get(customerId);
 				}
-				customersApprovedSelfComplaints.add(selfComplaintId);
-				approvedSelfComplaints.put(customerId, customersApprovedSelfComplaints);
+				customersSubmittedSelfComplaints.add(selfComplaintId);
+				submittedSelfComplaints.put(customerId, customersSubmittedSelfComplaints);
 			}
 
-			return approvedSelfComplaints;
+			return submittedSelfComplaints;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
