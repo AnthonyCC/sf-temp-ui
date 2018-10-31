@@ -277,7 +277,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
-			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
+			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException, ErpFraudException {
 
 		return register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType,
 				false);
@@ -337,13 +337,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @param fdCustomer
 	 * @param fdCustomerEB
 	 * @param serviceType
-	 * @return boolean true to mean failure, false means dont use any other
-	 *         method of emails.
+	 * @return boolean true to mean failure, false means dont use any other method
+	 *         of emails.
 	 * @throws FDResourceException
 	 * @throws RemoteException
 	 */
 	private Map getParameterHashmapforTransactEmail(Connection conn, final FDCustomerInfo emailInfo,
-			final FDCustomerModel fdCustomer,  final String customerPrimaryKey, EnumServiceType serviceType)
+			final FDCustomerModel fdCustomer, final String customerPrimaryKey, EnumServiceType serviceType)
 			throws FDResourceException, RemoteException {
 		LOGGER.debug("-------------------------------------------Doing Transaction email");
 
@@ -353,12 +353,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// input.put(TEmailConstants.ORDER_INP_KEY, order);
 			EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 			inputHashmap.put(TEmailConstants.CUSTOMER_ID_INP_KEY, emailInfo);
-			inputHashmap.put(TEmailConstants.SERVICE_TYPE,serviceType);
+			inputHashmap.put(TEmailConstants.SERVICE_TYPE, serviceType);
 			inputHashmap.put(TEmailConstants.EMAIL_TYPE,
 					emailInfo.isHtmlEmail() ? EnumEmailType.HTML.getName() : EnumEmailType.TEXT.getName());
 			inputHashmap.put(TEmailConstants.ESTORE_ID, estoreId);
 
-			inputHashmap.put(TEmailConstants.CUSTOMER_ID,fdCustomer.getErpCustomerPK());
+			inputHashmap.put(TEmailConstants.CUSTOMER_ID, fdCustomer.getErpCustomerPK());
 
 			// APPDEV-2451 - fill in OAS parameters here
 			if (FDStoreProperties.isAdServerEnabled()) {
@@ -419,10 +419,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public RegistrationResult register(FDActionInfo fdActionInfo, ErpCustomerModel erpCustomer,
 			FDCustomerModel fdCustomer, String cookie, boolean pickupOnly, boolean eligibleForPromotion,
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
+			throws FDResourceException, ErpDuplicateUserIdException, ErpFraudException {
 
 		// System.out.println("FDCustomerManagerSessionBean: In register");
-		LOGGER.warn("FDSECU_R01:: Registration from [ IP:: "+fdActionInfo.getClientIp()+", cookie="+cookie+" ,user_id="+erpCustomer.getUserId()+" ]");
+		LOGGER.warn("FDSECU_R01:: Registration from [ IP:: " + fdActionInfo.getClientIp() + ", cookie=" + cookie
+				+ " ,user_id=" + erpCustomer.getUserId() + " ]");
 		Connection conn = null;
 
 		try {
@@ -433,9 +434,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Set<EnumFraudReason> fraudResults = null;
 			if (!isGiftCardBuyer) {
 
-				boolean isRegistrationRestricted=fraudSB.isRegistrationForIPRestricted(fdActionInfo.getClientIp());
-				if(isRegistrationRestricted) {
-					LOGGER.warn("FDSECU:: Registration fraud tripped for [ IP:: "+fdActionInfo.getClientIp()+", cookie="+cookie+" ,user_id="+erpCustomer.getUserId()+" ]");
+				boolean isRegistrationRestricted = fraudSB.isRegistrationForIPRestricted(fdActionInfo.getClientIp());
+				if (isRegistrationRestricted) {
+					LOGGER.warn("FDSECU:: Registration fraud tripped for [ IP:: " + fdActionInfo.getClientIp()
+							+ ", cookie=" + cookie + " ,user_id=" + erpCustomer.getUserId() + " ]");
 					throw new ErpFraudException(EnumFraudReason.TOO_MANY_ACCOUNTS_CREATED_FROM_IP);
 				}
 				fraudResults = fraudSB.checkRegistrationFraud(erpCustomer);
@@ -490,11 +492,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			customerInfo.setEligibleForPromotion(eligibleForPromotion);
 
 			/*
-			 * this.doEmail(FDEmailFactory.getInstance().
-			 * createConfirmSignupEmail( emailInfo));
+			 * this.doEmail(FDEmailFactory.getInstance(). createConfirmSignupEmail(
+			 * emailInfo));
 			 */
-//			System.out.println("------------------------------------- isTransEmailEnabled"
-//					+ TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP));
+			// System.out.println("-------------------------------------
+			// isTransEmailEnabled"
+			// + TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP));
 			// boolean isUseOtherEmailMode=true;
 
 			EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
@@ -505,11 +508,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				Map transactEmailInputMap = getParameterHashmapforTransactEmail(conn, customerInfo, fdCustomer,
 						fdCustomerEB.getPK().getId(), serviceType);
 
-				try{
-				this.doEmail(EnumTranEmailType.CUST_SIGNUP, transactEmailInputMap);
-				}
-				catch( TEmailRuntimeException ex){
-					LOGGER.warn("Received a runtime exception with silverpop customer signup, re-trying with fallback method: "+ ex.getMessage());
+				try {
+					this.doEmail(EnumTranEmailType.CUST_SIGNUP, transactEmailInputMap);
+				} catch (TEmailRuntimeException ex) {
+					LOGGER.warn(
+							"Received a runtime exception with silverpop customer signup, re-trying with fallback method: "
+									+ ex.getMessage());
 					this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(customerInfo, estoreId));
 				}
 
@@ -689,14 +693,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (user.getAddress() != null) {
 			/*
 			 * StateCounty stateCounty=
-			 * FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
-			 * if (stateCounty!=null) {
+			 * FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode); if
+			 * (stateCounty!=null) {
 			 * user.getAddress().setState(WordUtils.capitalizeFully(stateCounty.
 			 * getState()));
-			 * user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty.
-			 * getCity()));
+			 * user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty. getCity()));
 			 */
-			
+
 			try {
 				DlvManagerSB dlvManagerSB = this.getDlvManagerHome().create();
 				ZipCodeAttributes zipAttributes = dlvManagerSB.lookupZipCodeAttributes(zipCode);
@@ -714,8 +717,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				throw new FDResourceException(e);
 
 			}
-			
-			
+
 		}
 	}
 
@@ -724,7 +726,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		DlvManagerSB dlvManagerSB;
 		try {
 			dlvManagerSB = this.getDlvManagerHome().create();
-			StateCounty stateCounty =dlvManagerSB.lookupStateCountyByZip(zipCode);
+			StateCounty stateCounty = dlvManagerSB.lookupStateCountyByZip(zipCode);
 			if (stateCounty != null) {
 				state = WordUtils.capitalizeFully(stateCounty.getState());
 			}
@@ -856,10 +858,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					dlvPassStatus = EnumDlvPassStatus.PASS_RETURNED;
 				}
 				/*
-				 * If none of the above conditions are satisfied then the user
-				 * either no delivery pass in which case the dlvPassStatus is
-				 * defaulted to NONE. In other words he is eligible for buying a
-				 * new Pass.
+				 * If none of the above conditions are satisfied then the user either no
+				 * delivery pass in which case the dlvPassStatus is defaulted to NONE. In other
+				 * words he is eligible for buying a new Pass.
 				 */
 
 			}
@@ -929,7 +930,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				} // -added for DP1.1
 					// Get the pass type and expiration date if unlimited.
 				type = model.getType();
-				if (null!=type && type.isUnlimited()) {
+				if (null != type && type.isUnlimited()) {
 					expDate = model.getExpirationDate();
 				}
 				originalOrderId = model.getPurchaseOrderId();
@@ -949,14 +950,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (statusMap.get(DlvPassConstants.AUTORENEW_DP_TYPE) != null) {
 				autoRenewDPType = (DeliveryPassType) statusMap.get(DlvPassConstants.AUTORENEW_DP_TYPE);
 			}
-			dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type, description, expDate, amount, originalOrderId, remDlvs, usedDlvs,
-					usablePassCount, isFreeTrialRestricted, autoRenewUsablePassCount, autoRenewDPType,
-					autoRenewDPPrice.doubleValue(), (model == null) ? null : model.getPurchaseDate(),(model == null) ? null : model.getActivationDate());
-			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null!=type && type.isUnlimited())
+			dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type, description, expDate, amount, originalOrderId,
+					remDlvs, usedDlvs, usablePassCount, isFreeTrialRestricted, autoRenewUsablePassCount,
+					autoRenewDPType, autoRenewDPPrice.doubleValue(), (model == null) ? null : model.getPurchaseDate(),
+					(model == null) ? null : model.getActivationDate());
+			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null != type && type.isUnlimited())
 					&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus)
 							|| EnumDlvPassStatus.EXPIRED.equals(dlvPassStatus))) {
-				dlvPassInfo.setDaysSinceDPExpiry(sb.getDaysSinceDPExpiry(customerPk,estore));
-			} else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null!=type && type.isUnlimited())) {
+				dlvPassInfo.setDaysSinceDPExpiry(sb.getDaysSinceDPExpiry(customerPk, estore));
+			} else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null != type && type.isUnlimited())) {
 				dlvPassInfo.setDaysToDPExpiry(sb.getDaysToDPExpiry(customerPk, model.getId()));
 			}
 
@@ -964,7 +966,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			String result = "";
 			// Get the Active delivery Pass for this account.
 			DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-			List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,estore);
+			List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,
+					estore);
 			if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 				dlvPassInfo.setDPSavings(0.0);
 			} else {
@@ -972,22 +975,24 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				DeliveryPassModel dlvPass = dlvPasses.get(0);
 				Connection conn = null;
 				conn = getConnection();
-				EnumEStoreId eStoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
-				result = FDCustomerOrderInfoDAO.getActiveDeliveryPassSavings(conn, customerPk, dlvPass.getPK().getId(),eStoreId);
+				EnumEStoreId eStoreId = EnumEStoreId
+						.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				result = FDCustomerOrderInfoDAO.getActiveDeliveryPassSavings(conn, customerPk, dlvPass.getPK().getId(),
+						eStoreId);
 				close(conn);
 				try {
 					savings = Double.parseDouble(result);
-					savings = (Math.round( savings * 100.0 ) / 100.0);
+					savings = (Math.round(savings * 100.0) / 100.0);
 				} catch (NumberFormatException e) {
-					LOGGER.warn("Exception while parsing the DP saving amount:",e);
+					LOGGER.warn("Exception while parsing the DP saving amount:", e);
 				}
 				dlvPassInfo.setDPSavings(savings);
 			}
 		} else {
 			// Identity will be null when he/she is a anonymous user. Create
 			// a default info object.
-			dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null, 0, 0, 0, false, 0, null, 0,
-					null,null);
+			dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null, 0, 0, 0, false, 0,
+					null, 0, null, null);
 			dlvPassInfo.setDPSavings(0.0);
 		}
 		return dlvPassInfo;
@@ -1027,7 +1032,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return user;
 	}
 
-    public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user) throws FDResourceException {
+	public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -1040,21 +1045,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/**
-	 * Returns a Map containing the audience promo ID and audience details.
-	 * promoId --> FDPromoAudienceInfo.
+	 * Returns a Map containing the audience promo ID and audience details. promoId
+	 * --> FDPromoAudienceInfo.
 	 *
 	 * @param user
 	 * @return
 	 * @throws SQLException
 	 */
-    private Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user, Connection conn) throws SQLException {
-        Map<String, AssignedCustomerParam> assignedParams = null;
+	private Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user, Connection conn)
+			throws SQLException {
+		Map<String, AssignedCustomerParam> assignedParams = null;
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
 			assignedParams = FDPromotionNewDAO.loadAssignedCustomerParams(conn, identity.getErpCustomerPK(),
 					user.getUserId());
 		} else {
-            assignedParams = new HashMap<String, AssignedCustomerParam>();
+			assignedParams = new HashMap<String, AssignedCustomerParam>();
 		}
 		return assignedParams;
 	}
@@ -1095,8 +1101,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} /*
-			 * catch (FDInvalidAddressException e) { throw new
-			 * FDResourceException(e); }
+			 * catch (FDInvalidAddressException e) { throw new FDResourceException(e); }
 			 */
 	}
 
@@ -1357,14 +1362,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (!loginIdentity.isActive()) {
 
 				/*
-				 * FDCustomerEB
-				 * fdCustomerEB=getFdCustomerHome().findByErpCustomerId(
+				 * FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(
 				 * erpCustomerEB.getPK().getId()); if(fdCustomerEB!=null &&
 				 * fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.
 				 * getPaymentMethodVerificationLimit()) {
 				 *
-				 * } else { throw new FDAuthenticationException(
-				 * "Account disabled"); }
+				 * } else { throw new FDAuthenticationException( "Account disabled"); }
 				 */
 				throw new FDAuthenticationException("Account disabled");
 			}
@@ -1400,14 +1403,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (!loginIdentity.isActive()) {
 
 				/*
-				 * FDCustomerEB
-				 * fdCustomerEB=getFdCustomerHome().findByErpCustomerId(
+				 * FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(
 				 * erpCustomerEB.getPK().getId()); if(fdCustomerEB!=null &&
 				 * fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.
 				 * getPaymentMethodVerificationLimit()) {
 				 *
-				 * } else { throw new FDAuthenticationException(
-				 * "Account disabled"); }
+				 * } else { throw new FDAuthenticationException( "Account disabled"); }
 				 */
 				throw new FDAuthenticationException("Account disabled");
 			}
@@ -1601,38 +1602,45 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *             if an error occured using remote resources
 	 */
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled)
-			throws FDResourceException, ErpPaymentMethodException,ErpFraudException {
+			throws FDResourceException, ErpPaymentMethodException, ErpFraudException {
 		try {
 
+			if (StringUtil.isEmpty(paymentMethod.getCustomerId())) {
 
-			if(StringUtil.isEmpty(paymentMethod.getCustomerId())) {
-
-				LOGGER.warn("FDSECU_P01:: Attempt to add payment method without customerId set.[ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
+				LOGGER.warn("FDSECU_P01:: Attempt to add payment method without customerId set.[ IP:: "
+						+ info.getClientIp() + ", fdUserId=" + info.getFdUserId() + " ]");
 				new IllegalArgumentException("CustomerId is not set.");
 			}
 
-			if(info.getIdentity()==null) {
+			if (info.getIdentity() == null) {
 
-				LOGGER.warn("FDSECU_P02:: Attempt to add payment method without FDIdentity set. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
+				LOGGER.warn("FDSECU_P02:: Attempt to add payment method without FDIdentity set. [ IP:: "
+						+ info.getClientIp() + ", fdUserId=" + info.getFdUserId() + " ]");
 				new IllegalArgumentException("FDIdentity is not set.");
-			} else if(StringUtil.isEmpty(info.getIdentity().getErpCustomerPK())) {
+			} else if (StringUtil.isEmpty(info.getIdentity().getErpCustomerPK())) {
 
-				LOGGER.warn("FDSECU_P03:: Attempt to add payment method with invalid FDIdentity. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
+				LOGGER.warn("FDSECU_P03:: Attempt to add payment method with invalid FDIdentity. [ IP:: "
+						+ info.getClientIp() + ", fdUserId=" + info.getFdUserId() + " ]");
 				new IllegalArgumentException("FDIdentity is invalid.");
 			}
 
-			String customerId=paymentMethod.getCustomerId()!=null?paymentMethod.getCustomerId():info.getIdentity().getErpCustomerPK();
-			boolean active=isCustomerActive(new PrimaryKey(customerId));
-			if(!active) {
-				LOGGER.warn("FDSECU_P04:: Attempt to add payment method from a deactivated account. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+", customerId="+customerId+" ]");
+			String customerId = paymentMethod.getCustomerId() != null ? paymentMethod.getCustomerId()
+					: info.getIdentity().getErpCustomerPK();
+			boolean active = isCustomerActive(new PrimaryKey(customerId));
+			if (!active) {
+				LOGGER.warn("FDSECU_P04:: Attempt to add payment method from a deactivated account. [ IP:: "
+						+ info.getClientIp() + ", fdUserId=" + info.getFdUserId() + ", customerId=" + customerId
+						+ " ]");
 				throw new ErpFraudException(EnumFraudReason.DEACTIVATED_ACCOUNT);
 			}
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
-			boolean isBreached=fraudSB.isCardVerificationRateLimitBreached(customerId);
-			if(isBreached) {
-				LOGGER.warn("FDSECU_P05:: "+EnumFraudReason.CARD_VERIFICATION_RATE_LIMIT.getDescription() +"[ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+", customerId="+customerId+" ]");
+			boolean isBreached = fraudSB.isCardVerificationRateLimitBreached(customerId);
+			if (isBreached) {
+				LOGGER.warn("FDSECU_P05:: " + EnumFraudReason.CARD_VERIFICATION_RATE_LIMIT.getDescription() + "[ IP:: "
+						+ info.getClientIp() + ", fdUserId=" + info.getFdUserId() + ", customerId=" + customerId
+						+ " ]");
 				info.setNote(EnumFraudReason.CARD_VERIFICATION_RATE_LIMIT.getDescription());
-				setActive(info,false);
+				setActive(info, false);
 				throw new ErpFraudException(EnumFraudReason.CARD_VERIFICATION_RATE_LIMIT);
 			}
 			Gateway gateway = null;
@@ -1828,8 +1836,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/***************************************************************************
-	 * return the Pk Id that is stored in the defaultPaymentMethodPK field @
-	 * param Identity the customers Identity
+	 * return the Pk Id that is stored in the defaultPaymentMethodPK field @ param
+	 * Identity the customers Identity
 	 *
 	 * Throws FDresourceException
 	 */
@@ -1849,11 +1857,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
 					.findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
-			
+
 			if (!StringUtils.equals(fdCustomerEB.getDefaultDepotLocationPK(), locationId)) {
 				fdCustomerEB.setDefaultDepotLocationPK(locationId);
 			}
-			
+
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (FinderException ce) {
@@ -1977,15 +1985,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 
 			/*
-			 * if(paymentMethod.getProfileID()!=null){ //payment method profile
-			 * exists in orbital. we need to remove it as part of this
-			 * transaction. try { Gateway g =
+			 * if(paymentMethod.getProfileID()!=null){ //payment method profile exists in
+			 * orbital. we need to remove it as part of this transaction. try { Gateway g =
 			 * GatewayFactory.getGateway(GatewayType.PAYMENTECH); Request
 			 * request=GatewayAdapter.getDeleteProfileRequest(paymentMethod);
-			 * g.deleteProfile(request); } catch (ErpTransactionException e) {
-			 * // TODO Auto-generated catch block e.printStackTrace();
-			 * //ignoring it if the delete profile fails. we still allow
-			 * deleting the payment in DB. } }
+			 * g.deleteProfile(request); } catch (ErpTransactionException e) { // TODO
+			 * Auto-generated catch block e.printStackTrace(); //ignoring it if the delete
+			 * profile fails. we still allow deleting the payment in DB. } }
 			 */
 			if (StringUtil.isEmpty(paymentMethod.getProfileID())) {
 				this.logActivity(info.createActivity(EnumAccountActivityType.DELETE_PAYMENT_METHOD,
@@ -2289,8 +2295,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/***************************************************************************
-	 * return the Pk Id that is stored in the defaultPShipToAddressPK field @
-	 * param Identity the customers Identity
+	 * return the Pk Id that is stored in the defaultPShipToAddressPK field @ param
+	 * Identity the customers Identity
 	 *
 	 * Throws FDresourceException
 	 */
@@ -2350,9 +2356,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String reservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole agentRole,
-			EnumDlvPassStatus status, boolean isFriendReferred, int fdcOrderCount) throws FDResourceException, ErpFraudException,
-			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
-			FDPaymentInadequateException, ErpTransactionException, InvalidCardException {
+			EnumDlvPassStatus status, boolean isFriendReferred, int fdcOrderCount) throws FDResourceException,
+			ErpFraudException, ErpAuthorizationException, ErpAddressVerificationException, ReservationException,
+			DeliveryPassException, FDPaymentInadequateException, ErpTransactionException, InvalidCardException {
 
 		PrimaryKey pk = null;
 		FDIdentity identity = info.getIdentity();
@@ -2463,13 +2469,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			String customerPk = identity.getErpCustomerPK();
 			// Begin Handle Delivery Pass.
 			/*
-			 * Check if there is a active delivery pass and delivery pass was
-			 * applied. If yes create order by passing the delivery pass id.
+			 * Check if there is a active delivery pass and delivery pass was applied. If
+			 * yes create order by passing the delivery pass id.
 			 */
 			if (EnumDlvPassStatus.ACTIVE.equals(status) && createOrder.isDlvPassApplied()) {
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,createOrder.geteStoreId());
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,
+						createOrder.geteStoreId());
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -2483,7 +2490,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					// order contains delivery pass.
 					DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 							createOrder);
-//					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					// EnumEStoreId eStore =
+					// EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					dlvpsb.create(newPass, eStore, identity.getFDCustomerPK());
 				}
 			} else if (EnumDlvPassStatus.ACTIVE.equals(status) && createOrder.isDlvPromotionApplied()) {
@@ -2495,14 +2503,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					// order contains delivery pass.
 					DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 							createOrder);
-//					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
-					dlvpsb.create(newPass,eStore, identity.getFDCustomerPK());
+					// EnumEStoreId eStore =
+					// EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					dlvpsb.create(newPass, eStore, identity.getFDCustomerPK());
 				}
-//				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				// EnumEStoreId eStore =
+				// EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				DeliveryPassModel dlvPass = getActiveDPForCustomer(customerPk, dlvpsb, eStore);
 				if (dlvPass.getType().isUnlimited()
 						&& EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType())
-						&& null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+						&& null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, 1, pk.getId(), "Extend DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 
@@ -2510,10 +2521,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			} else {
 				/*
-				 * create order by passing dlvPassid as null. Check if order
-				 * contains delivery pass. If yes create delivery pass.And if
-				 * pass was applied then apply the delivery pass and update the
-				 * order with dlv pass id.
+				 * create order by passing dlvPassid as null. Check if order contains delivery
+				 * pass. If yes create delivery pass.And if pass was applied then apply the
+				 * delivery pass and update the order with dlv pass id.
 				 */
 				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole, null,
 						EnumSaleType.REGULAR);
@@ -2524,7 +2534,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 							createOrder);
 					DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-//					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					// EnumEStoreId eStore =
+					// EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					String dlvPassId = dlvpsb.create(newPass, eStore, identity.getFDCustomerPK());
 					newPass.setPK(new PrimaryKey(dlvPassId));
 
@@ -2537,7 +2548,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						sb.updateDlvPassIdToSale(pk.getId(), dlvPassId);
 					} else if (createOrder.isDlvPromotionApplied() && newPass.getType().isUnlimited()
 							&& EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType())
-							&& null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+							&& null != CmsManager.getInstance().getEStoreId()
+							&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 						extendDeliveryPass(dlvpsb, newPass, 1, pk.getId(), "Extend DP by a week.",
 								EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 					}
@@ -2547,10 +2559,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			// Begin apply delivery pass extension promotion.
 			int dpExtendDays = createOrder.getDlvPassExtendDays();
-			if (dpExtendDays > 0 && EnumDlvPassStatus.ACTIVE.equals(status) && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+			if (dpExtendDays > 0 && EnumDlvPassStatus.ACTIVE.equals(status)
+					&& null != CmsManager.getInstance().getEStoreId()
+					&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-//				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
-				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,eStore);
+				// EnumEStoreId eStore =
+				// EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,
+						eStore);
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -2578,23 +2594,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 					// Send GC Authorization Email.
 					/*
-					 * FDOrderI order = getOrder(pk.getId()); FDCustomerInfo
-					 * custInfo = this.getCustomerInfo(identity);
+					 * FDOrderI order = getOrder(pk.getId()); FDCustomerInfo custInfo =
+					 * this.getCustomerInfo(identity);
 					 *
 					 * int orderCount = getValidOrderCount(identity);
 					 * custInfo.setNumberOfOrders(orderCount); Calendar cal =
-					 * calculateCutOffTime(order); //To get the cutoff time for
-					 * replacing the order.
+					 * calculateCutOffTime(order); //To get the cutoff time for replacing the order.
 					 * this.doEmail(FDGiftCardEmailFactory.getInstance
 					 * ().createAuthorizationFailedEmail(custInfo, pk.getId(),
 					 * order.getDeliveryReservation().getStartTime(),
-					 * order.getDeliveryReservation().getEndTime(),
-					 * cal.getTime()));
+					 * order.getDeliveryReservation().getEndTime(), cal.getTime()));
 					 */
 
 					// throw exception after sending the authorization failed
 					// email.
-					LOGGER.warn("invalid Giftcard identified while placing order for User: "+customerPk);
+					LOGGER.warn("invalid Giftcard identified while placing order for User: " + customerPk);
 					throw new InvalidCardException("Certificate Invalid");
 				}
 				// Initiate pre authorization.
@@ -2606,7 +2620,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			paymentManager.authorizeSaleRealtime(pk.getId());
-
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_ORDER);
 			rec.setChangeOrderId(pk.getId());
@@ -2660,11 +2673,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			/*
 			 * LOGGER.info("Before commiting the reservation "+reservationId);
 			 * FDDeliveryManager.getInstance().commitReservation(reservationId,
-			 * identity.getErpCustomerPK(),
-			 * getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR,
-			 * pk.getId()), createOrder.getDeliveryInfo().getDeliveryAddress(),
-			 * info.isPR1(), event); LOGGER.info(
-			 * "After commiting the reservation "+reservationId);
+			 * identity.getErpCustomerPK(), getOrderContext(EnumOrderAction.CREATE,
+			 * EnumOrderType.REGULAR, pk.getId()),
+			 * createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
+			 * LOGGER.info( "After commiting the reservation "+reservationId);
 			 */
 
 			return pk.getId();
@@ -2758,9 +2770,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private void commitReservation(String reservationId, String erpCustomerPK,
-			OrderContext orderContext, ErpAddressModel deliveryAddress,
-			boolean pr1, TimeslotEvent event) throws FDResourceException, ReservationException {
+	private void commitReservation(String reservationId, String erpCustomerPK, OrderContext orderContext,
+			ErpAddressModel deliveryAddress, boolean pr1, TimeslotEvent event)
+			throws FDResourceException, ReservationException {
 		DlvManagerSB dlvManagerSB;
 		try {
 			dlvManagerSB = this.getDlvManagerHome().create();
@@ -2771,8 +2783,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
-		
-		
+
 	}
 
 	private OrderContext getOrderContext(EnumOrderAction action, EnumOrderType type, String id) {
@@ -2842,21 +2853,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private void cancelDeliveryPass(DlvPassManagerSB dlvpassSB, DeliveryPassModel dlvPass, EnumDlvPassStatus status, EnumEStoreId eStore, String fdPk)
-			throws RemoteException {
+	private void cancelDeliveryPass(DlvPassManagerSB dlvpassSB, DeliveryPassModel dlvPass, EnumDlvPassStatus status,
+			EnumEStoreId eStore, String fdPk) throws RemoteException {
 
 		dlvPass.setStatus(status);
 		dlvpassSB.cancel(dlvPass, eStore, fdPk);
 	}
 
-	private void revokeDeliveryPassUsage(DlvPassManagerSB dlvPassSB, String appliedPass_ID,EnumEStoreId estore)
+	private void revokeDeliveryPassUsage(DlvPassManagerSB dlvPassSB, String appliedPass_ID, EnumEStoreId estore)
 			throws DeliveryPassException, RemoteException {
 
 		DeliveryPassModel appliedPass = dlvPassSB.getDeliveryPassInfo(appliedPass_ID);
 		if (appliedPass.getType().isUnlimited()) {
 			dlvPassSB.revoke(appliedPass);
 		} else {
-			DeliveryPassModel activePass = getActivePass(dlvPassSB, appliedPass.getCustomerId(),estore);
+			DeliveryPassModel activePass = getActivePass(dlvPassSB, appliedPass.getCustomerId(), estore);
 			if (activePass != null) {
 				String activePass_ID = activePass.getPK().getId();
 				if (!activePass_ID.equals(appliedPass_ID)) {
@@ -2886,7 +2897,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return false;
 	}
 
-	private DeliveryPassModel getActivePass(DlvPassManagerSB dlvpsb, String customerID,EnumEStoreId estore) throws RemoteException {
+	private DeliveryPassModel getActivePass(DlvPassManagerSB dlvpsb, String customerID, EnumEStoreId estore)
+			throws RemoteException {
 
 		List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerID, EnumDlvPassStatus.ACTIVE, estore);
 		if (dlvPasses != null && dlvPasses.size() > 0)
@@ -2933,34 +2945,35 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (existsDPInOrder(deliveryPasses)) {
 
 				/*
-				 * Customer has purchased delivery pass in the order. CANCEL the
-				 * purchased pass.
+				 * Customer has purchased delivery pass in the order. CANCEL the purchased pass.
 				 */
 				DeliveryPassModel purchasedPass = deliveryPasses.get(0);
 				String fdCustomerIdFromErpId = FDCustomerFactory.getFDCustomerIdFromErpId(order.getCustomerId());
-				cancelDeliveryPass(dlvpsb, purchasedPass, EnumDlvPassStatus.ORDER_CANCELLED, order.getEStoreId(), fdCustomerIdFromErpId);
+				cancelDeliveryPass(dlvpsb, purchasedPass, EnumDlvPassStatus.ORDER_CANCELLED, order.getEStoreId(),
+						fdCustomerIdFromErpId);
 				if (isValued(appliedPass_ID)
 						&& !isPurchasedDPAppliedOnOrder(purchasedPass.getPK().getId(), appliedPass_ID)) {
 
 					/*
-					 * Delivery pass is applied on the order and the applied
-					 * delivery pass is not the purchased pass
+					 * Delivery pass is applied on the order and the applied delivery pass is not
+					 * the purchased pass
 					 */
-					revokeDeliveryPassUsage(dlvpsb, appliedPass_ID,order.getEStoreId());
+					revokeDeliveryPassUsage(dlvpsb, appliedPass_ID, order.getEStoreId());
 				} else if (isDeliveryPromotionApplied(order)) {
 					cancelPassExtension(dlvpsb, null, order);
 				}
 			} else if (isValued(appliedPass_ID)) {
-				revokeDeliveryPassUsage(dlvpsb, appliedPass_ID,order.getEStoreId());
+				revokeDeliveryPassUsage(dlvpsb, appliedPass_ID, order.getEStoreId());
 			} else if (isDeliveryPromotionApplied(order)) {
 				cancelPassExtension(dlvpsb, null, order);
 			}
 			// End Handle Delivery Pass.
 
-			if (currentDPExtendDays > 0 && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+			if (currentDPExtendDays > 0 && null != CmsManager.getInstance().getEStoreId()
+					&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				// If extend delivery promo already there reverse extension.
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(order.getCustomerId(),
-						EnumDlvPassStatus.ACTIVE,order.getEStoreId());
+						EnumDlvPassStatus.ACTIVE, order.getEStoreId());
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -3061,16 +3074,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (dlvPass == null) {
 
 			List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(order.getCustomerId(),
-					EnumDlvPassStatus.ACTIVE,order.getEStoreId());
+					EnumDlvPassStatus.ACTIVE, order.getEStoreId());
 			if (dlvPasses != null && dlvPasses.size() > 0) {
 				dlvPass = dlvPasses.get(0);
-				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvPassSB, dlvPass, -1, order.getErpSalesId(),
 							"Curtail DP by a week. Order cancelled.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 				}
 			}
-		} else if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+		} else if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+				&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 			extendDeliveryPass(dlvPassSB, dlvPass, -1, order.getErpSalesId(), "Curtail DP by a week. Order cancelled.",
 					EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 		}
@@ -3082,16 +3097,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (dlvPass == null) {
 
 			List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(order.getCustomerId(),
-					EnumDlvPassStatus.ACTIVE,order.getEStoreId());
+					EnumDlvPassStatus.ACTIVE, order.getEStoreId());
 			if (dlvPasses != null && dlvPasses.size() > 0) {
 				dlvPass = dlvPasses.get(0);
-				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays / 7, order.getErpSalesId(),
 							"DP Extension Promotion Reversed",
 							EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED.getName());
 				}
 			}
-		} else if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+		} else if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+				&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 			extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays / 7, order.getErpSalesId(),
 					"DP Extension Promotion Reversed", EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED.getName());
 		}
@@ -3110,9 +3127,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * Modify an order (modify & send msg to SAP).
 	 *
-	 * @param identity the customer's identity reference @throws
-	 * FDResourceException if an error occured while accessing remote
-	 * resources @throws
+	 * @param identity
+	 *            the customer's identity reference @throws FDResourceException if
+	 *            an error occured while accessing remote resources @throws
 	 */
 	public void modifyOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order, Set<String> usedPromotionCodes,
 			String oldReservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole agentRole,
@@ -3211,8 +3228,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// APPDEV-5587 When the DP is applied on the order, set the charge
 			// line with DELIVERYPASS promotion information, if it's not already
 			// available
-			if (order.isDlvPassApplied()
-					&& EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType())) {
+			if (order.isDlvPassApplied() && EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType())) {
 				ErpChargeLineModel clm = order.getCharge(EnumChargeType.DELIVERY);
 				if (clm != null) {
 					if (clm.getDiscount() == null) {
@@ -3225,22 +3241,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			// Begin Handle Delivery Pass.
 			/*
-			 * Check if there is a active delivery pass and delivery pass was
-			 * applied. Also check if the modified order does not have any dlv
-			 * pass applied on it during create. If yes then apply the delivery
-			 * pass.
+			 * Check if there is a active delivery pass and delivery pass was applied. Also
+			 * check if the modified order does not have any dlv pass applied on it during
+			 * create. If yes then apply the delivery pass.
 			 */
 			DeliveryPassModel appliedDlvPass = null;
 			if (EnumDlvPassStatus.ACTIVE.equals(status) && order.isDlvPassApplied()
 					&& fdOrder.getDeliveryPassId() == null) {
 				/*
-				 * Customer has an ACTIVE DP. Order has DP applied during order
-				 * modification. Delivery promo was applied originally.
+				 * Customer has an ACTIVE DP. Order has DP applied during order modification.
+				 * Delivery promo was applied originally.
 				 */
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),
-						EnumDlvPassStatus.ACTIVE,order.geteStoreId());
+						EnumDlvPassStatus.ACTIVE, order.geteStoreId());
 				if (dlvPasses == null || dlvPasses.size() == 0) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -3252,40 +3267,46 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				appliedDlvPass = dlvPass;
 				// revert back the extension of the pass.(promo was applied
 				// originally)
-				if (dlvPass.getType().isUnlimited() && fdOrder.isDeliveryChargeWaived() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+				if (dlvPass.getType().isUnlimited() && fdOrder.isDeliveryChargeWaived()
+						&& null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, -1, saleId, "Curtail DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 				}
-			} else if (/*(EnumDlvPassStatus.ACTIVE.equals(status) || EnumDlvPassStatus.PENDING.equals(status) || EnumDlvPassStatus.EXPIRED_PENDING.equals(status)
-					|| EnumDlvPassStatus.CANCELLED.equals(status) || EnumDlvPassStatus.ORDER_CANCELLED.equals(status))
-					&&*/ !order.isDlvPassApplied() && fdOrder.getDeliveryPassId() != null) {
+			} else if (/*
+						 * (EnumDlvPassStatus.ACTIVE.equals(status) ||
+						 * EnumDlvPassStatus.PENDING.equals(status) ||
+						 * EnumDlvPassStatus.EXPIRED_PENDING.equals(status) ||
+						 * EnumDlvPassStatus.CANCELLED.equals(status) ||
+						 * EnumDlvPassStatus.ORDER_CANCELLED.equals(status)) &&
+						 */ !order.isDlvPassApplied() && fdOrder.getDeliveryPassId() != null) {
 				/*
-				 * Note: Expired pending state is valid only for BSGS pass. Then
-				 * it means dlvPass was applied during create order and now user
-				 * wants to either apply delivery promotion/changed the address
-				 * to corporate address. So revoke the delivery pass that was
-				 * applied to the order. Then nullify the dlvPassId in sale
-				 * table.
+				 * Note: Expired pending state is valid only for BSGS pass. Then it means
+				 * dlvPass was applied during create order and now user wants to either apply
+				 * delivery promotion/changed the address to corporate address. So revoke the
+				 * delivery pass that was applied to the order. Then nullify the dlvPassId in
+				 * sale table.
 				 */
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
 				DeliveryPassModel dlvPass = dlvpsb.getDeliveryPassInfo(fdOrder.getDeliveryPassId());
 				if (dlvPass == null) {
 					throw new DeliveryPassException("Unable to locate the delivery pass that was used for this order.");
 				}
-				if(!EnumDlvPassStatus.CANCELLED.equals(status) && !EnumDlvPassStatus.ORDER_CANCELLED.equals(status)) {
+				if (!EnumDlvPassStatus.CANCELLED.equals(status) && !EnumDlvPassStatus.ORDER_CANCELLED.equals(status)) {
 					dlvpsb.revoke(dlvPass);
 				}
 				sb.updateDlvPassIdToSale(saleId, null);
-				if (order.isDlvPromotionApplied() && dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+				if (order.isDlvPromotionApplied() && dlvPass.getType().isUnlimited()
+						&& null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, 1, saleId, "Extend DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 				}
 			}
 			/*
-			 * Customer has ACTIVE Delivery pass. The order was previously HOME
-			 * delivery with Delivery promotion applied. The order is modified
-			 * to PICKUP delivery type. Revert back the Unlimited pass
-			 * extension.
+			 * Customer has ACTIVE Delivery pass. The order was previously HOME delivery
+			 * with Delivery promotion applied. The order is modified to PICKUP delivery
+			 * type. Revert back the Unlimited pass extension.
 			 */
 			else if (EnumDlvPassStatus.ACTIVE.equals(status) && fdOrder.isDeliveryChargeWaived()
 					&& EnumDeliveryType.HOME.equals(fdOrder.getDeliveryType())
@@ -3293,29 +3314,32 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb,order.geteStoreId());
+				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb,
+						order.geteStoreId());
 
 				// revert back the extension of the pass.(promo was applied
 				// originally)
-				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, -1, saleId, "Curtail DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 				}
 
 			}
 			/*
-			 * Customer has ACTIVE Delivery pass. The order was previously
-			 * PICKUP delivery type. The order is modified to HOME delivery with
-			 * Delivery promotion applied. Extend the unlimited Delivery pass by
-			 * a week.
+			 * Customer has ACTIVE Delivery pass. The order was previously PICKUP delivery
+			 * type. The order is modified to HOME delivery with Delivery promotion applied.
+			 * Extend the unlimited Delivery pass by a week.
 			 */
 			else if (EnumDlvPassStatus.ACTIVE.equals(status) && order.isDlvPromotionApplied()
 					&& EnumDeliveryType.PICKUP.equals(fdOrder.getDeliveryType())
 					&& EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType())) {
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb,order.geteStoreId());
-				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb,
+						order.geteStoreId());
+				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, 1, saleId, "Extend DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 				}
@@ -3328,11 +3352,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			// Begin apply delivery pass extension promotion.
 			int dpCurrentExtendDays = order.getCurrentDlvPassExtendDays();
-			if (dpCurrentExtendDays > 0 && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+			if (dpCurrentExtendDays > 0 && null != CmsManager.getInstance().getEStoreId()
+					&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				// If extend delivery promo already there reverse extension.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),
-						EnumDlvPassStatus.ACTIVE,order.geteStoreId());
+						EnumDlvPassStatus.ACTIVE, order.geteStoreId());
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -3345,11 +3370,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 
 			int dpExtendDays = order.getDlvPassExtendDays();
-			if (dpExtendDays > 0 && EnumDlvPassStatus.ACTIVE.equals(status) && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+			if (dpExtendDays > 0 && EnumDlvPassStatus.ACTIVE.equals(status)
+					&& null != CmsManager.getInstance().getEStoreId()
+					&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				EnumEStoreId eStore = EnumEStoreId
+						.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),
-						EnumDlvPassStatus.ACTIVE,eStore);
+						EnumDlvPassStatus.ACTIVE, eStore);
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -3394,12 +3422,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			/*
 			 * else { ErpAbstractOrderModel originalOrder = sb.getOrder(new
-			 * PrimaryKey(saleId)).getCurrentOrder();
-			 * if(originalOrder.getAppliedGiftcards() != null &&
-			 * originalOrder.getAppliedGiftcards().size() > 0) { //Original
-			 * order GC was used. now removed. cancel the pre-auths on GC
-			 * GiftCardManagerSB gcSB = (GiftCardManagerSB)
-			 * this.getGiftCardGManagerHome().create();
+			 * PrimaryKey(saleId)).getCurrentOrder(); if(originalOrder.getAppliedGiftcards()
+			 * != null && originalOrder.getAppliedGiftcards().size() > 0) { //Original order
+			 * GC was used. now removed. cancel the pre-auths on GC GiftCardManagerSB gcSB =
+			 * (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
 			 * gcSB.initiateCancelAuthorizations(saleId); } }
 			 */
 			// authorize the sale
@@ -3409,8 +3435,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				if (EnumTransactionSource.WEBSITE.equals(order.getTransactionSource())) {
 					paymentManager.authorizeSaleRealtime(saleId);
 
-				}
-				else {
+				} else {
 					paymentManager.authorizeSale(saleId, true);
 
 				}
@@ -3443,21 +3468,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// this is duplicate call- this is already taken care ofin
 				// SAPResultListener
 				/*
-				 * //if its fdx estore then make a call to logistics to store
-				 * fdx order.
-				 * if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId
-				 * ().name())){
-				 * FDDeliveryManager.getInstance().modifyOrder(saleId, null,
-				 * order.getTip(), newReservationId,
+				 * //if its fdx estore then make a call to logistics to store fdx order.
+				 * if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId ().name())){
+				 * FDDeliveryManager.getInstance().modifyOrder(saleId, null, order.getTip(),
+				 * newReservationId,
 				 * order.getDeliveryInfo().getDeliveryAddress().getFirstName(),
 				 * order.getDeliveryInfo().getDeliveryAddress().getLastName(),
-				 * order.getDeliveryInfo().getDeliveryAddress().getInstructions(
-				 * ),
+				 * order.getDeliveryInfo().getDeliveryAddress().getInstructions( ),
 				 * (order.getDeliveryInfo().getDeliveryAddress().getServiceType(
 				 * )!=null?order.getDeliveryInfo().getDeliveryAddress().
 				 * getServiceType().getName():null),
-				 * order.getDeliveryInfo().getDeliveryAddress().getAltDelivery()
-				 * !=null?
+				 * order.getDeliveryInfo().getDeliveryAddress().getAltDelivery() !=null?
 				 * order.getDeliveryInfo().getDeliveryAddress().getAltDelivery()
 				 * .getName():null, orderMobileNumber,order.getSapOrderId()); }
 				 */
@@ -3566,8 +3587,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private void recommitReservation(String oldReservationId,
-			String erpCustomerPK, OrderContext orderContext,
+	private void recommitReservation(String oldReservationId, String erpCustomerPK, OrderContext orderContext,
 			ErpAddressModel deliveryAddress, boolean pr1) throws FDResourceException, ReservationException {
 		DlvManagerSB dlvManagerSB;
 		try {
@@ -3579,8 +3599,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
-		
-		
+
 	}
 
 	public void modifyAutoRenewOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order,
@@ -3642,27 +3661,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				newPass.setPK(new PrimaryKey(pk));
 				if (order.isDlvPassApplied() && fdOrder.getDeliveryPassId() == null && appliedDlvPass == null) {
 					/*
-					 * fdOrder.getDeliveryPassId() == null this check make sures
-					 * the modified order does not have any acitve delivery pass
-					 * applied during create order.
+					 * fdOrder.getDeliveryPassId() == null this check make sures the modified order
+					 * does not have any acitve delivery pass applied during create order.
 					 */
 					dlvpsb.applyNew(newPass);
 					sb.updateDlvPassIdToSale(saleId, newPass.getPK().getId());
 				} else if (EnumDlvPassStatus.NONE.equals(status) && order.isDlvPromotionApplied()
-						&& newPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {// ?should the
-																// check be for
-																// NONE?
+						&& newPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+						&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {// ?should the
+					// check be for
+					// NONE?
 					/*
-					 * Customer has purchased Unlimited DP using Delivery promo.
-					 * Extend by a week.
+					 * Customer has purchased Unlimited DP using Delivery promo. Extend by a week.
 					 */
 					extendDeliveryPass(dlvpsb, newPass, 1, saleId, "Extend DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 				}
 			} else {
 				/*
-				 * The delivery pass already exists for this order. Check if it
-				 * was modified to a new one.
+				 * The delivery pass already exists for this order. Check if it was modified to
+				 * a new one.
 				 */
 				// Get the exisitng pass from the list.
 				DeliveryPassModel existingPass = dlvPasses.get(0);
@@ -3671,21 +3689,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				if (modifyPass.getType() != existingPass.getType()) {
 					if (existingPass.getPK().getId().equals(fdOrder.getDeliveryPassId())) {
 						/*
-						 * The existing pass was used for this order. So nullify
-						 * the exisitng dlv pass id in sale table before moving
-						 * to new delivery pass.
+						 * The existing pass was used for this order. So nullify the exisitng dlv pass
+						 * id in sale table before moving to new delivery pass.
 						 */
 						sb.updateDlvPassIdToSale(saleId, null);
 					} // Else it was a different pass that was applied. Possibly
 						// the active one. So Nothing to worry:)
-					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
-					String dlvPassId = dlvpsb.modify(saleId, modifyPass,eStore, identity.getFDCustomerPK());
+					EnumEStoreId eStore = EnumEStoreId
+							.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					String dlvPassId = dlvpsb.modify(saleId, modifyPass, eStore, identity.getFDCustomerPK());
 					modifyPass.setPK(new PrimaryKey(dlvPassId));
 					if (order.isDlvPassApplied() && fdOrder.getDeliveryPassId() == null) {
 						/*
-						 * fdOrder.getDeliveryPassId() == null this check make
-						 * sures the modified order does not have any active
-						 * delivery pass applied during create order.
+						 * fdOrder.getDeliveryPassId() == null this check make sures the modified order
+						 * does not have any active delivery pass applied during create order.
 						 */
 
 						dlvpsb.applyNew(modifyPass);
@@ -3694,9 +3711,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				} else {
 					// The pass was not modified during modify order.
 					/*
-					 * If Unlimited pass, check if there was a discount applied
-					 * during modify order. If yes update the new price to the
-					 * DP table.
+					 * If Unlimited pass, check if there was a discount applied during modify order.
+					 * If yes update the new price to the DP table.
 					 */
 					if (modifyPass.getType().isUnlimited() && (modifyPass.getAmount() != existingPass.getAmount())) {
 						// Update the new price to the DP table.
@@ -3705,27 +3721,24 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					}
 					if (order.isDlvPassApplied() && fdOrder.getDeliveryPassId() == null) {
 						/*
-						 * Then it means dlvPass was not applied during create
-						 * order. So apply now.
+						 * Then it means dlvPass was not applied during create order. So apply now.
 						 */
 						dlvpsb.applyNew(existingPass);
 						sb.updateDlvPassIdToSale(saleId, existingPass.getPK().getId());
 					} else if (!order.isDlvPassApplied() && (fdOrder.getDeliveryPassId() != null)
 							&& (order.isDlvPromotionApplied())) {
 						/*
-						 * Then it means dlvPass was applied during create order
-						 * and now user wants to apply delivery
-						 * promotion/changed to corporate address. So revoke the
-						 * delivery pass that was applied to the order. Then
-						 * nullify the dlvPassId in sale table.
+						 * Then it means dlvPass was applied during create order and now user wants to
+						 * apply delivery promotion/changed to corporate address. So revoke the delivery
+						 * pass that was applied to the order. Then nullify the dlvPassId in sale table.
 						 */
 						if (existingPass.getPK().getId().equals(fdOrder.getDeliveryPassId())) {
 							dlvpsb.revoke(existingPass);
 							/*
-							 * Customer has purchased Unlimited DP using
-							 * Delivery promo. Extend by a week.
+							 * Customer has purchased Unlimited DP using Delivery promo. Extend by a week.
 							 */
-							if (existingPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
+							if (existingPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId()
+									&& !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 								extendDeliveryPass(dlvpsb, existingPass, 1, saleId, "Extend DP by a week.",
 										EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 							}
@@ -3739,16 +3752,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 		} else {
 			/*
-			 * The order does not contain a delivery pass. Make sure it was not
-			 * removed during modify order.
+			 * The order does not contain a delivery pass. Make sure it was not removed
+			 * during modify order.
 			 */
 			List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByOrderId(saleId);
 			if (dlvPasses != null && dlvPasses.size() > 0) {
 
 				/*
-				 * If the delivery pass removed from the cart is the same as the
-				 * applied delivery pass, Order doesn't use delivery pass
-				 * anymore
+				 * If the delivery pass removed from the cart is the same as the applied
+				 * delivery pass, Order doesn't use delivery pass anymore
 				 */
 				DeliveryPassModel purchasedPass = dlvPasses.get(0);
 				if (purchasedPass.getPK().getId().equals(fdOrder.getDeliveryPassId())) {
@@ -3756,23 +3768,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 
 				/*
-				 * Delivery pass already exists for this order. So it was
-				 * removed now. So remove it from the database as well and
-				 * nullify the dlvPassId in sale table.
+				 * Delivery pass already exists for this order. So it was removed now. So remove
+				 * it from the database as well and nullify the dlvPassId in sale table.
 				 */
 				// So nullify the exisitng dlv pass id in sale table before
 				// removing the delivery pass.
-				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				EnumEStoreId eStore = EnumEStoreId
+						.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				dlvpsb.remove(purchasedPass, eStore, identity.getFDCustomerPK());
 
 			}
 		}
 	}
 
-
 	/**
-	 * Adds a complaint to the user's list of complaints and begins the
-	 * associated credit issuing process
+	 * Adds a complaint to the user's list of complaints and begins the associated
+	 * credit issuing process
 	 *
 	 * @param ErpComplaintModel
 	 *            represents the complaint
@@ -3821,8 +3832,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/**
-	 * Adds a complaint to the user's list of complaints and begins the
-	 * associated credit issuing process
+	 * Adds a complaint to the user's list of complaints and begins the associated
+	 * credit issuing process
 	 *
 	 * @param ErpComplaintModel
 	 *            represents the complaint
@@ -3849,14 +3860,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "from cust.sale s, cust.complaint c "
 			+ "where s.status = 'PPG' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' "
 			+ "and c.id not in (select complaint_id from cust.complaintline where c.id = complaint_id and method = 'CSH') "
-            + "and c.CREATED_BY <> ? "
+			+ "and c.CREATED_BY <> ? " + "union all " + "select c.id as complaint_id "
+			+ "from cust.sale s, cust.complaint c "
+			+ "where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?"
 			+ "union all " + "select c.id as complaint_id " + "from cust.sale s, cust.complaint c "
-            + "where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?" + "union all " + "select c.id as complaint_id "
-            + "from cust.sale s, cust.complaint c " + "where s.status = 'ENR' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?";
+			+ "where s.status = 'ENR' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?";
 
 	public List<String> getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException {
 		Connection conn = null;
-		PreparedStatement ps= null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
@@ -3864,14 +3876,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// ps.setDouble(1,
 			// ErpServicesProperties.getCreditAutoApproveAmount());
 			ps.setBigDecimal(1, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
-            ps.setString(2, ErpServicesProperties.getSelfCreditAgent());
+			ps.setString(2, ErpServicesProperties.getSelfCreditAgent());
 			// ps.setDouble(2,
 			// ErpServicesProperties.getCreditAutoApproveAmount());
-            ps.setBigDecimal(3, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
-            ps.setString(4, ErpServicesProperties.getSelfCreditAgent());
-            ps.setBigDecimal(5, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
-            ps.setString(6, ErpServicesProperties.getSelfCreditAgent());
-            rs = ps.executeQuery();
+			ps.setBigDecimal(3, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
+			ps.setString(4, ErpServicesProperties.getSelfCreditAgent());
+			ps.setBigDecimal(5, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
+			ps.setString(6, ErpServicesProperties.getSelfCreditAgent());
+			rs = ps.executeQuery();
 			List<String> lst = new ArrayList<String>();
 
 			while (rs.next()) {
@@ -4110,8 +4122,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
 		try {
-				ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-				return sb.getOrder(new PrimaryKey(saleId));
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			return sb.getOrder(new PrimaryKey(saleId));
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -4722,8 +4734,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/*
-	 * Added for APPDEV-89 . Sending a seperate Auth failed email to auto renew
-	 * DP customers. AR - Stands for Auto Renew DP
+	 * Added for APPDEV-89 . Sending a seperate Auth failed email to auto renew DP
+	 * customers. AR - Stands for Auto Renew DP
 	 */
 	private void sendARAuthFailedEmail(String saleID) throws FDResourceException {
 
@@ -4765,8 +4777,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * this.cancelReservation(identity, oldReservation, rsvType, aInfo, event);
 	 * aInfo.setNote("Make Pre-Reservation");
 	 *
-	 * return this.makeReservation(identity, timeslotId, rsvType, addressId,
-	 * aInfo, chefstable, event, false); }
+	 * return this.makeReservation(identity, timeslotId, rsvType, addressId, aInfo,
+	 * chefstable, event, false); }
 	 */
 	// Logistics Redesign - commenting the logic that is handled in logistics
 	public FDReservation makeReservation(FDUserI user, String timeslotId, EnumReservationType rsvType, String addressId,
@@ -4781,31 +4793,29 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		 * address.getBuildingId(), false);
 		 *
 		 * long duration = timeslot.getCutoffDateTime().getTime() -
-		 * System.currentTimeMillis() - (FDStoreProperties.getPreReserveHours()
-		 * * DateUtil.HOUR); if (duration < 0) { duration =
-		 * Math.min(timeslot.getCutoffDateTime().getTime() -
-		 * System.currentTimeMillis(), DateUtil.HOUR); }
+		 * System.currentTimeMillis() - (FDStoreProperties.getPreReserveHours() *
+		 * DateUtil.HOUR); if (duration < 0) { duration =
+		 * Math.min(timeslot.getCutoffDateTime().getTime() - System.currentTimeMillis(),
+		 * DateUtil.HOUR); }
 		 */
-		
+
 		DlvManagerSB dlvManagerSB;
 		try {
 			dlvManagerSB = this.getDlvManagerHome().create();
-			FDReservation rsv =	dlvManagerSB.reserveTimeslot(timeslotId, identity.getErpCustomerPK(),
-					rsvType, TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false, null);
+			FDReservation rsv = dlvManagerSB.reserveTimeslot(timeslotId, identity.getErpCustomerPK(), rsvType,
+					TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false, null);
 			LOGGER.info("makeReservation: " + ((rsv != null) ? rsv.getId() : null));
 
 			this.logActivity(getReservationActivityLog(rsv.getTimeslot(), aInfo,
 					EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
 
 			return rsv;
-			
-			
+
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
-
 
 	}
 
@@ -4876,22 +4886,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			conn = this.getConnection();
 			ps = conn.prepareStatement(
 					"SELECT ct.sale_id, s.type, ct.id AS complaint_id, cc.amount, SUM(cl.amount) AS original_amount, cl.method, cd.name AS department, "
-                            + "cc.create_date, ct.STATUS, ct.CREATED_BY, ct.APPROVED_BY, s.E_STORE "
+							+ "cc.create_date, ct.STATUS, ct.CREATED_BY, ct.APPROVED_BY, s.E_STORE "
 							+ "FROM (select SUM(amount) as amount, complaint_id, create_date from cust.customercredit where customer_id= ? GROUP BY complaint_id, create_date) cc, CUST.COMPLAINT ct, "
 							+ "CUST.COMPLAINTLINE cl, CUST.COMPLAINT_DEPT_CODE cdc, CUST.COMPLAINT_DEPT cd, CUST.SALE s "
 							+ "WHERE cc.COMPLAINT_ID = ct.id AND ct.id=cl.complaint_id "
 							+ "AND cl.complaint_dept_code_id = cdc.id "
 							+ "AND cdc.comp_dept = cd.code and ct.sale_id = s.id "
-                            + "and cl.method = 'FDC' and ct.status='APP' "
-                            + "GROUP BY ct.sale_id, s.type, ct.id, cc.amount, cl.method, cd.name, cc.create_date, ct.status, ct.created_by, ct.approved_by, s.E_STORE "
+							+ "and cl.method = 'FDC' and ct.status='APP' "
+							+ "GROUP BY ct.sale_id, s.type, ct.id, cc.amount, cl.method, cd.name, cc.create_date, ct.status, ct.created_by, ct.approved_by, s.E_STORE "
 							+ "UNION "
 							+ "SELECT ct.sale_id, sa.type, ct.id AS complaint_id, 0 as amount, cl.amount as ORIGINAL_AMOUNT, cl.method, cd.name AS department, ct.create_date, "
-                            + "ct.status, ct.created_by, ct.approved_by, sa.E_STORE " + "FROM CUST.COMPLAINT ct, "
+							+ "ct.status, ct.created_by, ct.approved_by, sa.E_STORE " + "FROM CUST.COMPLAINT ct, "
 							+ "CUST.COMPLAINTLINE cl, CUST.SALE sa, "
 							+ "CUST.COMPLAINT_DEPT_CODE cdc, CUST.COMPLAINT_DEPT cd " + "WHERE sa.customer_id = ? "
 							+ "AND sa.id = ct.sale_id AND ct.id = cl.complaint_id AND cl.complaint_dept_code_id = cdc.id "
-                            + "and cl.method = 'CSH' and ct.status='APP' " + "AND cdc.comp_dept = cd.code "
-                            + "GROUP BY ct.sale_id, sa.type, ct.id, cl.amount, cl.method, ct.create_date, ct.status, cd.name, ct.created_by, ct.approved_by, sa.E_STORE "
+							+ "and cl.method = 'CSH' and ct.status='APP' " + "AND cdc.comp_dept = cd.code "
+							+ "GROUP BY ct.sale_id, sa.type, ct.id, cl.amount, cl.method, ct.create_date, ct.status, cd.name, ct.created_by, ct.approved_by, sa.E_STORE "
 							+ "ORDER BY create_date DESC, complaint_id, department, method");
 			ps.setString(1, identity.getErpCustomerPK());
 			ps.setString(2, identity.getErpCustomerPK());
@@ -4927,7 +4937,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				credit.setIssuedBy(rs.getString("CREATED_BY"));
 				credit.setApprovedBy(rs.getString("APPROVED_BY"));
 				credit.setOrderType(rs.getString("TYPE"));
-                credit.seteStore(rs.getString("E_STORE"));
+				credit.seteStore(rs.getString("E_STORE"));
 
 				if ("Referral".equals(rs.getString("DEPARTMENT"))) {
 					// Get the order number that helped to earn this credit
@@ -5125,7 +5135,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public boolean isReferrerRestricted(FDIdentity identity) throws FDResourceException {
 		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.REFERRER.getName());
 	}
-	
+
 	public boolean isCreditRestricted(FDIdentity identity) throws FDResourceException {
 		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.CREDIT.getName());
 	}
@@ -5167,7 +5177,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private List<String> getRewriteOptions(String options) {
 		if (options == null || "".equals(options.trim())) {
-			return Collections.<String> emptyList();
+			return Collections.<String>emptyList();
 		}
 		String[] tokens = options.split("\\,", -2);
 		List<String> lst = new ArrayList<String>();
@@ -5253,8 +5263,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/**
-	 * This method returns Map containing dlvPassId as key and DlvPassUsageInfo
-	 * as value.
+	 * This method returns Map containing dlvPassId as key and DlvPassUsageInfo as
+	 * value.
 	 *
 	 * @param identity
 	 * @return
@@ -5277,8 +5287,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/**
-	 * This method returns the list of orders that used the specified delivery
-	 * pass.
+	 * This method returns the list of orders that used the specified delivery pass.
 	 *
 	 * @param dlvPassId
 	 * @return java.util.List
@@ -5312,13 +5321,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/**
-	 * This method returns the one or more delivery passes that are linked to
-	 * this customer's account for the specified delivery pass status.
+	 * This method returns the one or more delivery passes that are linked to this
+	 * customer's account for the specified delivery pass status.
 	 *
 	 * @param customerId
 	 * @return java.util.List
 	 */
-	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,EnumEStoreId eStore) {
+	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,
+			EnumEStoreId eStore) {
 		List<DeliveryPassModel> deliveryPasses = null;
 		try {
 			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
@@ -5372,7 +5382,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return results;
 	}
 
-
 	/**
 	 * SmartStore
 	 *
@@ -5419,10 +5428,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private DeliveryPassModel getActiveDPForCustomer(String customerPK, DlvPassManagerSB dlvPassSB,EnumEStoreId estore)
+	private DeliveryPassModel getActiveDPForCustomer(String customerPK, DlvPassManagerSB dlvPassSB, EnumEStoreId estore)
 			throws FDResourceException, RemoteException {
 
-		List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(customerPK, EnumDlvPassStatus.ACTIVE, estore);
+		List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(customerPK, EnumDlvPassStatus.ACTIVE,
+				estore);
 		if (dlvPasses == null || dlvPasses.size() == 0) {
 			throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 		}
@@ -5436,14 +5446,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (numOfWeeks < 0) {
 			action = EnumAccountActivityType.REDUCE_DLV_PASS;
 			/**
-			 * Under this scenario, you shouldn't reduce the expiration period.
-			 * 1) The purchased pass might have been pending during the order
-			 * being made(with delivery promo) and "active" when you cancel the
-			 * order. Since you've not given an extension for the pass, dont
-			 * reduce. 2) The pass purchased is pending, Delivery promo applied
-			 * on subsequent order before the pass being activated. If that
-			 * order(using delivery promo) is cancelled after the DP is active,
-			 * dont curtail his expiration date.
+			 * Under this scenario, you shouldn't reduce the expiration period. 1) The
+			 * purchased pass might have been pending during the order being made(with
+			 * delivery promo) and "active" when you cancel the order. Since you've not
+			 * given an extension for the pass, dont reduce. 2) The pass purchased is
+			 * pending, Delivery promo applied on subsequent order before the pass being
+			 * activated. If that order(using delivery promo) is cancelled after the DP is
+			 * active, dont curtail his expiration date.
 			 *
 			 */
 			if ((dlvPass.getOrgExpirationDate() != null)
@@ -5470,14 +5479,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (noOfDays < 0) {
 			action = EnumAccountActivityType.REDUCE_DLV_PASS;
 			/**
-			 * Under this scenario, you shouldn't reduce the expiration period.
-			 * 1) The purchased pass might have been pending during the order
-			 * being made(with delivery promo) and "active" when you cancel the
-			 * order. Since you've not given an extension for the pass, dont
-			 * reduce. 2) The pass purchased is pending, Delivery promo applied
-			 * on subsequent order before the pass being activated. If that
-			 * order(using delivery promo) is cancelled after the DP is active,
-			 * dont curtail his expiration date.
+			 * Under this scenario, you shouldn't reduce the expiration period. 1) The
+			 * purchased pass might have been pending during the order being made(with
+			 * delivery promo) and "active" when you cancel the order. Since you've not
+			 * given an extension for the pass, dont reduce. 2) The pass purchased is
+			 * pending, Delivery promo applied on subsequent order before the pass being
+			 * activated. If that order(using delivery promo) is cancelled after the DP is
+			 * active, dont curtail his expiration date.
 			 *
 			 */
 			if ((dlvPass.getOrgExpirationDate() != null)
@@ -5631,8 +5639,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus , EnumEStoreId eStore)
-			throws FDResourceException, ErpSaleNotFoundException {
+	public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus,
+			EnumEStoreId eStore) throws FDResourceException, ErpSaleNotFoundException {
 
 		try {
 			List<EnumPaymentMethodType> paymentMethodTypes = new ArrayList<EnumPaymentMethodType>();
@@ -5640,7 +5648,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			paymentMethodTypes.add(EnumPaymentMethodType.PAYPAL);
 			paymentMethodTypes.add(EnumPaymentMethodType.ECHECK);
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus, paymentMethodTypes, eStore);
+			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus, paymentMethodTypes,
+					eStore);
 			return new FDOrderAdapter(saleModel);
 
 		} catch (CreateException ce) {
@@ -5687,15 +5696,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 */
 	public String placeSubscriptionOrder(FDActionInfo info, ErpCreateOrderModel createOrder,
 			Set<String> usedPromotionCodes, String rsvId, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole agentRole, EnumDlvPassStatus status,boolean isRealTimeAuthNeeded)
-			throws FDResourceException, ErpFraudException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpTransactionException {
+			CrmAgentRole agentRole, EnumDlvPassStatus status, boolean isRealTimeAuthNeeded)
+			throws FDResourceException, ErpFraudException, DeliveryPassException, FDPaymentInadequateException,
+			InvalidCardException, ErpTransactionException {
 
 		FDIdentity identity = info.getIdentity();
 		PrimaryKey pk = null;
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			String customerPk = identity.getErpCustomerPK();
-
 
 			// Check if payment received is enough to process GC only orders.
 			if (createOrder.getSelectedGiftCards() != null && createOrder.getSelectedGiftCards().size() > 0) {
@@ -5712,7 +5721,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				createOrder.setBufferAmt(strategy.getPerishableBufferAmount());
 			}
 
-
 			pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole, null,
 					EnumSaleType.SUBSCRIPTION);
 			LOGGER.debug("In Place order getDeliveryPassCount " + createOrder.getDeliveryPassCount());
@@ -5720,16 +5728,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// order contains delivery pass.
 				DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 						createOrder);
-				if(status != null && hasCustomerDpFreeTrialOptin(identity.getFDCustomerPK())) {
+				if (status != null && hasCustomerDpFreeTrialOptin(identity.getFDCustomerPK())) {
 					newPass.setStatus(status);
-					if(newPass.getStatus().equals(EnumDlvPassStatus.ACTIVE)) {
+					if (newPass.getStatus().equals(EnumDlvPassStatus.ACTIVE)) {
 						Date activationDate = DateUtil.getCurrentTime();
 						newPass.setActivationDate(activationDate);
 					}
 				}
 
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				EnumEStoreId eStore = EnumEStoreId
+						.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				String dlvPassId = dlvpsb.create(newPass, eStore, identity.getFDCustomerPK());
 				newPass.setPK(new PrimaryKey(dlvPassId));
 			}
@@ -5750,13 +5759,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				gcSB.preAuthorizeSales(pk.getId());
 
 			}
-			if(null !=createOrder.getPaymentMethod() && !EnumPaymentMethodType.GIFTCARD.equals(createOrder.getPaymentMethod().getPaymentMethodType())){
-				if(isRealTimeAuthNeeded){
-					authorizeSale(info.getIdentity().getErpCustomerPK().toString(), pk.getId(), EnumSaleType.SUBSCRIPTION, cra);
+			if (null != createOrder.getPaymentMethod()
+					&& !EnumPaymentMethodType.GIFTCARD.equals(createOrder.getPaymentMethod().getPaymentMethodType())) {
+				if (isRealTimeAuthNeeded) {
+					authorizeSale(info.getIdentity().getErpCustomerPK().toString(), pk.getId(),
+							EnumSaleType.SUBSCRIPTION, cra);
 				}
 			} else {
 				ErpCustomerManagerSB erpCMsb = this.getErpCustomerManagerHome().create();
-				erpCMsb.sendCreateOrderToSAP(info.getIdentity().getErpCustomerPK().toString(), pk.getId(), EnumSaleType.SUBSCRIPTION, cra);
+				erpCMsb.sendCreateOrderToSAP(info.getIdentity().getErpCustomerPK().toString(), pk.getId(),
+						EnumSaleType.SUBSCRIPTION, cra);
 			}
 
 			if (sendEmail) {
@@ -5780,8 +5792,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (RemoteException re) {
 			System.out.println(re);
 			throw new FDResourceException(re);
-		}catch (ErpSaleNotFoundException e) {
-			 LOGGER.warn("Unable to locate Order ", e);
+		} catch (ErpSaleNotFoundException e) {
+			LOGGER.warn("Unable to locate Order ", e);
 			throw new FDResourceException(e);
 		}
 	}
@@ -5831,15 +5843,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				int orderCount = getValidOrderCount(identity);
 				fdInfo.setNumberOfOrders(orderCount);
 				/*
-				 * boolean isBulkOrder = false; FDUser fdUser =
-				 * recognize(identity); FDBulkRecipientList bulkList =
-				 * fdUser.getBulkRecipentList(); if(null!= bulkList && null
-				 * !=bulkList.getRecipents()&&
-				 * !bulkList.getRecipents().isEmpty()){ isBulkOrder = true; }
-				 * if(isBulkOrder){
+				 * boolean isBulkOrder = false; FDUser fdUser = recognize(identity);
+				 * FDBulkRecipientList bulkList = fdUser.getBulkRecipentList(); if(null!=
+				 * bulkList && null !=bulkList.getRecipents()&&
+				 * !bulkList.getRecipents().isEmpty()){ isBulkOrder = true; } if(isBulkOrder){
 				 * this.doEmail(FDGiftCardEmailFactory.getInstance
-				 * ().createGiftCardBulkOrderConfirmationEmail(fdInfo, order,
-				 * bulkList)); }else{
+				 * ().createGiftCardBulkOrderConfirmationEmail(fdInfo, order, bulkList)); }else{
 				 */
 				this.doEmail(FDGiftCardEmailFactory.getInstance().createGiftCardOrderConfirmationEmail(fdInfo, order,
 						isBulkOrder));
@@ -5879,8 +5888,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			throw new FDResourceException(re);
 		} /*
-			 * catch(FDAuthenticationException fdae){ throw new
-			 * FDResourceException(fdae); }
+			 * catch(FDAuthenticationException fdae){ throw new FDResourceException(fdae); }
 			 */
 	}
 
@@ -6385,8 +6393,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return EnumIPhoneCaptureType.UNREGISTERED; // success
 	}
 
-	private void saveFutureZoneNotification(String emailId, String code,
-			EnumServiceType enumServiceType) throws FDResourceException {
+	private void saveFutureZoneNotification(String emailId, String code, EnumServiceType enumServiceType)
+			throws FDResourceException {
 		DlvManagerSB dlvManagerSB;
 		try {
 			dlvManagerSB = this.getDlvManagerHome().create();
@@ -6397,8 +6405,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
-		
-		
+
 	}
 
 	public void doEmail(FTLEmailI email) throws FDResourceException {
@@ -7008,15 +7015,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			EnumPaymentType pt = order.getPaymentMethod().getPaymentType();
 			if (EnumPaymentType.REGULAR.equals(pt)
 					&& (cra.isOnFDAccount()/*
-											 * ||EnumPaymentMethodType.EBT.equals
-											 * (order.getPaymentMethod().
+											 * ||EnumPaymentMethodType.EBT.equals (order.getPaymentMethod().
 											 * getPaymentMethodType())
 											 */)) {
 				order.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 
 			this.modifyOrder(info, saleId, order, appliedPromos, oldReservationId, sendEmail, cra, agentRole, status,
-					hasCoupons, -1); //don't send FDC order count during bulk edit [APPDEV-7108]
+					hasCoupons, -1); // don't send FDC order count during bulk edit [APPDEV-7108]
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -7183,7 +7189,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-//TEmailRuntimeException
+
+	// TEmailRuntimeException
 	public void doEmail(EnumTranEmailType tranEmailType, Map input) throws FDResourceException {
 		// System.out.println("---------------------------calling doEmail");
 		try {
@@ -7593,8 +7600,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		List<FDCartonInfo> cartonInfo = new ArrayList<FDCartonInfo>();
 
-		SapCartonInfoForSale bapi = new SapCartonInfoForSale(FDStoreProperties.getDefaultFdPlantID(), order.getRequestedDate(), order.getErpSalesId(),
-				order.getSapOrderId(), order.getShippingInfo().getWaveNumber());
+		SapCartonInfoForSale bapi = new SapCartonInfoForSale(FDStoreProperties.getDefaultFdPlantID(),
+				order.getRequestedDate(), order.getErpSalesId(), order.getSapOrderId(),
+				order.getShippingInfo().getWaveNumber());
 		try {
 			bapi.execute();
 
@@ -7764,7 +7772,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		boolean status = true;
 		try {
 			conn = getConnection();
-			if(identity!=null){
+			if (identity != null) {
 				status = FDUserDAO.storeFDTCAgreeDate(conn, identity.getFDCustomerPK(), ackType);
 			}
 		} catch (SQLException sqle) {
@@ -7775,13 +7783,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return status;
 	}
 
-	public boolean setRAFClickIDPromoCode(FDIdentity identity, String rafclickid, String rafpromocode, EnumEStoreId eStoreId) throws FDResourceException{
+	public boolean setRAFClickIDPromoCode(FDIdentity identity, String rafclickid, String rafpromocode,
+			EnumEStoreId eStoreId) throws FDResourceException {
 		Connection conn = null;
 		boolean status = true;
 		try {
 			conn = getConnection();
-			if(identity!=null){
-				status=FDUserDAO.storeRAFClickIdPromoCode(conn, identity.getFDCustomerPK(), rafclickid, rafpromocode, eStoreId);
+			if (identity != null) {
+				status = FDUserDAO.storeRAFClickIdPromoCode(conn, identity.getFDCustomerPK(), rafclickid, rafpromocode,
+						eStoreId);
 			}
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
@@ -7791,8 +7801,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return status;
 	}
 
-	public String getParentOrderAddressId(String parentOrderId)throws FDResourceException{
-		LOGGER.info("getParentOrderAddressId... "+parentOrderId);
+	public String getParentOrderAddressId(String parentOrderId) throws FDResourceException {
+		LOGGER.info("getParentOrderAddressId... " + parentOrderId);
 		Connection conn = null;
 		String parentOrderAddressId = null;
 		try {
@@ -7909,8 +7919,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			LOGGER.info("valid iphone capture email: " + email);
 			// If unknown email, save it in dlv.zonenotification table
-			saveFutureZoneNotification(email, zoneId,
-					EnumServiceType.getEnum(serviceType));
+			saveFutureZoneNotification(email, zoneId, EnumServiceType.getEnum(serviceType));
 
 		} catch (Exception e) {
 			throw new FDResourceException(e);
@@ -8063,6 +8072,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return result;
 	}
+
 	private Map<String, ErpShippingInfo> mapShippingTruckDetails(List<String> salesId) throws FDResourceException {
 		Map<String, ErpShippingInfo> erpShippingMap = new HashMap<String, ErpShippingInfo>();
 		Map<String, ShippingDetail> truckMap = new HashMap<String, ShippingDetail>();
@@ -8227,11 +8237,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * ;
 	 *
 	 * public void updateSilverPopupDetails(SilverPopupDetails silverPopup,
-	 * Connection conn) throws FDResourceException { PreparedStatement pstmt =
-	 * null; try { pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP);
-	 * pstmt.setString(1, silverPopup.getCustomerId()); pstmt.setString(2,
-	 * silverPopup.getQualifier()); pstmt.setString(3,
-	 * silverPopup.getDestination()); pstmt.execute(); LOGGER.debug(
+	 * Connection conn) throws FDResourceException { PreparedStatement pstmt = null;
+	 * try { pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP); pstmt.setString(1,
+	 * silverPopup.getCustomerId()); pstmt.setString(2, silverPopup.getQualifier());
+	 * pstmt.setString(3, silverPopup.getDestination()); pstmt.execute();
+	 * LOGGER.debug(
 	 * "updateSilverPopupDetails in Process Successful Update of Customer_id, Qualifier and Updated_Timestamp into our DataBase for Destination "
 	 * +silverPopup.getDestination()); } catch (SQLException sqle) {
 	 * LOGGER.info("updateSilverPopupDetails IN PROCESS FAILED... "
@@ -8297,9 +8307,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=? where CUSTOMER_ID=? and DESTINATION =? ";
 
 	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.setPushNotificationSentTimestamp(SilverPopupDetails pushNotification);
+	 * @deprecated Please use the CustomerController and CustomerAccountServiceI in
+	 * Storefront2.0 project. It maps to
+	 * CustomerAccountServiceI.setPushNotificationSentTimestamp(SilverPopupDetails
+	 * pushNotification);
 	 *
 	 */
 	@Deprecated
@@ -8325,9 +8336,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
+	 * @deprecated Please use the CustomerController and CustomerAccountServiceI in
+	 * Storefront2.0 project. It maps to
+	 * CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
 	 *
 	 */
 	@Deprecated
@@ -8344,9 +8355,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.getPaymentMethodDefaultTypeForFDCustomerId()
+	 * @deprecated Please use the CustomerController and CustomerAccountServiceI in
+	 * Storefront2.0 project. It maps to
+	 * CustomerAccountServiceI.getPaymentMethodDefaultTypeForFDCustomerId()
 	 *
 	 */
 	@Deprecated
@@ -8363,9 +8374,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/*
-	 *@deprecated
-	 * Please use the CustomerPaymentController and CustomerPaymentServiceI in Storefront2.0 project.
-	 * It maps to CustomerPaymentServiceI.resetDefaultPaymentValueType()
+	 * @deprecated Please use the CustomerPaymentController and
+	 * CustomerPaymentServiceI in Storefront2.0 project. It maps to
+	 * CustomerPaymentServiceI.resetDefaultPaymentValueType()
 	 *
 	 */
 	@Deprecated
@@ -8381,11 +8392,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin, String custId, FDActionInfo info) throws FDResourceException {
+	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin, String custId, FDActionInfo info)
+			throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.updateDpFreeTrialOptin(conn, dpFreeTrialOptin,custId);
+			FDUserDAO.updateDpFreeTrialOptin(conn, dpFreeTrialOptin, custId);
 			this.logActivity(info.createActivity(EnumAccountActivityType.DP_FREE_TRIAL_OPT_IN));
 
 		} catch (SQLException sqle) {
@@ -8395,12 +8407,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-
 	public Date getDpFreeTrialOptinDate(String custId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return FDUserDAO.getDpFreeTrialOptinDate(conn,custId);
+			return FDUserDAO.getDpFreeTrialOptinDate(conn, custId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Some problem in updating  dpFreeTrialOptin value.");
 		} finally {
@@ -8408,7 +8419,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException{
+	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException {
 		try {
 			DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
 			return dlvpsb.getAllCustIdsOfFreeTrialSubsOrder();
@@ -8431,20 +8442,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException {
-        try {
-            FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(custId));
-            fdCustomerEB.setFDCustomerEStore(fdCustomerEStoreModel);
-        } catch (RemoteException ex) {
-            throw new FDResourceException(ex);
-        } catch (FinderException ex) {
-            throw new FDResourceException(ex);
-        }
+	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId)
+			throws FDResourceException {
+		try {
+			FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(custId));
+			fdCustomerEB.setFDCustomerEStore(fdCustomerEStoreModel);
+		} catch (RemoteException ex) {
+			throw new FDResourceException(ex);
+		} catch (FinderException ex) {
+			throw new FDResourceException(ex);
+		}
 
-    }
+	}
 
-
-	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException{
+	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList)
+			throws FDResourceException, RemoteException {
 		Connection conn = null;
 		try {
 			StringBuffer orders = generteOrderWithCommaSeparate(orderList);
@@ -8458,16 +8470,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public StringBuffer generteOrderWithCommaSeparate(List<String> orderList) {
-		StringBuffer orders =new StringBuffer();
+		StringBuffer orders = new StringBuffer();
 		orders.append("(");
-		if(orderList != null && orderList.size() > 0) {
+		if (orderList != null && orderList.size() > 0) {
 			int intCount = 0;
-			for(String orderId : orderList) {
+			for (String orderId : orderList) {
 				orders.append("'").append(orderId).append("'");
 				intCount++;
-				if(intCount % 1000 != 0 && intCount != orderList.size()) {
+				if (intCount % 1000 != 0 && intCount != orderList.size()) {
 					orders.append(",");
-				} else if(intCount % 1000 == 0 && intCount != orderList.size()) {
+				} else if (intCount % 1000 == 0 && intCount != orderList.size()) {
 					orders.append(")");
 				}
 			}
@@ -8476,7 +8488,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return orders;
 	}
 
-	public void updateDpOptinDetails(boolean isAutoRenewDp, String custId, String dpType, FDActionInfo info, EnumEStoreId eStore) throws FDResourceException {
+	public void updateDpOptinDetails(boolean isAutoRenewDp, String custId, String dpType, FDActionInfo info,
+			EnumEStoreId eStore) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -8494,100 +8507,102 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						this.logActivity(info.createActivity(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF));
 				}
 			}
-			}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Some problem in updating  dpFreeTrialOptin value.");
 		} finally {
 			close(conn);
 		}
 	}
 
-    private static final String PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
-            + "from cust.complaint c "
-            + "left join cust.sale s on s.id = c.sale_id " + "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ?";
+	private static final String PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
+			+ "from cust.complaint c " + "left join cust.sale s on s.id = c.sale_id "
+			+ "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ?";
 
-    private static final String PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
-            + "from cust.complaint c "
-            + "left join cust.sale s on s.id = c.sale_id " + "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ? and c.COMPLAINT_TYPE = 'FDC'";
+	private static final String PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
+			+ "from cust.complaint c " + "left join cust.sale s on s.id = c.sale_id "
+			+ "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ? and c.COMPLAINT_TYPE = 'FDC'";
 
-    private List<PendingSelfComplaint> getPendingSelfComplaintsByCustomerIdForAutoApproval() throws FDResourceException, RemoteException {
-        Connection conn = null;
-        PreparedStatement ps= null;
-		ResultSet rs = null;
-        try {
-            conn = this.getConnection();
-            final boolean isCashBackAllowed = ErpServicesProperties.getSelfCreditAllowCashback();
-            ps = conn.prepareStatement(isCashBackAllowed ? PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY : PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY);
-            ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
-            ps.setBigDecimal(2, new java.math.BigDecimal(ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint()));
-            rs = ps.executeQuery();
-
-            List<PendingSelfComplaint> pendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
-
-            while (rs.next()) {
-                PendingSelfComplaint pendingSelfComplaint = new PendingSelfComplaint();
-                pendingSelfComplaint.setComplaintId(rs.getString("SELF_COMPLAINT_ID"));
-                pendingSelfComplaint.setCustomerId(rs.getString("CUSTOMER_ID"));
-                pendingSelfComplaint.setComplaintAmount(rs.getDouble("COMPLAINT_AMOUNT"));
-                pendingSelfComplaint.setNote(rs.getString("NOTE"));
-                pendingSelfComplaints.add(pendingSelfComplaint);
-            }
-
-            return pendingSelfComplaints;
-        } catch (SQLException e) {
-            throw new FDResourceException(e);
-        } finally {
-        	close(rs);
-            close(ps);
-            close(conn);
-        }
-    }
-	
-	private static final String GET_REJECTAL_COMPLAINTS ="select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
-			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         (s.status = 'STF')  "
-			+ "and c.CREATED_BY <> ? " + 
-			"               union all " + 
-			"select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
-			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         ( cu.ACTIVE ='0' )"
-			+ " and c.CREATED_BY <> ?" ; 
-	
-	/* APPDEV-6785 		AutoCreditApprovalCron */
-	public List<String> getComplaintsToRejectCredits() throws FDResourceException {
+	private List<PendingSelfComplaint> getPendingSelfComplaintsByCustomerIdForAutoApproval()
+			throws FDResourceException, RemoteException {
 		Connection conn = null;
-		PreparedStatement ps= null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			ps= conn.prepareStatement(GET_REJECTAL_COMPLAINTS);
+			final boolean isCashBackAllowed = ErpServicesProperties.getSelfCreditAllowCashback();
+			ps = conn.prepareStatement(isCashBackAllowed ? PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY
+					: PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY);
+			ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
+			ps.setBigDecimal(2,
+					new java.math.BigDecimal(ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint()));
+			rs = ps.executeQuery();
+
+			List<PendingSelfComplaint> pendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
+
+			while (rs.next()) {
+				PendingSelfComplaint pendingSelfComplaint = new PendingSelfComplaint();
+				pendingSelfComplaint.setComplaintId(rs.getString("SELF_COMPLAINT_ID"));
+				pendingSelfComplaint.setCustomerId(rs.getString("CUSTOMER_ID"));
+				pendingSelfComplaint.setComplaintAmount(rs.getDouble("COMPLAINT_AMOUNT"));
+				pendingSelfComplaint.setNote(rs.getString("NOTE"));
+				pendingSelfComplaints.add(pendingSelfComplaint);
+			}
+
+			return pendingSelfComplaints;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
+
+	private static final String GET_REJECTAL_COMPLAINTS = "select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where "
+			+ "      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         (s.status = 'STF')  "
+			+ "and c.CREATED_BY <> ? " + "               union all "
+			+ "select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where "
+			+ "      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         ( cu.ACTIVE ='0' )"
+			+ " and c.CREATED_BY <> ?";
+
+	/* APPDEV-6785 AutoCreditApprovalCron */
+	public List<String> getComplaintsToRejectCredits() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(GET_REJECTAL_COMPLAINTS);
 			ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
 			ps.setString(2, ErpServicesProperties.getSelfCreditAgent());
-			
-			rs= ps.executeQuery();
+
+			rs = ps.executeQuery();
 			List<String> lst = new ArrayList<String>();
 			while (rs.next()) {
 				lst.add(rs.getString("COMPLAINT_ID"));
 			}
 			return lst;
-			
-		}catch(SQLException e){
+
+		} catch (SQLException e) {
 			throw new FDResourceException(e);
-		}finally {
+		} finally {
 			DaoUtil.close(rs);
 			DaoUtil.close(ps);
 			DaoUtil.close(conn);
 		}
 	}
 
-	/*	 APPDEV-6785 		AutoCreditApprovalCron*/
-	public void rejectCreditsOlderThanAMonth(List<String> listToRejCredits){
+	/* APPDEV-6785 AutoCreditApprovalCron */
+	public void rejectCreditsOlderThanAMonth(List<String> listToRejCredits) {
 		if (listToRejCredits != null && !listToRejCredits.isEmpty()) {
 			String sourse = EnumTransactionSource.SYSTEM.getName().toUpperCase();
 			boolean Approve = false;
 			boolean sendMail = false;
 			Double limit = null;
-			LOGGER.info("in rejectCreditsOlderThanAMonth(), listToReject size is: "+listToRejCredits.size());
-			for(Iterator it = listToRejCredits.iterator(); it.hasNext();) {
+			LOGGER.info("in rejectCreditsOlderThanAMonth(), listToReject size is: " + listToRejCredits.size());
+			for (Iterator it = listToRejCredits.iterator(); it.hasNext();) {
 				String complaintId = (String) it.next();
-				LOGGER.info("Going to update status to REJ on Complaint ID: "+it);
+				LOGGER.info("Going to update status to REJ on Complaint ID: " + it);
 				try {
 					approveComplaint(complaintId, Approve, sourse, sendMail, limit);
 				} catch (Exception e) {
@@ -8596,86 +8611,102 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 		}
 	}
-	
-	public PendingSelfComplaintResponse getSelfIssuedComplaintsForAutoApproval() throws RemoteException, FDResourceException {
-		List<PendingSelfComplaint> approvablePendingSelfComplaints = filterPendingSelfComplaints(getPendingSelfComplaintsByCustomerIdForAutoApproval());;
+
+	public PendingSelfComplaintResponse getSelfIssuedComplaintsForAutoApproval()
+			throws RemoteException, FDResourceException {
+		List<PendingSelfComplaint> approvablePendingSelfComplaints = filterPendingSelfComplaints(
+				getPendingSelfComplaintsByCustomerIdForAutoApproval());
+		;
 		PendingSelfComplaintResponse pendingSelfComplaintResponse = new PendingSelfComplaintResponse();
 		pendingSelfComplaintResponse.setPendingSelfComplaints(approvablePendingSelfComplaints);
 		return pendingSelfComplaintResponse;
 	}
 
+	private List<PendingSelfComplaint> filterPendingSelfComplaints(List<PendingSelfComplaint> pendingSelfComplaints)
+			throws FDResourceException, RemoteException {
 
-    private List<PendingSelfComplaint> filterPendingSelfComplaints(List<PendingSelfComplaint> pendingSelfComplaints) throws FDResourceException, RemoteException {
-    	
-        LOGGER.info("Filtering process of pending self-issued complaints STARTED. Going to filter " + pendingSelfComplaints.size() + " self-issued complaints.");
-    	
-    	List<PendingSelfComplaint> approvablePendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
-    	Map<String, List<String>> approvedComplaints = collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange();
-        Map<String, Double> approvedAmount = collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange();
+		LOGGER.info("Filtering process of pending self-issued complaints STARTED. Going to filter "
+				+ pendingSelfComplaints.size() + " self-issued complaints.");
 
-        for (PendingSelfComplaint pendingSelfComplaint : pendingSelfComplaints) {
-        	String selfComplaintId = pendingSelfComplaint.getComplaintId();
-        	LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " STARTED");
-        	
-            String customerId = pendingSelfComplaint.getCustomerId();
-            Double selfComplaintAmount = pendingSelfComplaint.getComplaintAmount();
-            
-            boolean isEligibleForAutoApproval = !isCustomerOnCreditAlert(customerId);
-            if (!isEligibleForAutoApproval) {
-            	 LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. "
-            	 		+ "Customer of ID: " + customerId + " is on Credit alert.");
+		List<PendingSelfComplaint> approvablePendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
+		Map<String, List<String>> approvedComplaints = collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange();
+		Map<String, Double> approvedAmount = collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange();
+
+		for (PendingSelfComplaint pendingSelfComplaint : pendingSelfComplaints) {
+			String selfComplaintId = pendingSelfComplaint.getComplaintId();
+			LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " STARTED");
+
+			String customerId = pendingSelfComplaint.getCustomerId();
+			Double selfComplaintAmount = pendingSelfComplaint.getComplaintAmount();
+
+			boolean isEligibleForAutoApproval = !isCustomerOnCreditAlert(customerId);
+			if (!isEligibleForAutoApproval) {
+				LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. "
+						+ "Customer of ID: " + customerId + " is on Credit alert.");
 			}
-            
-            if (isEligibleForAutoApproval && null != pendingSelfComplaint.getNote()) {
-                isEligibleForAutoApproval = !complaintHasNote(pendingSelfComplaint.getNote());
-                if (!isEligibleForAutoApproval) {
-               	 LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. Complaint contains note.");
-                }
-			}
-            
-            if (isEligibleForAutoApproval && approvedComplaints.containsKey(customerId)) {
-                int customersApprovedComplaints = approvedComplaints.get(customerId).size();
-                int selfCreditMaxAutoApproveQuantity = ErpServicesProperties.getSelfCreditAutoapproveMaxQuantityPerDayRange();
-                if (customersApprovedComplaints >= selfCreditMaxAutoApproveQuantity) {
-                    isEligibleForAutoApproval = false;
-                    int selfComplaintMaxQuantityDayRange = ErpServicesProperties.getSelfCreditAutoapproveQuantityDayRangeLimit();
-                  	LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. "
-                  	 		+ "Customer of ID: "+ customerId + " has " + customersApprovedComplaints + " approved self-issued complaints in the last " + selfComplaintMaxQuantityDayRange + " days. "
-                  	 				+ "The limit is " + selfCreditMaxAutoApproveQuantity + " self-issued complaints.");
-                }
-            }
 
-            if (isEligibleForAutoApproval && approvedAmount.containsKey(customerId)) {
-                Double customersTotalApprovedAmount = approvedAmount.get(customerId);
-                Double selfCreditMaxAutoApproveAmount = ErpServicesProperties.getSelfCreditAutoapproveMaxAmountPerDayRange();
-                if ((selfComplaintAmount + customersTotalApprovedAmount) > selfCreditMaxAutoApproveAmount) {
-                    isEligibleForAutoApproval = false;
-                    int selfComplaintMaxAmountDayRange = ErpServicesProperties.getSelfCreditAutoapproveAmountDayRangeLimit();
-                  	LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. "
-                  	 		+ "Customer of ID: "+ customerId + " has approved self-issued complaints in the last " + selfComplaintMaxAmountDayRange + " days of " + customersTotalApprovedAmount + "$. "
-                  	 				+ "The limit is " + selfCreditMaxAutoApproveAmount + "$.");
-                }
-            }
-            
-            if(isEligibleForAutoApproval) {
-            	isEligibleForAutoApproval = isComplaintAutoApprove(selfComplaintId);
-            	if (!isEligibleForAutoApproval) {
-            		LOGGER.info("Self-issued complaint of ID : " + selfComplaintId + " is not eligible for auto-approval. Complaint reason of ID : " + selfComplaintId + "is not eligible for auto-approval");
-            		LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
-    	        			+ "Self-issued complaint is NOT eligible for auto-approval.");
+			if (isEligibleForAutoApproval && null != pendingSelfComplaint.getNote()) {
+				isEligibleForAutoApproval = !complaintHasNote(pendingSelfComplaint.getNote());
+				if (!isEligibleForAutoApproval) {
+					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
+							+ " is not eligible for auto-approval. Complaint contains note.");
 				}
-            }
-            
-            if (isEligibleForAutoApproval) {
+			}
+
+			if (isEligibleForAutoApproval && approvedComplaints.containsKey(customerId)) {
+				int customersApprovedComplaints = approvedComplaints.get(customerId).size();
+				int selfCreditMaxAutoApproveQuantity = ErpServicesProperties
+						.getSelfCreditAutoapproveMaxQuantityPerDayRange();
+				if (customersApprovedComplaints >= selfCreditMaxAutoApproveQuantity) {
+					isEligibleForAutoApproval = false;
+					int selfComplaintMaxQuantityDayRange = ErpServicesProperties
+							.getSelfCreditAutoapproveQuantityDayRangeLimit();
+					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
+							+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId + " has "
+							+ customersApprovedComplaints + " approved self-issued complaints in the last "
+							+ selfComplaintMaxQuantityDayRange + " days. " + "The limit is "
+							+ selfCreditMaxAutoApproveQuantity + " self-issued complaints.");
+				}
+			}
+
+			if (isEligibleForAutoApproval && approvedAmount.containsKey(customerId)) {
+				Double customersTotalApprovedAmount = approvedAmount.get(customerId);
+				Double selfCreditMaxAutoApproveAmount = ErpServicesProperties
+						.getSelfCreditAutoapproveMaxAmountPerDayRange();
+				if ((selfComplaintAmount + customersTotalApprovedAmount) > selfCreditMaxAutoApproveAmount) {
+					isEligibleForAutoApproval = false;
+					int selfComplaintMaxAmountDayRange = ErpServicesProperties
+							.getSelfCreditAutoapproveAmountDayRangeLimit();
+					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
+							+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId
+							+ " has approved self-issued complaints in the last " + selfComplaintMaxAmountDayRange
+							+ " days of " + customersTotalApprovedAmount + "$. " + "The limit is "
+							+ selfCreditMaxAutoApproveAmount + "$.");
+				}
+			}
+
+			if (isEligibleForAutoApproval) {
+				isEligibleForAutoApproval = isComplaintAutoApprove(selfComplaintId);
+				if (!isEligibleForAutoApproval) {
+					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
+							+ " is not eligible for auto-approval. Complaint reason of ID : " + selfComplaintId
+							+ "is not eligible for auto-approval");
+					LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
+							+ "Self-issued complaint is NOT eligible for auto-approval.");
+				}
+			}
+
+			if (isEligibleForAutoApproval) {
 				approvablePendingSelfComplaints.add(pendingSelfComplaint);
 				updateApprovedComplaints(approvedComplaints, pendingSelfComplaint);
 				updateApprovedAmount(approvedAmount, pendingSelfComplaint);
-	        	LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
-	        			+ "Self-issued complaint is eligible for auto-approval.");
-			} 
-        }
-        LOGGER.info("Filtering process of pending self-issued complaints FINISHED. " + approvablePendingSelfComplaints.size() + " self-issued complaints are eligible for auto-approval.");
-    	return approvablePendingSelfComplaints;
+				LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
+						+ "Self-issued complaint is eligible for auto-approval.");
+			}
+		}
+		LOGGER.info("Filtering process of pending self-issued complaints FINISHED. "
+				+ approvablePendingSelfComplaints.size() + " self-issued complaints are eligible for auto-approval.");
+		return approvablePendingSelfComplaints;
 	}
 
 	private boolean isCustomerOnCreditAlert(String customerId) {
@@ -8683,232 +8714,251 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	private boolean complaintHasNote(String note) {
-        boolean noteContainsAdditionalNote = note.split("\\[", 3).length != 2;
-        return noteContainsAdditionalNote;
+		if (note.equals("")) {
+			return false;
+		}
+
+		int index = note.indexOf("[ ip:");
+		if (index < 0) {
+			return true;
+		} else {
+			int secondIndex = note.indexOf("[ ip:", index + 1);
+			if (secondIndex > 0) {
+				return true;
+			} else {
+				if (index == 0) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		}
 	}
 
-		private Double getComplaintAmount(String selfComplaintId) throws FDResourceException {
-        Connection conn = null;
-        PreparedStatement ps= null;
+	private Double getComplaintAmount(String selfComplaintId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
-        try {
-            conn = this.getConnection();
-            ps = conn.prepareStatement("select c.amount as complaint_amount from cust.complaint c where c.id = ?");
-            ps.setString(1, selfComplaintId);
-            rs = ps.executeQuery();
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select c.amount as complaint_amount from cust.complaint c where c.id = ?");
+			ps.setString(1, selfComplaintId);
+			rs = ps.executeQuery();
 
-            Double amount = 0.0;
-            while (rs.next()) {
-                amount = rs.getDouble("COMPLAINT_AMOUNT");
-            }
-            
-            return amount;
-        } catch (SQLException e) {
-            throw new FDResourceException(e);
-        } finally {
-        	close(rs);
-            close(ps);
-            close(conn);
-        }
-    }
+			Double amount = 0.0;
+			while (rs.next()) {
+				amount = rs.getDouble("COMPLAINT_AMOUNT");
+			}
 
-    private static final String GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY = "select c.amount as complaint_amount, s.customer_id as customer_id"
-            + " from cust.complaint c left join cust.sale s on s.id = c.sale_id"
-            + " where c.created_by = ? and c.status = 'APP' and c.approved_date >= ?";
+			return amount;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
 
+	private static final String GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY = "select c.amount as complaint_amount, s.customer_id as customer_id"
+			+ " from cust.complaint c left join cust.sale s on s.id = c.sale_id"
+			+ " where c.created_by = ? and c.status = 'APP' and c.approved_date >= ?";
 
-    private Map<String, Double> collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange() throws FDResourceException, RemoteException {
+	private Map<String, Double> collectApprovedSelfComplaintsByCustomerIdWithinAmountDayRange()
+			throws FDResourceException, RemoteException {
 
-        Connection conn = null;
-        PreparedStatement ps= null;
+		Connection conn = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
-        try {
-            conn = this.getConnection();
-            ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY);
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINT_AMOUNTS_QUERY);
 
-            ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
-            ps.setDate(2, collectAmountDayLimitDate());
+			ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
+			ps.setDate(2, collectAmountDayLimitDate());
 
-            rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
-            Map<String, Double> approvedSelfComplaintAmountsByCustomerId = new HashMap<String, Double>();
+			Map<String, Double> approvedSelfComplaintAmountsByCustomerId = new HashMap<String, Double>();
 
-            while (rs.next()) {
-                String customerId = rs.getString("CUSTOMER_ID");
-                Double complaintAmount = rs.getDouble("COMPLAINT_AMOUNT");
+			while (rs.next()) {
+				String customerId = rs.getString("CUSTOMER_ID");
+				Double complaintAmount = rs.getDouble("COMPLAINT_AMOUNT");
 
-                if (approvedSelfComplaintAmountsByCustomerId.containsKey(customerId)) {
-                    complaintAmount += approvedSelfComplaintAmountsByCustomerId.get(customerId);
-                }
-                approvedSelfComplaintAmountsByCustomerId.put(customerId, complaintAmount);
-            }
+				if (approvedSelfComplaintAmountsByCustomerId.containsKey(customerId)) {
+					complaintAmount += approvedSelfComplaintAmountsByCustomerId.get(customerId);
+				}
+				approvedSelfComplaintAmountsByCustomerId.put(customerId, complaintAmount);
+			}
 
-            return approvedSelfComplaintAmountsByCustomerId;
-        } catch (SQLException e) {
-            throw new FDResourceException(e);
-        } finally {
-        	close(rs);
-            close(ps);
-            close(conn);
-        }
-    }
+			return approvedSelfComplaintAmountsByCustomerId;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
 
-    private java.sql.Date collectAmountDayLimitDate() {
-        int quantityDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveAmountDayRangeLimit();
-        Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -quantityDayRangeLimit);
-        return new java.sql.Date(dateToQuery.getTime());
-    }
+	private java.sql.Date collectAmountDayLimitDate() {
+		int quantityDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveAmountDayRangeLimit();
+		Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -quantityDayRangeLimit);
+		return new java.sql.Date(dateToQuery.getTime());
+	}
 
-    private static final String GET_APPROVED_SELF_COMPLAINTS_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id " + "from cust.complaint c "
-            + "left join cust.sale s on s.id = c.sale_id " + "where c.created_by = ? and c.status = 'APP' "
-            + "and c.approved_date >= ?";
+	private static final String GET_APPROVED_SELF_COMPLAINTS_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id "
+			+ "from cust.complaint c " + "left join cust.sale s on s.id = c.sale_id "
+			+ "where c.created_by = ? and c.status = 'APP' " + "and c.approved_date >= ?";
 
-    private Map<String, List<String>> collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange() throws FDResourceException, RemoteException {
+	private Map<String, List<String>> collectApprovedSelfComplaintsByCustomerIdWithinQuantityDayRange()
+			throws FDResourceException, RemoteException {
 
-        Connection conn = null;
-        PreparedStatement ps= null;
+		Connection conn = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
-        try {
-            conn = this.getConnection();
-            ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINTS_QUERY);
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(GET_APPROVED_SELF_COMPLAINTS_QUERY);
 
-            ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
-            ps.setDate(2, collectQuantityDayLimitDate());
+			ps.setString(1, ErpServicesProperties.getSelfCreditAgent());
+			ps.setDate(2, collectQuantityDayLimitDate());
 
-            rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
-            Map<String, List<String>> approvedSelfComplaints = new HashMap<String, List<String>>();
+			Map<String, List<String>> approvedSelfComplaints = new HashMap<String, List<String>>();
 
-            while (rs.next()) {
-                String selfComplaintId = rs.getString("SELF_COMPLAINT_ID");
-                String customerId = rs.getString("CUSTOMER_ID");
-                List<String> customersApprovedSelfComplaints = new ArrayList<String>();
-                if (approvedSelfComplaints.containsKey(customerId)) {
-                    customersApprovedSelfComplaints = approvedSelfComplaints.get(customerId);
-                }
-                customersApprovedSelfComplaints.add(selfComplaintId);
-                approvedSelfComplaints.put(customerId, customersApprovedSelfComplaints);
-            }
+			while (rs.next()) {
+				String selfComplaintId = rs.getString("SELF_COMPLAINT_ID");
+				String customerId = rs.getString("CUSTOMER_ID");
+				List<String> customersApprovedSelfComplaints = new ArrayList<String>();
+				if (approvedSelfComplaints.containsKey(customerId)) {
+					customersApprovedSelfComplaints = approvedSelfComplaints.get(customerId);
+				}
+				customersApprovedSelfComplaints.add(selfComplaintId);
+				approvedSelfComplaints.put(customerId, customersApprovedSelfComplaints);
+			}
 
-            
-            return approvedSelfComplaints;
-        } catch (SQLException e) {
-            throw new FDResourceException(e);
-        } finally {
-        	close(rs);
-            close(ps);
-            close(conn);
-        }
-    }
+			return approvedSelfComplaints;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
 
-    private java.sql.Date collectQuantityDayLimitDate() {
-        int quantityDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveQuantityDayRangeLimit();
-        Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -quantityDayRangeLimit);
-        return new java.sql.Date(dateToQuery.getTime());
-    }
-    
-    private static final String IS_COMPLAINT_AUTO_APPROVE = "select cc.auto_approve as complaint_auto_approve from cust.complaintline c "
-    		+ "left join cust.complaint_dept_code cdc on c.complaint_dept_code_id = cdc.id "
-    		+ "left join cust.complaint_code cc on cdc.comp_code=cc.code where c.complaint_id=?";
+	private java.sql.Date collectQuantityDayLimitDate() {
+		int quantityDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveQuantityDayRangeLimit();
+		Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -quantityDayRangeLimit);
+		return new java.sql.Date(dateToQuery.getTime());
+	}
 
-    private boolean isComplaintAutoApprove(String selfComplaintId) throws FDResourceException {
-    	Connection conn = null;
-        PreparedStatement ps= null;
+	private static final String IS_COMPLAINT_AUTO_APPROVE = "select cc.auto_approve as complaint_auto_approve from cust.complaintline c "
+			+ "left join cust.complaint_dept_code cdc on c.complaint_dept_code_id = cdc.id "
+			+ "left join cust.complaint_code cc on cdc.comp_code=cc.code where c.complaint_id=?";
+
+	private boolean isComplaintAutoApprove(String selfComplaintId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-        String autoApprove = null;
-        boolean isComplaintAutoApprove = true;
-        try {
-            conn = this.getConnection();
-            ps = conn.prepareStatement(IS_COMPLAINT_AUTO_APPROVE);
-            ps.setString(1, selfComplaintId);
-            rs = ps.executeQuery();
+		String autoApprove = null;
+		boolean isComplaintAutoApprove = true;
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(IS_COMPLAINT_AUTO_APPROVE);
+			ps.setString(1, selfComplaintId);
+			rs = ps.executeQuery();
 
-            while (rs.next()) {
-                autoApprove = rs.getString("complaint_auto_approve");
-                if (null == autoApprove || !autoApprove.equals("X")) {
+			while (rs.next()) {
+				autoApprove = rs.getString("complaint_auto_approve");
+				if (null == autoApprove || !autoApprove.equals("X")) {
 					isComplaintAutoApprove = false;
 					break;
 				}
-            }
-            return isComplaintAutoApprove;
-        } catch (SQLException e) {
-            throw new FDResourceException(e);
-        } finally {
-        	close(rs);
-            close(ps);
-            close(conn);
-        }
+			}
+			return isComplaintAutoApprove;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
 	}
-    
-    private void updateApprovedComplaints(Map<String, List<String>> approvedComplaints,
+
+	private void updateApprovedComplaints(Map<String, List<String>> approvedComplaints,
 			PendingSelfComplaint pendingSelfComplaint) {
-        String customerId = pendingSelfComplaint.getCustomerId();
-    	List<String> customersApprovedSelfComplaints = new ArrayList<String>();
-    	if (approvedComplaints.containsKey(customerId)) {
-            customersApprovedSelfComplaints = approvedComplaints.get(customerId);
-        }
-        customersApprovedSelfComplaints.add(pendingSelfComplaint.getComplaintId());
-        approvedComplaints.put(customerId, customersApprovedSelfComplaints);
+		String customerId = pendingSelfComplaint.getCustomerId();
+		List<String> customersApprovedSelfComplaints = new ArrayList<String>();
+		if (approvedComplaints.containsKey(customerId)) {
+			customersApprovedSelfComplaints = approvedComplaints.get(customerId);
+		}
+		customersApprovedSelfComplaints.add(pendingSelfComplaint.getComplaintId());
+		approvedComplaints.put(customerId, customersApprovedSelfComplaints);
 	}
 
 	private void updateApprovedAmount(Map<String, Double> approvedAmount, PendingSelfComplaint pendingSelfComplaint) {
 		Double complaintAmount = pendingSelfComplaint.getComplaintAmount();
 		String customerId = pendingSelfComplaint.getCustomerId();
 
-        if (approvedAmount.containsKey(customerId)) {
-            complaintAmount += approvedAmount.get(customerId);
-        }
-        approvedAmount.put(customerId, complaintAmount);
+		if (approvedAmount.containsKey(customerId)) {
+			complaintAmount += approvedAmount.get(customerId);
+		}
+		approvedAmount.put(customerId, complaintAmount);
 	}
 
-    public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws RemoteException, FDResourceException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+	public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity)
+			throws RemoteException, FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-        try {
-            conn = this.getConnection();
-            ps = conn.prepareStatement("select c.create_date, s.id as sale_id, s.e_store, c.status, c.amount, c.complaint_type "
-                    + "from cust.complaint c inner join cust.sale s on s.id = c.sale_id where c.status = 'PEN' and s.customer_id=? order by 1 desc");
-            ps.setString(1, identity.getErpCustomerPK());
-            rs = ps.executeQuery();
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(
+					"select c.create_date, s.id as sale_id, s.e_store, c.status, c.amount, c.complaint_type "
+							+ "from cust.complaint c inner join cust.sale s on s.id = c.sale_id where c.status = 'PEN' and s.customer_id=? order by 1 desc");
+			ps.setString(1, identity.getErpCustomerPK());
+			rs = ps.executeQuery();
 
-            List<FDCustomerCreditModel> lst = new ArrayList<FDCustomerCreditModel>();
-            FDCustomerCreditModel prevCredit = null;
+			List<FDCustomerCreditModel> lst = new ArrayList<FDCustomerCreditModel>();
+			FDCustomerCreditModel prevCredit = null;
 
-            while (rs.next()) {
+			while (rs.next()) {
 
-                FDCustomerCreditModel credit = new FDCustomerCreditModel();
+				FDCustomerCreditModel credit = new FDCustomerCreditModel();
 
-                credit.setSaleId(rs.getString("sale_id"));
-                credit.setCreateDate(rs.getTimestamp("create_date"));
-                credit.seteStore(rs.getString("e_store"));
-                credit.setStatus(EnumComplaintStatus.getComplaintStatus(rs.getString("status")));
-                credit.setAmount(rs.getDouble("amount"));
-                credit.setMethod(EnumComplaintLineMethod.getComplaintLineMethod(rs.getString("complaint_type")));
+				credit.setSaleId(rs.getString("sale_id"));
+				credit.setCreateDate(rs.getTimestamp("create_date"));
+				credit.seteStore(rs.getString("e_store"));
+				credit.setStatus(EnumComplaintStatus.getComplaintStatus(rs.getString("status")));
+				credit.setAmount(rs.getDouble("amount"));
+				credit.setMethod(EnumComplaintLineMethod.getComplaintLineMethod(rs.getString("complaint_type")));
 
-                lst.add(credit);
-                prevCredit = credit;
-            }
-            FDCustomerCreditHistoryModel creditHistory = new FDCustomerCreditHistoryModel(identity, lst);
-            return creditHistory;
+				lst.add(credit);
+				prevCredit = credit;
+			}
+			FDCustomerCreditHistoryModel creditHistory = new FDCustomerCreditHistoryModel(identity, lst);
+			return creditHistory;
 
-        } catch (SQLException e) {
-            throw new FDResourceException(e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-            } catch (SQLException e) {
-                LOGGER.warn("error while cleanup", e);
-            }
-            close(conn);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("error while cleanup", e);
+			}
+			close(conn);
 
-        }
-    }
+		}
+	}
 }
