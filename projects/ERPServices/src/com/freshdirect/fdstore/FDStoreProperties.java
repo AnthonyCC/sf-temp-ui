@@ -1926,10 +1926,10 @@ public class FDStoreProperties {
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL, "01");
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT, "01");
         defaults.put(PROP_DEFAULT_FDX_SALESORG, "1300");
-        defaults.put(PROP_DEFAULT_FDX_SALESORG_PARENT, "0001");
-        defaults.put(PROP_DEFAULT_FD_PLANTID, "1000");
+        defaults.put(PROP_DEFAULT_FDX_SALESORG_PARENT, "1400");
+        defaults.put(PROP_DEFAULT_FD_PLANTID, "1400");
         defaults.put(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL, "01");
-        defaults.put(PROP_DEFAULT_FD_SALESORG, "0001");
+        defaults.put(PROP_DEFAULT_FD_SALESORG, "1400");
 
         defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
