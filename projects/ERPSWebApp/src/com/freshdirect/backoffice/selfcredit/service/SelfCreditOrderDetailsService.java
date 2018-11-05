@@ -81,6 +81,7 @@ public class SelfCreditOrderDetailsService {
                 item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
                 item.setMealBundle(null == product ? false : isItemMealBundle(product));
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
+                item.setFinalPrice(fdCartLine.hasInvoiceLine() ? fdCartLine.getInvoiceLine().getPrice() : fdCartLine.getPrice());
                 orderLines.add(item);
 			}
         }
