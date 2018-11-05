@@ -173,7 +173,7 @@
                     <div class="complaint-item">
                       {if $complaintLine.brand}<label>{$complaintLine.brand}</label>{/if}
                       <p class="description">{$complaintLine.productName}</p>
-                      <small class="sale-unit">{$complaintLine.configurationDescription} | ${$complaintLine.basePrice}{if $complaintLine.basePriceUnit}/{$complaintLine.basePriceUnit}{/if}</small>
+                      <small class="sale-unit">{$complaintLine.configurationDescription} {if $complaintLine.configurationDescription.length > 0}|{/if} ${$complaintLine.basePrice}{if $complaintLine.basePriceUnit}/{$complaintLine.basePriceUnit}{/if}</small>
                       <p class="issue">
                         <span>Issue:</span>
                         <i>{$complaintLine.complaint.description}</i>
