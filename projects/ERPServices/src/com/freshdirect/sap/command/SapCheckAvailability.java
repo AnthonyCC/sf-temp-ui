@@ -91,6 +91,7 @@ public class SapCheckAvailability implements SapCommandI {
 			builders.put(EnumATPRule.SIMULATE, new SimulateBapiBuilder(false, order));
 			builders.put(EnumATPRule.COMPONENT, new SimulateBapiBuilder(true, order));
 			builders.put(EnumATPRule.MULTILEVEL_MATERIAL, new MatAvBapiBuilder());
+			builders.put(EnumATPRule.SINGLELEVEL_MATERIAL, new MatAvBapiBuilder());
 		}
 
 		public void add(SapOrderLineI orderLine) {
@@ -139,7 +140,7 @@ public class SapCheckAvailability implements SapCommandI {
 			for (Iterator i = orderLines.iterator(); i.hasNext();) {
 				SapOrderLineI orderLine = (SapOrderLineI) i.next();
 
-				BapiMaterialAvailability bapi = BapiFactory.getInstance().getMaterialAvailabilityBuilder(EnumATPRule.MULTILEVEL_MATERIAL.equals(orderLine.getAtpRule()));
+				BapiMaterialAvailability bapi = BapiFactory.getInstance().getMaterialAvailabilityBuilder(orderLine.getAtpRule());
 				bapis.add(bapi);
 
 				MaterialAvailabilityHelper helper = new MaterialAvailabilityHelper(bapi, order, orderLine);

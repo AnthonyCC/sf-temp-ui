@@ -1,7 +1,10 @@
 package com.freshdirect.sap.jco;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.sap.bapi.BapiException;
 import com.freshdirect.sap.bapi.BapiMaterialAvailability;
 import com.sap.conn.jco.JCoException;
@@ -17,9 +20,20 @@ class JcoBapiMaterialAvailability extends JcoBapiFunction implements BapiMateria
 
 	private Date[] commitedDates;
 	private double[] commitedQtys;
-
-	public JcoBapiMaterialAvailability(boolean isMultiLevel) throws JCoException {
-		super(isMultiLevel?"ZFDX_MATERIAL_AVAILABILITY":"Z_BAPI_MATERIAL_AVAILABILITY");
+	
+	private final static Map<String,String> ATPRule_TO_BAPI_MAPPING;
+	
+	static
+    {
+		ATPRule_TO_BAPI_MAPPING = new HashMap<String, String>();
+		ATPRule_TO_BAPI_MAPPING.put(EnumATPRule.MULTILEVEL_MATERIAL.getName(), "ZFDX_MATERIAL_AVAILABILITY");
+		ATPRule_TO_BAPI_MAPPING.put(EnumATPRule.SINGLELEVEL_MATERIAL.getName(), "Z_SINGLE_LEVEL_MATERIAL_AVAIL");
+		ATPRule_TO_BAPI_MAPPING.put(EnumATPRule.MATERIAL.getName(), "Z_BAPI_MATERIAL_AVAILABILITY");
+    }
+	
+	public JcoBapiMaterialAvailability(EnumATPRule atpRule) throws JCoException {
+		
+		super(ATPRule_TO_BAPI_MAPPING.get(atpRule.getName()));
 	}
 
 	public void setPlant(String plant) {
