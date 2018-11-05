@@ -41,6 +41,9 @@ var FreshDirect = FreshDirect || {};
           shorthtmlContent = this.truncate($el.html(), $el.text(), $el.attr(this.TRUNCATE));
 
       if($el.text().length > 200){
+    	  if(shorthtmlContent.lastIndexOf("<a") > shorthtmlContent.lastIndexOf("</a>")){
+    		  shorthtmlContent += "</a>";
+    	  }
     	  shorthtmlContent = shorthtmlContent + '<span ' + this.TRIGGER + '>read more</span>';
     	  var closeHTML = document.createElement('div');
     	  closeHTML.innerHTML=shorthtmlContent;
