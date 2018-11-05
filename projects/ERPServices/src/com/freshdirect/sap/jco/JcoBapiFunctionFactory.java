@@ -63,8 +63,12 @@ public  class JcoBapiFunctionFactory extends BapiFactory {
 
 	public BapiMaterialAvailability getMaterialAvailabilityBuilder(final EnumATPRule  atpRule) throws SapException
 	{
-		if(!atpRule.equals(EnumATPRule.MULTILEVEL_MATERIAL)||!atpRule.equals(EnumATPRule.SINGLELEVEL_MATERIAL)||!atpRule.equals(EnumATPRule.MATERIAL))
+		if(atpRule==null) {
+			throw new IllegalArgumentException("ATP rule is NULL.");
+		}
+		else if(!JcoBapiMaterialAvailability.ATPRule_TO_BAPI_MAPPING.containsKey(atpRule.getName())) {
 			throw new IllegalArgumentException("ATP rule "+atpRule+" is invalid for Material availability.");
+		}
 		try
 		{
 			return new JcoBapiMaterialAvailability(atpRule);

@@ -21,7 +21,7 @@ class JcoBapiMaterialAvailability extends JcoBapiFunction implements BapiMateria
 	private Date[] commitedDates;
 	private double[] commitedQtys;
 	
-	private final static Map<String,String> ATPRule_TO_BAPI_MAPPING;
+	public final static Map<String,String> ATPRule_TO_BAPI_MAPPING;
 	
 	static
     {
