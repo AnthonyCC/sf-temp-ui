@@ -1298,6 +1298,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setCustomerId(rs.getString("CUSTOMER_ID"));
 
+// COS17-76
+		address.setNotifyOrderPlaceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_PLACEMENT_SECOND_EMAIL")) ? true : false);
+		address.setNotifyOrderModifyToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_MODIFY_SECOND_EMAIL")) ? true : false);
+		address.setNotifyOrderInvoiceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_INVOICE_SECOND_EMAIL")) ? true : false);
+		address.setNotifySoReminderToSecondEmail( "Y".equalsIgnoreCase(rs.getString("SO_REMINDERS_SECOND_EMAIL")) ? true : false);
+		address.setNotifyCreditsToSecondEmail( "Y".equalsIgnoreCase(rs.getString("CREDITS_SECOND_EMAIL")) ? true : false);
+		address.setNotifyVoiceshotToSecondEmail( "Y".equalsIgnoreCase(rs.getString("VOICESHOT_SECOND_EMAIL")) ? true : false);
+		
 		return address;
 	}
 
@@ -1323,6 +1331,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")));
 		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setCustomerId(rs.getString("CUSTOMER_ID"));
+		// COS17-76
+		address.setNotifyOrderPlaceToSecondEmail( "Y".equals(rs.getString("ORDER_PLACEMENT_SECOND_EMAIL")) ? true : false);
+		address.setNotifyOrderModifyToSecondEmail( "Y".equals(rs.getString("ORDER_MODIFY_SECOND_EMAIL")) ? true : false);
+		address.setNotifyOrderInvoiceToSecondEmail( "Y".equals(rs.getString("ORDER_INVOICE_SECOND_EMAIL")) ? true : false);
+		address.setNotifySoReminderToSecondEmail( "Y".equals(rs.getString("SO_REMINDERS_SECOND_EMAIL")) ? true : false);
+		address.setNotifyCreditsToSecondEmail( "Y".equals(rs.getString("CREDITS_SECOND_EMAIL")) ? true : false);
+		address.setNotifyVoiceshotToSecondEmail( "Y".equals(rs.getString("VOICESHOT_SECOND_EMAIL")) ? true : false);
 
 		// TODO Reconsider this solution!
 		for (FDDeliveryDepotModel pickupModel : FDDeliveryManager.getInstance().getPickupDepots()) {
@@ -1509,7 +1524,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());
-
+			fdInfo.setSecondEmailAddress(erpCustomerInfo.getSecondEmailAddress());
 			FDCustomerModel fdCustomer = null;
 			if (identity.getFDCustomerPK() != null) {
 				fdCustomer = FDCustomerFactory.getFDCustomer(identity.getFDCustomerPK());
@@ -1551,7 +1566,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());
-
+			fdInfo.setSecondEmailAddress(erpCustomerInfo.getSecondEmailAddress());
 			if (identity.getFDCustomerPK() != null) {
 				String depotCode = this.getDepotCode(identity);
 				fdInfo.setDepotCode(depotCode);
@@ -3818,7 +3833,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							alteredComplaint, estoreId));
 				} else {
 					this.doEmail(FDEmailFactory.getInstance().createConfirmCreditEmail(fdInfo, saleId, alteredComplaint,
-							estoreId));
+							estoreId, order));
 				}
 				alteredComplaint.getCustomerEmail().setMailSent(true);
 				sb.updateEmailSentFlag(alteredComplaint.getCustomerEmail());
@@ -3923,7 +3938,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					// EnumEStoreId estoreId =
 					// EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					this.doEmail(FDEmailFactory.getInstance().createConfirmCreditEmail(fdInfo, saleId,
-							complaintInfo.getComplaint(), estoreId));
+							complaintInfo.getComplaint(), estoreId, orderI));
 					complaintInfo.getComplaint().getCustomerEmail().setMailSent(true);
 					sb.updateEmailSentFlag(complaintInfo.getComplaint().getCustomerEmail());
 				}
@@ -7881,6 +7896,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpInfo.getFirstName(), erpInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpInfo.getEmail());
+			fdInfo.setSecondEmailAddress(erpInfo.getSecondEmailAddress());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
 			mailBean = this.getMailerGatewayHome().create();
 			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));

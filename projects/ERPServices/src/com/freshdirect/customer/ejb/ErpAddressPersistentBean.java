@@ -64,6 +64,13 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 	private String unattendedDeliveryInstructions;
 	private String customerId;
 	
+	//COS17-76 2nd emil for COS users
+	private boolean notifyOrderPlaceToSecondEmail;
+	private boolean  notifyOrderModifyToSecondEmail;
+	private boolean notifyOrderInvoiceToSecondEmail;
+	private boolean notifySoReminderToSecondEmail;
+	private boolean notifyCreditsSecondEmail;
+	private boolean notifyVoiceshotToSecondEmail;
 	
 
 	/**
@@ -147,6 +154,12 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		model.setAltPhone(this.altPhone);		
 		model.setUnattendedDeliveryFlag(this.unattendedDeliveryFlag);
 		model.setUnattendedDeliveryInstructions(this.unattendedDeliveryInstructions);
+		model.setNotifyOrderPlaceToSecondEmail(this.notifyOrderPlaceToSecondEmail);
+		model.setNotifyOrderModifyToSecondEmail(this.notifyOrderModifyToSecondEmail);
+		model.setNotifyOrderInvoiceToSecondEmail(this.notifyOrderInvoiceToSecondEmail);
+		model.setNotifySoReminderToSecondEmail(this.notifySoReminderToSecondEmail);
+		model.setNotifyCreditsToSecondEmail(this.notifyCreditsSecondEmail);
+		model.setNotifyVoiceshotToSecondEmail(this.notifyVoiceshotToSecondEmail);
 		model.setCustomerId(this.customerId);
 		if(this.addressInfo!=null)
 			model.setScrubbedStreet(this.addressInfo.getScrubbedStreet());
@@ -317,7 +330,9 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		"ALT_LAST_NAME, ALT_APARTMENT, '('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE," +
 		"ALT_PHONE_EXT, LONGITUDE, LATITUDE, SERVICE_TYPE, COMPANY_NAME," +
 		"'('||substr(ALT_CONTACT_PHONE,1,3)||') '||substr(ALT_CONTACT_PHONE,4,3)||'-'||substr(ALT_CONTACT_PHONE,7,4) AS ALT_CONTACT_PHONE," +
-		"ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID,EXT_SCRUBBED_ADDRESS FROM CUST.ADDRESS WHERE ID=?";
+		"ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID,EXT_SCRUBBED_ADDRESS, "+
+		"ORDER_PLACEMENT_SECOND_EMAIL,  ORDER_MODIFY_SECOND_EMAIL, ORDER_INVOICE_SECOND_EMAIL, SO_REMINDERS_SECOND_EMAIL, CREDITS_SECOND_EMAIL, VOICESHOT_SECOND_EMAIL "+
+		" FROM CUST.ADDRESS WHERE ID=?";
 		
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
@@ -361,6 +376,14 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 						rs.getString("ALT_CONTACT_EXT"), rs.getString("ALT_CONTACT_TYPE"));
 				this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG"));
 				this.unattendedDeliveryInstructions = rs.getString("UNATTENDED_INSTR");
+				
+				this.notifyOrderPlaceToSecondEmail="Y".equalsIgnoreCase(rs.getString("ORDER_PLACEMENT_SECOND_EMAIL"))? true:false;
+				this.notifyOrderModifyToSecondEmail="Y".equalsIgnoreCase(rs.getString("ORDER_MODIFY_SECOND_EMAIL"))? true:false;
+				this.notifyOrderInvoiceToSecondEmail="Y".equalsIgnoreCase(rs.getString("ORDER_INVOICE_SECOND_EMAIL"))? true:false;
+				this.notifySoReminderToSecondEmail="Y".equalsIgnoreCase(rs.getString("SO_REMINDERS_SECOND_EMAIL"))? true:false;
+				this.notifyCreditsSecondEmail="Y".equalsIgnoreCase(rs.getString("CREDITS_SECOND_EMAIL"))? true:false;
+				this.notifyVoiceshotToSecondEmail="Y".equalsIgnoreCase(rs.getString("VOICESHOT_SECOND_EMAIL"))? true:false;
+				
 				this.customerId = rs.getString("CUSTOMER_ID");
 			} else {
 				throw new SQLException("No such ErpAddress PK: " + this.getPK());

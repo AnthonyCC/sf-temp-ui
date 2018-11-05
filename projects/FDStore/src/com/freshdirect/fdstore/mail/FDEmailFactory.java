@@ -171,7 +171,9 @@ public class FDEmailFactory {
 			email.setSubject("Thank You for Purchasing a DeliveryPass");
 		} else {
 			email = new FDTransactionalEmail(customer, order);
-	
+			if(order.getDeliveryAddress().isNotifyOrderInvoiceToSecondEmail() && null != customer.getSecondEmailAddress()) {
+				addCcMailToNotifyCosUsers(customer, email);
+			}
 			email.setXslPath("h_order_confirm_v1.xsl", "x_order_confirm_v1.xsl");
 			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 			email.setSubject("Your order for " + df.format(order.getRequestedDate()));
@@ -194,7 +196,9 @@ public class FDEmailFactory {
 			email.setSubject("We Got Your Changes");
 		} else {
 			email = new FDTransactionalEmail(customer, order);
-			
+			if(order.getDeliveryAddress().isNotifyOrderModifyToSecondEmail() && null != customer.getSecondEmailAddress()) {
+				addCcMailToNotifyCosUsers(customer, email);
+			}
 			email.setXslPath("h_order_change_v1.xsl", "x_order_change_v1.xsl");
 			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 			email.setSubject("Your order information has been updated");
@@ -255,7 +259,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint, EnumEStoreId eStoreId) {
+	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint, EnumEStoreId eStoreId, FDOrderI order) {
 		FDConfirmCreditEmail email = null;
 		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
 
@@ -272,7 +276,9 @@ public class FDEmailFactory {
 
 			email = new FDConfirmCreditEmail(customer, saleId, complaint, FDCSContactHoursUtil.getFDCSHours());
 			//email.setXslPath("h_credit_confirm_v1.xsl", "x_credit_confirm_v1.xsl");
-			
+			if(order.getDeliveryAddress().isNotifyCreditsToSecondEmail() && null != customer.getSecondEmailAddress()) {
+				addCcMailToNotifyCosUsers(customer, email);
+			}
 			// get the xslpath from the email object in the complaint.
 			ErpCustomerEmailModel custEmailObj = complaint.getCustomerEmail();
 			email.setXslPath(custEmailObj.getHtmlXslPath(),custEmailObj.getPlainTextXslPath());
@@ -1248,7 +1254,10 @@ public class FDEmailFactory {
 
 	public XMLEmailI createConfirmStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder, List<FDCartLineI> unavCartItems) {
 		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, unavCartItems);
-
+		
+		if(order.getDeliveryAddress().isNotifyOrderPlaceToSecondEmail() && null != customer.getSecondEmailAddress()) {
+			addCcMailToNotifyCosUsers(customer, email);
+		}
 		email.setXslPath("h_standing_order_confirm_v1.xsl", "x_standing_order_confirm_v1.xsl");
 
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
@@ -1264,7 +1273,9 @@ public class FDEmailFactory {
 
 	public XMLEmailI createConfirmDeliveryStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder, List<FDCartLineI> unavCartItems) {
 		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, unavCartItems);
-
+		if(order.getDeliveryAddress().isNotifySoReminderToSecondEmail() && null != customer.getSecondEmailAddress()) {
+			addCcMailToNotifyCosUsers(customer, email);
+		}
 		email.setXslPath("h_standing_order_delivery_v1.xsl", "x_standing_order_delivery_v1.xsl");
 
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
@@ -1523,4 +1534,17 @@ public class FDEmailFactory {
 		return email;
 	}
 
+	/* COS17-76    Crm reps set's up 2nd email notification for COS users and we need to trigger accordingly.  */
+	private void addCcMailToNotifyCosUsers(FDCustomerInfo customer, FDInfoEmail email ) {
+		try {
+			String ccMail = customer.getSecondEmailAddress();
+			List<String> ccList = new ArrayList<String>();
+			ccList.add(ccMail);
+			email.setCCList(ccList);
+			
+		}catch (Exception e) {
+			LOGGER.warn("Failed to Add Cc to email Exception: "+e);
+		}
+	}
+	
 }
