@@ -28,6 +28,8 @@ public class LoggedIn extends Message {
     private String newUser;
 
 	private int orderCount;
+	
+	private double orderminimumamt;
 
     private int fdxOrderCount;
 
@@ -373,5 +375,13 @@ public class LoggedIn extends Message {
 
 	public void setDpFreeDeliveryPromoWarning2(String dpFreeDeliveryPromoWarning2) {
 		this.dpFreeDeliveryPromoWarning2 = dpFreeDeliveryPromoWarning2; 
+	}
+
+	public double getOrderminimumamt() {
+		return orderminimumamt;
+	}
+
+	public void setOrderminimumamt(double orderminimumamt) {
+		this.orderminimumamt = orderminimumamt;
 	}
 }

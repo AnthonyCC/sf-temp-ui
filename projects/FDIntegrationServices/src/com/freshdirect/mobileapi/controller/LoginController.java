@@ -607,6 +607,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
         responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
         user.setDeliveryPassFlags(responseMessage);
+        responseMessage.setOrderminimumamt(user.getMinimumOrderAmount());
         return responseMessage;
     }
 

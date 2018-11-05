@@ -1098,8 +1098,10 @@ public class FDUser extends ModelSupport implements FDUserI {
                 throw new FDRuntimeException(e);
             }
         }
-        return EnumServiceType.CORPORATE.equals(this.getSelectedServiceType()) ? ErpServicesProperties.getMinCorpOrderAmount() : ((EnumEStoreId.FDX.equals(this.getUserContext()
-                .getStoreContext().getEStoreId())) ? ErpServicesProperties.getFDXMinimumOrderAmount() : ErpServicesProperties.getMinimumOrderAmount());
+        return EnumServiceType.CORPORATE.equals(this.getSelectedServiceType()) ? ErpServicesProperties.getMinCorpOrderAmount() : 
+        												(!EnumEStoreId.FDX.equals(this.getUserContext().getStoreContext().getEStoreId())) ? ErpServicesProperties.getMinimumOrderAmount() :
+        															(this.isDlvPassActive()||this.isDlvPassPending()) ? ErpServicesProperties.getFDXMinimumOrderAmountDpUser() : 
+        																													ErpServicesProperties.getFDXMinimumOrderAmount();
     }
 
     @Override
