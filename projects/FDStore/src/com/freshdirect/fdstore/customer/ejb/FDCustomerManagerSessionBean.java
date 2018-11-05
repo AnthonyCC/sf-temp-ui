@@ -8654,33 +8654,33 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 
 			if (isEligibleForAutoApproval && submittedSelfComplaints.containsKey(customerId)) {
-				int customersApprovedComplaints = submittedSelfComplaints.get(customerId).size();
+				int customersSubmittedComplaints = submittedSelfComplaints.get(customerId).size();
 				int selfCreditMaxAutoApproveQuantity = ErpServicesProperties
 						.getSelfCreditAutoapproveMaxQuantityPerDayRange();
-				if (customersApprovedComplaints >= selfCreditMaxAutoApproveQuantity) {
+				if (customersSubmittedComplaints >= selfCreditMaxAutoApproveQuantity) {
 					isEligibleForAutoApproval = false;
 					int selfComplaintMaxQuantityDayRange = ErpServicesProperties
 							.getSelfCreditAutoapproveQuantityDayRangeLimit();
 					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
 							+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId + " has "
-							+ customersApprovedComplaints + " submitted self-issued complaints in the last "
+							+ customersSubmittedComplaints + " submitted self-issued complaints in the last "
 							+ selfComplaintMaxQuantityDayRange + " days. " + "The limit is "
 							+ selfCreditMaxAutoApproveQuantity + " self-issued complaints.");
 				}
 			}
 
 			if (isEligibleForAutoApproval && submittedSelfComplaintAmounts.containsKey(customerId)) {
-				Double customersTotalApprovedAmount = submittedSelfComplaintAmounts.get(customerId);
+				Double customersTotalSubmittedAmount = submittedSelfComplaintAmounts.get(customerId);
 				Double selfCreditMaxAutoApproveAmount = ErpServicesProperties
 						.getSelfCreditAutoapproveMaxAmountPerDayRange();
-				if ((selfComplaintAmount + customersTotalApprovedAmount) > selfCreditMaxAutoApproveAmount) {
+				if (customersTotalSubmittedAmount >= selfCreditMaxAutoApproveAmount) {
 					isEligibleForAutoApproval = false;
 					int selfComplaintMaxAmountDayRange = ErpServicesProperties
 							.getSelfCreditAutoapproveAmountDayRangeLimit();
 					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
 							+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId
 							+ " has submitted self-issued complaints in the last " + selfComplaintMaxAmountDayRange
-							+ " days of " + customersTotalApprovedAmount + "$. " + "The limit is "
+							+ " days of " + customersTotalSubmittedAmount + "$. " + "The limit is "
 							+ selfCreditMaxAutoApproveAmount + "$.");
 				}
 			}
@@ -8698,8 +8698,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			if (isEligibleForAutoApproval) {
 				approvablePendingSelfComplaints.add(pendingSelfComplaint);
-				updateApprovedComplaints(submittedSelfComplaints, pendingSelfComplaint);
-				updateApprovedAmount(submittedSelfComplaintAmounts, pendingSelfComplaint);
 				LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
 						+ "Self-issued complaint is eligible for auto-approval.");
 			}
@@ -8887,27 +8885,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(ps);
 			close(conn);
 		}
-	}
-
-	private void updateApprovedComplaints(Map<String, List<String>> approvedComplaints,
-			PendingSelfComplaint pendingSelfComplaint) {
-		String customerId = pendingSelfComplaint.getCustomerId();
-		List<String> customersApprovedSelfComplaints = new ArrayList<String>();
-		if (approvedComplaints.containsKey(customerId)) {
-			customersApprovedSelfComplaints = approvedComplaints.get(customerId);
-		}
-		customersApprovedSelfComplaints.add(pendingSelfComplaint.getComplaintId());
-		approvedComplaints.put(customerId, customersApprovedSelfComplaints);
-	}
-
-	private void updateApprovedAmount(Map<String, Double> approvedAmount, PendingSelfComplaint pendingSelfComplaint) {
-		Double complaintAmount = pendingSelfComplaint.getComplaintAmount();
-		String customerId = pendingSelfComplaint.getCustomerId();
-
-		if (approvedAmount.containsKey(customerId)) {
-			complaintAmount += approvedAmount.get(customerId);
-		}
-		approvedAmount.put(customerId, complaintAmount);
 	}
 
 	public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity)
