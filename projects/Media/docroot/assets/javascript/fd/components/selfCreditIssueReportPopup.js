@@ -178,6 +178,10 @@ var FreshDirect = window.FreshDirect || {};
               $("#self-credit-form-alert").text(MESSAGE);
             }, 300);
             $(".self-credit-footer").addClass("form-instructions-active");
+            $("#selfcreditform select").on('change', function() {
+              $(".self-credit-footer").removeClass("form-instructions-active");
+              removeChangeHandler('#selfcreditform select');
+            });
           }
           this.submitButton = $('.credit-request-submit-button');
           setTimeout(function() {
@@ -212,6 +216,10 @@ var FreshDirect = window.FreshDirect || {};
       }
     }
   );
+
+  function removeChangeHandler(node) {
+      $(node).off('change');
+  }
 
   function getReviewData(data) {
     if (!data || !data.orderlines) return {};
