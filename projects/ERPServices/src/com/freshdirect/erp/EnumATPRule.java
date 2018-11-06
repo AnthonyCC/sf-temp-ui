@@ -26,6 +26,7 @@ public class EnumATPRule extends ValuedEnum {
 	public final static EnumATPRule JIT = new EnumATPRule("JIT", 2, "Just-in-Time");
 	public final static EnumATPRule COMPONENT = new EnumATPRule("COMPONENT", 3, "Component Simulate");
 	public final static EnumATPRule MULTILEVEL_MATERIAL = new EnumATPRule("MULTILEVEL_MATERIAL", 4, "Multi-level Material Availability");
+	public final static EnumATPRule SINGLELEVEL_MATERIAL = new EnumATPRule("SINGLELEVEL_MATERIAL", 5, "Single-level Material Availability");
 
 	private final String displayName;
 
@@ -56,6 +57,10 @@ public class EnumATPRule extends ValuedEnum {
 
 	public String toString() {
 		return this.displayName;
+	}
+	
+	public static void main(String[] a) {
+		System.out.println(EnumATPRule.getEnum("Material Availability"));
 	}
 
 }

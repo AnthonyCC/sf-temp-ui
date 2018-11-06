@@ -336,6 +336,9 @@ public class FDPlantProductJcoServer extends FdSapServer {
     	if("ZF".equals(token)) {
     		return EnumATPRule.MULTILEVEL_MATERIAL;
     	}
+    	if("ZN".equals(token)) {
+    		return EnumATPRule.SINGLELEVEL_MATERIAL;
+    	}
     	return EnumATPRule.MATERIAL;
     }
 
