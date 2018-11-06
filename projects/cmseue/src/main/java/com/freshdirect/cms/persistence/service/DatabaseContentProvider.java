@@ -37,6 +37,7 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeDetailEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.changecontrol.service.ContentChangeControlService;
+import com.freshdirect.cms.changecontrol.service.ContentKeyChangeCalculator;
 import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -64,7 +65,6 @@ import com.freshdirect.cms.persistence.repository.ContentNodeEntityRepository;
 import com.freshdirect.cms.persistence.repository.NavigationTreeRepository;
 import com.freshdirect.cms.persistence.repository.RelationshipEntityRepository;
 import com.freshdirect.cms.relationship.comparator.RelationshipEntityComparator;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
@@ -123,6 +123,9 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
 
     @Autowired
     private BatchSavingRepository batchSavingRepository;
+    
+    @Autowired
+    private ContentKeyChangeCalculator contentKeyChangeCalculator;
 
     @Override
     public ContentSource getSource() {
@@ -733,15 +736,10 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
             detail = new ContentChangeDetailEntity();
             detail.setAttributeName(relationship.getName());
 
-            Joiner joiner = Joiner.on(", ").skipNulls();
+            String[] keyChanges = contentKeyChangeCalculator.describeContentKeyListChange(oldKeysList, changedKeysList);
 
-            Set<ContentKey> removed = new HashSet<ContentKey>(oldKeysList);
-            removed.removeAll(changedKeysList);
-            Set<ContentKey> added = new HashSet<ContentKey>(changedKeysList);
-            added.removeAll(oldKeysList);
-
-            detail.setOldValue(removed.isEmpty() ? null : "Removed: " + joiner.join(removed));
-            detail.setNewValue(added.isEmpty() ? null : "Added: " + joiner.join(added));
+            detail.setOldValue(keyChanges[0]);
+            detail.setNewValue(keyChanges[1]);
 
             if (detail.getNewValue() != null && detail.getNewValue().length() > CHANGEDETAIL_NEWVALUE_MAX_LENGTH) {
                 detail.setNewValue(detail.getNewValue().substring(0, CHANGEDETAIL_NEWVALUE_LENGTH_WITHOUT_DOTS) + "...");
