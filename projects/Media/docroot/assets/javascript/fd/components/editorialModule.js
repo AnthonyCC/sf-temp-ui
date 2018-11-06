@@ -12,9 +12,15 @@ var FreshDirect = FreshDirect || {};
         showLearnMore: function (e) {
           var editorialRightSide = $(e).find('.right-side')[0].getBoundingClientRect().height,
               editorialHeader = $(e).find('.editorial-header')[0],
+              ehHeight = 0, ehMargin = 0,
               editorialBodyHeight = $(e).find('.editorial-body')[0].getBoundingClientRect().height;
 
-          if (editorialRightSide - (editorialHeader.getBoundingClientRect().height + parseInt(window.getComputedStyle(editorialHeader).marginBottom)) > editorialBodyHeight) {
+          if (editorialHeader) {
+            ehHeight = editorialHeader.getBoundingClientRect().height;
+            ehMargin = parseInt(window.getComputedStyle(editorialHeader).marginBottom, 10);
+          }
+
+          if (editorialRightSide - (ehHeight + ehMargin) > editorialBodyHeight) {
             var learnMore = $(e).find('.learn-more')[0];
             $(learnMore).removeClass('visible');
           }
