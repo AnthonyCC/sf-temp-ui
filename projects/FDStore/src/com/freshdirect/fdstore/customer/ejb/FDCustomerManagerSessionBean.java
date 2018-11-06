@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -8662,7 +8664,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 
 			if (isEligibleForAutoApproval && null != pendingSelfComplaint.getNote()) {
-				isEligibleForAutoApproval = !complaintHasNote(pendingSelfComplaint.getNote());
+				isEligibleForAutoApproval = complaintHasNoAdditionalNote(pendingSelfComplaint.getNote());
 				if (!isEligibleForAutoApproval) {
 					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
 							+ " is not eligible for auto-approval. Complaint contains note.");
@@ -8727,26 +8729,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return isOnAlert(new PrimaryKey(customerId), EnumAlertType.CREDIT.getName());
 	}
 
-	private boolean complaintHasNote(String note) {
-		if (note.equals("")) {
-			return false;
-		}
+	private boolean complaintHasNoAdditionalNote(String note) {
+		Pattern pattern = Pattern.compile("\\[");
+		Matcher matcher = pattern.matcher(note);
 
-		int index = note.indexOf("[ ip:");
-		if (index < 0) {
-			return true;
-		} else {
-			int secondIndex = note.indexOf("[ ip:", index + 1);
-			if (secondIndex > 0) {
-				return true;
-			} else {
-				if (index == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
+		int count = 0;
+		while(matcher.find()) {
+		    count++;
 		}
+		
+		return count == 1 && note.startsWith("[ ip:");
 	}
 
 	private Double getComplaintAmount(String selfComplaintId) throws FDResourceException {
