@@ -33,6 +33,8 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.EnumProductLayout;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
@@ -62,22 +64,24 @@ public class SelfCreditOrderDetailsService {
         	final boolean isDeliverPass = fdCartLine.lookupFDProduct().isDeliveryPass();
         	
         	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
+        	ProductModel product = fdCartLine.lookupProduct();
         	
         	if (!isDeliverPass) {
             	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
-                item.setBrand((null == fdCartLine.lookupProduct()) ?"" : fdCartLine.lookupProduct().getPrimaryBrandName());
+                item.setBrand((null == product) ?"" : product.getPrimaryBrandName());
                 item.setProductName(collectProductName(item.getBrand(), fdCartLine.getDescription()));
                 item.setQuantity(collectQuantity(fdCartLine));
-                item.setProductImage((null == fdCartLine.lookupProduct()) ? "" : fdCartLine.lookupProduct().getProdImage().getPathWithPublishId());
+                item.setProductImage((null == product) ? "" : product.getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
                 item.setBasePriceUnit(productInfo.getDefaultPriceUnit());
                 item.setConfigurationDescription(fdCartLine.getConfigurationDesc());
                 item.setSample(fdCartLine.isSample());
                 item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
-                item.setMealBundle(isItemMealBundle(fdCartLine));
+                item.setMealBundle(null == product ? false : isItemMealBundle(product));
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
+                item.setFinalPrice(fdCartLine.hasInvoiceLine() ? fdCartLine.getInvoiceLine().getPrice() : fdCartLine.getPrice());
                 orderLines.add(item);
 			}
         }
@@ -161,8 +165,10 @@ public class SelfCreditOrderDetailsService {
         return complaintReasonMap;
     }
 
-    private boolean isItemMealBundle(FDCartLineI fdCartLine) {
-        return CartDataService.defaultService().isMealBundle(fdCartLine.lookupProduct());
+    private boolean isItemMealBundle(ProductModel product) {
+    	final boolean mealBundle = CartDataService.defaultService().isMealBundle(product);
+    	final boolean componentGroupMeal = null == product.getSpecialLayout() ? false : product.getSpecialLayout().equals(EnumProductLayout.COMPONENTGROUP_MEAL);
+        return  mealBundle || componentGroupMeal;
     }
 
 }

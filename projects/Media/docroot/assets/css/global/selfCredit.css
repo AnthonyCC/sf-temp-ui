@@ -10,7 +10,12 @@
 #selfCreditInit ~ #FDCustomSelect ul.customselect {
   width: 100%;
 }
+#selfCreditInit ~ #FDCustomSelect.selectlight .popupcontent .select-close-container {
+  display: none;
+}
+
 #selfCreditInit ~ #FDCustomSelect .customselect li {
+  box-sizing: border-box;
   padding: 10px;
 }
 #selfCreditInit ~ #FDCustomSelect .customselect li button {
@@ -22,7 +27,7 @@
   background-color: #edf5ee;
 }
 #selfCreditInit ~ #FDCustomSelect ul.customselect li.selected button {
-  text-decoration: underline;
+  text-decoration: none;
 }
 #selfCreditInit ~ #FDCustomSelect .customselect li:hover,
 #selfCreditInit ~ #FDCustomSelect .customselect li button:hover {
@@ -32,9 +37,22 @@
 #selfCreditInit ~ #FDCustomSelect li button {
   padding: 0;
 }
-@media(max-width: 740px) {
+@media(max-width: 768px) {
   #selfCreditInit ~ #FDCustomSelect {
     width: auto;
+  }
+
+  #selfCreditInit ~ #FDCustomSelect.selectlight .popupcontent .select-close-container {
+    display: block;
+    height: 50px;
+    background: #444444;
+  }
+
+  #selfCreditInit ~ #FDCustomSelect.selectlight .popupcontent .overlay-close-icon {
+    filter: brightness(0) invert(1);
+    float: right;
+    position: relative;
+    top: 10px;
   }
 
   #customselect-close-container {         
@@ -57,16 +75,29 @@
     left: 0;
     right: 0;
     overflow-y: auto;
+    max-height: none;
     border: none;
     widows: 100%;
   }
-  #selfCreditInit.overlay.selfcredit-overlay .popupcontentoverlay {
-    top: 46px;
+  #selfCreditInit ~ #FDCustomSelect .selectlight--header {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding-left: 20px;
+    position: relative;
+    top: 10px;
   }
-  #selfCreditInit ~ #FDCustomSelect .selectlight li {
+
+  #selfCreditInit ~ #FDCustomSelect .customselect li button {
+    padding-left: 20px;
+    color: #333333;
+  }
+  #selfCreditInit ~ #FDCustomSelect.selectlight li {
     height: 83px;
+    padding: 20px;
   }
-  /* #selfCreditInit ~ #FDCustomSelect ul.customselect li span {
+  #selfCreditInit ~ #FDCustomSelect.selectlight li .checkbox-helper {
     display: inline-flex;
     width: 26px;
     height: 26px;
@@ -79,7 +110,8 @@
   #selfCreditInit ~ #FDCustomSelect ul.customselect li.selected span {
     background-image: url('/media_stat/images/common/check-radio-selected.svg');
     background-position: center center;
-  } */
+    background-size: 170%;
+  }
 }
 #selfCreditIssueReport.overlay-medium {
   font-family: "Verdana", sans-serif;
@@ -94,10 +126,6 @@
 }
 #selfCreditIssueReport.overlay.overlay-fullscreen .overlay-header {
   font-size: 20px;
-}
-#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-container .overlay-header-helper,
-#selfCreditIssueReport.overlay.overlay-fullscreen .overlay-container .overlay-content {
-  top: -22px;
 }
 #selfCreditIssueReport.overlay-medium .section-container {
   margin: 30px;
@@ -305,9 +333,13 @@
   font-style: italic;
   margin-left: 5px;
 }
-#selfCreditIssueReport .meal-bundle-header {
-  border-top: 1px solid #cccccc;
-  padding-top: 28px;
+#selfCreditIssueReport hr {
+  background: #cccccc;
+  color: #cccccc;
+  height: 3px;
+  margin: 0 -999999rem;
+  padding: 0 999999rem;
+  width: 100vw;
 }
 #selfCreditIssueReport .call-helpline, {
   font-style: italic;
@@ -437,7 +469,7 @@
 #selfCreditRequestComplete .overlay-content,
 #selfCreditRequestError .overlay-content {
   text-align: center;
-  padding: 40px 70px;
+  padding: 50px 63px;
 }
 
 #selfCreditRequestError .overlay-content img {
@@ -477,8 +509,16 @@
   margin: 20px 0 50px 0;
 }
 
+#selfCreditRequestComplete #creditRequestCompleteDetails a {
+  text-decoration: underline;
+}
+
+#selfCreditRequestComplete .status {
+  padding: 0 10px;
+}
+
 #selfCreditRequestError .status {
-  margin: 20px 15px 50px;
+  margin: 0 0 50px;
 }
 
 #selfCreditRequestError .status a {
@@ -491,7 +531,7 @@
 
 @media(max-width: 700px) {
   #selfCreditRequestError .status {
-    margin: 0 0 50px;
+    margin: 0 0 54px;
   }
 }
 
@@ -635,6 +675,7 @@
 .selfcredit-overlay.overlay-fullscreen .self-credit-body {
   flex: 0 1 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .selfcredit-overlay.overlay-fullscreen .self-credit-body-header {

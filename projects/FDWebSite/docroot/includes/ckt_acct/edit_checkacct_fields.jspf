@@ -190,7 +190,7 @@ if (isValidPaymentId) {
 <tr valign="top" >
 	<td width="" align="right" class="text12"><label for="<%=PaymentMethodName.ACCOUNT_HOLDER%>">*&nbsp;Name&nbsp;&nbsp;</label></td>
 	<td width=""><input class="text11" maxlength="50" SIZE="21" type="text" id="<%=PaymentMethodName.ACCOUNT_HOLDER%>" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
-	<td rowspan="6" width="" align="right"><img src="/media_stat/images/template/youraccount/check.gif" width="375" height="120" border="0"></td>
+	<td rowspan="6" width="" align="right"><img src="/media_stat/images/template/youraccount/check.gif" alt="" width="375" height="120" border="0"></td>
 </tr>
 <tr valign="top">
 	<td align="right" class="text12"><label id="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>">*&nbsp;Account Type&nbsp;&nbsp;</label></td>

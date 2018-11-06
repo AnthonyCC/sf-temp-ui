@@ -150,8 +150,8 @@ final int W_YA_GIFTCARDS = 970;
 							<th>Sender</th>
 							<th width="80">Gift Amount</th>
 							<th width="80">Balance</th>
-							<th width="150">&nbsp;</th>
-                            <th width="75">&nbsp;</th>
+							<th width="150">&nbsp;<span class="offscreen">status of your received gift cards</span></th>
+                            <th width="75">&nbsp;<span class="offscreen">remove gift card from your received list</span></th>
 						</tr>
                         <logic:iterate id="giftcard" collection="<%= giftcards %>" type="com.freshdirect.fdstore.giftcard.FDGiftCardModel">
 						<tr>
@@ -170,7 +170,7 @@ final int W_YA_GIFTCARDS = 970;
                                 <%= giftcard.isRedeemable() ? "Redeemed" : "Cancelled" %>
                                 <%}%>
                             </td>
-                            <td><a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>" class="note">Remove<span class="offscreen"> gift card</span></a></td>
+                            <td><a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>" class="note">Remove<span class="offscreen"> gift card #<%= giftcard.getCertificateNumber() %></span></a></td>
 						</tr>
                         </logic:iterate>
 						<tr>
@@ -210,8 +210,8 @@ final int W_YA_GIFTCARDS = 970;
                             <th width="80">Card Type</th>
 							<th>Recipient</th>
 							<th width="70">Status</th>
-							<th width="60">&nbsp;</th>
-							<th width="60">&nbsp;</th>
+							<th width="60">&nbsp;<span class="offscreen">send/resend your gift card</span></th>
+							<th width="60">&nbsp;<span class="offscreen">view/print your gift card</span></th>
 						</tr>
                         <% DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy"); %>
                         <logic:iterate id="recipient" collection="<%= recipients %>" type="com.freshdirect.giftcard.ErpGCDlvInformationHolder">

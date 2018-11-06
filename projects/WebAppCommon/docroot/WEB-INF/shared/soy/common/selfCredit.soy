@@ -6,7 +6,7 @@
  */
 {template .selfCreditInit autoescape="false"}
   <h1>Credit Request</h1>
-  <form fdform="self-credit-init-order-id">
+  <form fdform="self-credit-init-order-id" id="order-id">
     <div class="self-credit-init-row">
         <label>Name</label>
         {if $user.firstName and $user.lastName}<i class="user-info">{$user.firstName} {$user.lastName}</i>{/if}
@@ -17,24 +17,24 @@
     </div>
     <div class="self-credit-init-row-last">
       <label for="order-id">Your Order</label>
-      {if $orders.length > 0}<i class="form-field-info-flag">Required</i>{/if}
+      <i class="form-field-info-flag">Required</i>
       <div>
-          // custom two-line dropdown template
-          //<select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-          <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-          <option value="" disabled selected hidden>Select An Order</option>
-          {if $orders.length < 1}
+        // custom two-line dropdown template
+        // <select name="order-id" id="self-credit-order-select" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+        <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+        <option value="" disabled selected>Select An Order</option>
+        {if $orders.length < 1}
           <option value="" disabled>No eligible orders found</option>
-          {else}
+        {else}
           {foreach $order in $orders}
-          // custom two-line dropdown template
+          //custom two-line dropdown template
           // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
           // {else}[br][b]Order #: {$order.orderId}[/b]{/if}
           // </option>
-           <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
+            <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
           {/foreach}
-          </select>
         {/if}
+        </select>
       </div>
     </div>
     <div>
@@ -91,6 +91,7 @@
             {/if}
           {/foreach}
           {if $mealBundles and $mealBundles.length > 0}
+            <hr>
             <h2 class="meal-bundle-header">Have an issue with any of the items below? <span class="call-helpline">Call us at </span><a itemprop="helpline-phone-number" class="helpline-phone-number italic" href="tel:+1-866-283-7373" rel="nofollow">{$customerServiceContact}.</a></h2>
             {foreach $orderline in $mealBundles }
               {call .selfCreditProductLine}
@@ -172,7 +173,7 @@
                     <div class="complaint-item">
                       {if $complaintLine.brand}<label>{$complaintLine.brand}</label>{/if}
                       <p class="description">{$complaintLine.productName}</p>
-                      <small class="sale-unit">{$complaintLine.configurationDescription} | ${$complaintLine.basePrice}{if $complaintLine.basePriceUnit}/{$complaintLine.basePriceUnit}{/if}</small>
+                      <small class="sale-unit">{$complaintLine.configurationDescription} {if $complaintLine.configurationDescription.length > 0}|{/if} ${$complaintLine.basePrice}{if $complaintLine.basePriceUnit}/{$complaintLine.basePriceUnit}{/if}</small>
                       <p class="issue">
                         <span>Issue:</span>
                         <i>{$complaintLine.complaint.description}</i>
@@ -231,7 +232,7 @@
       <div>
         {if $orderline.brand}<label>{$orderline.brand}</label>{/if}
         <div class="product-desc">{$orderline.productName}</div>
-        <small class="sale-unit">{$orderline.configurationDescription} | ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
+        <small class="sale-unit">{$orderline.configurationDescription} {if $orderline.configurationDescription.length > 0}<span>|<span>{/if} ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
       </div>
     </div>
     {if not ($orderline.sample or $orderline.free or $orderline.mealBundle)}

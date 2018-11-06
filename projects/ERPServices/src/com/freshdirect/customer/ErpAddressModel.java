@@ -55,6 +55,14 @@ public class ErpAddressModel extends ContactAddressModel {
 	
 	private String scrubbedStreet;
 	
+	//COS17-76 2nd emil for COS users
+		private boolean notifyOrderPlaceToSecondEmail;
+		private boolean  notifyOrderModifyToSecondEmail;
+		private boolean notifyOrderInvoiceToSecondEmail;
+		private boolean notifySoReminderToSecondEmail;
+		private boolean notifyCreditsToSecondEmail;
+		private boolean notifyVoiceshotToSecondEmail;
+		
 	public String getScrubbedStreet() {
 		return scrubbedStreet;
 	}
@@ -312,6 +320,62 @@ public class ErpAddressModel extends ContactAddressModel {
 
 	public void setEbtAccepted(boolean isEbtAccepted) {
 		this.isEbtAccepted = isEbtAccepted;
+	}
+
+	public EnumDeliverySetting getAltDeliverySetting() {
+		return altDeliverySetting;
+	}
+
+	public void setAltDeliverySetting(EnumDeliverySetting altDeliverySetting) {
+		this.altDeliverySetting = altDeliverySetting;
+	}
+
+	public boolean isNotifyOrderPlaceToSecondEmail() {
+		return notifyOrderPlaceToSecondEmail;
+	}
+
+	public void setNotifyOrderPlaceToSecondEmail(boolean notifyOrderPlaceToSecondEmail) {
+		this.notifyOrderPlaceToSecondEmail = notifyOrderPlaceToSecondEmail;
+	}
+
+	public boolean isNotifyOrderModifyToSecondEmail() {
+		return notifyOrderModifyToSecondEmail;
+	}
+
+	public void setNotifyOrderModifyToSecondEmail(boolean notifyOrderModifyToSecondEmail) {
+		this.notifyOrderModifyToSecondEmail = notifyOrderModifyToSecondEmail;
+	}
+
+	public boolean isNotifyOrderInvoiceToSecondEmail() {
+		return notifyOrderInvoiceToSecondEmail;
+	}
+
+	public void setNotifyOrderInvoiceToSecondEmail(boolean notifyOrderInvoiceToSecondEmail) {
+		this.notifyOrderInvoiceToSecondEmail = notifyOrderInvoiceToSecondEmail;
+	}
+
+	public boolean isNotifySoReminderToSecondEmail() {
+		return notifySoReminderToSecondEmail;
+	}
+
+	public void setNotifySoReminderToSecondEmail(boolean notifySoReminderToSecondEmail) {
+		this.notifySoReminderToSecondEmail = notifySoReminderToSecondEmail;
+	}
+
+	public boolean isNotifyCreditsToSecondEmail() {
+		return notifyCreditsToSecondEmail;
+	}
+
+	public void setNotifyCreditsToSecondEmail(boolean notifyCreditsSecondEmail) {
+		this.notifyCreditsToSecondEmail = notifyCreditsSecondEmail;
+	}
+
+	public boolean isNotifyVoiceshotToSecondEmail() {
+		return notifyVoiceshotToSecondEmail;
+	}
+
+	public void setNotifyVoiceshotToSecondEmail(boolean notifyVoiceshotAltMail) {
+		this.notifyVoiceshotToSecondEmail = notifyVoiceshotToSecondEmail;
 	}
 
 }

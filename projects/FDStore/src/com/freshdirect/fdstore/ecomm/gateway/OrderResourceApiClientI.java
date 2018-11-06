@@ -70,7 +70,7 @@ public interface OrderResourceApiClientI {
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isRealTimeAuthNeeded) throws RemoteException;
+			boolean isRealTimeAuthNeeded) throws RemoteException, FDResourceException, ErpFraudException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpTransactionException;
 
 
 	public String placeDonationOrder(FDActionInfo info,

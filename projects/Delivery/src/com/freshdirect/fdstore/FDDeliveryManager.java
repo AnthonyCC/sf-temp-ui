@@ -32,6 +32,7 @@ import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerSB;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
+import com.freshdirect.delivery.restriction.CompositeRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -41,10 +42,12 @@ import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.CompositeRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.OneTimeRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.OneTimeReverseRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RecurringRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictionData;
+import com.freshdirect.ecommerce.data.delivery.TimeOfDayRangeData;
 import com.freshdirect.ecommerce.data.dlv.AddressData;
 import com.freshdirect.ecommerce.data.dlv.AddressInfoData;
 import com.freshdirect.erp.EnumStateCodes;
@@ -74,6 +77,7 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.framework.util.TimeOfDayRange;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.SessionEvent;
@@ -268,7 +272,7 @@ public class FDDeliveryManager {
 	private static List<RestrictionI> buildRestriction(List<RestrictionData> dlvRestrictions) {
 		List<RestrictionI> restriction = new ArrayList<RestrictionI>();
 		for (RestrictionData restrictionData : dlvRestrictions) {
-			RestrictionI restrictionI = buildRestriction(restrictionData);
+				RestrictionI restrictionI = buildRestriction(restrictionData);
 			if(restrictionI!=null){
 				restriction.add(restrictionI);
 			}
@@ -308,14 +312,52 @@ public class FDDeliveryManager {
 
 		} else if (dlvRestriction.getClassType().equals(AlcoholRestrictionData.class.getName())) {
 			AlcoholRestrictionData alcoholRestrictionData = dlvRestriction.getAlcoholRestrictionData();
-			AlcoholRestriction alcoholRestriction = new AlcoholRestriction(alcoholRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(alcoholRestrictionData.getCriterion()), 
-					EnumDlvRestrictionReason.getEnum(alcoholRestrictionData.getReason()),alcoholRestrictionData.getName(), alcoholRestrictionData.getMessage(),
-					alcoholRestrictionData.getDateRange().getStartdate(), alcoholRestrictionData.getDateRange().getEndDate(), EnumDlvRestrictionType.getEnum(alcoholRestrictionData.getType()),
-					alcoholRestrictionData.getPath(), alcoholRestrictionData.getState(), alcoholRestrictionData.getCounty(),
-					alcoholRestrictionData.getCity(), alcoholRestrictionData.getMunicipalityId(), alcoholRestrictionData.isAlcoholRestricted());
+			AlcoholRestriction alcoholRestriction = new AlcoholRestriction(alcoholRestrictionData.getId(), 
+					EnumDlvRestrictionCriterion.getEnum(alcoholRestrictionData.getCriterion()), 
+					EnumDlvRestrictionReason.getEnum(alcoholRestrictionData.getReason()),
+					alcoholRestrictionData.getName(), alcoholRestrictionData.getMessage(),
+					alcoholRestrictionData.getDateRange().getStartdate(), 
+					alcoholRestrictionData.getDateRange().getEndDate(), 
+					EnumDlvRestrictionType.getEnum(alcoholRestrictionData.getType()),
+					alcoholRestrictionData.getPath(), alcoholRestrictionData.getState(), 
+					alcoholRestrictionData.getCounty(),
+					alcoholRestrictionData.getCity(), alcoholRestrictionData.getMunicipalityId(), 
+					alcoholRestrictionData.isAlcoholRestricted());
+			alcoholRestriction.setTimeRangeMap(buildSetTimeRangeMap(alcoholRestrictionData.getTimeRangeMap()));
 			return alcoholRestriction;
-			}
+		}else if (dlvRestriction.getClassType().equals(CompositeRestrictionData.class.getName())) {
+			CompositeRestrictionData compositeRestrictionData = dlvRestriction.getCompositeRestrictionData();
+				CompositeRestriction compositeRestriction = new CompositeRestriction(compositeRestrictionData.getId(), 
+						EnumDlvRestrictionCriterion.getEnum(compositeRestrictionData.getCriterion()), 
+						EnumDlvRestrictionReason.getEnum(compositeRestrictionData.getReason()),
+						compositeRestrictionData.getName(), compositeRestrictionData.getMessage(),
+						new DateRange(compositeRestrictionData.getDateRange().getStartdate(),compositeRestrictionData.getDateRange().getEndDate()), 
+						EnumDlvRestrictionType.getEnum(compositeRestrictionData.getRestrictionType()),
+						compositeRestrictionData.getPath());
+				if(compositeRestrictionData.getTimeRangeMap()!=null)
+				compositeRestriction.setTimeRangeMap(buildSetTimeRangeMap(compositeRestrictionData.getTimeRangeMap()));
+				return compositeRestriction;
+				}
 		return null;
+	}
+
+	private static Map<Integer, List<TimeOfDayRange>> buildSetTimeRangeMap(
+			Map<Integer, List<TimeOfDayRangeData>> timeRangeMapData) {
+		 Map<Integer, List<TimeOfDayRange>> timeRange = new HashMap();
+			for (Integer key : timeRangeMapData.keySet()) {
+				List<TimeOfDayRange> timeOfDayRangeList = new ArrayList();
+				List<TimeOfDayRangeData> timeOfDayRangeDataList = timeRangeMapData.get(key);
+				for (TimeOfDayRangeData timeOfDayRangeData : timeOfDayRangeDataList) {
+					TimeOfDay startDate = new TimeOfDay();
+					startDate.setNormalDate(timeOfDayRangeData.getStartDate().getNormalDate());
+					TimeOfDay endDate = new TimeOfDay();
+					endDate.setNormalDate(timeOfDayRangeData.getEndDate().getNormalDate());
+					TimeOfDayRange timeOfDayRange = new TimeOfDayRange(startDate,endDate);
+					timeOfDayRangeList.add(timeOfDayRange);
+				}
+				timeRange.put(key, timeOfDayRangeList);
+			}
+		return timeRange;
 	}
 
 	private void refreshSiteAnnouncementsCache()
