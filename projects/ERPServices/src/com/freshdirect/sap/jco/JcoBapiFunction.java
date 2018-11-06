@@ -56,17 +56,18 @@ abstract class JcoBapiFunction implements BapiFunctionI {
 		{
 			JcoManager manager = JcoManager.getInstance();
 
+			
 			LOG.debug("Executing BAPI " + this.function.getName());
 
 			long startTime = System.currentTimeMillis();
 
-			manager.dumpToXML(this.function, "jco_" + startTime + "_in.xml");
+			manager.dumpToXML(this.function, "jco_" +this.function.getName()+ startTime + "_in.xml");
 			
 			try
 			{
 				function.execute(manager.getDestination());
 
-				manager.dumpToXML(this.function, "jco_" + startTime + "_out.xml");
+				manager.dumpToXML(this.function, "jco_" +this.function.getName()+ startTime + "_out.xml");
 			} 
 			catch (AbapException ex)
 			{
@@ -80,7 +81,6 @@ abstract class JcoBapiFunction implements BapiFunctionI {
 			long endTime = System.currentTimeMillis();
 
 			LOG.debug("BAPI call " + this.function.getName() + " completed in " + (endTime - startTime) + " milliseconds");
-
 			this.processResponse();
 			
 		}
