@@ -454,9 +454,12 @@ var FreshDirect = FreshDirect || {};
       var hour = date.getHours();
       var minutes = date.getMinutes();
       var postFix = "AM";
-      if (hour > 12) {
+      if (hour >= 12) {
         hour -= 12;
         postFix = "PM";
+      }
+      if (hour === 0) {
+        hour = 12;
       }
       return (
         hour + (minutes ? ":" + dateFormatter.zeroFill(minutes) : "") + postFix

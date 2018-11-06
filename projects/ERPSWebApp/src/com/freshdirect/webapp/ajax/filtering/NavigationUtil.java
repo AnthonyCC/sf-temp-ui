@@ -64,6 +64,7 @@ public class NavigationUtil {
 	public static final String CATEGORY_FILTER_GROUP_ID = "categoryFilterGroup";
 	public static final String SUBCATEGORY_FILTER_GROUP_ID = "subCategoryFilterGroup";
 	private static final String FILTER_GROUP_ID = "FilterGroup";
+	private static final List<String> NO_EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList();
 	private static final List<String> EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList("Brand");
 
     private static final Comparator<ProductFilterGroup> SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME = new Comparator<ProductFilterGroup>() {
@@ -309,13 +310,15 @@ public class NavigationUtil {
     public static List<ProductFilterGroup> createBrowseFilterGroups(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
         List<ProductFilterGroup> productFilterGroups = new ArrayList<ProductFilterGroup>();
 
+        List<String> excludeFilterGroupNames = NO_EXCLUDE_FILTER_GROUP_NAMES;
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
+            excludeFilterGroupNames = EXCLUDE_FILTER_GROUP_NAMES;
             List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(navigationModel.getBrandsOfSearchResults().values(), BRAND_FILTER_GROUP_ID);
             productFilterGroups.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, true, false));
         }
 
         ProductContainer node = (ProductContainer) navigationModel.getSelectedContentNodeModel();
-        productFilterGroups.addAll(createFilterGroups(node, navigator, navigationModel.getUser()));
+        productFilterGroups.addAll(createFilterGroups(node, navigator, navigationModel.getUser(), excludeFilterGroupNames));
         return productFilterGroups;
     }
 
@@ -459,12 +462,14 @@ public class NavigationUtil {
         return results;
     }
 
-    private static List<ProductFilterGroup> createFilterGroups(ProductContainer productContainer, CmsFilteringNavigator navigator, FDUserI user) {
+    private static List<ProductFilterGroup> createFilterGroups(ProductContainer productContainer, CmsFilteringNavigator navigator, FDUserI user, List<String> excludeFilterGroupNames) {
         List<ProductFilterGroup> filterGroups = new ArrayList<ProductFilterGroup>();
         for (ContentNodeModel item : productContainer.getProductFilterGroups()) {
             if (item instanceof ProductFilterGroupModel) {
                 ProductFilterGroupModel model = (ProductFilterGroupModel) item;
-                filterGroups.add(ProductItemFilterFactory.getInstance().getProductFilterGroup(model, user));
+                if (!excludeProductFilterGroup(model, excludeFilterGroupNames)) {
+                    filterGroups.add(ProductItemFilterFactory.getInstance().getProductFilterGroup(model, user));
+                }
             } else if (item instanceof ProductFilterMultiGroupModel) {
                 ProductFilterMultiGroupModel groupFilter = (ProductFilterMultiGroupModel) item;
                 // create a flat group hierarchy, create simple groups from the multigroups and create the x level for the selected multigroup filters (selectionMap)

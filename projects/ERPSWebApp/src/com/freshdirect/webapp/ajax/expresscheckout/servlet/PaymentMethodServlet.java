@@ -34,6 +34,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFac
 import com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.service.PaymentValidationDataService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.CaptchaUtil;
@@ -94,12 +95,17 @@ public class PaymentMethodServlet extends BaseJsonServlet {
             HttpSession session = request.getSession();
             if (pageAction != null) {
                 switch (pageAction) {
-                    case ADD_PAYMENT_METHOD: {
-                    	if (!checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult, paymentSubmitResponse, response)) {
-                    		return;
-                    	}
-                        List<ValidationError> validationErrors = PaymentService.defaultService().addPaymentMethod(paymentRequestData, request, user);
-                        validationResult.getErrors().addAll(validationErrors);
+				case ADD_PAYMENT_METHOD: {
+					if (paymentRequestData != null
+							&& PaymentValidationDataService.ADD_PAYMENT_CREDIT_CARD
+									.equals(paymentRequestData.getFormId())
+							&& !checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult,
+									paymentSubmitResponse, response)) {
+						return;
+					}
+					List<ValidationError> validationErrors = PaymentService.defaultService()
+							.addPaymentMethod(paymentRequestData, request, user);
+					validationResult.getErrors().addAll(validationErrors);
                         if (validationErrors.isEmpty()) {
                             List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
                             String paymentId = "";
@@ -118,13 +124,18 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         changed = true;
                         break;
                     }
-                    case EDIT_PAYMENT_METHOD: {
-                    	if (!checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult, paymentSubmitResponse, response)) {
-                    		return;
-                    	}
-                        List<ValidationError> validationErrors = PaymentService.defaultService().editPaymentMethod(paymentRequestData, request, user);
-                        validationResult.getErrors().addAll(validationErrors);
-                        
+				case EDIT_PAYMENT_METHOD: {
+					if (paymentRequestData != null
+							&& PaymentValidationDataService.ADD_PAYMENT_CREDIT_CARD
+									.equals(paymentRequestData.getFormId())
+							&& !checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult,
+									paymentSubmitResponse, response)) {
+						return;
+					}
+					List<ValidationError> validationErrors = PaymentService.defaultService()
+							.editPaymentMethod(paymentRequestData, request, user);
+					validationResult.getErrors().addAll(validationErrors);
+
                         checkPaymentAttempt(validationResult, session);
                         changed = true;
                         break;

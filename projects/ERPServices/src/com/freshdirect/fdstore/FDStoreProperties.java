@@ -1926,10 +1926,10 @@ public class FDStoreProperties {
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL, "01");
         defaults.put(PROP_DEFAULT_FDX_DISTRIBUTION_CHANNEL_PARENT, "01");
         defaults.put(PROP_DEFAULT_FDX_SALESORG, "1300");
-        defaults.put(PROP_DEFAULT_FDX_SALESORG_PARENT, "0001");
-        defaults.put(PROP_DEFAULT_FD_PLANTID, "1000");
+        defaults.put(PROP_DEFAULT_FDX_SALESORG_PARENT, "1400");
+        defaults.put(PROP_DEFAULT_FD_PLANTID, "1400");
         defaults.put(PROP_DEFAULT_FD_DISTRIBUTION_CHANNEL, "01");
-        defaults.put(PROP_DEFAULT_FD_SALESORG, "0001");
+        defaults.put(PROP_DEFAULT_FD_SALESORG, "1400");
 
         defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
@@ -2123,6 +2123,11 @@ public class FDStoreProperties {
         defaults.put(PROP_JAVASCRIPT_FIRST_ENABLED, "false");
 
         defaults.put(PROP_BACK_OFFICE_API_URL, "http://bsl.stdev14.nj01");
+
+        // FK cart recommenders for new customers: top rated, most popular, last chance deals
+        defaults.put(PROP_FK_VIEWCART_PAGE_NEW_CUSTOMER_SITE_FEATURES, "FK_CART_TOPRATED,FK_CART_MOSTPOP,FK_CART_DEALS");
+        // FK cart recommenders for existing customers: did you forget, top rated, most popular
+        defaults.put(PROP_FK_VIEWCART_PAGE_CURRENT_CUSTOMER_SITE_FEATURES, "FK_DYF,FK_CART_TOPRATED,FK_CART_MOSTPOP");
 
         defaults.put(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT, "12");
 
@@ -4949,7 +4954,7 @@ public class FDStoreProperties {
         		FDEcommProperties.isServiceEnabled(beanName)) &&
         		!isInEjbScope();
     }
-    
+
     public static boolean isMealBundleCartonLinkEnabled() {
         return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
     }

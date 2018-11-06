@@ -153,8 +153,8 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
         <th width="80">Card Type</th>
         <th>Recipient</th>
         <th width="70">Status</th>
-        <th width="60">&nbsp;</th>
-        <th width="60">&nbsp;</th>
+        <th width="60">&nbsp;<span class="offscreen">send/resend your gift card</span></th>
+        <th width="60">&nbsp;<span class="offscreen">view/print your gift card</span></th>
     </tr>
     <%
                 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
@@ -227,8 +227,8 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
                 %>
                 <td><%= status %></td>
                 <% if(!isPending) { %>
-                    <td><a href="#" onClick="recipResendFetch('<%= cart.getErpSalesId() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend" %></a></td>
-                    <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= cart.getErpSalesId() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print</a></td>
+                    <td><a href="#" onClick="recipResendFetch('<%= cart.getErpSalesId() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend" %><span class="offscreen">$<%= recipient.getRecepientModel().getFormattedAmount() %><%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() != null ? recipient.getRecepientModel().getRecipientName() : "" %></span></a></td>
+                    <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= cart.getErpSalesId() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print<span class="offscreen">$<%= recipient.getRecepientModel().getFormattedAmount() %> <%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() != null ? recipient.getRecepientModel().getRecipientName() : "" %></span></a></td>
                 <% } else { %>    
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>

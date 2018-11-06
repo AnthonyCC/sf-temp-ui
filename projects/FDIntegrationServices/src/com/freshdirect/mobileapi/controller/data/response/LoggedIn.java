@@ -358,7 +358,7 @@ public class LoggedIn extends Message {
 	public void setShowDeliveryPassBanner(boolean showDeliveryPassBanner) {
 		this.showDeliveryPassBanner = showDeliveryPassBanner;
 	}
-	
+
 	public String getDpFreeDeliveryPromoWarning1() {
 		return dpFreeDeliveryPromoWarning1;
 	}

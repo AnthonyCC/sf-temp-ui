@@ -298,9 +298,9 @@
   margin-bottom: 4px;
 }
 */
-.promotion-item:first-child {
+/* .promotion-item:first-child {
   margin-right:35px;
-}
+} */
 
 .promotion-input{
   margin: 0 -63px 0 0;
@@ -1273,6 +1273,7 @@ label[for="dontupdatecartlines"] {
     font-size: 16px;
     font-weight: bold;
     color: #bb3c3b;
+    padding-top:48px;
 }
 .view_cart #subtotalbox2{
   width: 430px;

@@ -425,7 +425,9 @@ $jq('.locabar_addresses-anon-deliverable-change-zip-toggle-btn').on('click', fun
 $jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function() {
 	window.location = '/registration/signup.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
 });
-
+$jq('.locabar_addresses-user-deliverable-add-address-btn').on('click', function() {
+	window.location = '/your_account/add_delivery_address.jsp';
+});
 $jq('#locabar_addresses_trigger').on('focus mouseover', function(event) {
 	$jq('.locabar-addresses-section').css('background-color', COLOR_SELECTED);
 	//	$jq("#location-email").removeClass("input-error");

@@ -16,6 +16,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumCartType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -51,7 +52,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	private final FDUserI user;
 	private List<String> rulePromoCodes;
 	private Date now;
-	
+	private EnumCartType cartType = EnumCartType.REGULAR;
 	
 	@SuppressWarnings( "unused" )
 	private static Category LOGGER = LoggerFactory.getInstance(PromotionContextAdapter.class);
@@ -63,11 +64,17 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 	
 	
+	public PromotionContextAdapter(FDUserI user, EnumCartType cartType ) {		
+		this.user = user;
+		now = new Date();
+		this.cartType =cartType;
+	}
+	
 	/**
 	 * @return total price of orderlines in USD, with taxes, charges without discounts applied
 	 */
 	public double getPreDeductionTotal(){
-		return this.user.getShoppingCart().getPreDeductionTotal();
+		return this.getShoppingCart().getPreDeductionTotal();
 	}
 
 	/**
@@ -77,11 +84,11 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public double getPreDeductionTotal(Set<String> excludeSkus){
 	      double preTotal = 0.0;
 	        preTotal += MathUtil.roundDecimal(this.getSubTotal(excludeSkus));			
-	        preTotal += MathUtil.roundDecimal(this.user.getShoppingCart().getTaxValue());
-	        preTotal += MathUtil.roundDecimal(this.user.getShoppingCart().getDepositValue());
+	        preTotal += MathUtil.roundDecimal(this.getShoppingCart().getTaxValue());
+	        preTotal += MathUtil.roundDecimal(this.getShoppingCart().getDepositValue());
 
 			// apply charges
-			for ( ErpChargeLineModel charge : this.user.getShoppingCart().getCharges()) {
+			for ( ErpChargeLineModel charge : this.getShoppingCart().getCharges()) {
 				preTotal += MathUtil.roundDecimal( charge.getTotalAmount() );
 			}
          return MathUtil.roundDecimal(preTotal);
@@ -93,7 +100,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	 */
 	public double getSubTotal(Set<String> excludeSkus) {
 		double subTotal = 0.0;
-		for ( FDCartLineI cartLineModel : this.user.getShoppingCart().getOrderLines() ) {
+		for ( FDCartLineI cartLineModel : this.getShoppingCart().getOrderLines() ) {
 			boolean e = excludeSkus != null &&  excludeSkus.size() > 0 ? !excludeSkus.contains(cartLineModel.getSkuCode()) : true;
 			if(e)
 				subTotal += MathUtil.roundDecimal( cartLineModel.getPrice() );
@@ -102,11 +109,11 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public void addSampleLine(FDCartLineI cartLine) {
-		this.user.getShoppingCart().addSampleLine(cartLine);
+		this.getShoppingCart().addSampleLine(cartLine);
 	}
 
 	public boolean isAddressMismatch() {
-		return this.user.getShoppingCart().isAddressMismatch();
+		return this.getShoppingCart().isAddressMismatch();
 	}
 
 	public void setPromotionAddressMismatch(boolean b) {
@@ -118,7 +125,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public String getModifiedSaleId() {
-		FDCartModel cart = user.getShoppingCart();
+		FDCartModel cart = getShoppingCart();
 		
 
 		if (cart instanceof FDModifyCartModel) {
@@ -155,7 +162,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public String getZipCode() {
-		ErpAddressModel addr = this.user.getShoppingCart().getDeliveryAddress();
+		ErpAddressModel addr = this.getShoppingCart().getDeliveryAddress();
 		if (addr != null) {
 			if (addr instanceof ErpDepotAddressModel) {
 				return null;
@@ -166,7 +173,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public String getDepotCode() {
-		ErpAddressModel addr = this.user.getShoppingCart().getDeliveryAddress();
+		ErpAddressModel addr = this.getShoppingCart().getDeliveryAddress();
 		if (addr != null && addr instanceof ErpDepotAddressModel) {
 			String locationId = ((ErpDepotAddressModel) addr).getLocationId();
 			FDDeliveryDepotModel depot;
@@ -206,6 +213,9 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public FDCartModel getShoppingCart() {
+		if(EnumCartType.DLV_PASS.equals(cartType)){
+			return this.user.getDlvPassCart();
+		}
 		return this.user.getShoppingCart();
 	}
 
@@ -226,14 +236,14 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public double getApplicableSignupAmount(double amount, double maxAmountPerSku) {
-		return OrderPromotionHelper.getApplicableSignupAmount(this.user.getShoppingCart(), amount, maxAmountPerSku);
+		return OrderPromotionHelper.getApplicableSignupAmount(this.getShoppingCart(), amount, maxAmountPerSku);
 	}
 
 	public EnumOrderType getOrderType() {
-		ErpAddressModel address = this.user.getShoppingCart().getDeliveryAddress();
+		ErpAddressModel address = this.getShoppingCart().getDeliveryAddress();
         return getOrderType(address);
 
-		/*ErpAddressModel address = this.user.getShoppingCart().getDeliveryAddress();
+		/*ErpAddressModel address = this.getShoppingCart().getDeliveryAddress();
 		if (address != null) {
 			if (address instanceof ErpDepotAddressModel) {
 				if (((ErpDepotAddressModel) address).isPickup()) {
@@ -338,7 +348,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public void addDiscount(Discount discount) {
-		this.user.getShoppingCart().addDiscount(discount);
+		this.getShoppingCart().addDiscount(discount);
 	}
 
 	public Date getCurrentDate() {
@@ -469,7 +479,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	
 	public void clearHeaderDiscounts(){
 		//Clear all header discounts.
-		this.user.getShoppingCart().setDiscounts(new ArrayList<ErpDiscountLineModel>());
+		this.getShoppingCart().setDiscounts(new ArrayList<ErpDiscountLineModel>());
 	}
 	
 	private boolean isMaxDiscountAmount(double promotionAmt, int priority, Discount applied) {

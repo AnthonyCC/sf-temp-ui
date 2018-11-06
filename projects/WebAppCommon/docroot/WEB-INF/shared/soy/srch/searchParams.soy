@@ -159,11 +159,13 @@
     {foreach $product in $products}
       <div class="ddpp-item radius-border border-green">
         {if $product.featuredHeader}<img class="ddpp-ribbon" data-transactional-trigger="true" src="/media/images/ddpp_ribbons/{$product.featuredHeader}.png" role="presentation" alt="">{/if}
+        <ul>
         {call common.transactionalGridItem}
           {param item:$product /}
           {param mobWeb:$mobWeb /}
           {param abFeatures:$abFeatures /}
         {/call}
+       </ul>
       </div>
       {if (index($product)+1) % 4 == 0}/* start new line */
       	</div><div class="ddpp transactional" data-transactional-align="true">

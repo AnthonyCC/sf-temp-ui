@@ -206,13 +206,13 @@ public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, Enu
 
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
-		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
+		Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
 		if(info.getResponseCode().equals("500")){
 			if ("ErpSaleNotFoundException".equals(info.getMessage())) {
 				throw new ErpSaleNotFoundException(info.getMessage());
 			}
 		}
-		saleModel =ModelConverter.buildErpSaleData(info.getData());
+		saleModel =info.getData();//ModelConverter.buildErpSaleData(info.getData());
 
 		}catch(FDEcommServiceException e){
 			LOGGER.info(e);
@@ -247,13 +247,13 @@ public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType,	Enu
 		request.setData(criteria);
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALETYPE_STORE_API.getValue()), String.class);
-		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
+		Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
 		if(info.getResponseCode().equals("500")){
 			if ("ErpSaleNotFoundException".equals(info.getMessage())) {
 				throw new ErpSaleNotFoundException(info.getMessage());
 			}
 		}
-	saleModel =ModelConverter.buildErpSaleData(info.getData());
+	saleModel =info.getData();//ModelConverter.buildErpSaleData(info.getData());
 		
 	}catch(FDEcommServiceException e){
 		LOGGER.info(e);

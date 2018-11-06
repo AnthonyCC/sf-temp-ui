@@ -17,6 +17,7 @@ public class SelfCreditOrderItemData {
     private boolean free;
     private boolean mealBundle;
     private List<String> cartonNumbers;
+    private double finalPrice;
     
 	public String getOrderLineId() {
 		return orderLineId;
@@ -120,6 +121,14 @@ public class SelfCreditOrderItemData {
 
 	public void setCartonNumbers(List<String> cartonNumbers) {
 		this.cartonNumbers = cartonNumbers;
+	}
+
+	public double getFinalPrice() {
+		return finalPrice;
+	}
+
+	public void setFinalPrice(double finalPrice) {
+		this.finalPrice = finalPrice;
 	}
 
 }

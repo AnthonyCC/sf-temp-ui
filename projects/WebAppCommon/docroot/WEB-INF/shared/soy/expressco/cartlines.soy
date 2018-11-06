@@ -446,7 +446,7 @@
 					{param containsWineSection : $containsWineSection /}
 					{param isEBTused : $isEBTused /}
 					{param mobWeb : $mobWeb /}
-					{param renderSubTotal1: not $mobWeb /}
+					{param renderSubTotal1: true /}
 					{param dlvPassCart: $dlvPassCart /}
 				{/call}
 			{/foreach}
@@ -1078,12 +1078,12 @@
        {if $displayCheckout}
 		<div class='total__promotion'>
 			<div class='promotion-item' {if $promotionApplied}style="display: none;" aria-hidden="true"{/if} fdform-container="promotion" fdform-container-promotionremove>
-				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
+				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion{if $dlvPassCart}?dlvPassCart=true{/if}" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
 					<label for="promotional-code"><p class='promotion-text'><span class="NOMOBWEB">Have a </span><span class="capital">p</span>romotional code<span class="NOMOBWEB">?</span></p></label>
 					<div>  
 						<input type="text" class="promotion-input" id="promotional-code" aria-describedby="promo_error" name="promotionCode" placeholder="Enter here" />
 						<input type="hidden" name="action" value="applyPromotion" />
-						<button id="promotional-code-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">promotion code</span></button>
+						<button id="promotional-code-applybtn" disabled="disabled" class="disabled cssbutton green {if $dlvPassCart}transparent{/if} small">apply<span class="offscreen">promotion code</span></button>
 						<span id="promo_error" fdform-error-for="promotionCode"></span>
 					</div>
 				</form>
@@ -1411,7 +1411,7 @@
 						{/if}
 						{if $box.id == 'redemptionpromo'}
 							<form fdform="promotionremove" action="#"
-							fdform-endpoint-submit="/api/expresscheckout/promotion"
+							fdform-endpoint-submit="/api/expresscheckout/promotion{if $dlvPassCart}?dlvPassCart=true{/if}"
 							fdform-success="FreshDirect.modules.common.forms.successFns.showOnSuccess">
 								<input type="hidden" name="promotionCode" value="{$box.other.promoCode}" />
 								<input type="hidden" name="action" value="removePromotion"/>

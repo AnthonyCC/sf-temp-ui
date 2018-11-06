@@ -283,7 +283,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	@Override
 	public String placeSubscriptionOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isRealTimeAuthNeeded) throws RemoteException {
+			boolean isRealTimeAuthNeeded) throws  FDResourceException, ErpFraudException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpTransactionException, RemoteException {
 
 		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
 
@@ -306,13 +306,44 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 			String inputJson = buildRequest(request);
 			response = httpPostData(getFdCommerceEndPoint(CREATE_SUB_ORDER_API), inputJson, Response.class,
 					new Object[] {});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in placeOrder: inputJson=" + inputJson + ",response=" + response);
+				
+				handleErrorSubOrderResponse(response);
+			}
 			return parseResponse(response);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in Subscription order: " +  e);
 			throw new RemoteException(e.getMessage(), e);
+			
 		}
 
 	}
+
+	private void handleErrorSubOrderResponse(Response<String> response) throws FDResourceException, ErpFraudException,
+	  DeliveryPassException,FDPaymentInadequateException, ErpTransactionException, InvalidCardException {
+				if ("FDResourceException".equals(response.getMessage())) {
+					throw new FDResourceException(getErrorMessage(response));
+				}
+				if ("ErpFraudException".equals(response.getMessage())) {
+					throw new ErpFraudException(EnumFraudReason.getEnum(getErrorMessage(response)));
+				}
+
+				if ("DeliveryPassException".equals(response.getMessage())) {
+					throw new DeliveryPassException(getErrorMessage(response));
+				}
+				if ("FDPaymentInadequateException".equals(response.getMessage())) {
+					throw new FDPaymentInadequateException(getErrorMessage(response));
+				}
+				if ("ErpTransactionException".equals(response.getMessage())) {
+					throw new ErpTransactionException(getErrorMessage(response));
+				}
+				if ("InvalidCardException".equals(response.getMessage())) {
+					throw new InvalidCardException(getErrorMessage(response));
+				}
+				
+				throw new FDResourceException(response.getMessage());
+				}
 
 	@Override
 	public String placeDonationOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos,

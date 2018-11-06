@@ -221,8 +221,12 @@ var FreshDirect = FreshDirect || {};
       }
     }
   });
-
   $(document).on('click', overlayWidget.closeTrigger, overlayWidget.close.bind(overlayWidget));
+  $(document).on('keydown', function (e) {
+    if (e.keyCode === fd.utils.keyCode.ESC) {
+      overlayWidget.close();
+    }
+  }.bind(this));
 
   fd.modules.common.utils.register("modules.common", "overlayWidget", overlayWidget, fd);
 
