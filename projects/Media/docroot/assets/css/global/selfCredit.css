@@ -48,13 +48,13 @@
 #selfCreditIssueReport.overlay-medium .body-info-col:nth-of-type(1) {
   width: 100%;
 }
-#selfCreditIssueReport.overlay-medium .body-header-col label,
+#selfCreditIssueReport.overlay-medium .body-header-col .body-info-header,
 #selfCreditIssueReport.overlay-medium .body-header-col span {
   display: inline-block;
   font-size: 14px;
   width: 100%;
 }
-#selfCreditIssueReport.overlay-medium .self-credit-body .body-info-col label,
+#selfCreditIssueReport.overlay-medium .self-credit-body .body-info-col .body-info-header,
 #selfCreditIssueReport.overlay-medium .self-credit-body .body-info-col span {
   display: block;
   font-size: 14px;
@@ -588,7 +588,7 @@
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
-  label {
+  .body_header {
   color: #444444;
   display: block;
   font-size: 12px;
@@ -794,9 +794,10 @@
   display: none;
 }
 
-.selfcredit-overlay .self-credit-comment-info label {
+.selfcredit-overlay .self-credit-comment-info .text14 {
   font-weight: normal;
   display: block;
+  font-size:14px;
 }
 
 .selfcredit-overlay .self-credit-comment-info {
