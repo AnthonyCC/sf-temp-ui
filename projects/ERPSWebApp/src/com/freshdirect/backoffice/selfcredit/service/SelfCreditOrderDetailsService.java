@@ -94,7 +94,8 @@ public class SelfCreditOrderDetailsService {
 
     private double collectQuantity(FDCartLineI fdCartLine) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
-    	return  Double.parseDouble(quantity);
+    	double displayQuantity = Double.parseDouble(quantity);
+    	return  displayQuantity == 0.00 ? 0.00 : (Math.floor(displayQuantity) == 0.00 ? 1.00 : Math.floor(displayQuantity));
 	}
 
 	private List<String> collectCartonNumbers(List<FDCartonInfo> cartonContents) {
