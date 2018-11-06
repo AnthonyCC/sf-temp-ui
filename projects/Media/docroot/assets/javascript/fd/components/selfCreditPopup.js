@@ -85,6 +85,9 @@ var FreshDirect = window.FreshDirect || {};
         this.render(this.orders);
 
         var selectEl = $("#self-credit-order-select");
+        setTimeout(function() {
+          $(".selectButton").focus();
+        }, 300);
         selectEl.change(
           function() {
             if (selectEl.val() !== "") {
@@ -109,7 +112,7 @@ var FreshDirect = window.FreshDirect || {};
         var order = $.grep(this.orders, function(order) {
           return parseInt(order.orderId) === parseInt(orderId);
         })[0];
-
+        
         this.close({ currentTarget: this.overlayEl });
 
         fd.components.selfCreditIssueReportPopup.openPopup(order);

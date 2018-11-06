@@ -19,19 +19,15 @@
       <label for="order-id">Your Order</label>
       <i class="form-field-info-flag">Required</i>
       <div>
-        // custom two-line dropdown template
-        // <select name="order-id" id="self-credit-order-select" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-        <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+        <select name="order-id" id="self-credit-order-select" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
         <option value="" disabled selected>Select An Order</option>
         {if $orders.length < 1}
           <option value="" disabled>No eligible orders found</option>
         {else}
           {foreach $order in $orders}
-          //custom two-line dropdown template
-          // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
-          // {else}[br][b]Order #: {$order.orderId}[/b]{/if}
-          // </option>
-            <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
+          <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
+          {else}[br][b]Order #: {$order.orderId}[/b]{/if}
+          </option>
           {/foreach}
         {/if}
         </select>
@@ -252,7 +248,7 @@
           {/for}
         </select>
       </div>
-      <input class="aria-hidden" value="{$orderline.cartonNumbers}" name="carton-{$orderline.orderLineId}"></input>
+      <input type="hidden" value="{$orderline.cartonNumbers}" name="carton-{$orderline.orderLineId}"></input>
     {/if}
     {if $orderline.sample or $orderline.free}
       <div class="order-line-col disable-order-line">
