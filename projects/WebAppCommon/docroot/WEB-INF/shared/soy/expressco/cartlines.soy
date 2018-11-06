@@ -391,6 +391,7 @@
 							{param totalWithoutTax: $totalWithoutTax /}
 							{param displayCheckout: $displayCheckout /}
 							{param etipTotal: $etipTotal /}
+							{param dlvPassCart: $dlvPassCart /}
 						{/call}
 					{/if}
 				</div>
@@ -1201,6 +1202,7 @@
 						{param totalWithoutTax: $totalWithoutTax /}
 						{param displayCheckout: $displayCheckout /}
 						{param etipTotal: $etipTotal /}
+						{param dlvPassCart: $dlvPassCart /}
 					{/call}
 				{elseif $subTotalBox and $subTotalBox.subTotalBox}
 						{call .subTotalBox}
@@ -1213,6 +1215,7 @@
 							{param totalWithoutTax: $totalWithoutTax /}
 							{param displayCheckout: $displayCheckout /}
 							{param etipTotal: $etipTotal /}
+							{param dlvPassCart: $dlvPassCart /}
 						{/call}
 				{/if} /* end if eTippingEnabled and $cartlineType == 'CHECKOUT' */
 			</div> /* end subtotalbox2*/
@@ -1591,6 +1594,7 @@
 			{param withContainer: true /}
 			{param unescapeValue: true /}
 			{param isHeader: true /}
+			{param dlvPassCart: $dlvPassCart /}
 		{/call}
 	</div>
 	{/if}
