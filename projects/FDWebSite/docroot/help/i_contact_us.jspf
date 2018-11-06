@@ -5,6 +5,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <features:isActive name="selfcredit" featureName="backOfficeSelfCredit" />
+<c:set var = "creditRestricted" value = "<%= user.isCreditRestricted() %>"/>
+
 <%
 	String[] checkContactForm_i_contact_us = {"subject", "message", "email", "first_name", "last_name", "home_phone"};
 	String faqSections_i_contact_us = FDStoreProperties.getFaqSections();
