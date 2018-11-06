@@ -67,11 +67,12 @@ public class SelfCreditOrderDetailsService {
         	ProductModel product = fdCartLine.lookupProduct();
         	
         	if (!isDeliverPass) {
+        		double deliveredQuantity = collectQuantity(fdCartLine) ;
             	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == product) ?"" : product.getPrimaryBrandName());
                 item.setProductName(collectProductName(item.getBrand(), fdCartLine.getDescription()));
-                item.setQuantity(collectQuantity(fdCartLine));
+                item.setQuantity(deliveredQuantity);
                 item.setProductImage((null == product) ? "" : product.getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
@@ -81,7 +82,7 @@ public class SelfCreditOrderDetailsService {
                 item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
                 item.setMealBundle(null == product ? false : isItemMealBundle(product));
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
-                item.setFinalPrice(fdCartLine.hasInvoiceLine() ? fdCartLine.getInvoiceLine().getPrice() : fdCartLine.getPrice());
+                item.setFinalPrice(collectFinalPrice(deliveredQuantity, fdCartLine));
                 orderLines.add(item);
 			}
         }
@@ -92,7 +93,7 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-    private double collectQuantity(FDCartLineI fdCartLine) {
+	private double collectQuantity(FDCartLineI fdCartLine) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
     	double displayQuantity = Double.parseDouble(quantity);
     	return  Double.compare(displayQuantity, 0.00) == 0 ? 0.00 : (Double.compare(Math.floor(displayQuantity), 0.00) == 0 ? 1.00 : Math.floor(displayQuantity));
@@ -104,6 +105,11 @@ public class SelfCreditOrderDetailsService {
 			cartonNumbers.add(cartonContent.getCartonInfo().getCartonNumber());
 		}
 		return cartonNumbers;
+	}
+	
+	private double collectFinalPrice(double deliveredQuantity, FDCartLineI fdCartLine) {
+		double finalPrice = fdCartLine.getInvoiceLine().getPrice();
+		return finalPrice/deliveredQuantity;
 	}
 
 	private String collectProductName(String brandName, String description) {
