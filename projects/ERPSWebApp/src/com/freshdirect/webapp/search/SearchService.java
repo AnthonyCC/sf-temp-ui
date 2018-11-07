@@ -192,7 +192,7 @@ public class SearchService {
 					? (searchRecipe ? StoreServiceLocator.contentSearch().searchRecipes(searchTerm) : searchResults)
 					: StoreServiceLocator.contentSearch().searchProducts(searchTerm);
 
-			if (!isUnbxdSearchEnabled && isMobileRequest && !searchResults.isEmpty()) {
+			if (isMobileRequest && !searchResults.isEmpty()) {
 			    searchResults = applyMobileFilterToSearchResults(searchResults);
 			}
 
