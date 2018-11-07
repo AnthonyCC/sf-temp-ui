@@ -232,7 +232,7 @@
   color: #444444;
   font-weight: bold;
 }
-@media(max-width: 700px) {
+@media(max-width: 768px) {
   #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
     font-weight: normal;
     color: #408244;
@@ -295,7 +295,7 @@
 #selfCreditIssueReport.overlay-medium .self-credit-footer .cssbutton {
   padding: 12px 30px;
 }
-@media (max-width: 500px) {
+@media (max-width: 768px) {
   #selfCreditIssueReport.overlay-medium #selfcreditform {
     height: 100%;
   }
@@ -342,8 +342,10 @@
     .section-container {
     margin: 10px;
   }
-  #selfCreditIssueReport .self-credit-form-alert {
+  #selfCreditIssueReport #self-credit-form-alert {
     font-size: 13px;
+    line-height: normal;
+    padding: 15px 0;
   }
   #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
     text-decoration: underline;
@@ -360,7 +362,7 @@
   margin-bottom: 38px;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 768px) {
   #selfCreditRequestComplete .overlay-content, 
   #selfCreditRequestError .overlay-content {
     padding: 40px 0;
@@ -413,7 +415,7 @@
   margin: 0 auto;
 }
 
-@media(max-width: 700px) {
+@media(max-width: 768px) {
   #selfCreditRequestError .status {
     margin: 0 0 54px;
   }
@@ -547,7 +549,7 @@
   margin: 28px 0 32px 0;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
 
   .selfcredit-overlay.overlay-fullscreen .form-header,
   #selfCreditIssueReport .meal-bundle-header {
@@ -576,10 +578,9 @@
   overflow: auto;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen .form-instructions .self-credit-container {
     padding-right: 0;
-    height: 33px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -613,13 +614,15 @@
   padding-right: 34px;
 }
 
-@media (max-width: 740px) {
+@media (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   .body-header-col {
-  padding-right: 25px;
-}
+    display: flex;
+    flex-direction: column;
+    padding-right: 25px;
+  }
 }
 
 .selfcredit-overlay.overlay-fullscreen
@@ -684,7 +687,7 @@
   justify-content: flex-end;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen
     .self-credit-footer
     .footer-button-container
@@ -706,7 +709,7 @@
   padding: 12px 0;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen
   .self-credit-footer
   .self-credit-container {
@@ -747,7 +750,6 @@
 .selfcredit-overlay.overlay-fullscreen .form-instructions {
   background: #444;
   color: white;
-  font-size: 15px;
   text-align: right;
   height: 0;
   pointer-events: none;
@@ -846,7 +848,7 @@
   display: inline-block;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay .button-triangle-container {
     padding: 17px 20px 8px;
   }
@@ -927,7 +929,7 @@
   font-size: 14px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 768px) {
   .order-line-reason .select-wrapper:after, .order-line-qty .select-wrapper:after {
     top: 7px;
   }
@@ -971,7 +973,7 @@
   width: 100%;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .order-line {
     flex-wrap: wrap;
     margin: 40px 0;
