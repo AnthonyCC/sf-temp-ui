@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.TimeslotList;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
@@ -85,7 +86,11 @@ public class DeliveryTimeslots extends CheckoutResponse {
 	            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable(), user)));
 	        }
         }
-        combineUnavailableTS(timeSlots);
+        if(user.getUserContext()!=null&&user.getUserContext().getStoreContext()!=null&&
+        		user.getUserContext().getStoreContext().getEStoreId()!=null&&
+        		user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)){
+        	timeSlots = combineUnavailableTS(timeSlots);
+        }
         List<String> restrictionMessages = result!=null?result.getMessages():null;
         if(restrictionMessages != null) {
 	        for (String restrictionMessage : restrictionMessages) {
@@ -102,7 +107,7 @@ public class DeliveryTimeslots extends CheckoutResponse {
         
     }
     
-    private void combineUnavailableTS(List<Timeslot> ts) {
+    private List<Timeslot> combineUnavailableTS(List<Timeslot> ts) {
 		List<Timeslot> ts2 = new ArrayList<Timeslot>();
         if(!ts.isEmpty()){
         	int loopnumber = 0;
@@ -138,7 +143,7 @@ public class DeliveryTimeslots extends CheckoutResponse {
 	        	ts2.add(lastunavailabletsfound);
 	        }
         }
-        ts = ts2;
+        return ts2;
 	}
 
 	public boolean isShowPremiumSlots() {
