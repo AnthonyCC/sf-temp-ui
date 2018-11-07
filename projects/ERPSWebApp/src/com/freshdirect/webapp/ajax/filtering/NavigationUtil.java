@@ -56,7 +56,7 @@ import com.freshdirect.webapp.globalnav.GlobalNavContextUtil;
 import com.google.common.collect.ComparisonChain;
 
 public class NavigationUtil {
-	
+
 	public static final String RECIPE_CATEGORY_FILTER_GROUP = "recipeCategoryFilterGroup";
 	public static final String SHOW_ME_ONLY_FILTER_GROUP_ID = "showMeOnlyFilterGroup";
 	public static final String BRAND_FILTER_GROUP_ID = "brandFilterGroup";
@@ -77,7 +77,7 @@ public class NavigationUtil {
             String right = o2.getName().toLowerCase();
             return ComparisonChain.start().compare(left, right, searchFilterMenuPrefixComparator).compare(left, right).result();
         }
-        
+
         class PriorityComparator<T> implements Comparator<T> {
 
             private final List<T> values;
@@ -100,16 +100,16 @@ public class NavigationUtil {
 
     public static NavigationModel createNavigationModel(ContentNodeModel node, CmsFilteringNavigator navigator, FDUserI user) throws InvalidFilteringArgumentException,
             FDResourceException {
-		
+
 		NavigationModel model = new NavigationModel();
-		
+
 		model.setUser(user);
 
 		LinkedList<ContentNodeModel> contentNodeModelPath = new LinkedList<ContentNodeModel>();
-		
+
 		model.setSelectedContentNodeModel(node);
 		model.setContentNodeModelPath(contentNodeModelPath);
-		
+
 		// get parents and breadcrumb
 		ContentNodeModel tempNode = node;
 		while (true){
@@ -124,6 +124,11 @@ public class NavigationUtil {
 			if (tempNode==null){
 				break;
 			}
+		}
+
+		// [APPDEV-7601] detect if request came via mobile API (FK web or mobile client)
+		if (user.getApplication() != null && user.getApplication().isMobileBound()) {
+		    model.setMobileNavigation(true);
 		}
 
         if (node instanceof CategoryModel) {
@@ -157,19 +162,19 @@ public class NavigationUtil {
         }
 
 		String id = navigator.getId();
-		
+
 		// validation for orphan categories
 		if(!(contentNodeModelPath.get(0) instanceof DepartmentModel) && !model.isSuperDepartment()){
 			throw new InvalidFilteringArgumentException("Orphan category: "+id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, id);
 		}
-		
+
 		int contentNodeModelPathSize = contentNodeModelPath.size();
 		if(!navigator.isPdp()){
 			if (contentNodeModelPathSize > NavDepth.getMaxLevel()+1){ //validate if level not too deep
 				throw new InvalidFilteringArgumentException("Category is too deep in hierarchy: "+ id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, id);
-			}			
+			}
 		}
-		
+
 		// determine the depth of the navigation
 		Map<NavDepth, ContentNodeModel> navigationHierarchy = new HashMap<NavDepth, ContentNodeModel>();
 		for(NavDepth navDepth : NavDepth.values()){
@@ -182,10 +187,10 @@ public class NavigationUtil {
 			}
 		}
 		model.setNavigationHierarchy(navigationHierarchy);
-		
+
 		// find superdepartment in hierarchy if any
 		if(navigationHierarchy.get(NavDepth.DEPARTMENT)!=null){
-			model.setSuperDepartmentModel(getSuperDepartment(user, navigationHierarchy.get(NavDepth.DEPARTMENT).getContentName()));			
+			model.setSuperDepartmentModel(getSuperDepartment(user, navigationHierarchy.get(NavDepth.DEPARTMENT).getContentName()));
 		} else if (node instanceof SuperDepartmentModel) {
 			model.setSuperDepartmentModel((SuperDepartmentModel) node);
 		}
@@ -195,7 +200,7 @@ public class NavigationUtil {
 			List<CategoryModel> regularCategories = new ArrayList<CategoryModel>();
 			List<CategoryModel> prefCategories = new ArrayList<CategoryModel>();
 			DepartmentModel department = (DepartmentModel) model.getNavigationHierarchy().get(NavDepth.DEPARTMENT);
-	
+
 			for (CategoryModel cat : department.getCategories()){
 				if (cat instanceof CategoryModel) {
 					if (isCategoryHiddenAndSelectedNotShowSelf(user, cat.getContentName(), cat)) {
@@ -211,7 +216,7 @@ public class NavigationUtil {
 			model.setRegularCategories(regularCategories);
 			model.setPreferenceCategories(prefCategories);
 			model.setCategorySections(department.getCategorySections());
-			
+
             if (!navigator.isPdp()) {
                 // -- CREATE FILTERS --
 
@@ -232,52 +237,52 @@ public class NavigationUtil {
                 model.setAllFilters(createBrowseFilterGroups(model, navigator));
                 model.setActiveFilters(selectActiveFilters(model.getAllFilters(), navigator));
             }
-			
+
 			if(((ProductContainer)node).isShowPopularCategories()){
-				
+
 				List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
-				
+
 				for(CategoryModel cat : ((ProductContainer)node).getPopularCategories()){
 					if (cat.isHideIfFilteringIsSupported() && NavigationUtil.isUserContextEligibleForHideFiltering(user)) {
 						continue;
 					}
 					popularCategories.add(cat);
 				}
-				
+
 				model.setPopularCategories(popularCategories);
 			}
-		
+
 		} else if(model.isSuperDepartment()) {
-			
+
 			model.setDepartmentsOfSuperDepartment(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
-			
+
 			//no filters in case of super department
 			model.setAllFilters(new ArrayList<ProductFilterGroup>());
 			model.setActiveFilters(new HashSet<ProductItemFilterI>());
-			
+
 		}
-		
+
 		// set brand filter location
 		if(node instanceof CategoryModel){
 			model.setBrandFilterLocation(((CategoryModel)node).getBrandFilterLocation(EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGROY.toString()));
 		}
-		
+
 		// -- CREATE MENU --
 		// create menuBuilder based on page type
 		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth(), model.isSuperDepartment(), null); //TODO
 
 		// are we showing products?
 		model.setProductListing( !model.isSuperDepartment() && model.getNavDepth()!=NavDepth.DEPARTMENT && (
-				model.getNavDepth()!=NavDepth.CATEGORY || 
-				((CategoryModel)model.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories().size()==0 || 
+				model.getNavDepth()!=NavDepth.CATEGORY ||
+				((CategoryModel)model.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories().size()==0 ||
 				navigator.isAll()));
-		
+
 		// create menu
 		model.setLeftNav(menuBuilder.buildMenu(model.getAllFilters(), model, navigator));
-		
+
 		return model;
 	}
-	
+
     private static Map<String, List<TagModel>> collectMultigroupTags(ProductContainer productContainer, CmsFilteringNavigator navigator) {
         // construct selectionMap from filter parameters
 		// check what filters are selected from a multigroup (multigroups can contain tagmodels only)
@@ -285,20 +290,20 @@ public class NavigationUtil {
 
 		for (ContentNodeModel multiGroup : productContainer.getProductFilterGroups()){
 			if (multiGroup instanceof ProductFilterMultiGroupModel){
-				
+
 				for (String param : navigator.getRequestFilterParams().keySet()){
-					String multiGroupId = multiGroup.getContentName(); 
-					
+					String multiGroupId = multiGroup.getContentName();
+
 					if(param.startsWith(multiGroupId)){
 						List<TagModel> selection = selectionMap.get(multiGroupId);
 						if (selection == null){
 							selection = new ArrayList<TagModel>();
 							selectionMap.put(multiGroupId, selection);
 						}
-						
+
 						List<String> paramValues = navigator.getRequestFilterParams().get(param);
 						for(String paramValue : paramValues){
-							selection.add((TagModel) ContentFactory.getInstance().getContentNode(ContentType.Tag, paramValue));							
+							selection.add((TagModel) ContentFactory.getInstance().getContentNode(ContentType.Tag, paramValue));
 						}
 					}
 				}
@@ -363,7 +368,7 @@ public class NavigationUtil {
 		List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
 
 		for (DepartmentModel departmentModel : navigationModel.getDepartmentsOfSearchResults().values()) {
-			
+
 			productFilters.add(new ContentNodeFilter(departmentModel, DEPARTMENT_FILTER_GROUP_ID));
 		}
 
@@ -374,7 +379,7 @@ public class NavigationUtil {
 		departmentFilterGroup.setType("SINGLE");
 		departmentFilterGroup.setAllSelectedLabel("ALL DEPARTMENTS");
 		departmentFilterGroup.setDisplayOnCategoryListingPage(false);
-		
+
 		results.add(departmentFilterGroup);
 
 		if (isFilterActive(navigator, departmentFilterGroup)) { //show only if department filter is selected
@@ -399,11 +404,11 @@ public class NavigationUtil {
 				departmentFilterGroup.setType("POPUP");
 				results.add(categoryFilterGroup);
 			}
-	
+
 			if (isFilterActive(navigator, categoryFilterGroup)) { //show only if category filter is selected
 
 				productFilters = new ArrayList<ProductItemFilterI>();
-				
+
 				for (CategoryModel subCategoryModel : navigationModel.getSubCategoriesOfSearchResults().values()) {
 					if (navigator.getRequestFilterParams().get(categoryFilterGroup.getId()).contains(subCategoryModel.getParentNode().getContentName()) && navigator.getRequestFilterParams().get(departmentFilterGroup.getId()).contains(subCategoryModel.getDepartment().getContentName())) {
 						productFilters.add(new ContentNodeFilter(subCategoryModel, SUBCATEGORY_FILTER_GROUP_ID));
@@ -416,7 +421,7 @@ public class NavigationUtil {
 				subCategoryFilterGroup.setType("SINGLE");
 				subCategoryFilterGroup.setAllSelectedLabel("ALL SUBCATEGORIES");
 				subCategoryFilterGroup.setDisplayOnCategoryListingPage(false);
-				
+
 				if (subCategoryFilterGroup.getProductFilters().size() > 0) {
 					categoryFilterGroup.setType("POPUP");
 					results.add(subCategoryFilterGroup);
@@ -610,7 +615,7 @@ public class NavigationUtil {
 		return false;
 
 	}
-	
+
 	/**
 	 * @param filterGroups
 	 * @param navigator
@@ -618,19 +623,19 @@ public class NavigationUtil {
 	 * select active filters
 	 */
 	public static Set<ProductItemFilterI> selectActiveFilters(List<ProductFilterGroup> filterGroups, CmsFilteringNavigator navigator){
-		
+
 		Set<ProductItemFilterI> activeFilters = new HashSet<ProductItemFilterI>();
-		
+
 		for (ProductFilterGroup filterGroup : filterGroups){
 
 			List<String> selectedFilterIds = navigator.getRequestFilterParams().get(filterGroup.getId());
-			
+
 			if (selectedFilterIds != null) {
 
 				for (String selectedFilterId : selectedFilterIds) {
-					
+
 					for (ProductItemFilterI productFilter : filterGroup.getProductFilters()) {
-						
+
 						if (selectedFilterId.equals(productFilter.getId())) {
 							activeFilters.add(productFilter);
 						}
@@ -638,7 +643,7 @@ public class NavigationUtil {
 				}
 			}
 		}
-		
+
 		return activeFilters;
 	}
 
@@ -648,33 +653,33 @@ public class NavigationUtil {
 		boolean isLeftNavRolledOut = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
 		return  isLeftNavRolledOut && isOnWeb;
 	}
-	
+
 	/** if true category does not show up in any navigation **/
 	public static boolean isCategoryHiddenInContext(FDUserI user, CategoryModel cat) {
 		return 	!cat.isShowSelf() || isCategoryForbiddenInContext(user, cat);
 	}
-	
+
 	/** if true category page cannot be displayed **/
 	public static boolean isCategoryForbiddenInContext(FDUserI user, CategoryModel cat) {
 		return 	!ContentFactory.getInstance().getPreviewMode() && (
-					cat.isHideIfFilteringIsSupported() && isUserContextEligibleForHideFiltering(user) || 
-					cat.isHidden() || 
+					cat.isHideIfFilteringIsSupported() && isUserContextEligibleForHideFiltering(user) ||
+					cat.isHidden() ||
 					!isCategoryDisplayableCached(user, cat)
 				);
 	}
-	
+
 	public static boolean isCategoryDisplayableCached(FDUserI user, CategoryModel cat){
 		String contentName = cat.getContentName();
 		if(null !=user && null !=user.getUserContext()){
 			String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
 			if (CmsManager.getInstance().isReadOnlyContent()){
 	            Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId);
-				
+
 				if (displayable == null) {
 					displayable = cat.isDisplayable(); //do the recursive check
 	                EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId, displayable);
 				}
-				
+
 				return displayable;
 			} else {
 				//CMS DB mode
@@ -683,9 +688,9 @@ public class NavigationUtil {
 		}
 		return cat.isDisplayable();
 	}
-	
+
     public static SuperDepartmentModel getSuperDepartment(FDUserI user, String departmentId) throws FDResourceException {
-				
+
 		GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
 
 		if(globalNavigationModel!=null){
@@ -697,12 +702,12 @@ public class NavigationUtil {
 						}
 					}
 				}
-			}			
+			}
 		}
 
 		return null;
 	}
-	
+
 	/**
 	 * Checks category is forbidden or not show self. Also checks if the category is not show self and it's selected.
 	 * @param user

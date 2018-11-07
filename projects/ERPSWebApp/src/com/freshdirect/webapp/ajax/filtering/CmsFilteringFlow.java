@@ -227,10 +227,10 @@ public class CmsFilteringFlow {
 
                                 int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user))
                                     	? 4
-                                    	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) 
-                            	    		? 5 
-                            	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) 
-                            	    			? 4 
+                                    	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user))
+                            	    		? 5
+                            	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user))
+                            	    			? 4
                             	    			: 5;
                                 //calc how many HL will be inserted...
                                 double calcd = Math.min(
@@ -383,10 +383,10 @@ public class CmsFilteringFlow {
 
         int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user))
         	? 4
-        	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) 
-	    		? 5 
-	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) 
-	    			? 4 
+        	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user))
+	    		? 5
+	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user))
+	    			? 4
 	    			: 5;
         int hlIndex = itemsPerRow-1;
         ProductData pd = new ProductData();
@@ -577,7 +577,7 @@ public class CmsFilteringFlow {
                 } else {
                 	searchResults.setAdProducts(null);
                 }
-               
+
                 collectSearchRelevancyScores(searchResults, nav.getRequestCookies(), user);
                 break;
             case NEWPRODUCTS:
@@ -1070,8 +1070,6 @@ public class CmsFilteringFlow {
 
     private BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
 
-        BrowseDataContext browseDataContext = null;
-
         String id = nav.getId();
         ContentNodeModel contentNodeModel = PopulatorUtil.getContentNode(id);
 
@@ -1088,7 +1086,7 @@ public class CmsFilteringFlow {
         NavigationModel navigationModel = NavigationUtil.createNavigationModel(contentNodeModel, nav, user);
 
         // filtering and grouping
-        browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
+        BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
         if (!nav.isPdp() &&
@@ -1526,7 +1524,7 @@ public class CmsFilteringFlow {
         }
         return hlProductDataList;
     }
-    
+
     public MySaleItemsData getSaleItems(HttpServletRequest request,
 			FDUserI user, CmsFilteringNavigator navigator, boolean isMobile) throws Exception {
     	double ratingBaseLine = 4;
@@ -1539,7 +1537,7 @@ public class CmsFilteringFlow {
     	try {
 	    	if(isMobile){
 	    		return getSaleItemsMobile(request, user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
-							considerNew, considerBackInStock, sortProducts, maxNoOfProducts); 
+							considerNew, considerBackInStock, sortProducts, maxNoOfProducts);
 	    	} else {
 	    		return getSaleItemsWeb(request, user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
 							considerNew, considerBackInStock, sortProducts, maxNoOfProducts);
@@ -1548,12 +1546,12 @@ public class CmsFilteringFlow {
     		throw e;
     	}
     }
-    
+
     public MySaleItemsData getSaleItemsMobile(HttpServletRequest request,
 			FDUserI user, CmsFilteringNavigator navigator, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine
 			, boolean considerNew, boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts)
 			throws InvalidFilteringArgumentException, FDResourceException {
-		
+
 		ratingBaseLine = navigator.getRatingBaseLine();
 		dealsBaseLine = navigator.getDealsBaseLine();
 		popularityBaseLine = navigator.getPopularityBaseLine();
@@ -1561,7 +1559,7 @@ public class CmsFilteringFlow {
 		considerBackInStock = navigator.isConsiderBackInStock();
 		sortProducts = navigator.isSortProducts();
 		maxNoOfProducts = navigator.getMaxNoOfProducts();
-		
+
 		BrowseData browseData = getWeLoveYouLoveData(user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
 													 	considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
 		MySaleItemsData mySaleItemsData = new MySaleItemsData();
@@ -1571,12 +1569,12 @@ public class CmsFilteringFlow {
 		mySaleItemsData.setConsiderBackInStock(considerBackInStock);
 		return mySaleItemsData;
 	}
-    
+
     public MySaleItemsData getSaleItemsWeb(HttpServletRequest request,
 			FDUserI user, CmsFilteringNavigator navigator, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine
 			, boolean considerNew, boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts)
 			throws InvalidFilteringArgumentException, FDResourceException {
-	
+
 		if(request.getParameter("rbl") != null) {
 			ratingBaseLine = Double.parseDouble(request.getParameter("rbl"));
 		}
@@ -1592,13 +1590,13 @@ public class CmsFilteringFlow {
 		if(request.getParameter("cbis") != null) {
 			considerBackInStock = Boolean.parseBoolean(request.getParameter("cbis"));
 		}
-		if(request.getParameter("sp") != null) {			
+		if(request.getParameter("sp") != null) {
 			sortProducts = Boolean.parseBoolean(request.getParameter("sp"));
 		}
-		if(request.getParameter("mnp") != null) {			
+		if(request.getParameter("mnp") != null) {
 			maxNoOfProducts = Integer.parseInt(request.getParameter("mnp"));
 		}
-			
+
 		BrowseData browseData = getWeLoveYouLoveData(user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
 														considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
 		MySaleItemsData mySaleItemsData = new MySaleItemsData();

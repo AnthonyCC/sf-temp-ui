@@ -323,7 +323,7 @@ public class BrowseDataBuilderFactory {
 
 				} else { // or create the section tree
 
-					SectionContext sectionTree = createSectionTree(cat, navigationModel.getNavDepth().getLevel(), user);
+					SectionContext sectionTree = createSectionTree(cat, navigationModel.getNavDepth().getLevel(), user, navigationModel);
 					sections.add(sectionTree);
 					if (subCats.size()!=0 && nav.isAll()) { //hide category section header if Show All
 						sectionTree.setHeaderText(null);
@@ -384,7 +384,7 @@ public class BrowseDataBuilderFactory {
 
 			}else{
 				// or create the section tree
-				sections.add(createSectionTree(subCat, navigationModel.getNavDepth().getLevel(), user));
+				sections.add(createSectionTree(subCat, navigationModel.getNavDepth().getLevel(), user, navigationModel));
 			}
 
             data.setSectionContexts(checkEmpty(sections));
@@ -416,7 +416,7 @@ public class BrowseDataBuilderFactory {
 			// create and populate subSection
 			List<SectionContext> subSections = new ArrayList<SectionContext>();
 			SectionContext subSection = createSection(subSubCat, user);
-			appendProductItems(subSection, subSubCat);
+			appendProductItems(subSection, subSubCat, navigationModel);
 			subSections.add(subSection);
 
 			// populate superSection with subsections
@@ -498,7 +498,7 @@ public class BrowseDataBuilderFactory {
 	 *
 	 * create section tree (product list grouped by subcategories)
 	 */
-	public SectionContext createSectionTree(CategoryModel cat, int level, FDUserI user){
+	public SectionContext createSectionTree(CategoryModel cat, int level, FDUserI user, NavigationModel navigationModel){
 
 		List<SectionContext> sections = new ArrayList<SectionContext>();
 
@@ -508,7 +508,7 @@ public class BrowseDataBuilderFactory {
 		if(level==NavDepth.getMaxLevel() || cat.getSubcategories().size()==0){
 
 			// append products in case of no sub categories
-			appendProductItems(section, cat);
+			appendProductItems(section, cat, navigationModel);
 
 		}else{
 
@@ -524,7 +524,7 @@ public class BrowseDataBuilderFactory {
 				}
 
 				// and create sections
-				SectionContext subSection = createSectionTree(subCat, level+1, user);
+				SectionContext subSection = createSectionTree(subCat, level+1, user, navigationModel);
 				if(subSection.isSpecial()){
 					section.setSpecial(true); // mark the whole structure as special
 				}
@@ -543,7 +543,12 @@ public class BrowseDataBuilderFactory {
 		// collect all products (make sure there are no duplicates)
         Set<ProductModel> prods = new LinkedHashSet<ProductModel>();
         collectAllProducts(cat, navModel.getNavDepth().getLevel(), user, prods);
-        section.setProductItems(ProductItemFilterUtil.createFilteringProductItems(new ArrayList<ProductModel>(prods)));
+
+        if (navModel.isMobileNavigation()) {
+            section.setProductItems(ProductItemFilterUtil.createFilteringProductItemsForMobileFrontEnd(new ArrayList<ProductModel>(prods)));
+        } else {
+            section.setProductItems(ProductItemFilterUtil.createFilteringProductItems(new ArrayList<ProductModel>(prods)));
+        }
 
         return section;
 
@@ -605,16 +610,24 @@ public class BrowseDataBuilderFactory {
      *
      *            add the UNFILTERED!! product list on the section
      */
-    private void appendProductItems(SectionContext section, CategoryModel cat) {
+    private void appendProductItems(SectionContext section, CategoryModel cat, NavigationModel navigationModel) {
 
         if (ContentNodeModelUtil.isContentNodeModelHiddenByRedirectUrl(cat)) { // no products shown in case of redirect url
             return;
         }
 
-        if (section.getProductItems() == null) {
-            section.setProductItems(ProductItemFilterUtil.createFilteringProductItems(cat.getProducts()));
+        if (navigationModel.isMobileNavigation()) {
+            if (section.getProductItems() == null) {
+                section.setProductItems(ProductItemFilterUtil.createFilteringProductItemsForMobileFrontEnd(cat.getProducts()));
+            } else {
+                section.getProductItems().addAll(ProductItemFilterUtil.createFilteringProductItemsForMobileFrontEnd(cat.getProducts()));
+            }
         } else {
-            section.getProductItems().addAll(ProductItemFilterUtil.createFilteringProductItems(cat.getProducts()));
+            if (section.getProductItems() == null) {
+                section.setProductItems(ProductItemFilterUtil.createFilteringProductItems(cat.getProducts()));
+            } else {
+                section.getProductItems().addAll(ProductItemFilterUtil.createFilteringProductItems(cat.getProducts()));
+            }
         }
     }
 

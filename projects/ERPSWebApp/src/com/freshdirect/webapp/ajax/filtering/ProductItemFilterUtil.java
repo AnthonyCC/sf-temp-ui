@@ -22,22 +22,22 @@ import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 
 public class ProductItemFilterUtil {
-	
+
 	private static final String COMPOSITE_FILTER_ID_SEPARATOR = "_";
 	private static final Logger LOG = LoggerFactory.getInstance( ProductItemFilterUtil.class );
-	
+
 	public static boolean hasFilteredProducts(List<FilteringProductItem> items, ProductItemFilterI filter, boolean showUnavProducts, boolean isProductListing) {
 		if (items == null) {
 			return false;
 		}
-		
+
 		for (FilteringProductItem productItem : items){
-			
+
 			// don't count unavailable items
 			if(isProductListing && !showUnavProducts && (productItem.getProductModel() == null || !productItem.getProductModel().isFullyAvailable() || productItem.getProductModel().isOutOfSeason())){
 				continue;
 			}
-			
+
 			try {
 				// An item has survived the filtering, return true and break the loop.
 				if (filter.apply(productItem)) {
@@ -47,29 +47,29 @@ public class ProductItemFilterUtil {
 				LOG.error("Could not apply filter on product: " + productItem.getProductModel());
 			}
 		}
-		
+
 		return false;
 	}
 	public static List<FilteringProductItem> getFilteredProducts(List<FilteringProductItem> items, Set<ProductItemFilterI> activeFilters, boolean showUnavProducts, boolean isProductListing) {
-		
+
 		if(items==null){
 			return null;
 		}
-		
+
 		List<FilteringProductItem> shownProducts = new ArrayList<FilteringProductItem>();
-		
+
 		for (FilteringProductItem productItem : items){
-			
+
 			// don't count unavailable items
 			if(isProductListing && !showUnavProducts && (productItem.getProductModel() == null || !productItem.getProductModel().isFullyAvailable() || productItem.getProductModel().isOutOfSeason())){
 				continue;
 			}
-			
+
 			boolean passedFilters = true;
 			for (ProductItemFilterI filter : activeFilters) {
 				try {
-					
-					
+
+
 					if (!filter.apply(productItem)) {
 						passedFilters = false;
 						break;
@@ -83,11 +83,11 @@ public class ProductItemFilterUtil {
 				shownProducts.add(productItem);
 			}
 		}
-		
+
 		return shownProducts;
-		
+
 	}
-	
+
 	public static int countItemsForFilter(List<FilteringProductItem> items, ProductItemFilterI filter) {
 		if (filter == null) {
 			return items.size();
@@ -109,22 +109,22 @@ public class ProductItemFilterUtil {
 		}
 		return count;
 	}
-	
+
 	/**
 	 * @param parentId
 	 * @param filters
 	 * @return
-	 * 
+	 *
 	 * remove filters belongs to the specified filter group
 	 */
 	public static Set<ProductItemFilterI> removeFiltersByParentId(String parentId, Map<String, ProductItemFilterI> filters){
-		
+
 		Set<ProductItemFilterI> result = new HashSet<ProductItemFilterI>();
-		
+
 		for(String key : filters.keySet()){
-			
+
 			ProductItemFilterI filter = filters.get(key);
-			
+
 			if(!parentId.equals(filter.getParentId())){
 				result.add(filter);
 			}
@@ -132,31 +132,41 @@ public class ProductItemFilterUtil {
 
 		return result;
 	}
-	
-		
+
+
 	public static List<FilteringProductItem> createFilteringProductItems(List<ProductModel> products){
 		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
-		
+
 		for(ProductModel prod : products){
-			if (!prod.isHidden() && !prod.isInvisible()){ //remove those which never should be displayed
+			if (!isProductHidden(prod)){ //remove those which never should be displayed
 				items.add(new FilteringProductItem(prod));
 			}
 		}
 		return items;
 	}
 
+    public static List<FilteringProductItem> createFilteringProductItemsForMobileFrontEnd(List<ProductModel> products){
+        List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
+
+        for(ProductModel prod : products){
+            if (!isProductHiddenOnMobileFrontEnd(prod)){ //remove those which never should be displayed
+                items.add(new FilteringProductItem(prod));
+            }
+        }
+        return items;
+    }
+
 	public static List<FilteringProductItem> createFilteringProductItemsFromSearchResults(List<FilteringSortingItem<ProductModel>> searchResults){
 		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
-		
+
 		for(FilteringSortingItem<ProductModel> searchResult : searchResults){
-			ProductModel prod = searchResult.getModel();
-			if (!prod.isHidden() && !prod.isInvisible()){ //remove those which never should be displayed
+			if (!isProductHidden(searchResult.getModel())){ //remove those which never should be displayed
 				items.add(new FilteringProductItem(searchResult));
 			}
 		}
 		return items;
 	}
-	
+
 	public static List<FilteringProductItem> createFilteringRecipeItems(List<Recipe> recipes) {
 		List<FilteringProductItem> results = new ArrayList<FilteringProductItem>();
 		for (Recipe recipe : recipes) {
@@ -164,7 +174,7 @@ public class ProductItemFilterUtil {
 		}
 		return results;
 	}
-	
+
 	/**
 	 * @param sections
 	 * @param items
@@ -186,44 +196,51 @@ public class ProductItemFilterUtil {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param filters
 	 * @return
 	 * convenience method for transforming filter container
 	 */
 	public static Map<String, ProductItemFilterI> prepareFilters(List<ProductFilterGroup> filters){
-		
+
 		Map<String, ProductItemFilterI> result = new HashMap<String, ProductItemFilterI>();
-		
+
 		for(ProductFilterGroup group : filters){
 			for(ProductItemFilterI filter : group.getProductFilters()){
 				result.put(createCompositeId(group.getId(), filter.getId()), filter);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * @param filters
 	 * @return
 	 * convenience method for transforming filter container
 	 */
 	public static Map<String, ProductItemFilterI> prepareFilters(Set<ProductItemFilterI> filters){
-		
+
 		Map<String, ProductItemFilterI> result = new HashMap<String, ProductItemFilterI>();
 
 		for (ProductItemFilterI filter : filters) {
 			result.put(filter.getId(), filter);
 		}
-		
+
 		return result;
 	}
-	
+
 	public static String createCompositeId(String groupId, String filterId){
 		return groupId + COMPOSITE_FILTER_ID_SEPARATOR + filterId;
 	}
 
+	private static boolean isProductHidden(ProductModel prod) {
+	    return prod.isHidden() || prod.isInvisible();
+	}
+
+    private static boolean isProductHiddenOnMobileFrontEnd(ProductModel prod) {
+        return isProductHidden(prod) || prod.isHideIphone();
+    }
 }
