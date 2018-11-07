@@ -22,7 +22,7 @@ var FreshDirect = FreshDirect || {};
     var widgetNode;
     if (this.el.next() && this.el.next().hasClass(this.config.cssClass)) {
       return this.el.next();
-    } else if(this.el.attr('data-custom-select-light-class') !== undefined  && this.el.attr('data-custom-select-light-class') !== false) {
+    } else if(this.el.attr('data-custom-select-light-class')) {
       widgetNode = $('<span class="'+(this.config.cssClass || '')+' '+(this.el.attr('data-custom-select-class') || '')+'"><button type="button" data-custom-select-light-class="'+(this.el.attr('data-custom-select-light-class'))+'" class="selectButton cssbutton '+(this.el.attr('data-custom-select-button-class') || '')+' '+(this.el.attr('data-custom-select-light-class'))+'" aria-haspopup="true"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
       this.el.after(widgetNode);
       return widgetNode;
@@ -62,7 +62,7 @@ var FreshDirect = FreshDirect || {};
     this.popup.showWithDelay(this.widget.find('.selectButton'), 'bl-tl');
     this.bindClick(this.popup.$el.find('.popupcontent'));
     
-    if(this.el.attr('data-custom-select-light-class') !== undefined && this.el.attr('data-custom-select-light-class') !== false) {
+    if(this.el.attr('data-custom-select-light-class')) {
       $('.selectButton '+this.el.attr('data-custom-select-light-class')+' ').addClass('overlay-open');
       setTimeout(function() {
         let firstElement = $('.browse-popup-content ul li').filter(function() {
@@ -110,7 +110,7 @@ var FreshDirect = FreshDirect || {};
 
     widget.find('.title').first().html(Select.unescape(title));
     popupcontent += '<ul class="customselect" data-value="'+selected.val()+'">';
-    if (el.attr('data-custom-select-light-class') !== undefined && el.attr('data-custom-select-light-class') !== false) {
+    if (el.attr('data-custom-select-light-class')) {
       popupcontent = '<div class="select-close-container"><span class="select--header">Select an Order</span><button nofocus="" class="overlay-close-icon close-icon" type="button" data-close-overlay="" style="z-index: 462;" tabindex="9">close</button></div>'
       var optionsExistClass;
       if (options.length > 2) {
@@ -131,9 +131,9 @@ var FreshDirect = FreshDirect || {};
       if (selected.val() === $option.val()) {
         cssClass += ' selected';
       }
-      if (options.length === 1 && el.attr('data-custom-select-light-class') !== undefined && el.attr('data-custom-select-light-class') !== false) {
+      if (options.length === 1 && el.attr('data-custom-select-light-class')) {
         popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div>No eligible orders found</button></li>';          
-      } else if(el.attr('data-custom-select-light-class') !== undefined && el.attr('data-custom-select-light-class') !== false){
+      } else if(el.attr('data-custom-select-light-class')){
         popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div>'+Select.unescape($option.html())+'</button></li>';
       } else {
         popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
