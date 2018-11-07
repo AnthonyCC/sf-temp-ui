@@ -109,7 +109,7 @@ public class SelfCreditOrderDetailsService {
 	
 	private double collectFinalPrice(double deliveredQuantity, FDCartLineI fdCartLine) {
 		double finalPrice = fdCartLine.getInvoiceLine().getPrice();
-		return finalPrice/deliveredQuantity;
+		return Double.compare(deliveredQuantity, 0.00) == 0 ? 0.00 : finalPrice/deliveredQuantity;
 	}
 
 	private String collectProductName(String brandName, String description) {
