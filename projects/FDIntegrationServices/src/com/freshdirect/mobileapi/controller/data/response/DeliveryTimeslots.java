@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -84,6 +85,7 @@ public class DeliveryTimeslots extends CheckoutResponse {
 	            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable(), user)));
 	        }
         }
+        combineUnavailableTS(timeSlots);
         List<String> restrictionMessages = result!=null?result.getMessages():null;
         if(restrictionMessages != null) {
 	        for (String restrictionMessage : restrictionMessages) {
@@ -99,6 +101,45 @@ public class DeliveryTimeslots extends CheckoutResponse {
         this.showMinNotMetMessage = result!=null?result.isShowMinNotMetMessage():false;
         
     }
+    
+    private void combineUnavailableTS(List<Timeslot> ts) {
+		List<Timeslot> ts2 = new ArrayList<Timeslot>();
+        if(!ts.isEmpty()){
+        	int loopnumber = 0;
+            boolean foundunavailablets = false;
+        	Timeslot lastunavailabletsfound = ts.get(loopnumber);
+	        for(;loopnumber<ts.size();loopnumber++){
+	        	if(ts.get(loopnumber).isFull()||ts.get(loopnumber).isUnavailable()){
+	        		if(!foundunavailablets){
+	        			foundunavailablets = true;
+	        			lastunavailabletsfound = ts.get(loopnumber);
+	        		}else if(foundunavailablets&&
+	        					lastunavailabletsfound.getStartDate().getDate()==ts.get(loopnumber).getStartDate().getDate()&&
+	        						lastunavailabletsfound.getEndDate().getDate()==ts.get(loopnumber).getEndDate().getDate()){
+	        			lastunavailabletsfound.setEnd(ts.get(loopnumber).getEndDate());
+	        			try {
+							lastunavailabletsfound.setEnd(ts.get(loopnumber).getEnd());
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	        		}
+	        	}else{
+	        		if(foundunavailablets){
+	        			ts2.add(lastunavailabletsfound);
+	        			ts2.add(ts.get(loopnumber));
+	        			foundunavailablets = false;
+	        		}else{
+	        			ts2.add(ts.get(loopnumber));
+	        		}
+        		}
+	        }
+	        if(foundunavailablets){
+	        	ts2.add(lastunavailabletsfound);
+	        }
+        }
+        ts = ts2;
+	}
 
 	public boolean isShowPremiumSlots() {
 		return showPremiumSlots;
