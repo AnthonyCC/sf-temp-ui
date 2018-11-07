@@ -28,6 +28,7 @@ import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.Html;
+import com.freshdirect.storeapi.content.PopulatorUtil;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.TagModel;
 import com.freshdirect.storeapi.fdstore.FDContentTypes;
@@ -246,25 +247,19 @@ public class TestSupport {
 		return tags;
 	}
 
-	public List<ProductModel> getTaggedProducts(String tagKey) {
-		if (tagKey == null)
-			return Collections.emptyList();
+    public List<ProductModel> getTaggedProducts(String tagKey) {
+        if (tagKey == null)
+            return Collections.emptyList();
 
-		// may throw IllegalArgumentException !
-		ContentKey tKey = ContentKeyFactory.get(tagKey);
+        // may throw IllegalArgumentException !
+        ContentKey tKey = ContentKeyFactory.get(tagKey);
 
-		List<ProductModel> taggedProducts = new ArrayList<ProductModel>();
+        List<ProductModel> taggedProducts = new ArrayList<ProductModel>();
 
-		Set<ContentKey> productKeys = CmsManager.getInstance().getContentKeysByType(ContentType.Product);
-		for (ContentKey productKey: productKeys) {
-		    if (CmsManager.getInstance().isNodeOrphan(productKey)) {
-		        continue;
-		    }
+        Set<ContentKey> productKeys = CmsManager.getInstance().getContentKeysByType(ContentType.Product);
+        for (ContentKey productKey : productKeys) {
             ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(productKey);
-            if (product == null || product.getDepartment() == null) {
-                continue;
-            }
-            if ("Archive".equals(product.getDepartment().getContentKey().id)) {
+            if (PopulatorUtil.isNodeArchived(product)) {
                 continue;
             }
 
@@ -274,12 +269,12 @@ public class TestSupport {
                     taggedProducts.add(product);
                 }
             }
-		}
+        }
 
         Collections.sort(taggedProducts, SORT_PRODUCT_BY_FULL_NAME);
 
         return taggedProducts;
-	}
+    }
 
 	public List<CategoryModel> getCategories() {
 
