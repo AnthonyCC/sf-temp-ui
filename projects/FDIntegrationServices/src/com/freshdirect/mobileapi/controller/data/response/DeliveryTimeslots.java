@@ -118,9 +118,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
 	        		if(!foundunavailablets){
 	        			foundunavailablets = true;
 	        			lastunavailabletsfound = ts.get(loopnumber);
-	        		}else if(foundunavailablets&&
-	        					lastunavailabletsfound.getStartDate().getDate()==ts.get(loopnumber).getStartDate().getDate()&&
-	        						lastunavailabletsfound.getEndDate().getDate()==ts.get(loopnumber).getEndDate().getDate()){
+	        		}else if(lastunavailabletsfound.getStartDate().getDate()==ts.get(loopnumber).getStartDate().getDate() &&
+	        					lastunavailabletsfound.getEndDate().getDate()==ts.get(loopnumber).getEndDate().getDate()) {
 	        			lastunavailabletsfound.setEnd(ts.get(loopnumber).getEndDate());
 	        			try {
 							lastunavailabletsfound.setEnd(ts.get(loopnumber).getEnd());
@@ -128,12 +127,15 @@ public class DeliveryTimeslots extends CheckoutResponse {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+	        		}else{
+	        			ts2.add(lastunavailabletsfound);
+	        			lastunavailabletsfound = ts.get(loopnumber);
 	        		}
 	        	}else{
 	        		if(foundunavailablets){
 	        			ts2.add(lastunavailabletsfound);
-	        			ts2.add(ts.get(loopnumber));
 	        			foundunavailablets = false;
+	        			ts2.add(ts.get(loopnumber));
 	        		}else{
 	        			ts2.add(ts.get(loopnumber));
 	        		}
