@@ -221,10 +221,6 @@
 						<li><a href="/your_account/signin_information.jsp">Update account, mobile and email information</a></li>
 					</ul>
 					
-					<c:if test="${selfcredit && !creditRestricted}">
-     					<button class="cssbutton green" fd-login-required type="button" data-component="self-credit-open-button">Request a Credit</button>
-					</c:if>
-					
 					<%-- FAQs --%>
 					<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><h2 class="help-heading bold">FAQs</h2></a>
 					

@@ -65,13 +65,13 @@ public class ErpGrpInfoDAO {
 	}
     
 	
-	private static final String GRP_PRICING_SELECT_MAT_SQL="SELECT  DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+ 
+	private static final String GRP_PRICING_SELECT_MAT_SQL="SELECT  DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'1400') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+ 
             " WHERE g.ID IN "+
             " (select distinct GRP_ID from ERPS.MATERIAL_GRP where mat_id=?) "+
             " AND g.version=(SELECT MAX(version) version FROM ERPS.GRP_SCALE_MASTER WHERE sap_id=G.SAP_ID) "+
             " AND ACTIVE='X'      and gp.grp_id=g.id ";
 
-	private static final String GRP_PRICING_SELECT_MAT_SQL_NEW= " SELECT DISTINCT  g.SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM "+	
+	private static final String GRP_PRICING_SELECT_MAT_SQL_NEW= " SELECT DISTINCT  g.SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'1400') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM "+	
 		    " (select  gcm.sap_id, max(gcm.version) v from erps.material_grp mg, ERPS.GRP_SCALE_MASTER gcm    WHERE    mg.mat_id= ? and gcm.id=MG.GRP_ID  group by gcm.sap_id) A,ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+
 		    " WHERE A.sap_id=G.sap_id and a.v=g.version and g.active='X' and g.id=GP.GRP_ID and g.version=gp.version and a.v=gp.version "+
 		    " and not exists (Select 1 from ERPS.GRP_SCALE_MASTER gcm where gcm.sap_id=A.sap_id and gcm.version>a.v)";
@@ -190,7 +190,7 @@ public class ErpGrpInfoDAO {
 	
 	
 	
-	public static final String GRP_PRICING_ZONE_SELECT_SQL=" select ID  ,GRP_ID ,ZONE_ID ,QUANTITY ,PRICING_UNIT ,SCALE_UNIT,PRICE ,VERSION, NVL(SALES_ORG,'0001') as SALES_ORG,NVL(DISTRIBUTION_CHANNEL,'01') as DISTRIBUTION_CHANNEL FROM ERPS.GRP_PRICING "+
+	public static final String GRP_PRICING_ZONE_SELECT_SQL=" select ID  ,GRP_ID ,ZONE_ID ,QUANTITY ,PRICING_UNIT ,SCALE_UNIT,PRICE ,VERSION, NVL(SALES_ORG,'1400') as SALES_ORG,NVL(DISTRIBUTION_CHANNEL,'01') as DISTRIBUTION_CHANNEL FROM ERPS.GRP_PRICING "+
 															" WHERE GRP_ID=? AND VERSION= ?";
 	@Deprecated
 	public static Set<ErpGrpPriceZoneModel> getGrpPricingInfo(Connection con,String grpId,int version) throws SQLException{
