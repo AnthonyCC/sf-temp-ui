@@ -107,9 +107,33 @@ public class AutoCreditApprovalCron {
 				LOGGER.info("Going to AUTO approve " + pendingSelfComplaints.size() + " self-issued complaints");
 				for (PendingSelfComplaint pendingSelfComplaint : pendingSelfComplaints) {
 					String selfComplaintId = pendingSelfComplaint.getComplaintId();
-					LOGGER.info("Auto approve STARTED for self-issued complaint ID : " + selfComplaintId);
-					sb.approveComplaint(selfComplaintId, true, initiator, true, ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
-		            LOGGER.info("Auto approve FINISHED for self-issued complaint ID : " + selfComplaintId);
+					try {
+						LOGGER.info("Auto approve STARTED for self-issued complaint ID : " + selfComplaintId);
+						sb.approveComplaint(selfComplaintId, true, initiator, true, ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
+			            LOGGER.info("Auto approve FINISHED for self-issued complaint ID : " + selfComplaintId);
+					} catch (ErpComplaintException ex) {
+						errorFlg = true;
+						sw = new StringWriter();
+						ex.printStackTrace(new PrintWriter(sw));
+						populateErrorDetails(strB, selfComplaintId,
+								sw.toString().substring(0, sw.toString().length() > 500 ? 500 : sw.toString().length()));
+						LOGGER.warn("Auto approve FAILED for self-issued complaint ID : " + selfComplaintId + "::  " + sw.toString());
+					} catch (EJBException ex) {
+						errorFlg = true;
+						sw = new StringWriter();
+						ex.printStackTrace(new PrintWriter(sw));
+						populateErrorDetails(strB, selfComplaintId,
+								sw.toString().substring(0, sw.toString().length() > 500 ? 500 : sw.toString().length()));
+						LOGGER.warn("Auto approve FAILED for self-issued complaint ID : " + selfComplaintId + "::  " + sw.toString());
+					} catch (Exception ex) {
+						errorFlg = true;
+						sw = new StringWriter();
+						ex.printStackTrace(new PrintWriter(sw));
+						populateErrorDetails(strB, selfComplaintId,
+								sw.toString().substring(0, sw.toString().length() > 500 ? 500 : sw.toString().length()));
+						LOGGER.warn("Auto approve FAILED for self-issued complaint ID : " + selfComplaintId + "::  " + sw.toString());
+					}
+					
 				}
 			} else {
 				LOGGER.info("No self-issued complaints to AUTO approve");
