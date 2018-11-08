@@ -41,15 +41,10 @@ var FreshDirect = FreshDirect || {};
           shorthtmlContent = this.truncate($el.html(), $el.text(), $el.attr(this.TRUNCATE));
 
       if($el.text().length > 200){
-    	  if(shorthtmlContent.lastIndexOf('<a') > shorthtmlContent.lastIndexOf('</a>')){
-    		  shorthtmlContent += ' </a>';
-    	  }
-    	  shorthtmlContent += '&hellip;';
-    	  shorthtmlContent = shorthtmlContent + '<span ' + this.TRIGGER + '>read more</span>';
     	  var closeHTML = document.createElement('div');
     	  closeHTML.innerHTML=shorthtmlContent;
     	  shorthtmlContent = closeHTML.innerHTML;
-    	  $el.html('<div fd-readmore-truncated>'+shorthtmlContent+'</div><div fd-readmore-html>'+htmlContent+'<span '+this.TRIGGER+'>show less</span></div>');
+    	  $el.html('<div fd-readmore-truncated>'+shorthtmlContent+'<span ' + this.TRIGGER + '>read more</span></div><div fd-readmore-html>'+htmlContent+'<span '+this.TRIGGER+'>show less</span></div>');
           $el.attr(readMore.STATE, state || 'closed');
       } else {
     	  $el.html('<div fd-readmore-html>'+htmlContent+'</div>');
@@ -72,6 +67,8 @@ var FreshDirect = FreshDirect || {};
         if (html.length > length/2) {
           result = html;
         }
+        
+        result += '&hellip;';
       }
 
       return result;
