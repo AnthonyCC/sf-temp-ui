@@ -4,6 +4,9 @@
 <%@ page import="java.util.*" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<features:isActive name="selfcredit" featureName="backOfficeSelfCredit" />
+<c:set var = "creditRestricted" value = "<%= user.isCreditRestricted() %>"/>
+
 <%
 	String[] checkContactForm_i_contact_us = {"subject", "message", "email", "first_name", "last_name", "home_phone"};
 	String faqSections_i_contact_us = FDStoreProperties.getFaqSections();
@@ -27,6 +30,9 @@
 	
 	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter><fieldset><legend class="offscreen">Contact FreshDirect</legend>
 		<a href='index.jsp'><h2 class="help-heading bold uppercase">contact freshdirect</h2></a>
+		<c:if test="${selfcredit && !creditRestricted}">
+			<button class="cssbutton green" fd-login-required type="button" data-component="self-credit-open-button">Request a Credit</button>
+		</c:if>
 		<p class="small-text">FreshDirect Customer Service is standing by to answer your questions, seven days a week.
 			<fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" />
 		</p>

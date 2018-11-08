@@ -226,7 +226,7 @@ var FreshDirect = window.FreshDirect || {};
     var totalCredit = 0;
     var complaintLines = $.grep(data.orderlines, function(line, i) {
       if (line.complaint) {
-        line.complaint.price = line.basePrice * Number(line.complaint.qty);
+        line.complaint.price = line.finalPrice * Number(line.complaint.qty);
         totalCredit += line.complaint.price;
         line.complaint.price = parseFloat(line.complaint.price).toFixed(2);
       }

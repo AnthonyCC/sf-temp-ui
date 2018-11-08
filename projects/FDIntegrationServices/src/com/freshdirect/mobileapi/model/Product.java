@@ -1789,12 +1789,14 @@ public class Product {
         double price = 0.0;
         //Pricing pricing = this.product.getFDProduct().getPricing();
         String skuCode = sku!=null?sku.getSkuCode():null;
-        Pricing pricing = getFDProduct(skuCode).getPricing();
-        FDConfiguration configuration = new FDConfiguration(quantity, salesUnit!=null?salesUnit.getName():null, options);
-
-        if (sku != null && salesUnit != null && quantity > 0.0) {
-            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(pricingContext.getZoneInfo()),quantity,null);
-            price = configuredPrice.getPrice().getPrice();
+        if(null !=skuCode){
+	        Pricing pricing = getFDProduct(skuCode).getPricing();
+	        FDConfiguration configuration = new FDConfiguration(quantity, salesUnit!=null?salesUnit.getName():null, options);
+	
+	        if (sku != null && salesUnit != null && quantity > 0.0) {
+	            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(pricingContext.getZoneInfo()),quantity,null);
+	            price = configuredPrice.getPrice().getPrice();
+	        }
         }
         return price;
     }
@@ -1838,29 +1840,31 @@ public class Product {
     }
 
     private FDProduct getFDProduct(String skuCode) {
-
-        try {
-            FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
-            return FDCachedFactory.getProduct(productInfo);
-        } catch (FDResourceException e) {
-            throw new FDRuntimeException(e);
-        } catch (FDSkuNotFoundException e) {
-            throw new FDRuntimeException(e);
-        }
-
+    	if(null !=skuCode){
+	        try {
+	            FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
+	            return FDCachedFactory.getProduct(productInfo);
+	        } catch (FDResourceException e) {
+	            throw new FDRuntimeException(e);
+	        } catch (FDSkuNotFoundException e) {
+	            throw new FDRuntimeException(e);
+	        }
+    	}
+    	return null;
     }
 
     private FDProductInfo getFDProductInfo(String skuCode) {
-
-        try {
-            FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
-            return productInfo;
-        } catch (FDResourceException e) {
-            throw new FDRuntimeException(e);
-        } catch (FDSkuNotFoundException e) {
-            throw new FDRuntimeException(e);
-        }
-
+    	if(null !=skuCode){
+	        try {
+	            FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
+	            return productInfo;
+	        } catch (FDResourceException e) {
+	            throw new FDRuntimeException(e);
+	        } catch (FDSkuNotFoundException e) {
+	            throw new FDRuntimeException(e);
+	        }
+    	}
+    	return null;
     }
 
     public String getSellBySalesUnit() {
