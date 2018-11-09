@@ -2747,11 +2747,15 @@ public class FDUser extends ModelSupport implements FDUserI {
                  * fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel()); zoneInfo = new ZoneInfo(pricingZoneId,
                  * FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel());
                  */
-                fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
+            	fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
+                fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());
+                fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel());
+                zoneInfo = new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel());
+                /*fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
                 fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());
                 fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel());
                 zoneInfo = new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel(),
-                        ZoneInfo.PricingIndicator.SALE, new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel()));
+                        ZoneInfo.PricingIndicator.SALE, new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel()));*/
             }
 
         } else {

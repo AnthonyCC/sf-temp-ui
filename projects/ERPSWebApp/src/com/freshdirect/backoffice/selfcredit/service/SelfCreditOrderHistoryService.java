@@ -26,7 +26,6 @@ public class SelfCreditOrderHistoryService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(SelfCreditOrderHistoryService.class);
     private static final SelfCreditOrderHistoryService INSTANCE = new SelfCreditOrderHistoryService();
-    private static final int ORDER_MONTH_CUTOFF = 13;
 
     private SelfCreditOrderHistoryService() {
     }
@@ -76,7 +75,7 @@ public class SelfCreditOrderHistoryService {
 
     private boolean isRecentOrder(Date createRequestedDate, Date currentDate) {
         int monthsBetween = DateUtil.monthsBetween(currentDate, createRequestedDate);
-        return monthsBetween <= ORDER_MONTH_CUTOFF;
+        return monthsBetween < FDStoreProperties.getOrderHistoryFromInMonths();
     }
 
 	private String collectOrderName(String standingOrderId) throws FDResourceException {
