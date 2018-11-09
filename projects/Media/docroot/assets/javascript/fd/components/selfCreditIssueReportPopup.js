@@ -179,8 +179,28 @@ var FreshDirect = window.FreshDirect || {};
             }, 300);
             $(".self-credit-footer").addClass("form-instructions-active");
             $("#selfcreditform select").on('change', function() {
-              $(".self-credit-footer").removeClass("form-instructions-active");
-              removeChangeHandler('#selfcreditform select');
+              var selectNodes = document.querySelectorAll("#selfcreditform select");
+              var selectArray = Array.from(selectNodes).map(function(select) {
+                return [select.name, select.value];
+              })
+              var complaintMap = selectArray.reduce(function(prev,curr){
+                var tid = curr[0].split('-');
+                var t = tid[0];
+                var id = tid[1];
+                prev[id] = prev[id] || {};
+                prev[id][t] = curr[1];
+                return prev;
+              }, {});
+              var complaintLineValues = Object.keys(complaintMap).map(function(key) {
+                return complaintMap[key]
+              });
+              var invalidComplaintsArray = complaintLineValues.filter(function(complaint){
+                return !complaint.reason !== !complaint.qty;
+              });
+              if(!invalidComplaintsArray.length) {
+                $(".self-credit-footer").removeClass("form-instructions-active");
+                removeChangeHandler('#selfcreditform select');
+              }
             });
           }
           this.submitButton = $('.credit-request-submit-button');
