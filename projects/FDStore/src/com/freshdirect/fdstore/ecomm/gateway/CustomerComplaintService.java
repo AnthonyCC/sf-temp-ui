@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Category;
@@ -15,6 +16,7 @@ import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerComplaintService extends AbstractEcommService implements CustomerComplaintServiceI {
@@ -24,6 +26,7 @@ public class CustomerComplaintService extends AbstractEcommService implements Cu
 	private static final String ADD_COMPLAINT = "customerComplaint/addComplaint";
 	private static final String APPROVE_COMPLAINT = "customerComplaint/approve";
 	private static final String AUTO_APPROVE_CREDIT = "customerComplaint/credit/autoApprove";
+	private static final String GET_PENDING_SELF_ISSUED_COMPLAINTS = "customerComplaint/pendingSelfIssuedComplaints";
 	
 	private static CustomerComplaintServiceI INSTANCE;
 
@@ -144,6 +147,23 @@ public class CustomerComplaintService extends AbstractEcommService implements Cu
 			LOGGER.error("Error in CustomerComplaintService.approveComplaint: ", e);
 			throw new RemoteException(e.getMessage());
 		}
+	}
+
+	@Override
+	public PendingSelfComplaintResponse getPendingSelfIssuedComplaints() throws RemoteException {
+		Response<PendingSelfComplaintResponse> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_PENDING_SELF_ISSUED_COMPLAINTS),
+					new TypeReference<Response<PendingSelfComplaintResponse>>() {
+			});
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+        if (!response.getResponseCode().equals("OK")) {
+            LOGGER.error("Error in CustomerComplaintService.getPendingSelfIssuedComplaints");
+            throw new RemoteException(response.getMessage());
+        }
+		return response.getData();
 	}
 
 }
