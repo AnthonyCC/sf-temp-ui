@@ -983,10 +983,10 @@ public class Cart {
                         .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
             } else { //Its a automatic header discount
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-//                if(!cart.containsDlvPassOnly()){
+                if(!cart.containsDlvPassOnly()){
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
                         .getPromotionCode(), promotion.getRedemptionCode(), DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
-//                }
+                }
             }
         }
 
