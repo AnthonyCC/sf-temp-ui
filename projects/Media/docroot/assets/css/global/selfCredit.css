@@ -184,8 +184,8 @@
   .self-credit-body
   .review-grid-container
   table {
-  table-layout: fixed;
-  width: 100%;
+    table-layout: fixed;
+    width: 100%;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -197,7 +197,7 @@
   .review-grid-container
   table
   th {
-  font-size: 14px;
+    font-size: 14px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -207,8 +207,8 @@
   .self-credit-body
   .review-grid-container
   tfoot {
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -221,7 +221,7 @@
   tbody
   tr:last-child
   td {
-  border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -231,7 +231,7 @@
   .self-credit-body
   .review-grid-container
   th {
-  vertical-align: top;
+    vertical-align: top;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -241,7 +241,7 @@
   .self-credit-body
   .review-grid-container
   td:last-child {
-  padding-top: 0.2em;
+    padding-top: 0.2em;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -251,7 +251,7 @@
   .self-credit-body
   .review-grid-container
   td:last-child {
-  text-align: right;
+    text-align: right;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -262,8 +262,8 @@
   .review-grid-container
   tbody
   td:first-child {
-  text-align: center;
-  width: 38px;
+    text-align: center;
+    width: 38px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -273,54 +273,54 @@
   .self-credit-body
   .review-grid-container
   td:nth-child(2) {
-  padding-left: 23px;
-  width: 60%;
+    padding-left: 23px;
+    width: 60%;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   tr:first-child
   td {
-  padding-top: 17px;
+    padding-top: 17px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   .complaint-item {
-  overflow: auto;
-  margin-bottom: 16px;
+    overflow: auto;
+    margin-bottom: 16px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   .complaint-item
   label {
-  font-size: 14px;
+    font-size: 14px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   .complaint-item
   p {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   .complaint-item
   small {
-  font-size: 12px;
+    font-size: 12px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
   .complaint-item
   .issue {
-  color: #666;
-  margin: 5px 0;
+    color: #666;
+    margin: 5px 0;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
@@ -328,10 +328,10 @@
   .complaint-item
   .issue
   i {
-  display: inline;
-  font-size: 14px;
-  font-style: italic;
-  margin-left: 5px;
+    display: inline;
+    font-size: 14px;
+    font-style: italic;
+    margin-left: 5px;
 }
 #selfCreditIssueReport hr {
   background: #cccccc;
@@ -362,17 +362,17 @@
   .self-credit-body
   .comment-container
   label {
-  font-size: 14px;
-  font-weight: normal;
+    font-size: 14px;
+    font-weight: normal;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .comment-container
   .comment-box {
-  background: #eee;
-  padding: 14px 18px;
-  border-radius: 8px;
-  font-size: 14px;
+    background: #eee;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 14px;
 }
 #selfCreditIssueReport.overlay-medium .self-credit-footer {
   overflow: auto;
@@ -386,27 +386,27 @@
   .self-credit-footer
   .section-container
   .sc-submit-button {
-  margin-left: 15px;
-  flex: 1 1 100%;
+    margin-left: 15px;
+    flex: 1 1 100%;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-footer
   .section-container
   .sc-submit-button
   button {
-  width: 100%;
+    width: 100%;
 }
 
 #selfCreditIssueReport.overlay-medium
   .self-credit-footer
   .cssbutton.button-triangle {
-  width: 255px;
+    width: 255px;
 }
 #selfCreditIssueReport.overlay-medium
   .self-credit-footer
   .section-container
   .sc-edit-button {
-  flex: 1 0 0;
+    flex: 1 0 0;
 }
 #selfCreditIssueReport.overlay-medium .self-credit-footer .cssbutton {
   padding: 12px 30px;
@@ -456,10 +456,12 @@
     .review
     .self-credit-footer
     .section-container {
-    margin: 10px;
+      margin: 10px;
   }
   #selfCreditIssueReport .self-credit-form-alert {
     font-size: 13px;
+    text-align: center;
+    width: 100%;
   }
   #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
     text-decoration: underline;
@@ -686,10 +688,10 @@
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  overflow: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow: auto;
 }
 
 @media screen and (max-width: 740px) {
@@ -705,28 +707,28 @@
   .self-credit-body-header
   .self-credit-container
   label {
-  color: #444444;
-  display: block;
-  font-size: 12px;
-  font-weight: normal;
-  letter-spacing: 0.5px;
-  line-height: 20px;
-  text-transform: uppercase;
+    color: #444444;
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    line-height: 20px;
+    text-transform: uppercase;
 }
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   span {
-  color: #222222;
-  font-size: 16px;
-  line-height: 20px;
+    color: #222222;
+    font-size: 16px;
+    line-height: 20px;
 }
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   .body-header-col {
-  padding: 18px 0;
-  padding-right: 34px;
+    padding: 18px 0;
+    padding-right: 34px;
 }
 
 @media (max-width: 740px) {
@@ -748,7 +750,7 @@
   .self-credit-container
   .body-header-col
   span {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 .selfcredit-overlay.overlay-fullscreen .overlay-container .overlay-header {
@@ -796,8 +798,8 @@
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-footer
   .footer-button-container {
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
 
 @media screen and (max-width: 500px) {
@@ -805,34 +807,36 @@
     .self-credit-footer
     .footer-button-container
     .button-div {
-    flex: 1 1 50%;
+      flex: 1 1 50%;
   }
   .selfcredit-overlay.overlay-fullscreen
     .self-credit-footer
     .footer-button-container
     .button-div
     button {
-    width: 100%;
+      width: 100%;
   }
 }
 
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-footer
   .self-credit-container {
-  padding: 12px 0;
+    flex: 1 100%;
+    padding: 12px 0;
 }
 
 @media screen and (max-width: 740px) {
   .selfcredit-overlay.overlay-fullscreen
   .self-credit-footer
   .self-credit-container {
-  padding: 0;
+    padding: 0;
 }
 }
 
 .selfcredit-overlay.overlay-fullscreen .self-credit-footer .button-container {
   background: #ddd;
 }
+
 
 .selfcredit-overlay.overlay-fullscreen .form-instructions,
 .selfcredit-overlay.overlay-fullscreen .button-triangle::before {
@@ -841,9 +845,8 @@
 }
 
 .selfcredit-overlay.overlay-fullscreen
-  .form-instructions-active
-  .form-instructions {
-  height: initial;
+.form-instructions-active
+.form-instructions {
   pointer-events: all;
 }
 
@@ -859,34 +862,26 @@
 .selfcredit-overlay.overlay-fullscreen .form-instructions-aria-trigger {
   color: #444;
 }
-
 .selfcredit-overlay.overlay-fullscreen .form-instructions {
+  height: 0;
+}
+.selfcredit-overlay.overlay-fullscreen .form-instructions-active .form-instructions {
   background: #444;
   color: white;
   font-size: 15px;
   text-align: right;
-  height: 0;
+  height: 52px;
   pointer-events: none;
+}
+.selfcredit-overlay.overlay-fullscreen .form-instructions-active .form-instructions {
+  align-items: center;
+  display: flex;
+  font-size: 15px;
 }
 
 .selfcredit-overlay.overlay-fullscreen .button-triangle-container {
   position: relative;
   display: inline-block;
-}
-
-.selfcredit-overlay.overlay-fullscreen .button-triangle::before {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 0;
-  height: 0;
-  top: -15px;
-  left: 50%;
-  left: calc(50% - 12px);
-  border: none;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 13.2px solid #444;
 }
 
 .selfcredit-overlay .comment-field-animate {
@@ -962,6 +957,13 @@
 }
 
 @media screen and (max-width: 740px) {
+  .selfcredit-overlay.overlay-fullscreen .form-instructions-active .form-instructions {
+    height: 45px;
+  }
+  #selfCreditIssueReport .credit-request-submit-button {
+    padding: 15px 10%;
+  }
+
   .selfcredit-overlay .button-triangle-container {
     padding: 17px 20px 8px;
   }
@@ -978,7 +980,7 @@
   position: absolute;
   width: 0;
   height: 0;
-  top: -15px;
+  top: -16px;
   left: 50%;
   left: calc(50% - 12px);
   border: none;
@@ -1115,6 +1117,12 @@
   }
   .overlay.overlay-fullscreen .overlay-container .overlay-header-helper {
     padding: 0 14px;
+  }
+  .selfcredit-overlay .self-credit-comment-info .self-credit-comment-container textarea {
+    font-size: 16px;
+  }
+  #selfCreditIssueReport.overlay-medium .review .self-credit-footer button.credit-request-submit-button {
+    padding: 15px 12%;
   }
 }
 

@@ -48,7 +48,7 @@ var FreshDirect = window.FreshDirect || {};
     },
     openPopup: {
       value: function() {
-        if(FreshDirect.user.userId.length != 0) {
+        if(fd.user && fd.user.userId.length && !fd.user.recognized) {
           this.refresh();
           this.overlayEl = $("#" + this.overlayId);
           // set close callback

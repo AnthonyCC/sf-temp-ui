@@ -6,6 +6,7 @@ import java.util.List;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
 
 public interface CustomerComplaintServiceI {
 
@@ -30,5 +31,7 @@ public interface CustomerComplaintServiceI {
 
 	public void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail, Double limit)
 			throws FDResourceException, ErpComplaintException, RemoteException;
+
+	public PendingSelfComplaintResponse getPendingSelfIssuedComplaints() throws RemoteException;
 
 }
