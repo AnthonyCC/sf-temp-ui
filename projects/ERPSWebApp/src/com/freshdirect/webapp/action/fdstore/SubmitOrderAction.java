@@ -777,8 +777,6 @@ public class SubmitOrderAction extends WebActionSupport {
 					user.getDlvPassCart().setZoneInfo(cart.getZoneInfo());
 					FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
 					user.getDlvPassCart().setEStoreId(cart.getEStoreId());
-					// user.updateSurcharges();
-					user.getDlvPassCart().updateSurcharges(new FDRulesContextImpl(user));
 				}else{
 					user.setShoppingCart( new FDCartModel() );
 					user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());

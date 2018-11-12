@@ -8514,15 +8514,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private static final String PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
+	private static final String PENDING_SELF_COMPLAINT_WITH_CASHBACK_QUERY = "select distinct c.id as self_complaint_id, s.customer_id as customer_id, c.note as note "
 			+ "from cust.complaint c " + "left join cust.sale s on s.id = c.sale_id "
-			+ "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ?";
+			+ "join cust.complaintline cl on cl.complaint_id = c.id "
+			+ "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ? "
+			+ "and cl.carton_number is not null";
 
-	private static final String PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id, c.amount as complaint_amount, c.note as note "
+	private static final String PENDING_SELF_COMPLAINT_WITHOUT_CASHBACK_QUERY = "select distinct c.id as self_complaint_id, s.customer_id as customer_id, c.note as note "
 			+ "from cust.complaint c " + "left join cust.sale s on s.id = c.sale_id "
-			+ "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ? and c.COMPLAINT_TYPE = 'FDC'";
+			+ "join cust.complaintline cl on cl.complaint_id = c.id "
+			+ "where c.status = 'PEN' and c.CREATED_BY = ? and c.amount <= ? and c.COMPLAINT_TYPE = 'FDC' "
+			+ "and cl.carton_number is not null";
 
-	private List<PendingSelfComplaint> getPendingSelfComplaintsByCustomerIdForAutoApproval()
+	private List<PendingSelfComplaint> getPendingSelfComplaintsForAutoApproval()
 			throws FDResourceException, RemoteException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -8543,7 +8547,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				PendingSelfComplaint pendingSelfComplaint = new PendingSelfComplaint();
 				pendingSelfComplaint.setComplaintId(rs.getString("SELF_COMPLAINT_ID"));
 				pendingSelfComplaint.setCustomerId(rs.getString("CUSTOMER_ID"));
-				pendingSelfComplaint.setComplaintAmount(rs.getDouble("COMPLAINT_AMOUNT"));
 				pendingSelfComplaint.setNote(rs.getString("NOTE"));
 				pendingSelfComplaints.add(pendingSelfComplaint);
 			}
@@ -8615,7 +8618,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public PendingSelfComplaintResponse getSelfIssuedComplaintsForAutoApproval()
 			throws RemoteException, FDResourceException {
 		List<PendingSelfComplaint> approvablePendingSelfComplaints = filterPendingSelfComplaints(
-				getPendingSelfComplaintsByCustomerIdForAutoApproval());
+				getPendingSelfComplaintsForAutoApproval());
 		;
 		PendingSelfComplaintResponse pendingSelfComplaintResponse = new PendingSelfComplaintResponse();
 		pendingSelfComplaintResponse.setPendingSelfComplaints(approvablePendingSelfComplaints);
@@ -8637,7 +8640,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " STARTED");
 
 			String customerId = pendingSelfComplaint.getCustomerId();
-			Double selfComplaintAmount = pendingSelfComplaint.getComplaintAmount();
 
 			boolean isEligibleForAutoApproval = !isCustomerOnCreditAlert(customerId);
 			if (!isEligibleForAutoApproval) {

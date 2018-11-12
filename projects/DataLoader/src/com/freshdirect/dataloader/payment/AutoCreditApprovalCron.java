@@ -3,6 +3,7 @@ package com.freshdirect.dataloader.payment;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
@@ -37,10 +38,13 @@ public class AutoCreditApprovalCron {
 	public static void main(String[] args) throws Exception {
 		LOGGER.info("Automatic Credit Approval Started");
 		Context ctx = null;
+		
+		final boolean isSF2_0_AndServiceEnabled = FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer);
+		
 		try {
 			List<String> regularComplaintIds;
 			FDCustomerManagerSB sb = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
+			if (isSF2_0_AndServiceEnabled) {
 				regularComplaintIds = CustomerComplaintService.getInstance().autoApproveCredit();
 			} else {
 				ctx = getInitialContext();
@@ -64,7 +68,7 @@ public class AutoCreditApprovalCron {
 			for (String complaintId : regularComplaintIds) {
 				LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
 				try {
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
+					if (isSF2_0_AndServiceEnabled) {
 						CustomerComplaintService.getInstance().approveComplaint(complaintId, true, initiator, true,
 								ErpServicesProperties.getCreditAutoApproveAmount());
 					} else {
@@ -101,15 +105,31 @@ public class AutoCreditApprovalCron {
 				}
 			}
 
-			PendingSelfComplaintResponse pendingSelfComplaintResponse = sb.getSelfIssuedComplaintsForAutoApproval();
-			List<PendingSelfComplaint> pendingSelfComplaints = pendingSelfComplaintResponse.getPendingSelfComplaints();
+			PendingSelfComplaintResponse pendingSelfComplaintResponse = null;
+			if (isSF2_0_AndServiceEnabled) {
+				 pendingSelfComplaintResponse = CustomerComplaintService.getInstance().getPendingSelfIssuedComplaints();
+			} else {
+				pendingSelfComplaintResponse = sb.getSelfIssuedComplaintsForAutoApproval();
+			}
+			List<PendingSelfComplaint> pendingSelfComplaints = null == pendingSelfComplaintResponse ? new ArrayList<PendingSelfComplaint>() : pendingSelfComplaintResponse.getPendingSelfComplaints();
+			
 			if (!pendingSelfComplaints.isEmpty()) {
 				LOGGER.info("Going to AUTO approve " + pendingSelfComplaints.size() + " self-issued complaints");
 				for (PendingSelfComplaint pendingSelfComplaint : pendingSelfComplaints) {
 					String selfComplaintId = pendingSelfComplaint.getComplaintId();
 					try {
 						LOGGER.info("Auto approve STARTED for self-issued complaint ID : " + selfComplaintId);
-						sb.approveComplaint(selfComplaintId, true, initiator, true, ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
+						if (isSF2_0_AndServiceEnabled) {
+							CustomerComplaintService.getInstance().approveComplaint(selfComplaintId, true, initiator, true,
+									ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
+						} else {
+							if (sb == null) {
+								FDCustomerManagerHome home = (FDCustomerManagerHome) ctx
+										.lookup("freshdirect.fdstore.CustomerManager");
+								sb = home.create();
+							}
+							sb.approveComplaint(selfComplaintId, true, initiator, true, ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
+						}
 			            LOGGER.info("Auto approve FINISHED for self-issued complaint ID : " + selfComplaintId);
 					} catch (ErpComplaintException ex) {
 						errorFlg = true;

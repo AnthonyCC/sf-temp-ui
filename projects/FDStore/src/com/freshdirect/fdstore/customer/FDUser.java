@@ -744,11 +744,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 //        this.getShoppingCart().setDeliveryPassCount();
 //        this.getDlvPassCart().setDeliveryPassCount();
 		cart.setDeliveryPassCount();
-        if (cart.isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP()) ||checkExpDlvPassForOrderMod() ) {
-        	cart.setDlvPassApplied(true);
-        }else {
-        	cart.setDlvPassApplied(false);
-        }
+		if(EnumCartType.DLV_PASS.equals(cartType)){
+			cart.setDlvPassApplied(true);
+		}else{
+	        if (cart.isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP()) ||checkExpDlvPassForOrderMod() ) {
+	        	cart.setDlvPassApplied(true);
+	        }else {
+	        	cart.setDlvPassApplied(false);
+	        }
+		}
 
         // evaluate special dlv charge override
         WaiveDeliveryCharge.apply(this);
