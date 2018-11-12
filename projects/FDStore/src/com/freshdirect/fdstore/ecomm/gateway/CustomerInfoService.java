@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -152,6 +153,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 
 	@Override
 	public ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
+		getMapper().setSerializationInclusion(Include.NON_NULL);
 		Response<ErpCustomerInfoModel> response = this.httpGetDataTypeMap(
 				getFdCommerceEndPoint(GET_ERPCUSTOMER_INFO + "/" + erpCustomerId),
 				new TypeReference<Response<ErpCustomerInfoModel>>() {
