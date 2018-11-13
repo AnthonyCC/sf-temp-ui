@@ -82,7 +82,9 @@ class FDAvailabilityMapper {
 
 			Set<EnumDlvRestrictionReason> applicableRestrictions = cartline.getApplicableRestrictions();
 			
-			LOGGER.debug(" applicable restrictions :"+applicableRestrictions);
+			if(null !=cartline.getUserContext() && null !=cartline.getUserContext().getFdIdentity() && null !=cartline.getUserContext().getFdIdentity().getErpCustomerPK()){
+				LOGGER.info("RESTRICTIONS_LOG: Applicable restrictions for customer: "+ (cartline.getUserContext().getFdIdentity().getErpCustomerPK())+" , for sku: "+ cartline.getSkuCode()+" , for delivery date:"+ order.getRequestedDate()+" are: "+applicableRestrictions);
+			}
 
 			if (!applicableRestrictions.isEmpty()) {
 
