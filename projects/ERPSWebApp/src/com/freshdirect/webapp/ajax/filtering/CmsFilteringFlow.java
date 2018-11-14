@@ -930,7 +930,7 @@ public class CmsFilteringFlow {
     }
 
     private void reOrderMenuItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
-        if (menuBoxData != null && menuBoxData.getSelectedLabel() == null) {
+        if (menuBoxData != null) {
             MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData, items, allFilters);
         }
     }
