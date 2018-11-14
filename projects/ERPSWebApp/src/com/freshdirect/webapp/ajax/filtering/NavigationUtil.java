@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -64,8 +65,8 @@ public class NavigationUtil {
 	public static final String CATEGORY_FILTER_GROUP_ID = "categoryFilterGroup";
 	public static final String SUBCATEGORY_FILTER_GROUP_ID = "subCategoryFilterGroup";
 	private static final String FILTER_GROUP_ID = "FilterGroup";
-	private static final List<String> NO_EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList();
-	private static final List<String> EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList("Brand");
+	public static final List<String> NO_EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList();
+	public static final List<String> EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList("Brand");
 
     private static final Comparator<ProductFilterGroup> SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME = new Comparator<ProductFilterGroup>() {
 
@@ -337,6 +338,11 @@ public class NavigationUtil {
 		return productFilterGroups;
 	}
 
+    public static ProductFilterGroup createBrandFilter(Collection<BrandModel> brandModels) {
+        List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(brandModels, BRAND_FILTER_GROUP_ID);
+        return ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, false, false);
+    }
+
 	private static ProductFilterGroup createSearchFilterGroupsForRecipes(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
 		List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
 		Map<String, DomainValue> domainValues = new HashMap<String, DomainValue>();
@@ -588,7 +594,7 @@ public class NavigationUtil {
                 productFilterGroup.isExcludeFoodKickSearch(), serviceType, eStoreId);
     }
 
-    private static boolean excludeProductFilterGroup(ProductFilterGroupModel productFilterGroup, List<String> excludeFilterGroupNames) {
+    public static boolean excludeProductFilterGroup(ProductFilterGroupModel productFilterGroup, List<String> excludeFilterGroupNames) {
         return excludeFilterGroupNames != null && excludeFilterGroupNames.contains(productFilterGroup.getName());
     }
 

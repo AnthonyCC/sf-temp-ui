@@ -55,6 +55,7 @@ import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -83,6 +84,7 @@ import com.freshdirect.mobileapi.model.DepartmentSection;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.Wine;
+import com.freshdirect.mobileapi.model.comparator.FilterGroupItemLabelComparator;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
@@ -111,12 +113,16 @@ import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
+import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
 import com.freshdirect.webapp.ajax.browse.data.MySaleItemsData;
+import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
 import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -131,8 +137,19 @@ public class BrowseUtil {
     private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
     private static final String FILTER_KEY_BRANDS = "brands";
     private static final String FILTER_KEY_TAGS = "tags";
+    private static final FilterGroupItemLabelComparator FILTER_GROUP_ITEM_LABEL_COMPARATOR = new FilterGroupItemLabelComparator();
 
     private BrowseUtil() {
+    }
+
+    public static void loadProductsFromSections(List<SectionData> sections, List<ProductData> products) {
+        for (SectionData section : sections) {
+            if (section.getProducts() != null) {
+                products.addAll(section.getProducts());
+            } else {
+                loadProductsFromSections(section.getSections(), products);
+            }
+        }
     }
 
     public static BrowsePageResponse getBrowseResponse(SessionUser user, HttpServletRequest request) {
@@ -1207,11 +1224,7 @@ public class BrowseUtil {
     }
 
     private static void getFiltersForCategory(CategoryModel category, SortOptionInfo soi, List<String> activeFilters, SessionUser user, HttpServletRequest request) {
-        if (category == null)
-            return;
         long s = System.currentTimeMillis();
-        FilterGroup fg = null;
-        FilterGroupItem fgi = null;
         List<ProductModel> productList = getProductListForCategory(category);
 
         if (activeFilters != null && activeFilters.size() > 0) {
@@ -1220,77 +1233,34 @@ public class BrowseUtil {
 
         List<FilteringProductItem> filteringList = ProductItemFilterUtil.createFilteringProductItems(productList);
 
-        List<ContentNodeModel> pfgiList = category.getProductFilterGroups();
-        if (pfgiList != null && pfgiList.size() > 0) {
-            for (ContentNodeModel tmp : pfgiList) {
-                if (tmp instanceof ProductFilterGroupModel) {
-                    ProductFilterGroupModel pf = (ProductFilterGroupModel) tmp;
+        List<String> excludeFilterGroupNames = NavigationUtil.NO_EXCLUDE_FILTER_GROUP_NAMES;
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, user.getFDSessionUser())) {
+            excludeFilterGroupNames = NavigationUtil.EXCLUDE_FILTER_GROUP_NAMES;
+            Set<BrandModel> brands = populateBrands(filteringList);
+            FilterGroup brandFilterGroup = createFilterGroup(filteringList, NavigationUtil.createBrandFilter(brands));
+            Collections.sort(brandFilterGroup.getFilterGroupItems(), FILTER_GROUP_ITEM_LABEL_COMPARATOR);
+            populateFilterGroupIfNotEmpty(soi, brandFilterGroup);
+        }
 
-                    fg = new FilterGroup();
-                    fg.setName(pf.getName());
-                    fg.setId(pf.getContentName());
-                    for (ContentNodeModel fm : pf.getProductFilterModels()) {
-                        ProductFilterModel pfm = (ProductFilterModel) fm;
-
-                        if (ProductItemFilterUtil.countItemsForFilter(filteringList,
-                                ProductItemFilterFactory.getInstance().getProductFilter(pfm, tmp.getParentId(), user.getFDSessionUser())) > 0) {
-                            fgi = new FilterGroupItem();
-                            fgi.setId(pfm.getContentName());
-                            fgi.setLabel(pfm.getName());
-                            fg.addFilterGroupItem(fgi);
-                        }
-
-                    }
-                    if (fg.getFilterGroupItems() != null && fg.getFilterGroupItems().size() > 0) {
-                        soi.addFilterGroup(fg);
-                    }
-                } else if (tmp instanceof ProductFilterMultiGroupModel) {
-                    // Currently only see this done for Country and region so will use this as base:
-                    String lvl1Id = tmp.getContentName();
-                    String lvl1Name = ((ProductFilterMultiGroupModel) tmp).getLevel1Name();
-
-                    fg = new FilterGroup();
-                    fg.setId(tmp.getContentName());
-                    fg.setName(lvl1Name);
-
-                    TagModel tmr = ((ProductFilterMultiGroupModel) tmp).getRootTag();
-
-                    FilterGroupItem fgi2 = null;
-
-                    if (tmr != null && tmr.getChildren() != null && tmr.getChildren().size() > 0) {
-                        List<TagModel> tagChildren = tmr.getChildren();
-                        for (TagModel tm : tagChildren) {
-                            if (ProductItemFilterUtil.countItemsForFilter(filteringList, new TagFilter(tm, lvl1Id)) > 0) {
-
-                                fgi = new FilterGroupItem();
-                                fgi.setId(tm.getContentName());
-                                fgi.setLabel(tm.getName());
-                                fgi.setSubGroupName(((ProductFilterMultiGroupModel) tmp).getLevel2Name());
-                                fgi.setSubGroups(new ArrayList<FilterGroupItem>());
-                                List<TagModel> tagSubChildren = tm.getChildren();
-                                if (tagSubChildren != null && tagSubChildren.size() > 0) {
-                                    for (TagModel stm : tagSubChildren) {
-                                        if (ProductItemFilterUtil.countItemsForFilter(filteringList, new TagFilter(stm, tmp.getParentId())) > 0) {
-                                            fgi2 = new FilterGroupItem();
-                                            fgi2.setId(stm.getContentName());
-                                            fgi2.setLabel(stm.getName());
-                                            fgi.addItemToSubGroup(fgi2);
-                                        }
-
-                                    }
-                                }
-                                fg.addFilterGroupItem(fgi);
-                            }
-                        }
-
-                    }
-                    if (fg.getFilterGroupItems() != null || fg.getFilterGroupItems().size() > 0) {
-                        soi.addFilterGroup(fg);
-                    }
+        for (ContentNodeModel filterGroup : category.getProductFilterGroups()) {
+            if (filterGroup instanceof ProductFilterGroupModel) {
+                ProductFilterGroupModel productFilterGroup = (ProductFilterGroupModel) filterGroup;
+                if (!NavigationUtil.excludeProductFilterGroup(productFilterGroup, excludeFilterGroupNames)) {
+                    populateFilterGroupIfNotEmpty(soi, createFilterGroup(filteringList, productFilterGroup, user.getFDSessionUser()));
                 }
+            } else if (filterGroup instanceof ProductFilterMultiGroupModel) {
+                populateFilterGroupIfNotEmpty(soi, createMultiFilterGroup(filteringList, (ProductFilterMultiGroupModel) filterGroup));
             }
         }
         LOG.debug("Time to getFilters: " + (System.currentTimeMillis() - s));
+    }
+
+    private static Set<BrandModel> populateBrands(List<FilteringProductItem> filteringList) {
+        Set<BrandModel> brands = new HashSet<BrandModel>();
+        for (FilteringProductItem filteringProductItem : filteringList) {
+            brands.addAll(filteringProductItem.getProductModel().getBrands());
+        }
+        return brands;
     }
 
     private static void getSortOptionsForCategory(ContentNodeModel contentNode, SessionUser user, HttpServletRequest request, SortOptionInfo soi) {
@@ -1912,6 +1882,100 @@ public class BrowseUtil {
     private static void sendBrowseEventToAnalytics(HttpServletRequest request, FDUserI user, ContentNodeModel model) {
         if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
             BrowseEventTag.doSendEvent(model.getContentKey().getId(), user, request);
+        }
+    }
+    
+    public static FilterGroup createFilterGroup(MenuBoxData menuBox) {
+        FilterGroup fg = new FilterGroup();
+        fg.setId(menuBox.getId());
+        fg.setName(menuBox.getName());
+        for (MenuItemData item : menuBox.getItems()) {
+            FilterGroupItem fgi = new FilterGroupItem();
+            fgi.setId(item.getId());
+            fgi.setLabel(item.getName());
+            fgi.setHitCount(item.getHitCount());
+            fg.addFilterGroupItem(fgi);
+        }
+        return fg;
+    }
+
+    private static FilterGroup createFilterGroup(List<FilteringProductItem> filteringList, ProductFilterGroup group) {
+        FilterGroup fg = new FilterGroup();
+        fg.setId(group.getId());
+        fg.setName(group.getName());
+        for (ProductItemFilterI productItemFilter : group.getProductFilters()) {
+            int hitCount = ProductItemFilterUtil.countItemsForFilter(filteringList, productItemFilter);
+            if (hitCount > 0) {
+                FilterGroupItem fgi = new FilterGroupItem();
+                fgi.setId(productItemFilter.getId());
+                fgi.setLabel(productItemFilter.getName());
+                fg.addFilterGroupItem(fgi);
+            }
+        }
+        return fg;
+    }
+
+    private static FilterGroup createFilterGroup(List<FilteringProductItem> filteringList, ProductFilterGroupModel group, FDUserI user) {
+        FilterGroup fg = new FilterGroup();
+        fg.setName(group.getName());
+        fg.setId(group.getContentName());
+        for (ProductFilterModel pfm : group.getProductFilterModels()) {
+            if (ProductItemFilterUtil.countItemsForFilter(filteringList, ProductItemFilterFactory.getInstance().getProductFilter(pfm, group.getParentId(), user)) > 0) {
+                FilterGroupItem fgi = new FilterGroupItem();
+                fgi.setId(pfm.getContentName());
+                fgi.setLabel(pfm.getName());
+                fg.addFilterGroupItem(fgi);
+            }
+        }
+        return fg;
+    }
+
+    private static FilterGroup createMultiFilterGroup(List<FilteringProductItem> filteringList, ProductFilterMultiGroupModel multiGroup) {
+        // Currently only see this done for Country and region so will use this as base:
+        String lvl1Id = multiGroup.getContentName();
+        String lvl1Name = multiGroup.getLevel1Name();
+
+        FilterGroup fg = new FilterGroup();
+        fg.setId(multiGroup.getContentName());
+        fg.setName(lvl1Name);
+
+        TagModel tmr = multiGroup.getRootTag();
+
+        FilterGroupItem fgi2 = null;
+
+        if (tmr != null && tmr.getChildren() != null && tmr.getChildren().size() > 0) {
+            List<TagModel> tagChildren = tmr.getChildren();
+            for (TagModel tm : tagChildren) {
+                if (ProductItemFilterUtil.countItemsForFilter(filteringList, new TagFilter(tm, lvl1Id)) > 0) {
+
+                    FilterGroupItem fgi = new FilterGroupItem();
+                    fgi.setId(tm.getContentName());
+                    fgi.setLabel(tm.getName());
+                    fgi.setSubGroupName(multiGroup.getLevel2Name());
+                    fgi.setSubGroups(new ArrayList<FilterGroupItem>());
+                    List<TagModel> tagSubChildren = tm.getChildren();
+                    if (tagSubChildren != null && tagSubChildren.size() > 0) {
+                        for (TagModel stm : tagSubChildren) {
+                            if (ProductItemFilterUtil.countItemsForFilter(filteringList, new TagFilter(stm, multiGroup.getParentId())) > 0) {
+                                fgi2 = new FilterGroupItem();
+                                fgi2.setId(stm.getContentName());
+                                fgi2.setLabel(stm.getName());
+                                fgi.addItemToSubGroup(fgi2);
+                            }
+
+                        }
+                    }
+                    fg.addFilterGroupItem(fgi);
+                }
+            }
+
+        }
+        return fg;
+    }
+
+    private static void populateFilterGroupIfNotEmpty(SortOptionInfo sortOptions, FilterGroup filterGroup) {
+        if (!filterGroup.getFilterGroupItems().isEmpty()) {
+            sortOptions.addFilterGroup(filterGroup);
         }
     }
 }
