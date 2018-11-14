@@ -29,9 +29,9 @@ import com.freshdirect.storeapi.content.ContentNodeModel;
 /**
  * This recommendation service returns items based on a domain specific
  * language.
- * 
+ *
  * @author zsombor
- * 
+ *
  */
 public class ScriptedRecommendationService extends AbstractRecommendationService implements FactorRequirer {
 	private static Category LOGGER = LoggerFactory.getInstance(ScriptedRecommendationService.class);
@@ -56,12 +56,18 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		}
 	}
 
-	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
+	@Override
+    public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
 		return recommendNodes(input, new PrioritizedDataAccess(input.getExclusions(), input.isUseAlternatives(), input.isShowTemporaryUnavailable(),
 				input.isExcludeAlcoholicContent()));
 	}
 
 	public List<ContentNodeModel> recommendNodes(SessionInput input, DataAccess dataAccess) {
+	    // FR-19: log out plant id expected to use for filtering and ranking
+	    if (input.getFulfillmentContext() != null) {
+	        LOGGER.debug("Customer Plant ID=" + input.getFulfillmentContext().getPlantId());
+	    }
+
 		// generate content node list based on the 'generator' expression.
 		List<? extends ContentNodeModel> result = generator.generate(input, dataAccess);
 
@@ -69,8 +75,8 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		// if isOnlyTabHeader is true, we can do the sublist here because we only need to check if there is any recommended products
 		if (input.isOnlyTabHeader() &&  max != 0 && max < result.size()) {
 			result = result.subList(0 , max);
-		} 
-		
+		}
+
 		String userId = input.getCustomerId();
                 PricingContext pricingCtx = input.getPricingContext();
 		List<RankedContent.Single> rankedContents;
@@ -115,7 +121,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		List<? extends ContentNodeModel> deprioritized = dataAccess.getPosteriorNodes();
 		input.setPrioritizedCount( prioritized.size() );
 
-		
+
 		// sample items excluding the union of low and high priority nodes
 		{
 			Set<ContentNodeModel> items2exclude = new HashSet<ContentNodeModel>(prioritized);
@@ -125,7 +131,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		}
 
 
-		/** 
+		/**
 		 *  put the final list together
 		 *  [priority items]+[sampled normal items]+[low priority items]
 		 */
@@ -133,21 +139,22 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		finalList.addAll(prioritized);
 		finalList.addAll(sample);
 		finalList.addAll(deprioritized);
-		
+
 		if (max != 0 && max < finalList.size()) {
 			return finalList.subList(0 , max);
-		} 
+		}
 		return finalList;
 	}
 
 	/**
 	 * Collect needed factors into the buffer
-	 * 
+	 *
 	 * @param buffer
 	 *            Collection<String>
 	 * @return the original buffer.
 	 */
-	public void collectFactors(Collection<String> buffer) {
+	@Override
+    public void collectFactors(Collection<String> buffer) {
 		buffer.addAll(generator.getFactors());
 		if (scoring != null) {
 			String[] variableNames = scoring.getVariableNames();
@@ -157,7 +164,8 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		}
 	}
 
-	public String getDescription() {
+	@Override
+    public String getDescription() {
 		return "generator:" + this.generator + ", scoring:" + this.scoring;
 	}
 
@@ -172,7 +180,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 	public ScoringAlgorithm getScoring() {
 		return scoring;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[sampler=" + sampler

@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
@@ -296,6 +297,16 @@ public class FactorUtil {
             public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return super.getVariable(contentNode, pricingContext);
 			}
+
+			@Override
+			public void reloadCache() {
+                // FR-19 log which plant ID is being used for building cache
+			    FulfillmentContext context = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext();
+			    LOG.info("Reloading; factor=QualityRating; Plant ID=" + context.getPlantId());
+
+			    super.reloadCache();
+			}
+
 		};
 	}
 
@@ -310,6 +321,14 @@ public class FactorUtil {
 				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}
 
+            @Override
+            public void reloadCache() {
+                // FR-19 log which plant ID is being used for building cache
+                FulfillmentContext context = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext();
+                LOG.debug("Reloading; factor=QualityRating_Normalized; Plant ID=" + context.getPlantId());
+
+                super.reloadCache();
+            }
 
 		};
 	}
@@ -324,6 +343,15 @@ public class FactorUtil {
             public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}
+
+			@Override
+            public void reloadCache() {
+			    // FR-19 log which plant ID is being used for building cache
+                FulfillmentContext context = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext();
+                LOG.info("Reloading; factor=QualityRating_Discretized1; Plant ID=" + context.getPlantId());
+
+                super.reloadCache();
+            }
 		};
 	}
 
@@ -337,6 +365,16 @@ public class FactorUtil {
             public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}
+
+
+            @Override
+            public void reloadCache() {
+                // FR-19 log which plant ID is being used for building cache
+                FulfillmentContext context = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext();
+                LOG.info("Reloading; factor=QualityRating_Discretized2; Plant ID=" + context.getPlantId());
+
+                super.reloadCache();
+            }
 		};
 	}
 
