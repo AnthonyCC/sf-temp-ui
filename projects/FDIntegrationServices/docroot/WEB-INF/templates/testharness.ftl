@@ -560,7 +560,7 @@ function loadStuff() {
   } else if (loaddata == "SearchFlowAsMobile") {
     $("#url").val("/search/web/");
     $("#header").val('');
-    $("#payload").val('{"query": "apple", "sortBy":"Sort_Relevancy","orderAscending":true,"filterByIds":{"departmentFilterGroup":["cos_bev"], "categoryFilterGroup":["cos_bev_jui"]}}');
+    $("#payload").val('{"query": "apple", "sortBy":"Sort_Relevancy","orderAscending":true,"filterByIds":{"departmentFilterGroup":["cos_bev"], "categoryFilterGroup":["cos_bev_jui"]}, "max" : "30", "page" : "1"}');
 
   } else if (loaddata == "ProductDetail") {
   	$("#url").val("/product/catid/grns/id/grns_grnkale");
