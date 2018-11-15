@@ -319,8 +319,9 @@ public class NavigationUtil {
         List<String> excludeFilterGroupNames = NO_EXCLUDE_FILTER_GROUP_NAMES;
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
             excludeFilterGroupNames = EXCLUDE_FILTER_GROUP_NAMES;
-            List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(navigationModel.getBrandsOfSearchResults().values(), BRAND_FILTER_GROUP_ID);
-            productFilterGroups.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, true, false));
+            ProductFilterGroup brandFilter = createBrandFilter(navigationModel.getBrandsOfSearchResults().values());
+            brandFilter.setDisplayOnCategoryListingPage(true);
+            productFilterGroups.add(brandFilter);
         }
 
         ProductContainer node = (ProductContainer) navigationModel.getSelectedContentNodeModel();
@@ -434,8 +435,7 @@ public class NavigationUtil {
 				}
 			}
 		}
-            List<ProductItemFilterI> brandFilters = ProductItemFilterFactory.getInstance().getBrandFilters(navigationModel.getBrandsOfSearchResults().values(), BRAND_FILTER_GROUP_ID);
-            results.add(ProductItemFilterFactory.getInstance().createProductFilterGroup(BRAND_FILTER_GROUP_ID, "Brand", ProductFilterGroupType.POPUP.name(), "All Brands", brandFilters, false, false));
+            results.add(createBrandFilter(navigationModel.getBrandsOfSearchResults().values()));
 
         if (FilteringFlowType.SEARCH == navigator.getPageType() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
             FDUserI user = navigationModel.getUser();
