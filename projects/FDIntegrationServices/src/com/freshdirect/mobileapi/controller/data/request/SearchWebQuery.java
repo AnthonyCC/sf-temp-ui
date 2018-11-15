@@ -9,12 +9,11 @@ import com.freshdirect.mobileapi.controller.data.Message;
 public class SearchWebQuery extends Message {
 
     private String query;
-
     private String sortBy;
-
     private Map<String, List<String>> filterByIds = new HashMap<String, List<String>>();
-
     private boolean orderAscending;
+    private int max;
+    private int page;
 
     public String getQuery() {
         return query;
@@ -46,5 +45,21 @@ public class SearchWebQuery extends Message {
 
     public void setOrderAscending(boolean orderAscending) {
         this.orderAscending = orderAscending;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHeaders;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -22,6 +21,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -499,13 +499,14 @@ public class SearchController extends BaseController {
 
             try {
                 FDSessionUser sessionUser = user.getFDSessionUser();
-                final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, sessionUser);
+                final CmsFilteringNavigator navigator = new CmsFilteringNavigator();
                 navigator.setPageTypeType(FilteringFlowType.SEARCH);
                 navigator.setSearchParams(requestMessage.getQuery());
                 navigator.setSortBy(NVL.apply(requestMessage.getSortBy(), SortStrategyType.RECENCY.name()));
                 navigator.setOrderAscending(requestMessage.isOrderAscending());
                 navigator.setRequestFilterParams(requestMessage.getFilterByIds());
-                navigator.setActivePage(0);
+                navigator.setActivePage(requestMessage.getPage());
+                navigator.setPageSize(requestMessage.getMax() > 0 ? requestMessage.getMax() : FDStoreProperties.getSearchPageSize());
 
                 final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, sessionUser);
                 BrowseData browseDataPrototype = flow.getBrowseDataPrototype();
@@ -528,7 +529,8 @@ public class SearchController extends BaseController {
                 }
 
                 result.setSortOptions(browseDataPrototype.getSortOptions().getSortOptions());
-                result.setTotalResultCount(productIds.size());
+                result.setTotalResultCount(browseDataPrototype.getPager().getItemCount());
+                result.setPager(browseDataPrototype.getPager());
                 result.setQuery(requestMessage.getQuery());
                 result.setProductIds(productIds);
                 result.setFavProductIds(favProductIds);

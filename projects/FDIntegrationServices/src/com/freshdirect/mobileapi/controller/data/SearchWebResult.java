@@ -5,19 +5,21 @@ import java.util.List;
 
 import com.freshdirect.mobileapi.controller.data.response.FilterGroup;
 import com.freshdirect.mobileapi.model.AdProducts;
+import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.data.SortOptionData;
 
 public class SearchWebResult extends Message {
 
     private String didYouMean;
-    private String query = "";
-    private Integer totalResultCount = 0;
+    private String query;
+    private int totalResultCount;
     private List<String> productIds;
     private List<String> favProductIds;
     private List<SortOptionData> sortOptions;
     private List<FilterGroup> filterGroups = new ArrayList<FilterGroup>();
     private List<AdProducts> adProducts;
     private String pageBeacon;
+    private PagerData pager;
 
     public String getQuery() {
         return query;
@@ -59,11 +61,11 @@ public class SearchWebResult extends Message {
         return this.favProductIds;
     }
 
-    public Integer getTotalResultCount() {
+    public int getTotalResultCount() {
         return totalResultCount;
     }
 
-    public void setTotalResultCount(Integer totalResultCount) {
+    public void setTotalResultCount(int totalResultCount) {
         this.totalResultCount = totalResultCount;
     }
 
@@ -89,5 +91,13 @@ public class SearchWebResult extends Message {
 
     public void setFilterGroups(List<FilterGroup> filterGroups) {
         this.filterGroups = filterGroups;
+    }
+
+    public PagerData getPager() {
+        return pager;
+    }
+
+    public void setPager(PagerData pager) {
+        this.pager = pager;
     }
 }
