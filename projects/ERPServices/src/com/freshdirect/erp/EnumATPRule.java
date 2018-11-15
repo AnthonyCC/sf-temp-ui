@@ -20,7 +20,9 @@ import org.apache.commons.lang.enums.ValuedEnum;
  * @author $Author: Mike Rose$
  */
 public class EnumATPRule extends ValuedEnum {
-
+	
+	private static final long serialVersionUID = -7129650521543789084L;
+	
 	public final static EnumATPRule MATERIAL = new EnumATPRule("MATERIAL", 0, "Material Availability");
 	public final static EnumATPRule SIMULATE = new EnumATPRule("SIMULATE", 1, "Sales Order Simulate");
 	public final static EnumATPRule JIT = new EnumATPRule("JIT", 2, "Just-in-Time");
