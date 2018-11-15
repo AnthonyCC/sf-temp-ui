@@ -541,16 +541,16 @@ public class SearchController extends BaseController {
                 }
             } catch (FDResourceException e) {
                 result.addErrorMessage(e.getMessage());
-                LOG.error(e.getMessage());
+                LOG.error(e);
             } catch (InvalidFilteringArgumentException e) {
                 result.addErrorMessage(e.getMessage());
-                LOG.error(e.getMessage());
+                LOG.error(e);
             } catch (UnbxdServiceUnavailableException e) {
                 result.addErrorMessage(e.getMessage());
-                LOG.error(e.getMessage());
+                LOG.error(e);
             } catch (FDNotFoundException e) {
                 result.addErrorMessage(e.getMessage());
-                LOG.error(e.getMessage());
+                LOG.error(e);
             }
         }
         setResponseMessage(model, result, user);
