@@ -927,14 +927,9 @@ public class CmsFilteringFlow {
 
     private void reOrderMenuItemsByHitCountForMenuBox(List<MenuBoxData> leftNav, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters, String menuBoxId) {
         MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(menuBoxId, leftNav);
-        reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
+        MenuBoxDataService.getDefaultMenuBoxDataService().addHitCountFromAllFilters(menuBoxData, items, allFilters);
+        MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData);
         MenuBoxDataService.getDefaultMenuBoxDataService().removeHitCountFromAllFilters(menuBoxData);
-    }
-
-    private void reOrderMenuItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
-        if (menuBoxData != null) {
-            MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData, items, allFilters);
-        }
     }
 
     private void reOrderAllMenuItemsByName(NavigationModel navigationModel) {
@@ -944,13 +939,7 @@ public class CmsFilteringFlow {
 
     private void reOrderMenuItemsByNameForMenuBox(List<MenuBoxData> leftNav, String menuBoxId) {
         MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(menuBoxId, leftNav);
-        reOrderMenuItemsByName(menuBoxData);
-    }
-
-    private void reOrderMenuItemsByName(MenuBoxData menuBoxData) {
-        if (menuBoxData != null) {
-            MenuItemSorter.getDefaultMenuItemSorter().sortItemsByName(menuBoxData);
-        }
+        MenuItemSorter.getDefaultMenuItemSorter().sortItemsByName(menuBoxData);
     }
 
     private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDUserI user, NavigationModel navigationModel) {
