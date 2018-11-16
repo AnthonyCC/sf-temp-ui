@@ -337,7 +337,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					String days_in_house = rs.getString(15);
 					String sustainabilityRating=rs.getString(16);
 					//String freshness = getFreshnessValue(days_fresh, days_in_house);
-					matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), days_fresh, sustainabilityRating,rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+					matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), days_fresh, sustainabilityRating,rs.getString("picking_plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
 					matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"),rs.getString("DAYPART_VALUE"),rs.getString("PICKING_PLANT_ID"))));
 					
 				}

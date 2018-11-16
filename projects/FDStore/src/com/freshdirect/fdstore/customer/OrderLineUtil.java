@@ -557,7 +557,12 @@ public class OrderLineUtil {
 		        // find most recent fd product based on sku
 		        FDProductInfo productInfo;
 				try {
-					productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
+//					productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
+					if(prodSel instanceof FDModifyCartLineI){
+						productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode(),prodSel.getVersion());
+					}else{
+						productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
+					}
 					
 				} catch (FDSkuNotFoundException e) {
 					//throw new FDInvalidConfigurationException(e);
