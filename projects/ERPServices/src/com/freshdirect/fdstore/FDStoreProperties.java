@@ -1106,6 +1106,8 @@ public class FDStoreProperties {
 
 	//APPDEV-7480
     private static final String PROP_JAVASCRIPT_FIRST_ENABLED = "fdstore.javascript.first.enabled";
+    private static final String PROP_API_INVALID_SKU_CHECK_ENABLED = "fdstore.api.invalid.sku.check.enabled";
+    private static final String PROP_API_INVALID_SKU_CHECK_ORDER_MOD_ENABLED = "fdstore.api.invalid.sku.check.order.mod.enabled";
 
     private static Map<Long, Integer> METHODS_IN_EJB_SCOPE = new ConcurrentHashMap<Long,Integer>();
 
@@ -2129,6 +2131,9 @@ public class FDStoreProperties {
         defaults.put(PROP_FK_VIEWCART_PAGE_CURRENT_CUSTOMER_SITE_FEATURES, "FK_DYF,FK_CART_TOPRATED,FK_CART_MOSTPOP");
 
         defaults.put(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT, "12");
+        defaults.put(PROP_API_INVALID_SKU_CHECK_ENABLED,"true");
+        defaults.put(PROP_API_INVALID_SKU_CHECK_ORDER_MOD_ENABLED,"true");
+        
 
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5475,5 +5480,13 @@ public class FDStoreProperties {
 
     public static int getMaxProductsOnFoodKickViewCartRecommenders() {
         return Integer.parseInt(get(PROP_FK_VIEWCART_PAGE_RECOMMENDATION_LIMIT));
+    }
+    
+    public static boolean isInvalidSkuCheckAPIEnabled() {
+        return (Boolean.valueOf(get(PROP_API_INVALID_SKU_CHECK_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isInvalidSkuCheckForModifyLinesAPIEnabled() {
+        return (Boolean.valueOf(get(PROP_API_INVALID_SKU_CHECK_ORDER_MOD_ENABLED))).booleanValue();
     }
 }

@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
@@ -558,8 +559,14 @@ public class OrderLineUtil {
 		        FDProductInfo productInfo;
 				try {
 //					productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
-					if(prodSel instanceof FDModifyCartLineI){
-						productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode(),prodSel.getVersion());
+					if(prodSel instanceof FDModifyCartLineI && FDStoreProperties.isInvalidSkuCheckForModifyLinesAPIEnabled()){
+						if(null !=prodSel.getUserContext() && null!=prodSel.getUserContext().getPricingContext() && null!=prodSel.getUserContext().getPricingContext().getZoneInfo() 
+								&& null!=zone && prodSel.getUserContext().getPricingContext().getZoneInfo().equals(zone) ){
+							return false;
+						}
+						else{
+							productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode(),prodSel.getVersion());
+						}
 					}else{
 						productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
 					}
@@ -586,13 +593,14 @@ public class OrderLineUtil {
 	public static List<FDCartLineI> getInvalidLines(List<FDCartLineI> productSelections, UserContext userCtx) {
 			List<FDCartLineI> invalidSelections = new ArrayList<FDCartLineI>(productSelections.size());
 
-		for ( FDCartLineI ps : productSelections ) {
-			
-				if(OrderLineUtil.isInvalid(ps,userCtx)) {
-					invalidSelections.add(ps);
-				}
+		if(FDStoreProperties.isInvalidSkuCheckAPIEnabled()){
+			for ( FDCartLineI ps : productSelections ) {
+				
+					if(OrderLineUtil.isInvalid(ps,userCtx)) {
+						invalidSelections.add(ps);
+					}
+			}
 		}
-
 		return invalidSelections;
 	}
 }
