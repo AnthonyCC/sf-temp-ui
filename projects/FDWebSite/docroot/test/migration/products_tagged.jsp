@@ -4,7 +4,7 @@
 %><%@page import="java.util.Comparator"
 %><%@page import="java.util.List"
 %><%@page import="com.freshdirect.cms.core.domain.ContentKey"
-%><%@page import="com.freshdirect.fdstore.FDProductInfo"
+%><%@page import="com.freshdirect.fdstore.FDProduct"
 %><%@page import="com.freshdirect.storeapi.content.CategoryModel"
 %><%@page import="com.freshdirect.storeapi.content.ProductModel"
 %><%@page import="com.freshdirect.storeapi.content.SkuModel"
@@ -25,18 +25,18 @@ if (showProducts && "export".equals(request.getParameter("action"))) {
     String tagName = request.getParameter("tag");
 
     List<ProductModel> prds = (List<ProductModel>) obj.getTaggedProducts("Tag:"+tagName);
-%>"CATEGORY";"PRODUCT";"SKU";"MATERIAL"
+%>"CATEGORY";"PRODUCT";"PRODUCT_ID";"SKU";"MATERIAL"
 <%  for (ProductModel product : prds) {
         CategoryModel homeCategory = product.getCategory();
         SkuModel sku = !product.getSkus().isEmpty() ? product.getSkus().get(0) : null;
-        FDProductInfo fdproductinfo = null;
+        FDProduct fdProduct = null;
         if (sku != null) {
             try {
-                fdproductinfo = sku.getProductInfo();
+                fdProduct = sku.getProduct();
             } catch (Exception exc) {
             }
         }
-%>"<%= homeCategory.getFullName() %>";"<%= product.getFullName() %>";"<%= sku != null ? sku.getSkuCode() : "n/a" %>";"<%= fdproductinfo != null ? fdproductinfo.getMaterialNumber() : "n/a" %>"
+%>"<%= homeCategory.getFullName() %>";"<%= product.getFullName() %>";"<%= product.getContentKey().id %>";"<%= sku != null ? sku.getSkuCode() : "n/a" %>";"<%= fdProduct != null ? fdProduct.getMaterial().getMaterialNumber() : "n/a" %>"
 <% }
 } else {
 %><!DOCTYPE html>
@@ -82,6 +82,7 @@ if (showProducts && "export".equals(request.getParameter("action"))) {
 			<tr>
 				<th>Category</th>
 				<th>Product</th>
+                <th>Product ID</th>
                 <th>SKU</th>
                 <th>Material</th>
 			</tr>
@@ -106,12 +107,15 @@ if (showProducts && "export".equals(request.getParameter("action"))) {
 					</c:otherwise>
 				</c:choose>
 				</td>
+                <td>
+                    <span>${prd.contentKey.id}</span>
+                </td>
 				<c:choose>
 				    <c:when test="${fn:length(prd.skus) > 0}">
 				        <c:set var="sku" value="${prd.skus[0]}" />
-				        <c:set var="fdproductinfo" value="${sku.productInfo}" />
+				        <c:set var="fdproduct" value="${sku.product}" />
                 <td>${sku.skuCode}</td>
-                <td>${fdproductinfo.materialNumber}</td>
+                <td>${fdproduct.material.materialNumber}</td>
 				    </c:when>
 				    <c:otherwise>
                 <td>n/a</td>
