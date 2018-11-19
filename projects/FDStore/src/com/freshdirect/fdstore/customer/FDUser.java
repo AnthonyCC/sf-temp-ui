@@ -1672,7 +1672,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         // Unlimited Pass.
         if (isDlvPassContextMatched() && EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())) {
             Date today = new Date();
-            return today.before(dlvPassInfo.getExpDate());
+            return (null ==dlvPassInfo.getExpDate() || today.before(dlvPassInfo.getExpDate()));
         } else {
             return false;
         }
@@ -4176,7 +4176,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		if (null != getDlvPassInfo()
 				&& getSelectedServiceType() == EnumServiceType.HOME
 				&& EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())
-				&& Calendar.getInstance().getTime()
+				&& null !=dlvPassInfo.getExpDate() && Calendar.getInstance().getTime()
 						.before(dlvPassInfo.getExpDate()) // Active and not expired
 				&& (null != getDlvPassInfo().getTypePurchased()
 						.getEligibleDlvDays()
