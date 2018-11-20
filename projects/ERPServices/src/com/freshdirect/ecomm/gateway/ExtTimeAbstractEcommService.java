@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -37,6 +38,7 @@ import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.monitor.RequestLogger;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class ExtTimeAbstractEcommService {
@@ -47,14 +49,20 @@ public abstract class ExtTimeAbstractEcommService {
 	private static final Category LOGGER = LoggerFactory.getInstance(ExtTimeAbstractEcommService.class);
 
 	static {
-
+		// add converters
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 		converters.add(new ByteArrayHttpMessageConverter());
 		converters.add(new StringHttpMessageConverter());
 		converters.add(new ResourceHttpMessageConverter());
 		converters.add(getMappingJackson2HttpMessageConverter());
-		restTemplate = new RestTemplate(converters);
+		
+		// add interceptors
+		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
+		interceptors.add(new HeaderRequestInterceptor(RequestLogger.FD_ORIGIN_NAME, RequestLogger.getServerName()));
 
+		restTemplate = new RestTemplate(converters);
+		restTemplate.setInterceptors(interceptors);
+		
 		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
 		// have no specific route, maxTotal = maxPerRotue
 		cManager.setMaxTotal(FDEcommProperties.getEcomServiceConnectionPool());

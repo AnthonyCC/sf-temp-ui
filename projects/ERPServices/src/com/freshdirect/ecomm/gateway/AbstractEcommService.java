@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -46,6 +47,7 @@ import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.monitor.RequestLogger;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class AbstractEcommService {
@@ -70,7 +72,13 @@ public abstract class AbstractEcommService {
 		converters.add(new StringHttpMessageConverter());
 		converters.add(new ResourceHttpMessageConverter());
 		converters.add(getMappingJackson2HttpMessageConverter());
+		
+		// add interceptors
+		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
+		interceptors.add(new HeaderRequestInterceptor(RequestLogger.FD_ORIGIN_NAME, RequestLogger.getServerName()));
+
 		restTemplate = new RestTemplate(converters);
+		restTemplate.setInterceptors(interceptors);
 
 		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
 		
