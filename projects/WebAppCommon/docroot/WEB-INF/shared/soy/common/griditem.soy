@@ -62,6 +62,7 @@
  */
 {template .transactionalGridItem autoescape="false"}
 {call .potatoTransactionalGridItem}
+    {param uuid:$item.uuid /}
 	{param productId:$item.productId /}
 	{param skuCode:$item.skuCode /}
 	{param catId:$item.catId /}
@@ -255,6 +256,7 @@
 
 
 /**
+ * @param uuid
  * @param productId
  * @param skuCode
  * @param catId
@@ -335,10 +337,10 @@
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
 	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '[abFeatures.productCard not set]') : '[abFeatures not set]' /}
-	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
+	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($uuid ? $uuid : '') /}
 	{let $badge: ($freeSamplePromoProduct and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel'))))?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel')))) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel')))) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{call common.getUUID}{param uuid:$uuid /}{param productId:$productId /}{/call}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
 	data-in-stock="{$available}"
@@ -498,9 +500,10 @@
 			<div class="nutritionSortValue"><strong>{$nutritionSortValue}</strong>{if $nutritionServingSizeValue} / {$nutritionServingSizeValue}{/if}</div>
 		</div>
 	{/if}
-	<form class="atc" id="atc_form_{$catId}_{$productId}" fdform="atc_form_{$catId}_{$productId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
+	<form class="atc" id="atc_form_{call common.getUUID}{param uuid:$uuid /}{param catId:$catId /}{param productId:$productId /}{/call}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
 			{if $available}
 				{call common.potatoTransactionalGridItemControls}
+				    {param uuid:$uuid/}
 					{param customizePopup:$customizePopup /}
 					{param hasTerms:$hasTerms /}
 					{param soldBySalesUnit:$soldBySalesUnit /}
@@ -711,6 +714,7 @@
  * @param? freeSamplePromoProduct free sample product
  * @param? mobWeb
  * @param? moduleData
+ * @param uuid
  */
 {template .potatoTransactionalGridItemControls autoescape="false"}
 	<div class="portrait-item-controls" data-component="product-controls">
@@ -726,7 +730,7 @@
 					{param salesUnit:$salesUnit /}
 					{param quantity:$quantity /}
 					{param freeSamplePromoProduct:$freeSamplePromoProduct /}
-					{param uid: $catId+'_'+$productId /}
+					{param uid}{$uuid}{/param}
 					{param cssbuttons: true /}
 					{param eventSource:$eventSource /}
 				{/call}

@@ -154,3 +154,27 @@
 		{param mobWeb:$mobWeb /}
 	{/call}
 {/template}
+
+
+/**
+* @param? prefix
+* @param uuid
+* @param? catId
+* @param? productId
+* @param? skuCode
+* @param? suffix
+* @param? separator
+* @param? listId
+* @param? originalLineId
+*/
+{template .getUUID autoescape="false"}
+{let $separator: $separator ? $separator : '_' /}
+{if $prefix}{$prefix}{$separator}{/if}
+{if $uuid}{$uuid}{/if}
+{if $catId}{$separator}{$catId}{/if}
+{if $productId}{$separator}{$productId}{/if}
+{if $skuCode}{$separator}{$skuCode}{/if}
+{if $suffix}{$separator}{$suffix}{/if}
+{if $listId}{$separator}{$listId}{/if}
+{if $originalLineId}{$separator}{$originalLineId}{/if}
+{/template}
