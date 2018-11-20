@@ -821,7 +821,15 @@ var dataLayer = window.dataLayer || [];
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
       location = 'pdp_' + productId;
     } else if ($('ul.breadcrumbs li').length) {
-      location = 'cat_' + safeNameSpacePlus($('ul.breadcrumbs li').toArray().map(function (li) { return li.textContent.toLowerCase(); }).join('_'));
+      location = 'cat_' + safeNameSpacePlus($('ul.breadcrumbs li').toArray().map(function (li) {
+        let bc = li.textContent.toLowerCase();
+        // AN-214 replace 'whats+good' with category id from the url
+        if (bc === "what's good") {
+          let wgd_id = fd.utils.getParameterByName('id');
+          bc = wgd_id ? wgd_id.replace('_', ' ') : bc;
+        }
+        return bc;
+      }).join('_'));
     } else if (searchParams) {
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
     } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {
