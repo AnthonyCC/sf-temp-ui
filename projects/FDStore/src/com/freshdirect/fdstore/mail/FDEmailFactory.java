@@ -118,7 +118,9 @@ public class FDEmailFactory {
 			email.setXslPath("h_final_amount_confirm_v2.xsl", "x_final_amount_confirm_v2.xsl");
 			
 			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-			 
+			 if(order.getDeliveryAddress().isNotifyOrderInvoiceToSecondEmail()  && null != customer.getSecondEmailAddress()) {
+				 addCcMailToNotifyCosUsers(customer, email);
+			 }
 			if(order.getShortedItems().size() > 0 || order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0) {
 				email.setSubject("We're sorry but your FreshDirect order's missing item(s) | Here's your receipt");
 			} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
