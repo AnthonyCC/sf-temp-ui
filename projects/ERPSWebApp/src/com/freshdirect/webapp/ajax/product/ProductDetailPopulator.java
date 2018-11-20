@@ -692,15 +692,16 @@ public class ProductDetailPopulator {
     }
     
     private static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
-        item.setCatId(usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName());
-        item.setDepartmentId(
-                usePrimaryHome ? productModel.getParentNode().getParentNode().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId());
-        item.setSkuCode(sku.getSkuCode());
-        item.setCustomizePopup(!productModel.isAutoconfigurable());
-        item.setHasTerms(productModel.hasTerms());
-        item.setDiscontinued(productModel.isDiscontinued());
-        item.setOutOfSeason(productModel.isOutOfSeason());
-        item.setNewProduct(productModel.isNew());
+        if (productModel != null && productModel.getCategory() != null && productModel.getCategory().getDepartment() != null) { // this can happen if the product is orphan
+            item.setCatId(usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName());
+            item.setDepartmentId(productModel.getCategory().getDepartment().getContentKey().getId());
+            item.setSkuCode(sku.getSkuCode());
+            item.setCustomizePopup(!productModel.isAutoconfigurable());
+            item.setHasTerms(productModel.hasTerms());
+            item.setDiscontinued(productModel.isDiscontinued());
+            item.setOutOfSeason(productModel.isOutOfSeason());
+            item.setNewProduct(productModel.isNew());
+        }
     }
 
     private static void populateAvailable(ProductData item, FDUserI user, ProductModel productModel) {

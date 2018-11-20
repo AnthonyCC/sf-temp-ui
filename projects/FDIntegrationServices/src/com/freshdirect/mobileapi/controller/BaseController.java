@@ -971,7 +971,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         if (pages != null) {
             for (CMSWebPageModel page : pages) {
-                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page);
+                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page, pageRequest);
                 pageRequest.limitSections(page);
             }
         }

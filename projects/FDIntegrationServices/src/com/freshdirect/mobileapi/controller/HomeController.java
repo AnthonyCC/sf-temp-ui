@@ -247,7 +247,7 @@ public class HomeController extends BaseController {
 				}
 			}
             if (pageResponse != null && pageResponse.getPage() != null) {
-                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, pageResponse.getPage());
+                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, pageResponse.getPage(), pageRequest);
                 pageRequest.limitSections(pageResponse.getPage());
             }
 		}
