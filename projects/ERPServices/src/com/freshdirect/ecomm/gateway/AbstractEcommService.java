@@ -87,19 +87,9 @@ public abstract class AbstractEcommService {
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 
 		requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout() * 1000);
-		requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000);
+		requestFactory.setConnectTimeout(1000);
 		restTemplate.setRequestFactory(requestFactory);
-		
-		
-		/*try {
-		    IdleConnectionMonitorThread staleMonitor = new IdleConnectionMonitorThread(cManager);
-		    staleMonitor.start();
-			staleMonitor.join(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-*/
+	
 	}
 	
 
@@ -130,13 +120,12 @@ public abstract class AbstractEcommService {
 			}
 			return response.getBody();
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
-			LOGGER.info("input json:" + inputJson);
+			LOGGER.error("api url:" + url, e);
+			LOGGER.error("input json:" + inputJson);
 			throw new FDResourceException("EComm API connection failure");
 		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("api url:" + url, e);
+			LOGGER.error("input json:" + inputJson);
 			throw new FDResourceException("API syntax error");
 		}
 	}
@@ -149,18 +138,6 @@ public abstract class AbstractEcommService {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	/*
-	 * protected <T> T getData( String url, Class<T> clazz) throws
-	 * FDResourceException {
-	 * 
-	 * try { RestTemplate restTemplate = getRestTemplate(); ResponseEntity<T>
-	 * response = restTemplate.getForEntity(new URI(url),clazz); return
-	 * response.getBody(); } catch (RestClientException e) {
-	 * LOGGER.info(e.getMessage()); LOGGER.info("api url:"+url); throw new
-	 * FDResourceException("EComm API connection failure"); } catch
-	 * (URISyntaxException e) { LOGGER.info(e.getMessage()); LOGGER.info(
-	 * "api url:"+url); throw new FDResourceException("API syntax error"); } }
-	 */
 	public <T, E> Response<T> httpGetDataTypeMap(String url, TypeReference<E> type) throws FDResourceException {
 		long starttime = System.currentTimeMillis();
 		Response<T> responseOfTypestring = null;
@@ -170,24 +147,19 @@ public abstract class AbstractEcommService {
 			response = restTemplate.getForEntity(new URI(url), String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
-			LOGGER.info("JsonParseException: url=" + url, e);
-			LOGGER.info("api url:" + url);
+			LOGGER.error("JsonParseException: url=" + url, e);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
-			LOGGER.info("JsonMappingException: url" + url, e);
-			LOGGER.info("api url:" + url);
+			LOGGER.error("JsonMappingException: url" + url, e);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("IOException: url" + url, e);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("RestClientException: url" + url, e);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("URISyntaxException: url" + url, e);
 			throw new FDResourceException(e, "API Syntax failure");
 		}
 		long endTime = System.currentTimeMillis() - starttime;
@@ -205,7 +177,6 @@ public abstract class AbstractEcommService {
 
 	public <T, E> Response<T> postDataTypeMap(String inputJson, String url, TypeReference<E> type)
 			throws FDResourceException {
-		long starttime = System.currentTimeMillis();
 		Response<T> responseOfTypestring = null;
 		RestTemplate restTemplate = getRestTemplate();
 		ResponseEntity<String> response;
@@ -215,36 +186,22 @@ public abstract class AbstractEcommService {
 			response = restTemplate.postForEntity(new URI(url), entity, String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
-			LOGGER.info("Json Parsing failure", e);
-			LOGGER.info("api url:" + url);
+			LOGGER.error("JsonParseException: url=" + url, e);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
-			LOGGER.error("Json Mapping failure", e);
-			LOGGER.info("api url:" + url);
+			LOGGER.error("JsonMappingException: url" + url, e);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("IOException: url" + url, e);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("RestClientException: url" + url, e);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("URISyntaxException: url" + url, e);
 			throw new FDResourceException(e, "API Syntax failure");
 		}
-		/*long endTime = System.currentTimeMillis() - starttime;
-		if (FDEcommProperties.isFeatureEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
-			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-			StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
-					- (stackTraceElements.length - 2)];
-
-			LOGGER.info(String.format("WebserviceExternalCall classname=%s, method= %s elapsed time=%s ms",
-					stackElem.getClassName(), stackElem.getMethodName(), endTime));
-		}*/
-
+		
 		return responseOfTypestring;
 	}
 	
@@ -263,24 +220,21 @@ public abstract class AbstractEcommService {
 			response = restTemplate.postForEntity(new URI(url), entity, String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
-			LOGGER.info("Json Parsing failure", e);
-			LOGGER.info("api url:" + url);
+			LOGGER.error("Json Parsing failure", e);
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
 			LOGGER.error("Json Mapping failure", e);
-			LOGGER.info("api url:" + url);
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("IOException: url" + url, e);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("RestClientException: url" + url, e);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("URISyntaxException: url" + url, e);
 			throw new FDResourceException(e, "API Syntax failure");
 		}
 		/*long endTime = System.currentTimeMillis() - starttime;
@@ -333,12 +287,10 @@ public abstract class AbstractEcommService {
 
 			return response.getBody();
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("api url:" + url, e);
 			throw new FDResourceException("API connection failure");
 		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error("api url:" + url, e);
 			throw new FDResourceException("API syntax error");
 		}
 	}
@@ -350,8 +302,7 @@ public abstract class AbstractEcommService {
 			ResponseEntity<T> response = restTemplate.getForEntity(url, clazz, params);
 			return response.getBody();
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.error("api url:"+url);
 			throw new FDResourceException(e, "API connection failure");
 		} 
 	}
@@ -365,8 +316,7 @@ public abstract class AbstractEcommService {
 			ResponseEntity<T> response = restTemplate.postForEntity(url, entity, clazz, params);
 			return response.getBody();
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.error("api url:"+url, e);
 			throw new FDResourceException(e, "API connection failure");
 		} 
 	}
@@ -398,7 +348,7 @@ public abstract class AbstractEcommService {
 		try {
 			return getMapper().writeValueAsString(object);
 		} catch (JsonProcessingException e) {
-			LOGGER.info(e.getMessage());
+			LOGGER.error("error occured in buildRequest", e);
 			throw new FDEcommServiceException("Unable to process the request.");
 		}
 	}
@@ -444,12 +394,8 @@ public abstract class AbstractEcommService {
 			return response.getBody();
 
 		} catch (RestClientException e) {
-
-			LOGGER.info(e.getMessage());
-
-			LOGGER.info("api url:" + url);
-
-			LOGGER.info("input json:" + inputJson);
+			LOGGER.error("api url:" + url, e);
+			LOGGER.error("input json:" + inputJson);
 
 			throw new FDResourceException("EComm API connection failure");
 
