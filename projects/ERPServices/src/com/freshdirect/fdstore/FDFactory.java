@@ -743,14 +743,6 @@ public class FDFactory {
 		// !!! optimize this, so that it only makes one call to the session bean
 		List products = new ArrayList(skus.length);
 
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp_BULKSKU)){
-			try {
-				products = FDFactoryService.getInstance().getProduct(skus);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				throw new FDResourceException(e);
-			}
-		}else {
 			for (int i=0; i<skus.length; i++) {
 				try {
 					products.add( getProduct(skus[i]) );
@@ -759,7 +751,7 @@ public class FDFactory {
 				}
 			}
 
-		}
+		
 
 		return products;
 	}
