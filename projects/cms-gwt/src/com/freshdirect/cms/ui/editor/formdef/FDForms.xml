@@ -434,6 +434,15 @@
 							<CmsField><attribute>HOW_TO_COOK_IT_PRODUCTS</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection>
+						<title>CONSUMED BY</title>
+						<fields>
+							<CmsField><attribute>consumedByVirtualCategory</attribute></CmsField>
+							<CmsField><attribute>consumedByDepartmentCarousel</attribute></CmsField>
+							<CmsField><attribute>consumedByCategoryCarousel</attribute></CmsField>
+							<CmsField><attribute>consumedByStoreCarousel</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage id="ratings">
