@@ -1,118 +1,3 @@
-#selfCreditInit .self-credit-no-orders {
-  font-size: 14px;
-}
-#selfCreditInit ~ #FDCustomSelect {
-  width: 340px;
-  box-shadow: none;
-  box-sizing: border-box;
-  padding: 0;
-}
-#selfCreditInit ~ #FDCustomSelect ul.customselect {
-  width: 100%;
-}
-#selfCreditInit ~ #FDCustomSelect.selectlight .popupcontent .select-close-container {
-  display: none;
-}
-
-#selfCreditInit ~ #FDCustomSelect .customselect li {
-  box-sizing: border-box;
-  padding: 10px;
-}
-#selfCreditInit ~ #FDCustomSelect .customselect li button {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 14px;
-  color: #444444;
-}
-#selfCreditInit ~ #FDCustomSelect ul.customselect li.selected {
-  background-color: #edf5ee;
-}
-#selfCreditInit ~ #FDCustomSelect ul.customselect li.selected button {
-  text-decoration: none;
-}
-#selfCreditInit ~ #FDCustomSelect .customselect li:hover,
-#selfCreditInit ~ #FDCustomSelect .customselect li button:hover {
-  text-decoration: none;
-  text-decoration-color: transparent;
-}
-#selfCreditInit ~ #FDCustomSelect li button {
-  padding: 0;
-}
-@media(max-width: 768px) {
-  #selfCreditInit ~ #FDCustomSelect {
-    width: auto;
-  }
-
-  #selfCreditInit ~ #FDCustomSelect.selectlight .popupcontent .select-close-container {
-    display: block;
-    height: 50px;
-    background: #444444;
-  }
-
-  #selfCreditInit ~ #FDCustomSelect.selectlight .popupcontent .overlay-close-icon {
-    filter: brightness(0) invert(1);
-    float: right;
-    position: relative;
-    top: 10px;
-  }
-
-  #customselect-close-container {         
-    position: relative;
-    top: 0;
-    right: 0;
-    z-index: 2003;
-    height: 50px;
-    width: 100vw;
-    background-color: #444444; 
-  }
-  #customselect-close-container button {
-    filter: brightness(0) invert(1);
-    top: 0;
-  }
-  #selfCreditInit ~ #FDCustomSelect.browse-popup.shown.selectlight {
-    top: 0;
-    height: 100%;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow-y: auto;
-    max-height: none;
-    border: none;
-    widows: 100%;
-  }
-  #selfCreditInit ~ #FDCustomSelect .selectlight--header {
-    font-size: 20px;
-    font-weight: bold;
-    color: #ffffff;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    padding-left: 20px;
-    position: relative;
-    top: 10px;
-  }
-
-  #selfCreditInit ~ #FDCustomSelect .customselect li button {
-    padding-left: 20px;
-    color: #333333;
-  }
-  #selfCreditInit ~ #FDCustomSelect.selectlight li {
-    height: 83px;
-    padding: 20px;
-  }
-  #selfCreditInit ~ #FDCustomSelect.selectlight li .checkbox-helper {
-    display: inline-flex;
-    width: 26px;
-    height: 26px;
-    border-radius: 50px;
-    border: 1px solid #dddddd;
-  }
-  #selfCreditInit ~ #FDCustomSelect ul.customselect li.selected {
-    background: #ffffff;
-  }
-  #selfCreditInit ~ #FDCustomSelect ul.customselect li.selected span {
-    background-image: url('/media_stat/images/common/check-radio-selected.svg');
-    background-position: center center;
-    background-size: 170%;
-  }
-}
 #selfCreditIssueReport.overlay-medium {
   font-family: "Verdana", sans-serif;
   letter-spacing: 0.3px;
@@ -164,13 +49,13 @@
 #selfCreditIssueReport.overlay-medium .body-info-col:nth-of-type(1) {
   width: 100%;
 }
-#selfCreditIssueReport.overlay-medium .body-header-col label,
+#selfCreditIssueReport.overlay-medium .body-header-col .body-info-header,
 #selfCreditIssueReport.overlay-medium .body-header-col span {
   display: inline-block;
   font-size: 14px;
   width: 100%;
 }
-#selfCreditIssueReport.overlay-medium .self-credit-body .body-info-col label,
+#selfCreditIssueReport.overlay-medium .self-credit-body .body-info-col .body-info-header,
 #selfCreditIssueReport.overlay-medium .self-credit-body .body-info-col span {
   display: block;
   font-size: 14px;
@@ -348,7 +233,7 @@
   color: #444444;
   font-weight: bold;
 }
-@media(max-width: 700px) {
+@media(max-width: 768px) {
   #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
     font-weight: normal;
     color: #408244;
@@ -411,7 +296,7 @@
 #selfCreditIssueReport.overlay-medium .self-credit-footer .cssbutton {
   padding: 12px 30px;
 }
-@media (max-width: 500px) {
+@media (max-width: 768px) {
   #selfCreditIssueReport.overlay-medium #selfcreditform {
     height: 100%;
   }
@@ -458,10 +343,10 @@
     .section-container {
       margin: 10px;
   }
-  #selfCreditIssueReport .self-credit-form-alert {
+  #selfCreditIssueReport #self-credit-form-alert {
     font-size: 13px;
-    text-align: center;
-    width: 100%;
+    line-height: normal;
+    padding: 15px 0;
   }
   #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
     text-decoration: underline;
@@ -478,7 +363,7 @@
   margin-bottom: 38px;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 768px) {
   #selfCreditRequestComplete .overlay-content, 
   #selfCreditRequestError .overlay-content {
     padding: 40px 0;
@@ -531,7 +416,7 @@
   margin: 0 auto;
 }
 
-@media(max-width: 700px) {
+@media(max-width: 768px) {
   #selfCreditRequestError .status {
     margin: 0 0 54px;
   }
@@ -665,7 +550,7 @@
   margin: 28px 0 32px 0;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
 
   .selfcredit-overlay.overlay-fullscreen .form-header,
   #selfCreditIssueReport .meal-bundle-header {
@@ -694,10 +579,9 @@
     overflow: auto;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen .form-instructions .self-credit-container {
     padding-right: 0;
-    height: 33px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -706,7 +590,7 @@
 .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
-  label {
+  .body_header {
     color: #444444;
     display: block;
     font-size: 12px;
@@ -731,13 +615,15 @@
     padding-right: 34px;
 }
 
-@media (max-width: 740px) {
+@media (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen
   .self-credit-body-header
   .self-credit-container
   .body-header-col {
-  padding-right: 25px;
-}
+    display: flex;
+    flex-direction: column;
+    padding-right: 25px;
+  }
 }
 
 .selfcredit-overlay.overlay-fullscreen
@@ -802,7 +688,7 @@
     justify-content: flex-end;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen
     .self-credit-footer
     .footer-button-container
@@ -825,7 +711,7 @@
     padding: 12px 0;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen
   .self-credit-footer
   .self-credit-container {
@@ -868,7 +754,6 @@
 .selfcredit-overlay.overlay-fullscreen .form-instructions-active .form-instructions {
   background: #444;
   color: white;
-  font-size: 15px;
   text-align: right;
   height: 52px;
   pointer-events: none;
@@ -905,9 +790,10 @@
   display: none;
 }
 
-.selfcredit-overlay .self-credit-comment-info label {
+.selfcredit-overlay .self-credit-comment-info .text14 {
   font-weight: normal;
   display: block;
+  font-size:14px;
 }
 
 .selfcredit-overlay .self-credit-comment-info {
@@ -956,7 +842,7 @@
   display: inline-block;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .selfcredit-overlay.overlay-fullscreen .form-instructions-active .form-instructions {
     height: 45px;
   }
@@ -1044,7 +930,7 @@
   font-size: 14px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 768px) {
   .order-line-reason .select-wrapper:after, .order-line-qty .select-wrapper:after {
     top: 7px;
   }
@@ -1088,7 +974,7 @@
   width: 100%;
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 768px) {
   .order-line {
     flex-wrap: wrap;
     margin: 40px 0;

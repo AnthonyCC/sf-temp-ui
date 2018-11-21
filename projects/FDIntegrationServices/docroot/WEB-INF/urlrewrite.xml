@@ -56,6 +56,11 @@
 		<to last="true">/search.do?upc=$2&amp;ver=$1</to>
 	</rule>
 
+    <rule>
+        <from>^/v/([0-9]+)/search/web/(.*)</from>
+        <to last="true">/search.do?action=searchWeb&amp;&amp;ver=$1</to>
+    </rule>
+
 	<!-- Search with payload -->
 	<rule>
 		<from>^/v/([0-9]+)/search/$</from>

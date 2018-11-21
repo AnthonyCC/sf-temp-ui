@@ -491,7 +491,7 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.RATING_PROD_NAME), "Prod Page Rating Name");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.DEFAULT_SUSTAINABILITY_RATING), "Show Default Sustainability Rating");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.EXCLUDED_EBT_PAYMENT), "Exclude for EBT Payment");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.HIDE_IPHONE), "Hide from IPhone");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.HIDE_IPHONE), "Hide from Navigation");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.WINE_CLASSIFICATION), "Wine Classification Text");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.WINE_IMPORTER), "Wine Importer");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.WINE_ALCH_CONTENT), "Wine Alchohol Content");

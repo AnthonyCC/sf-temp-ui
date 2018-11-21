@@ -450,6 +450,13 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
+		// COS17-76
+		address.setNotifyOrderPlaceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_PLACEMENT_SECOND_EMAIL")) ? true : false);
+		address.setNotifyOrderModifyToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_MODIFY_SECOND_EMAIL")) ? true : false);
+		address.setNotifyOrderInvoiceToSecondEmail( "Y".equalsIgnoreCase(rs.getString("ORDER_INVOICE_SECOND_EMAIL")) ? true : false);
+		address.setNotifySoReminderToSecondEmail( "Y".equalsIgnoreCase(rs.getString("SO_REMINDERS_SECOND_EMAIL")) ? true : false);
+		address.setNotifyCreditsToSecondEmail( "Y".equalsIgnoreCase(rs.getString("CREDITS_SECOND_EMAIL")) ? true : false);
+		address.setNotifyVoiceshotToSecondEmail( "Y".equalsIgnoreCase(rs.getString("VOICESHOT_SECOND_EMAIL")) ? true : false);
 
 		return address;
 	}

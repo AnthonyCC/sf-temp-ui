@@ -247,6 +247,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 					responseMessage = setCurrentCartToTheUser(user, request, response);
 					((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 					user.setDeliveryPassFlags((LoggedIn) responseMessage);
+					((LoggedIn) responseMessage).setOrderminimumamt(user.getMinimumOrderAmount());
 					checkTermsCond(getUserFromSession(request, response),responseMessage);
 					if (context.equalsIgnoreCase("CREATE")) {
 						((LoggedIn) responseMessage)

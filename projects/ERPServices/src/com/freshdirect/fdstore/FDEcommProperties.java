@@ -319,7 +319,7 @@ public class FDEcommProperties {
 	        try {
 	            return Integer.parseInt(config.getProperty(PROP_ECOM_SERVICE_CONNECTION_POOL));
 	        } catch (NumberFormatException e) {
-	            return 10;
+	            return 12;
 	        }
 	    }
 
@@ -327,7 +327,7 @@ public class FDEcommProperties {
 	        try {
 	            return Integer.parseInt(config.getProperty(PROP_ECOM_SERVICE_CONN_READ_TIMEOUT));
 	        } catch (NumberFormatException e) {
-	            return 300;
+	            return 360;
 	        }
 	    }
 

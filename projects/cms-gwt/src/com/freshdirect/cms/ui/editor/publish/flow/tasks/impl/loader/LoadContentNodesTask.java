@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.persistence.service.CacheLoadingStrategy;
 import com.freshdirect.cms.persistence.service.DatabaseContentProvider;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublishMessage;
@@ -30,7 +31,7 @@ public final class LoadContentNodesTask extends PublishTask implements Callable<
     @Override
     public Map<ContentKey, Map<Attribute, Object>> call() throws Exception {
         publishMessageLogger.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.INFO, "Loading CMS nodes", LoadContentNodesTask.class.getSimpleName()));
-        Map<ContentKey, Map<Attribute, Object>> allNodes = contentProvider.loadAllForPublish();
+        Map<ContentKey, Map<Attribute, Object>> allNodes = contentProvider.loadAllWithCacheStrategy(CacheLoadingStrategy.DONT_TOUCH);
         Map<ContentKey, Map<Attribute, Object>> cloneNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
         for (ContentKey key : allNodes.keySet()) {
             cloneNodes.put(key, new HashMap<Attribute, Object>(allNodes.get(key)));

@@ -75,6 +75,7 @@ var FreshDirect = window.FreshDirect || {};
             .removeClass(CUSTOM_CLASSES.MEDIUM)
             .removeClass(CUSTOM_CLASSES.FULL_SCREEN)
             .addClass(this.customClass);
+          this.overlayEl.scrollIntoView(true);
         }
       },
       extendedRefresh: {

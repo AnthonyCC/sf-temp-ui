@@ -29,7 +29,7 @@ public class GACustomerDataService {
 	        customer.setLoginType(loginType);
 	        customer.setChefsTable(Boolean.toString(user.isChefsTable()));
 	        customer.setDeliveryPass(Boolean.toString(user.isDlvPassActive()));
-	        customer.setDeliveryType(user.getUserServiceType() != null ? user.getUserServiceType().name() : null);
+	        customer.setDeliveryType(user.getSelectedServiceType() != null ? user.getSelectedServiceType().name() : null);
 	        customer.setCohort(user.getCohortName());
 	        customer.setCounty(user.getDefaultCounty());
 	        customer.setOrderCount(Integer.toString(user.getAdjustedValidOrderCount()));

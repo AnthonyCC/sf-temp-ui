@@ -8,30 +8,26 @@
   <h1>Credit Request</h1>
   <form fdform="self-credit-init-order-id" id="order-id">
     <div class="self-credit-init-row">
-        <label>Name</label>
+        <span class="text14bold">Name</span>
         {if $user.firstName and $user.lastName}<i class="user-info">{$user.firstName} {$user.lastName}</i>{/if}
     </div>
     <div class="self-credit-init-row">
-        <label>Email Address</label>
+        <span class="text14bold">Email Address</span>
         <i class="user-info">{$user.userId}</i>
     </div>
     <div class="self-credit-init-row-last">
-      <label for="order-id">Your Order</label>
+      <label for="self-credit-order-select">Your Order</label>
       <i class="form-field-info-flag">Required</i>
       <div>
-        // custom two-line dropdown template
-        // <select name="order-id" id="self-credit-order-select" id="order-id" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
-        <select required id="self-credit-order-select" name="order-id" id="order-id" class="full-width customsimpleselect" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
+        <select name="order-id" id="self-credit-order-select" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
         <option value="" disabled selected>Select An Order</option>
         {if $orders.length < 1}
           <option value="" disabled>No eligible orders found</option>
         {else}
           {foreach $order in $orders}
-          //custom two-line dropdown template
-          // <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
-          // {else}[br][b]Order #: {$order.orderId}[/b]{/if}
-          // </option>
-            <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date}</option>
+          <option value="{$order.saleId}">{$order.dayName} {$order.timeSlot} {$order.date} {if ($order.standingOrderName)}[br][b]{$order.standingOrderName}[/b]
+          {else}[br][b]Order #: {$order.orderId}[/b]{/if}
+          </option>
           {/foreach}
         {/if}
         </select>
@@ -64,16 +60,16 @@
       <div class="self-credit-container" data-horizontal-scroll-fader>
         {if $order.standingOrderName}
           <div class="body-header-col">
-              <label for="self-credit-order-name">Order Name</label>
+              <span class="body_header">Order Name</span>
               <span id="self-credit-order-name">{$order.standingOrderName}</span>
           </div>
         {/if}
         <div class="body-header-col">
-            <label for="self-credit-delivery-date">Delivery Date</label>
+            <span class="body_header">Delivery Date</span>
             <span id="self-credit-delivery-date">{$order.dayName} {$order.timeSlot} {$order.longDate}</span>
         </div>
         <div class="body-header-col">
-          <label for="self-credit-order-id">Order #</label>
+          <span class="body_header">Order #</span>
           <span id="self-credit-order-id">{$order.orderId}</span>
         </div>
       </div>
@@ -81,7 +77,7 @@
 
     <div class="self-credit-body">
       <div class="self-credit-container">
-        <h2 class="form-header">Select an issue and quantity of each affected item.</h2>
+        <h2 class="form-header">Select an issue and quantity of each affected item.<span class="offscreen">for order#{$order.orderId}</span></h2>
         {if ($orderlines)}
           {foreach $orderline in $orderlines }
             {if not $orderline.mealBundle}
@@ -131,23 +127,23 @@
           <div class="body-info">
             {if $order.standingOrderName}
               <div class="body-header-col">
-                  <label for="self-credit-order-name">Order Name</label>
+                  <span class="body-info-header text14bold">Order Name</span>
                   <span id="self-credit-order-name">{$order.standingOrderName}</span>
               </div>
             {/if}
             <div class="body-info-col">
-              <label for="self-credit-order-id">Order #</label>
+              <span class="body-info-header text14bold">Order #</span>
               <span id="self-credit-order-id">{$order.orderId}</span>
             </div>
             <div class="body-info-col">
-                <label for="self-credit-delivery-date">Delivery Date</label>
+                <span class="body-info-header text14bold">Delivery Date</span>
                 <span id="self-credit-delivery-date">{$order.dayName} {$order.timeSlot} {$order.longDate}</span>
             </div>
           </div>
           <div class="review-grid-container">
             <div class="self-credit-comment-info">
               <div class="{if $comment} hide{/if}">
-                <label>Have additional thoughts about this order?</label>
+                <span class="text14">Have additional thoughts about this order?</span>
                 <button onclick="FreshDirect.components.selfCreditIssueReportPopup.commentClick(event)">Leave a comment for further review</button>
               </div>
               <div class="self-credit-comment-container {if not $comment} hide{/if}">
@@ -159,9 +155,9 @@
             <table>
               <thead>
                 <tr>
-                  <th>qty</th>
-                  <th>item</th>
-                  <th>credit</th>
+                  <th>qty<span class="offscreen">quantity of item</span></th>
+                  <th>item<span class="offscreen">item name</span></th>
+                  <th>credit<span class="offscreen">credit for the item</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -171,7 +167,7 @@
                   <td>{$complaintLine.complaint.qty}</td>
                   <td>
                     <div class="complaint-item">
-                      {if $complaintLine.brand}<label>{$complaintLine.brand}</label>{/if}
+                      {if $complaintLine.brand}<span class="text14bold">{$complaintLine.brand}</span>{/if}
                       <p class="description">{$complaintLine.productName}</p>
                       <small class="sale-unit">{$complaintLine.configurationDescription} {if $complaintLine.configurationDescription.length > 0}|{/if} ${$complaintLine.basePrice}{if $complaintLine.basePriceUnit}/{$complaintLine.basePriceUnit}{/if}</small>
                       <p class="issue">
@@ -226,18 +222,19 @@
   <div class="order-line">
     <div class="order-line-col order-line-product-image">
       // todo remove absolute path after demo
-      <img src="https://www.freshdirect.com{$orderline.productImage}" width="70px"/>
+      <img src="https://www.freshdirect.com{$orderline.productImage}" alt="{$orderline.productName}" width="70px"/>
     </div>
     <div class="order-line-col order-line-product">
       <div>
-        {if $orderline.brand}<label>{$orderline.brand}</label>{/if}
+        {if $orderline.brand}<span class="text14bold">{$orderline.brand}</span>{/if}
         <div class="product-desc">{$orderline.productName}</div>
         <small class="sale-unit">{$orderline.configurationDescription} {if $orderline.configurationDescription.length > 0}<span>|<span>{/if} ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
       </div>
     </div>
     {if not ($orderline.sample or $orderline.free or $orderline.mealBundle)}
       <div class="order-line-col order-line-reason">
-        <select class="customsimpleselect" name="reason-{$orderline.orderLineId}" aria-label="Select an issue for {$orderline.description}">
+      <label for="reason-{$orderline.orderLineId}"><span class="offscreen">Select an issue for {$orderline.productName}</span></label>
+        <select class="customsimpleselect" id="reason-{$orderline.orderLineId}" name="reason-{$orderline.orderLineId}" >
           <option value="" {if not $orderline.complaint}selected{/if}>Select an Issue</option>
           {foreach $reason in $orderline.complaintReasons}
             <option value="{$reason.id}" {if $orderline.complaint and $orderline.complaint.reasonId == $reason.id}selected{/if}>{$reason.reason}</option>
@@ -245,14 +242,15 @@
         </select>
       </div>
       <div class="order-line-col order-line-qty">
-        <select class="customsimpleselect" name="qty-{$orderline.orderLineId}" aria-label="Select quantity for {$orderline.description}">
+       <label for="qty-{$orderline.orderLineId}"><span class="offscreen">Select quantity for {$orderline.productName}</span></label>
+        <select class="customsimpleselect" id="qty-{$orderline.orderLineId}" name="qty-{$orderline.orderLineId}">
           <option value="" {if not $orderline.complaint}selected{/if}>Qty</option>
           {for $index in range(1, $orderline.quantity + 1)}
             <option value="{$index}" {if $orderline.complaint and $orderline.complaint.qty == $index}selected{/if}>{$index}</option>
           {/for}
         </select>
       </div>
-      <input class="aria-hidden" value="{$orderline.cartonNumbers}" name="carton-{$orderline.orderLineId}"></input>
+      <input type="hidden" value="{$orderline.cartonNumbers}" name="carton-{$orderline.orderLineId}"></input>
     {/if}
     {if $orderline.sample or $orderline.free}
       <div class="order-line-col disable-order-line">

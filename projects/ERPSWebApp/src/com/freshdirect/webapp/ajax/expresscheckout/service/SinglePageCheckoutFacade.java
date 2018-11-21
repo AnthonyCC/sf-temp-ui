@@ -508,7 +508,7 @@ public class SinglePageCheckoutFacade {
     }
 
     /** based on step_3_choose.jsp */
-    private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits) {
+    private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits, boolean dlvPassCart) {
        
     	/* we should re-check the status of GiftCards at checkout page., so invalidating cache to make new calls to givex */
     	user.invalidateGiftCards();	/* APPDEV-7116 */
@@ -522,7 +522,9 @@ public class SinglePageCheckoutFacade {
             // timeslot, no giftcard magic
             final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals(user.getCheckoutMode());
             FDCartModel cart = user.getShoppingCart();
-
+            if(dlvPassCart) {													/* APPDEV-7671 */
+            	cart = user.getDlvPassCart();
+            }
             /*
              * Apply Customer credit -- This is done here for knowing the final order amount before displaying the payment selection If Gift card is used on the order Also
              * calculate the 25% perishable buffer amount to decide if another mode of payment is needed.
@@ -671,9 +673,9 @@ public class SinglePageCheckoutFacade {
     public FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request, List<ErpPaymentMethodI> paymentMethods,List customerCredits) throws FDResourceException {
 
         FormPaymentData formPaymentData = new FormPaymentData();
-
+        boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
         if (!StandingOrderHelper.isSO3StandingOrder(user)) {
-            processGiftCards(user, formPaymentData, customerCredits);
+            processGiftCards(user, formPaymentData, customerCredits,dlvPassCart);
         }
         // boolean isMPCard = false;
 
@@ -681,7 +683,7 @@ public class SinglePageCheckoutFacade {
             paymentService.setNoPaymentMethod(user, request);
         } else {
         	 List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
-        	 boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+        	
         	 FDCartModel cart=UserUtil.getCart(user, "", dlvPassCart);
         	//APPDEV-6765
              FDCartModel mCart = cart;

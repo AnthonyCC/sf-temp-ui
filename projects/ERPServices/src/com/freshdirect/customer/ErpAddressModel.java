@@ -374,7 +374,7 @@ public class ErpAddressModel extends ContactAddressModel {
 		return notifyVoiceshotToSecondEmail;
 	}
 
-	public void setNotifyVoiceshotToSecondEmail(boolean notifyVoiceshotAltMail) {
+	public void setNotifyVoiceshotToSecondEmail(boolean notifyVoiceshotToSecondEmail) {
 		this.notifyVoiceshotToSecondEmail = notifyVoiceshotToSecondEmail;
 	}
 

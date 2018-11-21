@@ -56,6 +56,7 @@ public class CustomerServiceRepresentativeService {
          * Turn on the following CSR flags for the FDX Add-On order
          */
         if (isPhoneChargeActive) {
+            cart.setChargeWaived(EnumChargeType.PHONE, true, "CSR"); // setting phone charge waive "on" by default
             cart.setChargeAmount(EnumChargeType.PHONE, ErpServicesProperties.getPhoneHandlingFee());
         }
         

@@ -157,10 +157,10 @@ public class CustomerComplaintService extends AbstractEcommService implements Cu
 					new TypeReference<Response<PendingSelfComplaintResponse>>() {
 			});
 		} catch (FDResourceException e) {
-			throw new RemoteException(e.getMessage());
+			throw new RemoteException(e.getMessage(), e);
 		}
         if (!response.getResponseCode().equals("OK")) {
-            LOGGER.error("Error in CustomerComplaintService.getPendingSelfIssuedComplaints");
+            LOGGER.error("Error in CustomerComplaintService.getPendingSelfIssuedComplaints: " + response.getResponseCode() + " , " + response.getMessage());
             throw new RemoteException(response.getMessage());
         }
 		return response.getData();

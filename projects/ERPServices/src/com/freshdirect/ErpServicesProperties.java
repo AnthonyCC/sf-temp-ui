@@ -282,6 +282,7 @@ public class ErpServicesProperties {
 	//Added by Smerugu
 	private final static String PROP_MINIMUM_ORDER_AMOUNT = "erpservices.minimum.order.amount";
 	private final static String PROP_FDX_MINIMUM_ORDER_AMOUNT ="erpservices.fdx.minimum.order.amount";
+	private final static String PROP_FDX_MINIMUM_ORDER_AMOUNT_DP_USER ="erpservices.fdx.minimum.order.amount.dp.user";
 	private final static String PROP_MIN_CORP_ORDER_AMOUNT ="erpservices.min.corp.order.amount";
 	private final static String PROP_BASE_DELIVERY_FEE ="erpservices.base.delivery.fee";
 	private final static String PROP_CORP_DELIVERY_FEE ="erpservices.corp.delivery.fee";
@@ -533,6 +534,7 @@ public class ErpServicesProperties {
 		//Added by Smerugu
 		defaults.put(PROP_MINIMUM_ORDER_AMOUNT, "30.0");
 		defaults.put(PROP_FDX_MINIMUM_ORDER_AMOUNT, "20.0");
+		defaults.put(PROP_FDX_MINIMUM_ORDER_AMOUNT_DP_USER, "20.0");
 		defaults.put(PROP_MIN_CORP_ORDER_AMOUNT, "50.0");
 		defaults.put(PROP_BASE_DELIVERY_FEE, "4.99");
 		defaults.put(PROP_CORP_DELIVERY_FEE, "9.99");
@@ -1297,6 +1299,9 @@ public class ErpServicesProperties {
     }
 	public static double getFDXMinimumOrderAmount() {
         return Double.parseDouble(config.getProperty(PROP_FDX_MINIMUM_ORDER_AMOUNT));
+    }
+	public static double getFDXMinimumOrderAmountDpUser() {
+        return Double.parseDouble(config.getProperty(PROP_FDX_MINIMUM_ORDER_AMOUNT_DP_USER));
     }
 	public static double getMinCorpOrderAmount() {
         return Double.parseDouble(config.getProperty(PROP_MIN_CORP_ORDER_AMOUNT));

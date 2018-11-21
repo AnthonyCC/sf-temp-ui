@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.naming.NamingException;
@@ -27,6 +28,7 @@ import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.Html;
+import com.freshdirect.storeapi.content.PopulatorUtil;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.TagModel;
 import com.freshdirect.storeapi.fdstore.FDContentTypes;
@@ -43,6 +45,23 @@ import com.freshdirect.test.ejb.TestSupportSB;
  */
 public class TestSupport {
 	private static TestSupport sharedInstance = null;
+
+    private static final Comparator<ProductModel> SORT_PRODUCT_BY_FULL_NAME = new Comparator<ProductModel>() {
+
+        @Override
+        public int compare(ProductModel p1, ProductModel p2) {
+            CategoryModel c1 = p1.getCategory();
+            CategoryModel c2 = p2.getCategory();
+
+            int c = c1.getFullName().compareTo(c2.getFullName());
+            int p = p1.getFullName().compareTo(p2.getFullName());
+            if (c == 0)
+                return p;
+
+            return c;
+        }
+    };
+
 	private ServiceLocator serviceLocator = null;
 
 	private TestSupport () throws NamingException {
@@ -228,42 +247,34 @@ public class TestSupport {
 		return tags;
 	}
 
-	public Collection<ProductModel> getTaggedProducts(String tagKey) {
-		if (tagKey == null)
-			return Collections.emptyList();
+    public List<ProductModel> getTaggedProducts(String tagKey) {
+        if (tagKey == null)
+            return Collections.emptyList();
 
-		// may throw IllegalArgumentException !
-		ContentKey tKey = ContentKeyFactory.get(tagKey);
+        // may throw IllegalArgumentException !
+        ContentKey tKey = ContentKeyFactory.get(tagKey);
 
-		List<ProductModel> taggedProducts = new ArrayList<ProductModel>();
+        List<ProductModel> taggedProducts = new ArrayList<ProductModel>();
 
-		final List<ContentKey> categoryKeys = new ArrayList<ContentKey>(CmsManager.getInstance().getContentKeysByType(FDContentTypes.CATEGORY));
+        Set<ContentKey> productKeys = CmsManager.getInstance().getContentKeysByType(ContentType.Product);
+        for (ContentKey productKey : productKeys) {
+            ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(productKey);
+            if (PopulatorUtil.isNodeArchived(product)) {
+                continue;
+            }
 
-		Collections.sort(categoryKeys, new Comparator<ContentKey>() {
-			@Override
-			public int compare(ContentKey o1, ContentKey o2) {
-				return o1.toString().compareTo(o2.toString());
-			}
-		});
+            // filter products by tag
+            for (TagModel assignedTag : product.getAllTags()) {
+                if (tKey.equals(assignedTag.getContentKey())) {
+                    taggedProducts.add(product);
+                }
+            }
+        }
 
-		for (ContentKey categoryKey: categoryKeys) {
-			ContentNodeModel m = ContentFactory.getInstance().getContentNodeByKey(categoryKey);
+        Collections.sort(taggedProducts, SORT_PRODUCT_BY_FULL_NAME);
 
-			if (!m.isOrphan() && m instanceof CategoryModel) {
-				CategoryModel cat = (CategoryModel) m;
-
-				for (ProductModel prd : cat.getStaticProducts()){
-					for (TagModel tag : prd.getAllTags()) {
-						if (tKey.equals(tag.getContentKey())) {
-							taggedProducts.add(prd);
-						}
-					}
-				}
-			}
-		}
-
-		return taggedProducts;
-	}
+        return taggedProducts;
+    }
 
 	public List<CategoryModel> getCategories() {
 
