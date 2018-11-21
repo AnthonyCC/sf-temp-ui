@@ -822,10 +822,10 @@ var dataLayer = window.dataLayer || [];
       location = 'pdp_' + productId;
     } else if ($('ul.breadcrumbs li').length) {
       location = 'cat_' + safeNameSpacePlus($('ul.breadcrumbs li').toArray().map(function (li) {
-        let bc = li.textContent.toLowerCase();
+        var bc = li.textContent.toLowerCase();
         // AN-214 replace 'whats+good' with category id from the url
         if (bc === "what's good") {
-          let wgd_id = fd.utils.getParameterByName('id');
+          var wgd_id = fd.utils.getParameterByName('id');
           bc = wgd_id ? wgd_id.replace('_', ' ') : bc;
         }
         return bc;
