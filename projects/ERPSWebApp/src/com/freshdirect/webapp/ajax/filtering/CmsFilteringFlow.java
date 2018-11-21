@@ -227,10 +227,10 @@ public class CmsFilteringFlow {
 
                                 int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user))
                                     	? 4
-                                    	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) 
-                            	    		? 5 
-                            	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) 
-                            	    			? 4 
+                                    	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user))
+                            	    		? 5
+                            	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user))
+                            	    			? 4
                             	    			: 5;
                                 //calc how many HL will be inserted...
                                 double calcd = Math.min(
@@ -383,10 +383,10 @@ public class CmsFilteringFlow {
 
         int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user))
         	? 4
-        	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) 
-	    		? 5 
-	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) 
-	    			? 4 
+        	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user))
+	    		? 5
+	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user))
+	    			? 4
 	    			: 5;
         int hlIndex = itemsPerRow-1;
         ProductData pd = new ProductData();
@@ -576,7 +576,7 @@ public class CmsFilteringFlow {
                 } else {
                 	searchResults.setAdProducts(null);
                 }
-               
+
                 collectSearchRelevancyScores(searchResults, nav.getRequestCookies(), user);
                 break;
             case NEWPRODUCTS:
@@ -919,19 +919,16 @@ public class CmsFilteringFlow {
         List<FilteringProductItem> items = BrowseDataContextService.getDefaultBrowseDataContextService().collectAllItems(browseDataContext);
         Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navigationModel.getAllFilters());
         reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.DEPARTMENT_FILTER_GROUP_ID);
+        reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.CATEGORY_FILTER_GROUP_ID);
+        reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.SUBCATEGORY_FILTER_GROUP_ID);
         reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.RECIPE_CATEGORY_FILTER_GROUP);
     }
 
     private void reOrderMenuItemsByHitCountForMenuBox(List<MenuBoxData> leftNav, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters, String menuBoxId) {
         MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(menuBoxId, leftNav);
-        reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
+        MenuBoxDataService.getDefaultMenuBoxDataService().addHitCountFromAllFilters(menuBoxData, items, allFilters);
+        MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData);
         MenuBoxDataService.getDefaultMenuBoxDataService().removeHitCountFromAllFilters(menuBoxData);
-    }
-
-    private void reOrderMenuItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
-        if (menuBoxData != null && menuBoxData.getSelectedLabel() == null) {
-            MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData, items, allFilters);
-        }
     }
 
     private void reOrderAllMenuItemsByName(NavigationModel navigationModel) {
@@ -941,13 +938,7 @@ public class CmsFilteringFlow {
 
     private void reOrderMenuItemsByNameForMenuBox(List<MenuBoxData> leftNav, String menuBoxId) {
         MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(menuBoxId, leftNav);
-        reOrderMenuItemsByName(menuBoxData);
-    }
-
-    private void reOrderMenuItemsByName(MenuBoxData menuBoxData) {
-        if (menuBoxData != null) {
-            MenuItemSorter.getDefaultMenuItemSorter().sortItemsByName(menuBoxData);
-        }
+        MenuItemSorter.getDefaultMenuItemSorter().sortItemsByName(menuBoxData);
     }
 
     private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDUserI user, NavigationModel navigationModel) {
@@ -1069,8 +1060,6 @@ public class CmsFilteringFlow {
 
     private BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
 
-        BrowseDataContext browseDataContext = null;
-
         String id = nav.getId();
         ContentNodeModel contentNodeModel = PopulatorUtil.getContentNode(id);
 
@@ -1087,7 +1076,7 @@ public class CmsFilteringFlow {
         NavigationModel navigationModel = NavigationUtil.createNavigationModel(contentNodeModel, nav, user);
 
         // filtering and grouping
-        browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
+        BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
         if (!nav.isPdp() &&
@@ -1525,7 +1514,7 @@ public class CmsFilteringFlow {
         }
         return hlProductDataList;
     }
-    
+
     public MySaleItemsData getSaleItems(HttpServletRequest request,
 			FDUserI user, CmsFilteringNavigator navigator, boolean isMobile) throws Exception {
     	double ratingBaseLine = 4;
@@ -1538,7 +1527,7 @@ public class CmsFilteringFlow {
     	try {
 	    	if(isMobile){
 	    		return getSaleItemsMobile(request, user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
-							considerNew, considerBackInStock, sortProducts, maxNoOfProducts); 
+							considerNew, considerBackInStock, sortProducts, maxNoOfProducts);
 	    	} else {
 	    		return getSaleItemsWeb(request, user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
 							considerNew, considerBackInStock, sortProducts, maxNoOfProducts);
@@ -1547,12 +1536,12 @@ public class CmsFilteringFlow {
     		throw e;
     	}
     }
-    
+
     public MySaleItemsData getSaleItemsMobile(HttpServletRequest request,
 			FDUserI user, CmsFilteringNavigator navigator, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine
 			, boolean considerNew, boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts)
 			throws InvalidFilteringArgumentException, FDResourceException {
-		
+
 		ratingBaseLine = navigator.getRatingBaseLine();
 		dealsBaseLine = navigator.getDealsBaseLine();
 		popularityBaseLine = navigator.getPopularityBaseLine();
@@ -1560,7 +1549,7 @@ public class CmsFilteringFlow {
 		considerBackInStock = navigator.isConsiderBackInStock();
 		sortProducts = navigator.isSortProducts();
 		maxNoOfProducts = navigator.getMaxNoOfProducts();
-		
+
 		BrowseData browseData = getWeLoveYouLoveData(user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
 													 	considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
 		MySaleItemsData mySaleItemsData = new MySaleItemsData();
@@ -1570,12 +1559,12 @@ public class CmsFilteringFlow {
 		mySaleItemsData.setConsiderBackInStock(considerBackInStock);
 		return mySaleItemsData;
 	}
-    
+
     public MySaleItemsData getSaleItemsWeb(HttpServletRequest request,
 			FDUserI user, CmsFilteringNavigator navigator, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine
 			, boolean considerNew, boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts)
 			throws InvalidFilteringArgumentException, FDResourceException {
-	
+
 		if(request.getParameter("rbl") != null) {
 			ratingBaseLine = Double.parseDouble(request.getParameter("rbl"));
 		}
@@ -1591,13 +1580,13 @@ public class CmsFilteringFlow {
 		if(request.getParameter("cbis") != null) {
 			considerBackInStock = Boolean.parseBoolean(request.getParameter("cbis"));
 		}
-		if(request.getParameter("sp") != null) {			
+		if(request.getParameter("sp") != null) {
 			sortProducts = Boolean.parseBoolean(request.getParameter("sp"));
 		}
-		if(request.getParameter("mnp") != null) {			
+		if(request.getParameter("mnp") != null) {
 			maxNoOfProducts = Integer.parseInt(request.getParameter("mnp"));
 		}
-			
+
 		BrowseData browseData = getWeLoveYouLoveData(user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
 														considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
 		MySaleItemsData mySaleItemsData = new MySaleItemsData();

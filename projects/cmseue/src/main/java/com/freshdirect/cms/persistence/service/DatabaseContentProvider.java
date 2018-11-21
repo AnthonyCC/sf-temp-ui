@@ -37,6 +37,7 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeDetailEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.changecontrol.service.ContentChangeControlService;
+import com.freshdirect.cms.changecontrol.service.ContentKeyChangeCalculator;
 import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -64,7 +65,6 @@ import com.freshdirect.cms.persistence.repository.ContentNodeEntityRepository;
 import com.freshdirect.cms.persistence.repository.NavigationTreeRepository;
 import com.freshdirect.cms.persistence.repository.RelationshipEntityRepository;
 import com.freshdirect.cms.relationship.comparator.RelationshipEntityComparator;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
@@ -123,6 +123,9 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
 
     @Autowired
     private BatchSavingRepository batchSavingRepository;
+    
+    @Autowired
+    private ContentKeyChangeCalculator contentKeyChangeCalculator;
 
     @Override
     public ContentSource getSource() {
@@ -132,34 +135,12 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     @Transactional(readOnly = true)
     @Override
     public Map<ContentKey, Map<Attribute, Object>> loadAll() {
-        long methodStart = System.currentTimeMillis();
-        
-        // load all contentKeys to fill the allKeys map
-        allKeys.clear();
-        allKeys.addAll(contentNodeEntityToContentKeyConverter.convert(contentNodeEntityRepository.findAll()));
-
-        List<AttributeEntity> attributeEntities = attributeEntityRepository.findAll();
-        List<RelationshipEntity> relationshipEntities = relationshipEntityRepository.findAll();
-        Map<ContentKey, Map<Attribute, Object>> allNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
-
-        processFetchedAttributes(allNodes, attributeEntities);
-        processFetchedRelationships(allNodes, relationshipEntities);
-
-        // fill up result map with empty content bodies where no attributes sets
-        Set<ContentKey> keysHavingEmptyBody = new HashSet<ContentKey>(allKeys);
-        keysHavingEmptyBody.removeAll(allNodes.keySet());
-        for (ContentKey key : keysHavingEmptyBody) {
-            allNodes.put(key, new HashMap<Attribute, Object>());
-        }
-
-        buildAttributesCache(allNodes); // putting the loaded data in the "attributeCache"
-        
-        LOGGER.info("Database warmup executed in " + (System.currentTimeMillis() - methodStart) + " ms");
+        Map<ContentKey, Map<Attribute, Object>> allNodes = loadAllWithCacheStrategy(CacheLoadingStrategy.RELOAD);
         return allNodes;
     }
 
     @Transactional(readOnly = true)
-    public Map<ContentKey, Map<Attribute, Object>> loadAllForPublish() {
+    public Map<ContentKey, Map<Attribute, Object>> loadAllWithCacheStrategy(CacheLoadingStrategy cacheStrategy) {
         long methodStart = System.currentTimeMillis();
 
         // load all contentKeys to fill the allKeys map
@@ -169,8 +150,6 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         List<AttributeEntity> attributeEntities = attributeEntityRepository.findAll();
         List<RelationshipEntity> relationshipEntities = relationshipEntityRepository.findAll();
         Map<ContentKey, Map<Attribute, Object>> allNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
-
-        orderRelationships(relationshipEntities);
 
         processFetchedAttributes(allNodes, attributeEntities);
         processFetchedRelationships(allNodes, relationshipEntities);
@@ -182,7 +161,11 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
             allNodes.put(key, new HashMap<Attribute, Object>());
         }
 
-        LOGGER.info("Publish contentnode loading is finished in:" + (System.currentTimeMillis() - methodStart) + " ms");
+        if (CacheLoadingStrategy.RELOAD == cacheStrategy) {
+            buildAttributesCache(allNodes);
+        }
+
+        LOGGER.info("Database warmup is finished in: " + (System.currentTimeMillis() - methodStart) + " ms");
         return allNodes;
     }
 
@@ -196,12 +179,9 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         List<AttributeEntity> attributeEntities = new ArrayList<AttributeEntity>();
         List<RelationshipEntity> relationshipEntities = new ArrayList<RelationshipEntity>();
 
-        for (int i = 0; i <= contentKeysForRepository.size() / SQL_IN_CLAUSE_MAX_ELEMENTS; i++) {
-            int sublistEnd = ((i * SQL_IN_CLAUSE_MAX_ELEMENTS + SQL_IN_CLAUSE_MAX_ELEMENTS) > contentKeysForRepository.size()) ? (contentKeysForRepository.size())
-                    : (i * SQL_IN_CLAUSE_MAX_ELEMENTS + SQL_IN_CLAUSE_MAX_ELEMENTS);
-            LOGGER.info("Loading node attributes from " + (i * SQL_IN_CLAUSE_MAX_ELEMENTS) + " to " + sublistEnd);
-            attributeEntities.addAll(attributeEntityRepository.findByContentKeyIn(contentKeysForRepository.subList(i * SQL_IN_CLAUSE_MAX_ELEMENTS, sublistEnd)));
-            relationshipEntities.addAll(relationshipEntityRepository.findByRelationshipSourceIn(contentKeysForRepository.subList(i * SQL_IN_CLAUSE_MAX_ELEMENTS, sublistEnd)));
+        for (List<String> partitionedKeys : Lists.partition(contentKeysForRepository, SQL_IN_CLAUSE_MAX_ELEMENTS)) {
+            attributeEntities.addAll(attributeEntityRepository.findByContentKeyIn(partitionedKeys));
+            relationshipEntities.addAll(relationshipEntityRepository.findByRelationshipSourceIn(partitionedKeys));
         }
 
         Map<ContentKey, Map<Attribute, Object>> nodesInQuestion = new HashMap<ContentKey, Map<Attribute, Object>>();
@@ -756,15 +736,10 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
             detail = new ContentChangeDetailEntity();
             detail.setAttributeName(relationship.getName());
 
-            Joiner joiner = Joiner.on(", ").skipNulls();
+            String[] keyChanges = contentKeyChangeCalculator.describeContentKeyListChange(oldKeysList, changedKeysList);
 
-            Set<ContentKey> removed = new HashSet<ContentKey>(oldKeysList);
-            removed.removeAll(changedKeysList);
-            Set<ContentKey> added = new HashSet<ContentKey>(changedKeysList);
-            added.removeAll(oldKeysList);
-
-            detail.setOldValue(removed.isEmpty() ? null : "Removed: " + joiner.join(removed));
-            detail.setNewValue(added.isEmpty() ? null : "Added: " + joiner.join(added));
+            detail.setOldValue(keyChanges[0]);
+            detail.setNewValue(keyChanges[1]);
 
             if (detail.getNewValue() != null && detail.getNewValue().length() > CHANGEDETAIL_NEWVALUE_MAX_LENGTH) {
                 detail.setNewValue(detail.getNewValue().substring(0, CHANGEDETAIL_NEWVALUE_LENGTH_WITHOUT_DOTS) + "...");
@@ -929,6 +904,9 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
 
     @SuppressWarnings("unchecked")
     private void processFetchedRelationships(Map<ContentKey, Map<Attribute, Object>> allNodes, List<RelationshipEntity> relationshipEntities) {
+
+        orderRelationships(relationshipEntities);
+
         for (RelationshipEntity relationshipEntity : relationshipEntities) {
             ContentKey key = ContentKeyFactory.get(relationshipEntity.getRelationshipSource());
             Optional<Attribute> relationshipOpt = contentTypeInfoService.findAttributeByName(key.type, relationshipEntity.getRelationshipName());
@@ -944,8 +922,6 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
                         allNodes.get(key).put(relationship, new ArrayList<Object>());
                     }
                     List<Object> targetKeys = (List<Object>) allNodes.get(key).get(relationship);
-                    // this is important, the relationship targets has to be sorted by the ordinal!
-                    // FIXME: this only works if the input is already (almost) sorted by the ordinals
                     int index = targetKeys.size() < relationshipEntity.getOrdinal() ? targetKeys.size() : relationshipEntity.getOrdinal();
                     Object value = attributeEntityToValueConverter.convert(relationship, relationshipEntity);
                     if (value != null) {

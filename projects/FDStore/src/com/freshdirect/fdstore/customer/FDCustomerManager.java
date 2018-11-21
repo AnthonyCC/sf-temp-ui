@@ -2089,7 +2089,7 @@ public class FDCustomerManager {
 		try {
 			FDOrderI order = getOrder(saleId);
 			EnumEStoreId estoreId = order.getEStoreId();
-			return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint,estoreId);
+			return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint,estoreId,order);
 		} catch (FDResourceException re) {
 			throw new FDResourceException(re.getMessage());
 		}

@@ -30,6 +30,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.RedirectService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
+import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -76,6 +77,7 @@ public class SignUpServlet extends BaseJsonServlet {
                     RegisterService.getInstance().register(signedInUser, actionInfo, erpCustomer, fdCustomer, serviceType, signUpRequest.isTcAgree());
                     CookieMonster.storeCookie(signedInUser, response);
                     session.setAttribute(SessionName.USER, signedInUser);
+                    FDCustomerCouponUtil.initCustomerCoupons(session);
                 } catch (ErpDuplicateUserIdException de) {
                     LOGGER.warn("User registration failed due to duplicate id", de);
                     result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));

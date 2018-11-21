@@ -67,7 +67,7 @@ var FreshDirect = FreshDirect || {};
         if (html.length > length/2) {
           result = html;
         }
-
+        
         result += '&hellip;';
       }
 

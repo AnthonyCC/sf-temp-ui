@@ -14,17 +14,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHeaders;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDNotFoundException;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.DYFUtil;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
+import com.freshdirect.mobileapi.controller.data.SearchWebResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
+import com.freshdirect.mobileapi.controller.data.request.SearchWebQuery;
 import com.freshdirect.mobileapi.controller.data.response.AutoComplete;
 import com.freshdirect.mobileapi.controller.data.response.BrowsePageResponse;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
@@ -48,20 +53,31 @@ import com.freshdirect.storeapi.content.FilteringSortingItem;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductModelBrandAdsAdapter;
 import com.freshdirect.storeapi.content.SearchResults;
+import com.freshdirect.storeapi.content.SortStrategyType;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.MenuDataCointainer;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
+import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.filtering.SearchResultsUtil;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.RequestUtil;
 
 public class SearchController extends BaseController {
 
-    private static org.apache.log4j.Category LOG = LoggerFactory.getInstance(SearchController.class);
+    private static final org.apache.log4j.Category LOG = LoggerFactory.getInstance(SearchController.class);
 
     private static final String AUTOCOMPLETE_ACTION = "autocomplete";
     private static final String ACTION_SEARCH_EX = "searchEX";
+    private static final String ACTION_SEARCH_WEB = "searchWeb";
 
     @Override
     protected boolean validateUser() {
@@ -84,6 +100,8 @@ public class SearchController extends BaseController {
             autocomplete(request, response, user, model);
         } else if (ACTION_SEARCH_EX.equalsIgnoreCase(action)) {
             searchEX(request, response, model, user);
+        } else if (ACTION_SEARCH_WEB.equalsIgnoreCase(action)){
+            searchWeb(request, response, model, user);
         } else { // default go to search
             search(request, response, model, user);
         }
@@ -468,6 +486,75 @@ public class SearchController extends BaseController {
         data.setPrefix(searchTerm);
 
         setResponseMessage(model, data, user);
+        return model;
+    }
+    
+    private ModelAndView searchWeb(HttpServletRequest request, HttpServletResponse response, ModelAndView model, SessionUser user) throws JsonException {
+        SearchWebResult result = new SearchWebResult();
+
+        String postData = getPostData(request, response);
+        LOG.debug("PostData received: [" + postData + "]");
+
+        if (StringUtils.isNotEmpty(postData)) {
+            SearchWebQuery requestMessage = parseRequestObject(request, response, SearchWebQuery.class);
+
+            try {
+                FDSessionUser sessionUser = user.getFDSessionUser();
+                final CmsFilteringNavigator navigator = new CmsFilteringNavigator();
+                navigator.setPageTypeType(FilteringFlowType.SEARCH);
+                navigator.setSearchParams(requestMessage.getQuery());
+                navigator.setSortBy(NVL.apply(requestMessage.getSortBy(), SortStrategyType.RECENCY.name()));
+                navigator.setOrderAscending(requestMessage.isOrderAscending());
+                navigator.setRequestFilterParams(requestMessage.getFilterByIds());
+                navigator.setActivePage(requestMessage.getPage());
+                navigator.setPageSize(requestMessage.getMax() > 0 ? requestMessage.getMax() : FDStoreProperties.getSearchPageSize());
+
+                final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, sessionUser);
+                BrowseData browseDataPrototype = flow.getBrowseDataPrototype();
+
+                SectionDataCointainer sectionDataContainer = browseDataPrototype.getSections();
+                List<ProductData> products = new ArrayList<ProductData>();
+                BrowseUtil.loadProductsFromSections(sectionDataContainer.getSections(), products);
+                List<String> productIds = new ArrayList<String>();
+                List<String> favProductIds = new ArrayList<String>();
+                for (ProductData productData : products) {
+                    productIds.add(productData.getProductId());
+                    if (DYFUtil.isFavorite(ContentKeyFactory.get(productData.getCMSKey()), sessionUser)) {
+                        favProductIds.add(productData.getProductId());
+                    }
+                }
+
+                MenuDataCointainer menuBoxes = browseDataPrototype.getMenuBoxes();
+                for (MenuBoxData menuBox : menuBoxes.getMenuBoxes()) {
+                    result.getFilterGroups().add(BrowseUtil.createFilterGroup(menuBox));
+                }
+
+                result.setSortOptions(browseDataPrototype.getSortOptions().getSortOptions());
+                result.setTotalResultCount(browseDataPrototype.getPager().getItemCount());
+                result.setPager(browseDataPrototype.getPager());
+                result.setQuery(requestMessage.getQuery());
+                result.setProductIds(productIds);
+                result.setFavProductIds(favProductIds);
+
+                List<String> suggestions = browseDataPrototype.getSearchParams().getSuggestions();
+                if (!suggestions.isEmpty()) {
+                    result.setDidYouMean(suggestions.get(0));
+                }
+            } catch (FDResourceException e) {
+                result.addErrorMessage(e.getMessage());
+                LOG.error(e);
+            } catch (InvalidFilteringArgumentException e) {
+                result.addErrorMessage(e.getMessage());
+                LOG.error(e);
+            } catch (UnbxdServiceUnavailableException e) {
+                result.addErrorMessage(e.getMessage());
+                LOG.error(e);
+            } catch (FDNotFoundException e) {
+                result.addErrorMessage(e.getMessage());
+                LOG.error(e);
+            }
+        }
+        setResponseMessage(model, result, user);
         return model;
     }
 }

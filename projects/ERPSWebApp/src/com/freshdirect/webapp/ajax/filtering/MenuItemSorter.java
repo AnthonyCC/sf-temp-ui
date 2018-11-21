@@ -3,10 +3,7 @@ package com.freshdirect.webapp.ajax.filtering;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductItemFilterI;
 import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
 import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
 
@@ -39,23 +36,23 @@ public class MenuItemSorter {
         return INSTANCE;
     }
 
-    public void sortItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
-        for (MenuItemData menuItem : menuBoxData.getItems()) {
-            if (menuItem.getHitCount() == null) {
-                String menuItemId = menuItem.getId();
-                ProductItemFilterI filter = allFilters.get(ProductItemFilterUtil.createCompositeId(menuBoxData.getId(), menuItemId));
-                final int hitCount = ProductItemFilterUtil.countItemsForFilter(items, filter);
-                menuItem.setHitCount(hitCount);
+    public void sortItemsByHitCount(MenuBoxData menuBoxData) {
+        if (menuBoxData != null) {
+            List<MenuItemData> menuItems = menuBoxData.getItems();
+            if (menuItems.size() > 1) {
+                List<MenuItemData> menuItemsExceptTheAll = menuItems.subList(1, menuItems.size());
+                Collections.sort(menuItemsExceptTheAll, HIT_COUNT_COMPARATOR);
             }
         }
-        Collections.sort(menuBoxData.getItems(), HIT_COUNT_COMPARATOR);
     }
 
     public void sortItemsByName(MenuBoxData menuBoxData) {
-        List<MenuItemData> menuItems = menuBoxData.getItems();
-        if (menuItems.size() > 1) {
-            List<MenuItemData> menuItemsExceptTheAll = menuItems.subList(1, menuItems.size());
-            Collections.sort(menuItemsExceptTheAll, NAME_COMPARATOR);
+        if (menuBoxData != null) {
+            List<MenuItemData> menuItems = menuBoxData.getItems();
+            if (menuItems.size() > 1) {
+                List<MenuItemData> menuItemsExceptTheAll = menuItems.subList(1, menuItems.size());
+                Collections.sort(menuItemsExceptTheAll, NAME_COMPARATOR);
+            }
         }
     }
 }

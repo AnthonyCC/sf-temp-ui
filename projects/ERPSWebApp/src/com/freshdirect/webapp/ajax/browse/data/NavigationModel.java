@@ -22,9 +22,9 @@ import com.freshdirect.storeapi.content.Recipe;
 import com.freshdirect.storeapi.content.SuperDepartmentModel;
 
 public class NavigationModel {
-	
+
 	/**
-	 * Current user navigating	
+	 * Current user navigating
 	 */
 	private FDUserI user;
 
@@ -32,46 +32,46 @@ public class NavigationModel {
 	 * Depth of the navigation (DEP, CAT, ...)
 	 */
 	private NavDepth navDepth;
-	
+
 	/**
 	 * Left side navigation (menu)
 	 */
 	private List<MenuBoxData> leftNav;
-	
+
 	/**
 	 * The actual product container
 	 */
 	private ContentNodeModel selectedContentNodeModel;
-	
+
 	/**
 	 * Breadcumb
 	 */
 	private List<ContentNodeModel> contentNodeModelPath;
-	
+
 	/**
 	 * Navigation tree, store contentNodeModel for each level
 	 */
 	private Map<NavDepth, ContentNodeModel> navigationHierarchy;
-	
+
 	/**
 	* The super department of the hierarchy if any
 	*/
 	private SuperDepartmentModel superDepartmentModel;
-	
+
 	/**
 	 * All filters
 	 */
 	private List<ProductFilterGroup> allFilters = new ArrayList<ProductFilterGroup>();
-	
+
 	/**
 	 * Selected filters
 	 */
 	private Set<ProductItemFilterI> activelFilters = new HashSet<ProductItemFilterI>();
-	
+
 	/**
 	 * sort options associated with the actual department
 	 */
-	
+
 	private List<CategoryModel> regularCategories;
 	private List<CategoryModel> preferenceCategories;
 	private List<CategoryModel> popularCategories;
@@ -89,7 +89,13 @@ public class NavigationModel {
 	private EnumBrandFilterLocation brandFilterLocation;
 	private String pageTitle;
 	private String metaDescription;
-	
+
+	/**
+	 * This flag signals if browse request arrives via mobile API
+	 * Covers both inbound mobile and FK Web requests
+	 */
+	private boolean mobileNavigation = false;
+
 	public NavDepth getNavDepth() {
 		return navDepth;
 	}
@@ -219,11 +225,11 @@ public class NavigationModel {
 	public void setShowMeOnlyOfSearchResults(Set<String> showMeOnlyOfSearchResults) {
 		this.showMeOnlyOfSearchResults = showMeOnlyOfSearchResults;
 	}
-	
+
 	public boolean isRecipeListing() {
 		return recipeListing;
 	}
-	
+
 	public void setRecipeListing(boolean recipeListing) {
 		this.recipeListing = recipeListing;
 	}
@@ -250,5 +256,13 @@ public class NavigationModel {
 	}
 	public void setMetaDescription(String metaDescription) {
 		this.metaDescription = metaDescription;
+	}
+
+	public void setMobileNavigation(boolean mobileNavigation) {
+		this.mobileNavigation = mobileNavigation;
+	}
+
+	public boolean isMobileNavigation() {
+		return mobileNavigation;
 	}
 }

@@ -152,7 +152,6 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 		return email;
 	}
 
-	@Override
 	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer,
 			String saleId, ErpComplaintModel complaint, EnumEStoreId eStoreId) {
 		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint);

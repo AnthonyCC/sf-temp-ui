@@ -563,6 +563,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		responseMessage.setTcAcknowledge(user.getTcAcknowledge());
         responseMessage.setZipCode(user.getZipCode());
         user.setDeliveryPassFlags(responseMessage);
+        responseMessage.setOrderminimumamt(user.getMinimumOrderAmount());
 		return responseMessage;
 	}
 	

@@ -1025,3 +1025,6 @@ color: #B93D3F;
 .assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_ebt"] label[for="addpaymentmethod_ebt_selector"]{
 	color:#096D19;
 }
+.assistive-mode .overlay.overlay-fullscreen .overlay-container .overlay-header-helper{
+	background-color: #098A1E !important;
+}

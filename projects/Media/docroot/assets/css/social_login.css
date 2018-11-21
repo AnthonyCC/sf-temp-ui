@@ -873,3 +873,7 @@ padding-top:5px;
 	position: relative;
 	margin: 7px 0;
 }
+
+#sulCont #social-login-g-recaptcha{
+	padding: 15px 0 0;
+}

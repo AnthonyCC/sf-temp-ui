@@ -23,6 +23,7 @@ public class RequestLogger {
 	private static final String IPHEADER = "X-Forwarded-For";
 	private static final String AKAMAI_IPHEADER = "True-Client-IP";
 	private static final String USER_AGENT = "User-Agent";
+	public static final String FD_ORIGIN_NAME = "fd-origin-name";
 	
 	public static void logRequest(ServletRequest request) {
 		

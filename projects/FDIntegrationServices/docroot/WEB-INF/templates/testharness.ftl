@@ -552,10 +552,15 @@ function loadStuff() {
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "category" : "gro_coffe"}';
   	$("#payload").val(postdata);
 
-  } else if (loaddata == "SearchWeb") {
+  } else if (loaddata == "SearchFlowAsWeb") {
   	$("#url").val("/search/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
   	$("#payload").val('{"pageType" : "SEARCH", "browseEvent" : "pageview", "searchParams" : "avocado", "activeTab" : "product"}');
+
+  } else if (loaddata == "SearchFlowAsMobile") {
+    $("#url").val("/search/web/");
+    $("#header").val('');
+    $("#payload").val('{"query": "apple", "sortBy":"Sort_Relevancy","orderAscending":true,"filterByIds":{"departmentFilterGroup":["cos_bev"], "categoryFilterGroup":["cos_bev_jui"]}, "max" : "30", "page" : "1"}');
 
   } else if (loaddata == "ProductDetail") {
   	$("#url").val("/product/catid/grns/id/grns_grnkale");
@@ -1730,7 +1735,8 @@ function doStuff() {
   <option value="SearchUPC">SEARCH - UPC barcode</option>
   <option value="SearchSort">SEARCH - Sort</option>
   <option value="SearchFilter">SEARCH - Filter</option>
-  <option value="SearchWeb">SEARCH - Web</option>
+  <option value="SearchFlowAsWeb">SEARCH - filteringflow as web</option>
+  <option value="SearchFlowAsMobile">SEARCH - filteringflow as mobile</option>
   <option value="SearchEX">SEARCHEX - Basic</option>
   <option value="SearchUPCEX">SEARCHEX - UPC barcode</option>
   <option value="SearchSortEX">SEARCHEX - Sort</option>

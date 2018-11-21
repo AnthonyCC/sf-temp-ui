@@ -301,7 +301,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			"select m.sap_id, ms.unavailability_status, ms.unavailability_date,"
 			+ " ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"         
-   			+ " p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,ms.sales_org,ms.distribution_channel,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id "
+   			+ " p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,ms.sales_org,ms.distribution_channel,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE,M.ALCOHOLIC_CONTENT, ms.picking_plant_id, p.plant_id "
 			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.MATERIAL_SALES_AREA ms"
 			+ " where p.mat_id=m.id and mp.mat_id = m.id and ms.mat_id=m.id and m.skucode = ? and m.version = ?";
 	
@@ -326,7 +326,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(5);				
 				String days_fresh = rs.getString(14);				
 				String upc=rs.getString(17);				
-
+				EnumAlcoholicContent alcoholType = StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
 				matNos.add(rs.getString(1));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(8), rs.getString(9), rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), null, null));
 
@@ -342,7 +342,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					
 				}
 				//boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
-				EnumAlcoholicContent alcoholType = StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
+//				EnumAlcoholicContent alcoholType = StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))? EnumAlcoholicContent.NONE:EnumAlcoholicContent.getAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
 				 return new ErpProductInfoModel(
 				        	skuCode,version,
 				        	matNos.toArray(new String[0]),

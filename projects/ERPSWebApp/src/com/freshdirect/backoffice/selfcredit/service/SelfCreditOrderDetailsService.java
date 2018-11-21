@@ -96,7 +96,7 @@ public class SelfCreditOrderDetailsService {
 	private double collectQuantity(FDCartLineI fdCartLine) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
     	double displayQuantity = Double.parseDouble(quantity);
-    	return  Double.compare(displayQuantity, 0.00) == 0 ? 0.00 : (Double.compare(Math.floor(displayQuantity), 0.00) == 0 ? 1.00 : Math.floor(displayQuantity));
+    	return  Double.compare(displayQuantity, 0d) == 0 ? 0d : (Double.compare(Math.floor(displayQuantity), 0d) == 0 ? 1d : Math.floor(displayQuantity));
 	}
 
 	private List<String> collectCartonNumbers(List<FDCartonInfo> cartonContents) {
@@ -109,7 +109,7 @@ public class SelfCreditOrderDetailsService {
 	
 	private double collectFinalPrice(double deliveredQuantity, FDCartLineI fdCartLine) {
 		double finalPrice = fdCartLine.getInvoiceLine().getPrice();
-		return Double.compare(deliveredQuantity, 0.00) == 0 ? 0.00 : finalPrice/deliveredQuantity;
+		return Double.compare(deliveredQuantity, 0d) == 0 ? 0d : finalPrice/deliveredQuantity;
 	}
 
 	private String collectProductName(String brandName, String description) {
