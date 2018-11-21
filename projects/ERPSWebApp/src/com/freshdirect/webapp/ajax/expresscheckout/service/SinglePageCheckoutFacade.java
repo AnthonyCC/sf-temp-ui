@@ -521,9 +521,11 @@ public class SinglePageCheckoutFacade {
             // [APPDEV-2149] SO template only checkout => no order, no dlv
             // timeslot, no giftcard magic
             final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals(user.getCheckoutMode());
-            FDCartModel cart = user.getShoppingCart();
+            FDCartModel cart;
             if(dlvPassCart) {													/* APPDEV-7671 */
             	cart = user.getDlvPassCart();
+            }else {
+            	 cart = user.getShoppingCart();
             }
             /*
              * Apply Customer credit -- This is done here for knowing the final order amount before displaying the payment selection If Gift card is used on the order Also
