@@ -190,6 +190,9 @@ public class BrowseUtil {
         } catch (FDException e) {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            result.addErrorMessage(e.getMessage());
+            LOG.error(e.getMessage());
         }
         return result;
     }
