@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -24,17 +23,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
-import weblogic.auddi.util.Logger;
-
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
@@ -71,10 +66,7 @@ import com.freshdirect.ecommerce.data.dlv.OrderContextData;
 import com.freshdirect.ecommerce.data.dlv.ReservationParam;
 import com.freshdirect.ecommerce.data.dlv.StateCountyData;
 import com.freshdirect.ecommerce.data.dlv.TimeslotEventData;
-import com.freshdirect.ecommerce.data.ecoupon.CartCouponData;
-import com.freshdirect.ecommerce.data.ecoupon.CouponOrderData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponWalletRequestData;
-import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionModelData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityContextData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityLogData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
@@ -126,10 +118,6 @@ import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogE
 import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
 import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
-import com.freshdirect.ecommerce.data.survey.FDSurveyData;
-import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
-import com.freshdirect.ecommerce.data.survey.SurveyData;
-import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.ecommerce.data.zoneInfo.ErpMasterInfoData;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
@@ -159,15 +147,12 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
-import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponCustomer;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponEligibleInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
-import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
@@ -190,7 +175,6 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
-import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -201,15 +185,13 @@ import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-//import com.freshdirect.content.attributes.FlatAttributeCollection;
-//import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 
 
 public class FDECommerceService extends AbstractEcommService implements IECommerceService {
 
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(FDECommerceService.class);
-	
+
 
 	private static final String SAP_PRODUCT_FAMILY_LOADER_GET_SKUCODE_BYPRODFLY_API ="dataloader/sap/skucodesbyproductfamily";
 	private static final String SAP_PRODUCT_FAMILY_LOADER_LOAD_API ="dataloader/sap/productfamily";
@@ -220,7 +202,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String SAVE_ACTIVE_BINS = "bin/storebins";
 	private static final String ERP_BATCH_PROCESS_API = "erp/batch/";
 	private static final String ERP_RECENT_BATCHES_API = "erp/recentBatches";
-		
+
 	private static final String ZONE_INFO_MASTER = "zoneInfo/master";
 	private static final String ALL_ZONE_INFO_MASTER = "zoneInfo/allzoneinfoMaster";
 	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid";
@@ -232,14 +214,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String FAMILYID_FOR_MATERIAL = "productfamily/familyid";
 	private static final String FAMILY_INFO = "productfamily/familyinfo";
 	private static final String SKU_FAMILY_INFO = "productfamily/skufamilyinfo";
-	
+
 	private static final String UPLOAD_PRODUCT_FEED = "productfeed/upload";
-	
+
 	private static final String USERID_BY_USERTOKEN = "account/external/userIdbyusertoken";
 	private static final String USER_EMAIL_EXIST = "account/external/checkemailexist";
 	private static final String LINK_USER_TOKEN = "account/external/linkusertoken";
 	private static final String CHECK_EXT_LOGIN_USER = "account/external/checkexternalloginuser";
-	
+
 	private static final String CONNECTED_PROVIDERS_BY_USERID = "account/external/providerbyuserid";
 	private static final String LOAD_ENUMS = "enums/all";
 	private static final String BRAND_SEARCH_BY_KEY ="brand/products/search";
@@ -251,7 +233,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String BRAND_ORDER_SUBMIT_SALEIDS ="brand/products/orderdetailsbysaleids";
 
 	private static final String EVENT_LOGGER ="event/logger/log";
-	
+
 	private static final String EXTOLE_MANAGER_CREATE ="extolemanager/create";
 	private static final String EXTOLE_MANAGER_APPROVE ="extolemanager/approve";
 	private static final String EXTOLE_MANAGER_UPDATE ="extolemanager/update";
@@ -261,19 +243,19 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String EXTOLE_MANAGER_DOWNLOAD ="extolemanager/download";
 	private static final String LOG_ECOUPON_ACTIVITY = "couponactivity/log";
 	private static final String LOG_EWALLET_ACTIVITY = "ewalletactivity/log";
-	
+
 	private static final String CMS_FEED_API = "cms/feed/";
 	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
-	
+
 	private static final String GET_COO_API ="coo";
-	
+
 	private static final String GET_EWALLET_BY_ID = "erp/ewallet/findbyid/";
 	private static final String GET_EWALLET_BY_TYPE = "erp/ewallet/findbytype/";
 	private static final String GET_CUSTEWALLET_TOKEN_BY_CUSTID = "erp/ewallet/get/";
 	private static final String UPDATE_CUSTEWALLET_TOKEN = "erp/ewallet/update/";
 	private static final String DELETE_CUSTEWALLET_TOKEN = "erp/ewallet/delete/";
 	private static final String INSERT_CUSTEWALLET_TOKEN = "erp/ewallet/save";
-	
+
 	private static final String SAVE_LOG_ENTRY = "sessionimpression/logentry";
 	private static final String SAVE_LOG_ENTRIES = "sessionimpression/logentries";
 
@@ -291,7 +273,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String DLV_MANAGER_ZIPATTRIBUTES_BY_ZIP = "dlvmanager/zipCodeAttributes";
 	private static final String DLV_MANAGER_CARTON_SCAN_INFO = "dlvmanager/cartoninfo";
 	private static final String DLV_MANAGER_MISSING_ORDER = "dlvmanager/updateorder";
-	
+
 	private static final String ERP_INVENTORY_UPDATE = "erpinventory/updateinventory";
 	private static final String ERP_INVENTORY_UPDATE_RESTRICT_INFO = "erpinventory/updaterestrictedinfos";
 
@@ -309,8 +291,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	private static final String LOG_EVENT_RECOMMENDATION = "eventlogger/recommendation/log";
 	private static final String LOG_BATCHEVENT_RECOMMENDATION = "eventlogger/recommendation/logbatch";
-	
-	
+
+
 	private static final String SMARTSTORE_PERSONALIZED_FACTORS = "scorefactor/personalfactorscores";
 	private static final String SMARTSTORE_GLOBAL_FACTORS = "scorefactor/globalfactorscores";
 	private static final String SMARTSTORE_PERSONALIZED_FACTORS_NAME = "scorefactor/personalfactorsname";
@@ -320,9 +302,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String SMARTSTORE_PRODUCT_RECOMMENDATIONS = "scorefactor/recommendglobalproducts";
 	private static final String SMARTSTORE_PERSONAL_RECOMMENDATIONS = "scorefactor/recommendpersonalproducts";
 	private static final String SMARTSTORE_PREFERRED_WINEPRICE = "scorefactor/wineprice";
-	
+
 	private static FDECommerceService INSTANCE;
-	
+
 	private static final String ERP_GROUP_SCALE_IDS_API ="groupScale/grpInfoByIds";
 	private static final String ERP_GROUP_SCALE_ID_API ="groupScale/grpInfoById";
 	private static final String ERP_GROUP_INFO_BY_MATID_API ="groupScale/grpInfoByMatId";
@@ -345,14 +327,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String LOG_ACTIVITY_NEWTXN = "activity/log/newTx";
 	private static final String LOG_ACTIVITY = "activity/log";
 	private static final String FILTER_LISTS = "activity/log/filterlist";
-	
-	
-	
+
+
+
 	private static final String ERP_PRODUCTINFO_SKUCODE_VERSION = "erpinfo/productbyskuandversion";
 	private static final String ERP_GOING_OUTOFSTOCK_SALAREA ="erpinfo/goingOutOfStockSalesAreas";
 	private static final String ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT = "erpinfo/peakproduceskusbydepartment";
 	private static final String SEND_GIFTCARD = "giftcardGateway/send/";
-	
+
 	private static final String GET_DLV_RESTRICTIONS = "restriction/delivery";
 	private static final String GET_ALCOHOL_RESTRICTIONS = "restriction/alcohol";
 	private static final String GET_ADDRESS_RESTRICTION = "restriction/address";
@@ -371,11 +353,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ADD_DLV_RESTRICTION = "restriction/delivery/add";
 	private static final String GET_RESTRICTIONS = "restriction/delivery";
 
-	private static final String RESERVATION_UPDATE = "routing/reservationupdate/"; 
+	private static final String RESERVATION_UPDATE = "routing/reservationupdate/";
 	private static final String MODIFY_ORDER_REQUEST = "routing/modifyorderrequest";
 	private static final String CANCEL_ORDER_REQUEST = "routing/cancelorderrequest";
 	private static final String SUBMIT_ORDER_REQUEST = "routing/submitorderrequest";
-	
+
 	private static final String GET_TICKET = "ticket";
 	private static final String UPDATE_TICKET = "ticket/update";
 	private static final String ADD_TICKET = "ticket/create";
@@ -388,7 +370,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String GET_COHORTS_NAMES = "variant/cohortname";
 	private static final String GET_FDX_QUERYFORSALESPICKELIGIBLE = "fdxorderpick/queryforsalespickeligible";
 	private static final String POST_FDX_ELIGIBLE_SENDORDERSTOSAP = "fdxorderpick/sendorderstosap";
-	
+
 	private static final String SAP_MATERIAL_INFO="saploader/materialinfo";
 	private static final String SAP_FIND_BY_SAP_ID="/findBySapId/";
 	private static final String SAP_SAVE_DATA="saploader/save";
@@ -412,7 +394,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 
 	private static final String FDFACTORY_CHARECTERISTIC_BYMATID = "productinfo/findByMaterialId";
-	
+
 
 	private static final String CREATE_FRAUD_ENTRY="fraudactivity/create";
 	private static final String FIND_FRAUD_ENTRY_ID="fraudactivity/findbyid";
@@ -426,12 +408,12 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String LOAD_ALL_FRAUD_ENTRY="fraudactivity/loadrestrictedpaymentmethd";
 	private static final String LOAD_ALL_BAD_ENTRY="fraudactivity/loadbadpaymentmethods";
 	private static final String LOAD_ALL_FRAUD_ENTRY_BY_ACCOUNTINFO="fraudactivity/paymentinfobyaccount";
-	
-	
-	
+
+
+
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
 	private static final String SITEMAP_GENERATE = "sitemap/generate";
-	
+
 	private static final String CHECK_TOKEN_VALID = "paymentManager/isValidVaultToken";
 
 	public static IECommerceService getInstance() {
@@ -449,7 +431,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	 * @throws FDResourceException
 	 */
 
-	
+
 	@Override
 	public Map<String,List<String>> updateCacheWithProdFly(
 			List<String> familyIds) throws FDResourceException {
@@ -663,7 +645,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
 			} catch (FDEcommServiceException e) {
-				
+
 				throw new FDResourceException(response.getMessage());
 			}
 			}
@@ -689,7 +671,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			binData.setCardType(binInfo.getCardType().getFdName());
 		return binData;
 	}
-		
+
 	@Override
 	public BatchModel getBatch(int batchId) throws FDResourceException {
 		ResponseEntity<String> response=null;
@@ -705,22 +687,22 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		new ArrayList();
 		String ss = response.getBody();
-		
+
 			GsonBuilder  gSon=  new GsonBuilder();
 			gSon.registerTypeAdapter(Response.class, new CustomResponseDeserializer());
-			
-			
+
+
 			Gson g = gSon.create();
 			Response<Collection<BatchModel>> jsons = g.fromJson(ss, Response.class);
 			Collection<BatchModel> bmlist = jsons.getData();
 		if(!jsons.getResponseCode().equals("OK")){
 			LOGGER.info("Error in FDEcommerceService :"+jsons.getMessage());
 			throw new FDResourceException(jsons.getMessage());
-			
+
 		}
 		BatchModel batchModel = null;
 		for (BatchModel bmlistItem : bmlist) {
-			batchModel = (BatchModel)bmlistItem;
+			batchModel = bmlistItem;
 		}
 		return batchModel;
 //			return bmlist.iterator().next();
@@ -741,20 +723,20 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 		new ArrayList();
 		String ss = responsess.getBody();
-		
+
 			GsonBuilder  gSon=  new GsonBuilder();
 			gSon.registerTypeAdapter(Response.class, new CustomResponseDeserializer());
-			
-			
+
+
 			Gson g = gSon.create();
 			Response<Collection<BatchModel>> jsons = g.fromJson(ss, Response.class);
-		
+
 		if(!jsons.getResponseCode().equals("OK"))
 			throw new FDResourceException(jsons.getMessage());
 			return jsons.getData();
 
 	}
-	
+
 	@Override
 	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException {
 		Response<ErpMasterInfoData> response = new Response<ErpMasterInfoData>();
@@ -766,29 +748,29 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	@Override
 	public Collection<String> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
-		
+
 
 			Response<Collection<String>> response = httpGetData(getFdCommerceEndPoint(ALL_ZONE_INFO_MASTER), Response.class);
 			if(!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
 			return response.getData();
 
-		
+
 	}
 	@Override
 	public String findZoneId(String zoneServiceType, String zipCode) throws RemoteException, FDResourceException{
-		Response<String> response = new Response<String>(); 
-	
+		Response<String> response = new Response<String>();
+
 			response = httpGetData(getFdCommerceEndPoint(LOAD_ZONE_ID)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode, Response.class);
-	
+
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		return response.getData();
 	}
 	@Override
 	public String findZoneId(String zoneServiceType, String zipCode, boolean isPickupOnlyORNotServicebleZip) throws RemoteException{
-		Response<String> response = new Response<String>(); 
-	
+		Response<String> response = new Response<String>();
+
 			try {
 				LOGGER.info("give input are zoneServiceType: "+zoneServiceType+" zipCode: "+zipCode+" isPickupOnlyORNotServicebleZip: "+isPickupOnlyORNotServicebleZip+" starting time: "+System.currentTimeMillis());
 				response = httpGetData(getFdCommerceEndPoint(LOAD_ZONE_ID_ISPICK)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode+"&isPickup="+isPickupOnlyORNotServicebleZip, Response.class);
@@ -800,10 +782,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(response.getMessage());
 		return response.getData();
 	}
-	
+
 	@Override
 	public String findZoneId(String servType) throws RemoteException {
-		Response<String> response = new Response<String>(); 
+		Response<String> response = new Response<String>();
 
 			try {
 				response = httpGetData(getFdCommerceEndPoint(LOAD_ZONE_BY_SERVICETYPE)+"?zoneServiceType="+servType, Response.class);
@@ -811,7 +793,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
+
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
 		return response.getData();
@@ -824,14 +806,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			response = httpGetDataTypeMap(getFdCommerceEndPoint(ALL_ZONE_INFO), new TypeReference<Response<List<ErpMasterInfoData>>>() {});
 		} catch (FDResourceException e) {
-			
+
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
 		return ModelConverter.buildErpMasterInfoList(response.getData());
 	}
-	
+
 	@Override
 	public Collection<ErpZoneMasterInfo> findZoneInfoMaster(String[] zoneIds)
 			throws RemoteException {
@@ -853,11 +835,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		throw new RemoteException(e.getMessage());
 	}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	@Override
 	public String getFamilyIdForMaterial(String matId) throws RemoteException, FDResourceException {
 		Response<String> response = new Response<String>();
@@ -865,7 +847,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			response = httpGetData(getFdCommerceEndPoint(FAMILYID_FOR_MATERIAL)+"?matId=", Response.class);
 		} catch(FDResourceException e){
 			throw new FDResourceException(e, e.getMessage());
-		} 
+		}
 		return response.getData();
 	}
 	@Override
@@ -949,10 +931,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
 		} catch (FDEcommServiceException e) {
-			Logger.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 			e.printStackTrace();
 		} catch (FDResourceException e) {
-			Logger.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -976,7 +958,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public List<String> getConnectedProvidersByUserId(String userId,
 			EnumExternalLoginSource source) {
-		
+
 		Response<List<String>> response = null;
 		try {
 			response = httpGetDataTypeMap(
@@ -1007,7 +989,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 		}
 		return response.getData();
-	
+
 	}
 	@Override
 	public void unlinkExternalAccountWithUser(String email, String userToken,
@@ -1021,7 +1003,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 					+ provider
 					+ "&userToken="
 					+ userToken), new TypeReference<Response<Void>>() {});
-			
+
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			e.printStackTrace();
@@ -1065,9 +1047,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	}
 	@Override
-	public List<String> getConnectedProvidersByUserId(String userId) {
-
-		
+	public List<String> getConnectedProvidersByUserId(String userId) throws RemoteException {
 		Response<List<String>> response = null;
 		try {
 			response = httpGetDataTypeMap(
@@ -1077,11 +1057,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			e.printStackTrace();
 			LOGGER.error(e.getMessage());
+            throw new RemoteException();
 		}
-		return response.getData();
-	
+		return response != null ? response.getData() : null;
+
 	}
 	@Override
 	public <E> List loadEnum(String daoClassName) throws RemoteException {
@@ -1098,7 +1078,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 		return buildServiceEnumModel(response.getData());
 	}
-	
+
 	private List buildServiceEnumModel(List data) {
 		if(data.size()>0){
 			if(data.get(1) instanceof BillingCountryInfoData ){
@@ -1134,10 +1114,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 		return null;
 	}
-	
+
 	private <E> E typeReferenceFor(String daoClassName) {
-		
-		
+
+
 		if (daoClassName.equals("BillingCountryDAO")) {
 			return   (E) new TypeReference<Response<List<BillingCountryInfoData>>>(){} ;
 		} else if (daoClassName.equals("ErpAffiliateDAO")) {
@@ -1155,9 +1135,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}else  {
 			return   (E) new TypeReference<Response<List<CrmEnumTypeData>>>() {} ;
 		}
-		
+
 	}
-	
+
 	@Override
 	public 	Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since)
 			throws RemoteException {
@@ -1165,9 +1145,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 				try {
 					long date1=0;
-					
+
 					if(since!=null){
-					date1 = since.getTime(); 
+					date1 = since.getTime();
 					}
 					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API+"/"+date1),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
 
@@ -1177,19 +1157,19 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				}
 				Map<ErpCOOLKey, ErpCOOLInfo> data = ModelConverter.buildCoolModel(response.getData());
 			return data;
-		
+
 	}
 	/*@Override // Will be removed
 	public 	void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList)
 			throws RemoteException {
-		
+
 					Request<List<CountryOfOriginData>> request = new Request<List<CountryOfOriginData>>();
 					request.setData(ModelConverter.buildCoolModelData(erpCOOLInfoList));
 					try {
 						String inputJson = buildRequest(request);
-	
+
 					Response<List<CountryOfOriginData>> response = this.postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
-					
+
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1197,7 +1177,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-		
+
 	}
 	*/
 	@Override
@@ -1271,7 +1251,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-		
+
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -1292,7 +1272,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-		
+
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -1313,9 +1293,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			}
 		} catch(FDResourceException e){
 			throw new FDResourceException(e, e.getMessage());
-		} 
+		}
 		return response.getData();
-		
+
 	}
 	@Override
 	public List<ExtoleConversionRequest> getExtoleApproveConversionRequest() throws FDResourceException,
@@ -1328,7 +1308,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			}
 		} catch(FDResourceException e){
 			throw new FDResourceException(e, e.getMessage());
-		} 
+		}
 		return response.getData();
 	}
 	@Override
@@ -1348,7 +1328,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			throw new FDResourceException(response.getMessage());
 		}
-		
+
 	}
 	@Override
 	public void saveExtoleRewardsFile(List<FDRafCreditModel> rewards) throws FDResourceException,RemoteException {
@@ -1365,7 +1345,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			throw new FDResourceException(e.getMessage());
 		}
-		
+
 	}
 	@Override
 	public void createConversion() throws ExtoleServiceException, IOException, FDResourceException,
@@ -1388,7 +1368,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		response = postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_APPROVECONVERSION), Response.class);
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-		
+
 	}
 	@Override
 	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException, IOException,
@@ -1398,7 +1378,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		response = postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_DOWNLOAD+"?fileName="+fileName), Response.class);
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-		
+
 	}
 
 	@Override
@@ -1421,22 +1401,22 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
-	
-	
+
+
+
 	@Override
 	public Map<String, DeliveryException> getCartonScanInfo()
 			throws FDResourceException {
 		Response<Map<String, DeliveryException>> response =	this.httpGetDataTypeMap(getFdCommerceEndPoint(DLV_MANAGER_CARTON_SCAN_INFO), new TypeReference<Response<Map<String,DeliveryException>>>() { });
 		return response.getData();
 	}
-	
+
 	@Override
 	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException{
-	
+
 		try {
 			Request<FDCouponActivityLogData> couponActivityLogReq = new Request<FDCouponActivityLogData>();
-			
+
 			FDCouponActivityLogData fDCouActLogData = ModelConverter.buildCouponActivityData(log);
 			couponActivityLogReq.setData(fDCouActLogData);
 			String inputJson = buildRequest(couponActivityLogReq);
@@ -1450,10 +1430,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void logActivity(EwalletActivityLogModel logModel)throws RemoteException{
-		
+
 		try {
 			Request<EwalletActivityLogModel> ewalletActivityLogReq = new Request<EwalletActivityLogModel>();
 			ewalletActivityLogReq.setData(logModel);
@@ -1481,7 +1461,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				request.setData(listData);
 				String inputJson = buildRequest(request);
 				@SuppressWarnings("unchecked")
-				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);				
+				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);
 				if(!response.getResponseCode().equals("OK")){
 					throw new FDResourceException(response.getMessage());
 				}
@@ -1492,9 +1472,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				LOGGER.error(e.getMessage());
 				throw new FDResourceException(e, "Unable to process the request.");
 			}
-			
+
 	}
-	
+
 	@Override
 	public ErpEWalletModel findEWalletById(String eWalletId) throws RemoteException {
 		try {
@@ -1606,7 +1586,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void saveLogEntry(Request<SessionImpressionLogEntryData> entry) throws FDResourceException {
 		try {
@@ -1620,7 +1600,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}
-	
+
 	@Override
 	public void saveLogEntries(Request<Collection<SessionImpressionLogEntryData>> entries) throws FDResourceException,RemoteException {
 		try {
@@ -1633,8 +1613,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
-	}	
-	
+	}
+
 	@Override
 	public void saveFutureZoneNotification(String email, String zip,
 			String serviceType) throws FDResourceException {
@@ -1644,7 +1624,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		notificationParam.setEmail(email);
 		notificationParam.setServiceType(serviceType);
 		notificationParam.setZip(zip);
-		
+
 		request.setData(notificationParam);
 		try {
 			inputJson = buildRequest(request);
@@ -1655,9 +1635,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	@Override
 	public List<SiteAnnouncement> getSiteAnnouncements() throws FDResourceException {
 		Response<List<SiteAnnouncement>> response = this.httpGetData(getFdCommerceEndPoint(DLV_MANAGER_FDANNOUNCEMENT), Response.class);
@@ -1665,16 +1645,16 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(response.getMessage());
 		return response.getData();
 	}
-	
+
 	@Override
 	public void logFailedFdxOrder(String orderId) throws FDResourceException {
 		String inputJson=null;
 		Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_LOGFAILED_FDXDORDER+"/"+orderId), Response.class);
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-	
+
 	}
-	
+
 	@Override
 	public List<MunicipalityInfo> getMunicipalityInfos() throws FDResourceException {
 		List<MunicipalityInfo> minInfos = new ArrayList<MunicipalityInfo>();
@@ -1688,18 +1668,18 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			minInfos.add(municipalityInfo);
 		}
 		return minInfos;
-		
+
 	}
-	
+
 	@Override
 	public void sendOrderSizeFeed() throws FDResourceException {
 		String inputJson=null;
 		Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_SEND_ORDER_FEED), Response.class);
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-	
+
 	}
-	
+
 	@Override
 	public void sendLateOrderFeed() throws FDResourceException {
 		String inputJson=null;
@@ -1707,7 +1687,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 	}
-	
+
 	@Override
 	public Set<StateCounty> getCountiesByState(String state) throws FDResourceException {
 		Set<StateCounty> stateCountySet = new HashSet<StateCounty>();
@@ -1718,11 +1698,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			StateCounty stateCounty = new StateCounty(stateCountyData.getState(), stateCountyData.getCounty(),
 					stateCountyData.getCity());
 			stateCountySet.add(stateCounty);
-			
+
 		}
 		return stateCountySet;
 	}
-	
+
 	@Override
 	public StateCounty lookupStateCountyByZip(String zip) throws FDResourceException {
 		Response<StateCountyData> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_ZIP+"/"+zip)), new TypeReference<Response<StateCountyData>>() {});
@@ -1733,7 +1713,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(response.getMessage());
 		return stateCounty;
 	}
-	
+
 	//OPT-44 start
 	@Override
 	public ZipCodeAttributes lookupZipCodeAttributes(String zip) throws FDResourceException {
@@ -1744,7 +1724,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		return zipAttributes;
 	}
 	//OPT-44 end
-	
+
 	@Override
 	public int unlockInModifyOrders() throws FDResourceException {
 		Response<Integer> response = this.httpGetData(getFdCommerceEndPoint(DLV_MANAGER_RELEASE_ORDER_LOCK), Response.class);
@@ -1752,7 +1732,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(response.getMessage());
 		return response.getData();
 	}
-	
+
 	@Override
 	public int queryForMissingFdxOrders() throws FDResourceException {
 		Response<Integer> response = this.httpGetData(getFdCommerceEndPoint(DLV_MANAGER_MISSING_ORDER), Response.class);
@@ -1760,7 +1740,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(response.getMessage());
 		return response.getData();
 	}
-	
+
 	@Override
 	public void commitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1,
@@ -1768,9 +1748,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		Request<ReservationParam> request = new Request<ReservationParam>();
 		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
 		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
-				
+
 		TimeslotEventData timeSlotEventData = getMapper().convertValue(event, TimeslotEventData.class);
-		
+
 		ReservationParam  reservationParam = new ReservationParam();
 		reservationParam.setRsvId(rsvId);
 		reservationParam.setCustomerId(customerId);
@@ -1780,10 +1760,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		reservationParam.setEvent(timeSlotEventData);
 		request.setData(reservationParam);
 		String inputJson;
-		try {			
+		try {
 			inputJson = buildRequest(request);
 			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_COMMIT_RESERVATION), Response.class);
-			
+
 			if (!response.getResponseCode().equals("OK")) {
 				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationUnavailableException"))
 					throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
@@ -1795,9 +1775,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDResourceException e) {
 			throw new FDResourceException(e);
 		}
-		
+
 	}
-		
+
 	@Override
 	public void recommitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException, ReservationException {
@@ -1805,13 +1785,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
 		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
 		ReservationParam  reservationParam = new ReservationParam();
-		
+
 		reservationParam.setRsvId(rsvId);
 		reservationParam.setCustomerId(customerId);
 		reservationParam.setOrderContext(orderData);
 		reservationParam.setAddress(contactAddressData);
 		reservationParam.setPr1(pr1);
-		
+
 		request.setData(reservationParam);
 		String inputJson;
 		try {
@@ -1828,13 +1808,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDResourceException e) {
 			throw new FDResourceException(e);
 		}
-		
+
 	}
-	
+
 	@Override
 	public void updateInventories(List<ErpInventoryModel> erpInventoryEntryModel) throws FDResourceException {
 		try {
-			
+
 			Request<List<ErpInventoryModel>> request = new Request<List<ErpInventoryModel>>();
 			request.setData(erpInventoryEntryModel);
 			String inputJson = buildRequest(request);
@@ -1842,7 +1822,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Response<Void> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_INVENTORY_UPDATE),
 					new TypeReference<Response<Void>>() {
 					});
-			
+
 			if(!response.getResponseCode().equals("OK")){
 				LOGGER.error("Error occurs in updateInventories inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
@@ -1851,7 +1831,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error("Error occurs in updateInventories erpInventoryEntryModel=" + erpInventoryEntryModel, e);
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
-		
+
 	}
 	@Override
 	public void updateRestrictedInfos(
@@ -1864,11 +1844,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Set<ErpRestrictedAvailabilityData> erpRestrictedAvailabilityData = getMapper().convertValue(restrictedInfos, Set.class);
 			restrictedInfoParam.setDeletedMaterials(deletedMaterials);
 			restrictedInfoParam.setRestrictedInfos(erpRestrictedAvailabilityData);
-		
+
 			request.setData(restrictedInfoParam);
 			String inputJson = buildRequest(request);
 			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(ERP_INVENTORY_UPDATE_RESTRICT_INFO), Response.class);
-		
+
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -1876,7 +1856,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 		throw new FDResourceException(e, "Unable to process the request.");
 		}
-		
+
 	}
 
 	@Override
@@ -1944,9 +1924,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
-		} 
+		}
 	}
-	
+
 	@Override
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfoData> etaInfoList) throws FDResourceException {
 		Response<List<STSmsResponse>> response =null;
@@ -1962,7 +1942,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
-		} 
+		}
 		return response.getData();
 	}
 	@Override
@@ -2022,7 +2002,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return response.getData();
 	}
-	
+
 	@Override
 	public List<RecievedSmsData>  getReceivedSmsData() throws FDResourceException{
 		Response<List<RecievedSmsData>> response =null;
@@ -2035,10 +2015,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				throw new FDResourceException(e, "Unable to process the request.");
 			}
 			return response.getData();
-			
+
 	}
-	
-	
+
+
 	@Override
 	public void updateCaseCreationStatus(String smsId, Boolean isCaseCreated)throws FDResourceException {
 		try {
@@ -2050,9 +2030,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
-		} 
+		}
 	}
-	
+
 	@Override
 	public Collection<GroupScalePricing> findGrpInfoMaster(FDGroup[] grpIds)
 			throws RemoteException {
@@ -2069,20 +2049,20 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			} catch (FDEcommServiceException e) {
 				LOGGER.error(e.getMessage());
 				throw new RemoteException( e.getMessage());
-			} 
-			
+			}
+
 			Collection<GroupScalePricing> finalData = new ArrayList();
 			for(GroupScalePricingData obj:response.getData()){
 				finalData.add(ModelConverter.buildGroupScalePricing(obj));
 			}
-			
+
 			return finalData;
 			}
 	@Override
 	public Collection<FDGroup> loadAllGrpInfoMaster() throws RemoteException {
 		Response<Collection<FDGroupData>> response =null;
 		try {
-		
+
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_ALL_GROUP_INFO_API), new TypeReference<Response<Collection<FDGroupData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -2090,7 +2070,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
+		}
 		Collection<FDGroup> responseData = new ArrayList();
 		for(FDGroupData obj:response.getData()){
 			responseData.add(ModelConverter.buildFDGroup(obj));
@@ -2113,39 +2093,39 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
+		}
 		return ModelConverter.buildGroupScalePricing(response.getData());
 		}
-	
+
 	@Override
 	public Map<String, FDGroup> getGroupIdentityForMaterial(String matId)
 			throws RemoteException {
 		Response<Map<String, FDGroupData>> response =null;
 		try {
-		
+
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GROUP_INFO_BY_MATID_API+"/"+matId), new TypeReference<Response<Map<String, FDGroupData>>>() {});
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
+		}
 		Map<String, FDGroup> responseData = new HashMap();
 		for(String obj:response.getData().keySet()){
 			responseData.put(obj, ModelConverter.buildFDGroup(response.getData().get(obj)));
 		}
 		return responseData;
 		}
-	
+
 	@Override
 	public Map<SalesAreaInfo, FDGroup> getGroupIdentitiesForMaterial(
 			String matId) throws RemoteException {
 		Response<List<SalesAreaInfoFDGroupWrapper>> response =null;
 		try {
-		
+
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GROUP_IDENTITY_BY_MATID_API+"/"+matId), new TypeReference<Response<List<SalesAreaInfoFDGroupWrapper>>>() {});
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
+		}
 		Map<SalesAreaInfo, FDGroup> responseData = new HashMap();
 		for(SalesAreaInfoFDGroupWrapper obj:response.getData()){
 			responseData.put(ModelConverter.buildSalesAreaInfo(obj.getSalesAreaInfoData()), ModelConverter.buildFDGroup(obj.getfDGroupData()));
@@ -2169,16 +2149,16 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
-		
+		}
+
 		List<FDSku> responseData = new ArrayList();
 		for(FDSkuData skuData :response.getData()){
 			responseData.add(ModelConverter.buildFDSky(skuData));
 		}
 		return responseData;
 		}
-	
-	
+
+
 	@Override
 	public int getLatestVersionNumber(String grpId) throws RemoteException {
 		Response<String> response =null;
@@ -2198,54 +2178,54 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throws RemoteException {
 		Response<Collection<FDGroupData>> response =null;
 		try {
-		
+
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GRP_FOR_MAT_ID_API+"/"+matId), new TypeReference<Response<Collection<FDGroupData>>>() {});
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
+		}
 		Collection<FDGroup> responseData = new ArrayList();
 		for(FDGroupData obj:response.getData()){
 			responseData.add(ModelConverter.buildFDGroup(obj));
 		}
 		return responseData;
 		}
-	
+
 	@Override
 	public FDGroup getLatestActiveGroup(String groupID)
 			throws FDGroupNotFoundException, RemoteException {
 		Response<FDGroupData> response =null;
 		try {
-		
+
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LATEST_GRP_API+"/"+groupID), new TypeReference<Response<FDGroupData>>() {});
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
+		}
 		return ModelConverter.buildFDGroup(response.getData());
 		}
-	
+
 	@Override
 	public Map<String, List<String>> getModifiedOnlyGroups(Date lastModified)
 			throws RemoteException {
 		long date1 =0;
-		
+
 		if(lastModified!=null){
-		date1 = lastModified.getTime(); 
+		date1 = lastModified.getTime();
 		}
 		Response<Map<String, List<String>>> response =null;
 		try {
-		
+
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LAST_MOD_GRP_API+"/"+date1), new TypeReference<Response<Map<String, List<String>>>>() {});
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
-		} 
+		}
 		return response.getData();
-		
+
 	}
 
-	
+
 	@Override
 	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) throws RemoteException{
 		try {
@@ -2265,7 +2245,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void log(FDRecommendationEvent event, int frequency) throws RemoteException{
 		try {
@@ -2310,10 +2290,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			} catch (FDEcommServiceException e) {
 				LOGGER.error(e.getMessage());
 				throw new FDRuntimeException(e, "Unable to process the request.");
-			} 
+			}
 			return result.getResult();
 		}
-	
+
 	@Override
 	public Map<String, double[]> getGlobalFactors(String eStoreId, List<String> factors) {
 		Response<ScoreResult> response = null;
@@ -2336,10 +2316,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			} catch (FDEcommServiceException e) {
 				LOGGER.error(e.getMessage());
 				throw new FDRuntimeException(e, "Unable to process the request.");
-			} 
+			}
 			return result.getResult();
 	}
-	
+
 	// GETCMSDATA BY STORE
 		//story 17-22
 	        @Override
@@ -2353,23 +2333,23 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 					request.setData("");
 					/*
 					 * This returns the entire json as a string for processing in a later step
-					 * 
+					 *
 					 */
 					//System.out.println(" the url your going to is: "+getFdCommerceEndPoint(CMS_FEED_API  + storeID) );
 					responseStr = httpGetData(getFdCommerceEndPoint(CMS_FEED_API  + storeID),
 							String.class);
-					
+
 					Response<String> responseOfTypestring = new  Response<String>();
 					/*
-					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific 
+					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific
 					 * TypeReference<Response<BatchModel>> to convert the entire json string to Response<BatchModel>
 					 */
-				
-					
+
+
 					responseOfTypestring = getMapper().readValue(responseStr, new TypeReference<Response<String>>() {});
 					//check to see if everything was ok with the restful service call.
 					if ( !responseOfTypestring.getResponseCode().equalsIgnoreCase(HttpStatus.OK.toString())  ){
-						 
+
 						throw new FDResourceException(responseOfTypestring.getMessage());
 					 }
 					payload = responseOfTypestring.getData();
@@ -2382,13 +2362,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 						LOGGER.error(" getCmsFeed(String storeID): Exception converting Json response  to  Response<BatchModel> while getting getBatch "
 								+ responseStr);
 						LOGGER.error(ex);
-						throw new FDResourceException("Could not retrieve cms information for id: "+ storeID); 
+						throw new FDResourceException("Could not retrieve cms information for id: "+ storeID);
 					}
 
 					else {
 						LOGGER.error(" getCmsFeed(String storeID): unknown error while getting getBatch " + responseStr);
 						LOGGER.error(ex);
-						throw new FDResourceException(ex,"Could not retrieve cms information for id: "+ storeID); 
+						throw new FDResourceException(ex,"Could not retrieve cms information for id: "+ storeID);
 					}
 
 				}
@@ -2396,8 +2376,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				return payload;
 
 			}
-			
-			
+
+
 			/**************************************************************/
 			// create cms data
 			@Override
@@ -2405,7 +2385,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				String payload;
 
 				String responseStr = "";
-			
+
 				CmsCreateFeedParams cmsParams = new CmsCreateFeedParams(feedId,storeId,feedData);
 				try {
 
@@ -2413,58 +2393,58 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 					request.setData(cmsParams);
 					String inputJson = buildRequest(request);
-					
+
 					/*
 					 * This returns the entire json as a string for processing in a later step
-					 * 
+					 *
 					 */
 
 					 // getData actually does a post.
-					 
+
 					responseStr = 	postData(inputJson, getFdCommerceEndPoint(CMS_FEED_API), String.class);
 
 					LOGGER.debug("jOHNSON THE payload was:" + responseStr);
 
 					Response<String> responseOfTypestring = new  Response<String>();
 					/*
-					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific 
+					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific
 					 * TypeReference<Response<BatchModel>> to convert the entire json string to Response<BatchModel>
 					 */
 					LOGGER.debug("the json response you got back was: : "+responseStr );
-					
+
 					responseOfTypestring = getMapper().readValue(responseStr, new TypeReference<Response<String>>() {});
 					//check to see if everything was ok with the restful service call.
 					if ( !responseOfTypestring.getResponseCode().equalsIgnoreCase(HttpStatus.OK.toString())  ){
-						 
+
 						throw new FDResourceException(responseOfTypestring.getMessage());
 					 }
 					payload  = responseOfTypestring.getData();
 					LOGGER.debug("status: "+ responseOfTypestring.getResponseCode());
-					
-					
+
+
 					/*
-					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific 
+					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific
 					 * TypeReference<Response<BatchModel>> to convert the entire json string to Response<BatchModel>
 					 */
-				
+
 
 				} catch (Exception ex) {
 					// (FDLogisticsServiceException e,JsonParseException e )
 					if (ex instanceof JsonParseException
 							|| ex instanceof IOException
-							
+
 
 					) {
 						LOGGER.error(" createFeedCmsFeed(String feedId, String storeId, String feedData): Exception converting Json response  to  Response<String> while getting getBatch "
 								+ responseStr);
 						LOGGER.error(ex);
-						throw new FDResourceException("Could not create cms information for id: "+ feedId); 
+						throw new FDResourceException("Could not create cms information for id: "+ feedId);
 					}
 
 					else {
 						LOGGER.error(" createFeedCmsFeed(String feedId, String storeId, String feedData): unknown error while getting getBatch " + responseStr);
 						LOGGER.error(ex);
-						throw new FDResourceException(ex, "Could not create cms information for id: "+ feedId); 
+						throw new FDResourceException(ex, "Could not create cms information for id: "+ feedId);
 					}
 
 				}
@@ -2472,8 +2452,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				return payload;
 
 			}
-			
-	
+
+
 	@Override
 	public Set<String> getPersonalizedFactorNames() {
 		Response<Set<String>> response = null;
@@ -2490,7 +2470,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			}
 			return result;
 	}
-	
+
 	@Override
 	public Set<String> getGlobalFactorNames() {
 		Response<Set<String> > response = null;
@@ -2586,14 +2566,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				if(!response.getResponseCode().equals("OK")){
 					throw new FDResourceException(response.getMessage());
 				}
-				
+
 			} catch (FDResourceException e){
 				LOGGER.error(e.getMessage());
 				throw new FDRuntimeException(e, "Unable to process the request.");
 			}
 			return response.getData();
 	}
-		
+
 	@Override
 	public void logGatewayActivity(GatewayType gatewayType,com.freshdirect.payment.gateway.Response resp)throws RemoteException{
 		try {
@@ -2614,7 +2594,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public Map<String, Rule> getRules(String subsystem)throws FDResourceException, RemoteException {
 		Map<String, Rule>  rules = null;
@@ -2660,7 +2640,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			ruleData.setData(ModelConverter.buildRuleData(rule));
 			inputJson = buildRequest(ruleData);
 			this.postData(inputJson, getFdCommerceEndPoint(STORE_RULES), Response.class);
-			
+
 		} catch (FDEcommServiceException e) {
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
@@ -2669,7 +2649,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}
-	
+
 	@Override
 	public Collection<ErpActivityRecord> findActivityByTemplate(
 			ErpActivityRecord template) throws FDResourceException,
@@ -2691,7 +2671,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			} catch (FDEcommServiceException e) {
 				LOGGER.error(e.getMessage());
 				throw new FDRuntimeException(e, "Unable to process the request.");
-			} 
+			}
 			return erpActivityRecordResponse;
 	}
 	@Override
@@ -2708,7 +2688,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDRuntimeException(e, "Unable to process the request.");
-		} 
+		}
 }
 	@Override
 	public void logActivityNewTX(ErpActivityRecord rec)throws  RemoteException {
@@ -2724,7 +2704,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDRuntimeException(e, "Unable to process the request.");
-		} 
+		}
 }
 	@Override
 	public Map<String, List> getFilterLists(ErpActivityRecord template)throws FDResourceException, RemoteException {
@@ -2745,7 +2725,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDRuntimeException(e, "Unable to process the request.");
-		} 
+		}
 		return filterListResponse;
 
 	}
@@ -2770,13 +2750,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDRuntimeException(e, "Unable to process the request.");
-		} 
+		}
 		return ccActivityResponse;
 	}
-	
 
 
-	
+
+
 	@Override
 	public ErpProductInfoModel findProductBySkuAndVersion(String skuCode, int version) throws RemoteException {
 		Response<ErpProductInfoModelData> response = null;
@@ -2787,7 +2767,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				throw new FDResourceException(response.getMessage());
 			}
 			erpProductInfoModel = ErpProductInfoModelConvert.convertModelToData(response.getData());
-			
+
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -2796,7 +2776,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 
 
-	
+
 	@Override
 	public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas()
 			throws RemoteException {
@@ -2815,9 +2795,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return erpMaterialSalesAreaModel;
 	}
-	
- 
-	
+
+
+
 	@Override
 	public Collection<String> findPeakProduceSKUsByDepartment(List<String> skuPrefixes) throws RemoteException {
 		Response<Collection> response = null;
@@ -2934,7 +2914,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-	}	
+	}
 	@Override
 	public void storeAddressRestriction(AddressAndRestrictedAdressData restriction)
 			throws FDResourceException, RemoteException {
@@ -2958,7 +2938,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
 	@Override
 	public void deleteAlcoholRestriction(String restrictionId)throws FDResourceException, RemoteException {
@@ -2968,7 +2948,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
 	@Override
 	public void deleteAddressRestriction(String address1, String apartment,String zipCode) throws FDResourceException, RemoteException {
@@ -3001,7 +2981,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
 	@Override
 	public void setAlcoholRestrictedFlag(String municipalityId,boolean restricted) throws FDResourceException, RemoteException {
@@ -3011,8 +2991,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
-		
+
+
 	}
 	@Override
 	public Map<String, List<String>> getMunicipalityStateCounties() throws FDResourceException, RemoteException {
@@ -3043,7 +3023,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
 	@Override
 	public String addAlcoholRestriction(AlcoholRestrictionData restriction)throws FDResourceException, RemoteException {
@@ -3062,7 +3042,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
-		
+
 	}
 	@Override
 	public boolean checkForAlcoholDelivery(String scrubbedAddress,String zipcode, String apartment) throws RemoteException {
@@ -3081,7 +3061,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
-		
+
 	}
 	@Override
 	public String checkAddressForRestrictions(AddressData address) throws RemoteException {
@@ -3100,7 +3080,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
-		
+
 	}
 	@Override
 	public void addDlvRestriction(RestrictionData restriction)throws FDResourceException, RemoteException {
@@ -3132,7 +3112,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		return response.getData();
 	}
 
-	
+
 	@Override
 	public void sendCancelOrderRequest(String saleId) throws RemoteException {
 		try {
@@ -3140,19 +3120,19 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-		
+
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
 	@Override
-	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType,
 			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException {
-		
+
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
-		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
+		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType,
 				 unattendedInstr, PhoneNumber.normalize(orderMobileNumber),erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
@@ -3169,7 +3149,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
 	@Override
 	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException {
@@ -3187,13 +3167,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 			//
 		}
-		
+
 	}
 	@Override
-	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType,
 			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException {
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
-		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
+		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType,
 				 unattendedInstr, PhoneNumber.normalize(orderMobileNumber),erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
@@ -3210,10 +3190,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
-	
-	private SubmitOrderRequestData buildOrderRequestData(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+
+	private SubmitOrderRequestData buildOrderRequestData(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType,
 			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol){
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData.setSaleId(saleId);
@@ -3227,11 +3207,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		submitOrderRequestData.setUnattendedInstr(unattendedInstr);
 		submitOrderRequestData.setOrderMobileNumber(orderMobileNumber);
 		submitOrderRequestData.setErpOrderId(erpOrderId);
-		
+
 		return submitOrderRequestData;
 	}
 
-	
+
 
 	@Override
 	 public Ticket createTicket(Ticket ticket) throws RemoteException {
@@ -3250,7 +3230,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	return ModelConverter.buildTicket(response.getData());
 	}
-	
+
 	@Override
 	public Ticket updateTicket(Ticket ticket) throws RemoteException {
 		Request<TicketData> request = new Request<TicketData>();
@@ -3369,10 +3349,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 
-		} 
+		}
 		return dateList;
 	}
-	
+
 	@Override
 	public List<SapOrderPickEligibleInfo> queryForFDXSalesPickEligible() throws RemoteException  {
 		Response<List<SapOrderPickEligibleInfo>> response = new Response<List<SapOrderPickEligibleInfo>>();
@@ -3388,7 +3368,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException  {
-		
+
 		Response<String> response = null;
 		try {
 			Request<List<SapOrderPickEligibleInfo> > requestofSapList = new Request<List<SapOrderPickEligibleInfo> >();
@@ -3408,10 +3388,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		
+
 	}
 	//POST_FDX_ELIGIBLE_SENDORDERSTOSAP
-	
+
 	@Override
 	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws RemoteException {
 		Response<MaterialBatchInfoData> response = new Response<MaterialBatchInfoData>();
@@ -3428,13 +3408,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			model.setVersion(data.getVersion());
 		} catch (FDResourceException e) {
 			throw new RemoteException(e.getMessage());
-		} 
+		}
 		return model;
 	}
-	
 
 
-	
+
+
 	@Override
 	public int createBatch() throws RemoteException{
 		int batchNumber = 0;
@@ -3452,7 +3432,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return batchNumber;
 	}
-	
+
 	@Override
 	public void updateBatchStatus(int batchNumber, EnumApprovalStatus batchStatus) throws RemoteException{
 		Response<Void> response = new Response<Void>();
@@ -3467,7 +3447,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 
 	@Override
 	public void loadData(int batchNumber, ErpMaterialModel model,
@@ -3480,7 +3460,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		List<CharacteristicValueMapData> charValueMapList = new ArrayList<CharacteristicValueMapData>();
 		ErpMaterialData material;
 		try {
-			
+
 			material = ModelConverter.convertErpMaterialModelToData(model);
 			if (createErpClassModel != null) {
 				for (Entry<String, ErpClassModel> classMap : createErpClassModel.entrySet()) {
@@ -3516,7 +3496,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
+
 	}
 
 	@Override
@@ -3534,7 +3514,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		inputParam.setSalesUnits(salesUnits);
 		request.setData(inputParam);
-	
+
 		try{
 			inputJson = buildRequest(request);
 			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAP_LOAD_SALES),new TypeReference<Response<Void>>() {});
@@ -3548,7 +3528,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void loadPriceRows(int batchNumber, String materialNo, List<ErpMaterialPriceModel> priceRowModels)  throws RemoteException{
 		Response<Void> response = new Response<Void>();
@@ -3557,7 +3537,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		LoadPriceInputData inputParam = new LoadPriceInputData();
 		inputParam.setBatchNumber(batchNumber);
 		inputParam.setMaterialNo(materialNo);
-		
+
 		List<ErpMaterialPriceData> priceRows = new ArrayList<ErpMaterialPriceData>();
 		for (ErpMaterialPriceModel erpMatPriceModel : priceRowModels) {
 			ErpMaterialPriceData data = ModelConverter.convertErpMaterialPriceModelToData(erpMatPriceModel);
@@ -3578,7 +3558,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void loadMaterialPlantsAndSalesAreas(int batchNumber, String materialNo, List<ErpPlantMaterialModel> erpPlantModels, List<ErpMaterialSalesAreaModel> salesAreaModels) throws RemoteException{
 		Response<Void> response = new Response<Void>();
@@ -3587,21 +3567,21 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		LoadMatPlantAndSalesInputData inputParam = new LoadMatPlantAndSalesInputData();
 		inputParam.setBatchNumber(batchNumber);
 		inputParam.setMaterialNo(materialNo);
-		
+
 		List<ErpPlantMaterialData> plants = new ArrayList<ErpPlantMaterialData>();
 		for (ErpPlantMaterialModel erpPlantMatModel : erpPlantModels) {
 			ErpPlantMaterialData data = ModelConverter.convertErpPlantMaterialModelToData(erpPlantMatModel);
 			plants.add(data);
 		}
 		inputParam.setPlants(plants);
-		
+
 		List<ErpMaterialSalesAreaData> salesAreas = new ArrayList<ErpMaterialSalesAreaData>();
 		for (ErpMaterialSalesAreaModel erpMatSaleAreaModel : salesAreaModels) {
 			ErpMaterialSalesAreaData data = ModelConverter.convertErpMaterialSalesAreaModelToData(erpMatSaleAreaModel);
 			salesAreas.add(data);
 		}
 		inputParam.setSalesAreas(salesAreas);
-		
+
 		request.setData(inputParam);
 		try{
 			inputJson = buildRequest(request);
@@ -3653,7 +3633,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return response.getData();
 	}
-	
+
 	@Override
 	public List<FDCouponInfo> getActiveCoupons(Date lastModified) throws RemoteException {
 		Response<List<FDCouponInfo>> response = null;
@@ -3668,7 +3648,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return response.getData();
 	}
-	
+
 	@Override
 	public FDCustomerCouponWallet getCouponsForUser(FDCouponCustomer couponCustomer, FDCouponActivityContext context) throws RemoteException {
 		Response<FDCustomerCouponWallet> response = null;
@@ -3692,7 +3672,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return response.getData();
 	}
-	
+
 	@Override
 	public boolean doClipCoupon(String couponId, FDCouponCustomer couponCustomer, FDCouponActivityContext context) throws RemoteException {
 		Response<Boolean> response = null;
@@ -3755,7 +3735,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException {
 		Response<Object> response = null;
@@ -3813,7 +3793,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 
 	@Override
 	public List<String> getVariants(EnumSiteFeatureData feature) throws RemoteException {
@@ -3861,7 +3841,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}*/
 
 
-	public void enqueueEmail(EmailI email) throws RemoteException {
+	@Override
+    public void enqueueEmail(EmailI email) throws RemoteException {
 		Response<String> response = null;
 		try {
 			Request<EmailData> request = new Request<EmailData>();
@@ -3880,13 +3861,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
-		
-	
+
+
+
 	@Override
 	public Collection<ErpCharacteristicValuePriceModel> findByMaterialId(String materialId, int version) throws RemoteException {
 		Response<Collection<ErpCharacteristicValuePriceData>> response = null;
-		Collection<ErpCharacteristicValuePriceModel>	charModel = null;	
+		Collection<ErpCharacteristicValuePriceModel>	charModel = null;
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_CHARECTERISTIC_BYMATID)+"/"+materialId+"/"+version,  new TypeReference<Response<Collection<ErpCharacteristicValuePriceData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
@@ -3903,8 +3884,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return charModel;
 	}
-	
-	
+
+
 	@Override
 	public PrimaryKey createRestrictedPaymentMethod(
 			RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException {
@@ -3919,7 +3900,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_FRAUD_ENTRY),new TypeReference<Response<String>>() {});
 				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());		
+					throw new FDResourceException(response.getMessage());
 				key = new PrimaryKey(response.getData());
 			} catch (FDEcommServiceException e) {
 				throw new RemoteException(e.getMessage());
@@ -3928,7 +3909,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			}
 			return key;
 	}
-	
+
 	@Override
 	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPrimaryKey(
 			PrimaryKey pk) throws RemoteException {
@@ -3940,7 +3921,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				throw new FDResourceException(response.getMessage());
 			}
 			model = ModelConverter.buildRestrictedPaymentMethodModel(response.getData());
-			
+
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3990,7 +3971,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return model;
 	}
-	
+
 	@Override
 	public void storeRestrictedPaymentMethod(
 			RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException {
@@ -4003,14 +3984,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			inputJson = buildRequest(request);
 			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(UPDATE_FRAUD_ENTRY),new TypeReference<Response>() {});
 			if(!response.getResponseCode().equals("OK"))
-				throw new FDResourceException(response.getMessage());	
+				throw new FDResourceException(response.getMessage());
 		} catch (FDEcommServiceException e) {
 			throw new RemoteException(e.getMessage());
 		}catch (FDResourceException e) {
 			throw new RemoteException(e.getMessage());
 		}
-		
-		
+
+
 	}
 	@Override
 	public void removeRestrictedPaymentMethod(PrimaryKey pk,
@@ -4099,7 +4080,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			inputJson = buildRequest(request);
 			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(VERIFY_FRAUD_ENTRY)+"/"+useBadAccountCache,new TypeReference<Response>() {});
 			if(!response.getResponseCode().equals("OK"))
-				throw new FDResourceException(response.getMessage());	
+				throw new FDResourceException(response.getMessage());
 			status = Boolean.getBoolean(response.getData().toString());
 		} catch (FDEcommServiceException e) {
 			throw new RemoteException(e.getMessage());
@@ -4130,7 +4111,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return erpPaymentMethod;
 	}
-	
+
 	@Override
 	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(
 			HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException {
@@ -4140,7 +4121,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
-			
+
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4163,7 +4144,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
-			
+
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4190,8 +4171,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(e);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void generateSitemap() throws RemoteException {
 		try {
@@ -4210,7 +4191,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public boolean isValidVaultToken(String token, String customerId) throws RemoteException {
 		Request<String> request = new Request<String>();
@@ -4231,7 +4212,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	private RestrictedPaymentMethodCriteriaData getCriteriaData(RestrictedPaymentMethodCriteria criteria ) {
 
-        
+
 
         if(criteria==null) {
 
@@ -4261,7 +4242,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
         return data;
 	}
-	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(
+	@Override
+    public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(
             RestrictedPaymentMethodCriteria criteria) throws RemoteException {
         Response<List<RestrictedPaymentMethodData>> response = null;
         Request<RestrictedPaymentMethodCriteria> request = new Request<RestrictedPaymentMethodCriteria>();
@@ -4272,7 +4254,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
                 inputJson = buildRequest(request);
                 response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FIND_FRAUD_ENTRY_BY_CRITERIA),new TypeReference<Response<List<RestrictedPaymentMethodData>>>() {});
                 if(!response.getResponseCode().equals("OK"))
-                    throw new FDResourceException(response.getMessage());        
+                    throw new FDResourceException(response.getMessage());
                 for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
                     RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
                     models.add(model);
@@ -4299,5 +4281,5 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return response.getData();
 	}
-	
+
 }
