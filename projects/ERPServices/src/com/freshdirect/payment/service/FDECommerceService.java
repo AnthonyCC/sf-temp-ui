@@ -1058,7 +1058,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
-            throw new RemoteException();
+            throw new RemoteException(e.getMessage(), e);
 		}
 		return response != null ? response.getData() : null;
 
