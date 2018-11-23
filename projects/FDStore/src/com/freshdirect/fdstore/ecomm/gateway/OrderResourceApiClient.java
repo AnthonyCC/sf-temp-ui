@@ -58,6 +58,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
+import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -608,6 +609,19 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 						new TypeReference<HashMap<String, FDAvailabilityI>>() {
 						});
 				
+				// jackson doesn't allow null as key in map, we need to map "null" (string) to null
+				if (map != null) {
+					for (Map.Entry<String, FDAvailabilityI> entry : map.entrySet()) {
+						if (map.get(entry.getKey()) instanceof FDCompositeAvailability) {
+							FDCompositeAvailability availability = (FDCompositeAvailability) map.get(entry.getKey());
+							if (availability.getAvailabilities() != null
+									&& availability.getAvailabilities().containsKey("null")) {
+								availability.getAvailabilities().put(null,
+										availability.getAvailabilities().remove("null"));
+							}
+						}
+					}
+				}
 				return map;
 			} catch (JsonMappingException e) {
 				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
