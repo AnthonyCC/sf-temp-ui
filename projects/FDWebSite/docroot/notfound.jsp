@@ -1,7 +1,3 @@
-<%@ page isErrorPage="true" %>
-<%@ page import='com.freshdirect.webapp.util.JspLogger' %>
-<%@ page import='com.freshdirect.webapp.util.AjaxErrorHandlingService' %>
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <%
 
 /****
@@ -96,18 +92,9 @@
     </div>
     <h1 id="errormessage">Sorry, the page you were looking for doesn't exist.</h1>
     <ul class="links">
-      <li id="refresh"><a href="#" onclick="window.location.reload();">Refresh the page</a></li>
       <li id="continue"><a href="/">Continue shopping</a></li>
       <li id="toprated"><a href="/browse.jsp?id=top_rated">View top rated items</a></li>
     </ul>
-    <c:if test="${not empty cookie['developer']}">
-      <a href="/" title="back to the homepage"><img src="/media_stat/images/something_went_wrong.png" alt="broken truck" /></a>
-      <pre id="stacktrace">
-  <% if (exception != null) {
-      exception.printStackTrace(new java.io.PrintWriter(out));
-      } %>
-      </pre>
-    </c:if>
   </div>
 </body>
 </html>
