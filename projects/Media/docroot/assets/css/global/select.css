@@ -270,8 +270,11 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
     width: 26px;
     transform: translateY(50%);
   }
-  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus {
+  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus,
+  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li:hover,
+  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li:hover button {
     text-decoration: none;
+    background-color: transparent;
   }
   #FDCustomSelect[data-custom-select-light-class] .customselect.empty-options li .checkbox-helper {
     transform: translateY(20%);
