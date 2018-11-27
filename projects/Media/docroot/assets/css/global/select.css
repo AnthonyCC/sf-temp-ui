@@ -179,14 +179,18 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
   {
   text-decoration: none;
   text-decoration-color: transparent;
-  background: #edf5ee;
+  background: #eee;
 }
 #FDCustomSelect[data-custom-select-light-class] li button {
   padding: 0;
 }
+#FDCustomSelect[data-custom-select-light-class] li button:focus {
+  background-color: #eee;
+}
 #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus {
   outline: transparent;
 }
+
 @media (max-width: 768px) {
   .browse-popup.shown {
     bottom: 14%;

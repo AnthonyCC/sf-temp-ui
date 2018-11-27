@@ -75,6 +75,11 @@ var FreshDirect = FreshDirect || {};
         })[0];
         $(firstElement).find('button').focus();
       }, 300);
+      $('.browse-popup-content ul li').mouseenter(function(){
+          $('.browse-popup-content ul li button:focus').blur();
+      }).mouseleave(function() {
+        $('.selectButton')[0].focus();
+      })
       $('#FDCustomSelect.browse-popup').attr('data-custom-select-light-class', this.el.attr('data-custom-select-light-class'));
     }else{
       $('#FDCustomSelect.browse-popup').removeAttr(this.el.attr('data-custom-select-light-class'));
