@@ -102,5 +102,5 @@
 }
 
 #quickshop .tabbed-carousel [data-component="carousel"] .portrait-item {
-	width:159px;
+	width: calc( (100% / var(--sitemod_perrow)) - 11px );
 }

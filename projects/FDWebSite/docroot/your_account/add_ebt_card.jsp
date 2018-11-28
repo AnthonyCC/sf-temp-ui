@@ -38,7 +38,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <table WIDTH="<%= W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
 
 <tr>
-<td><IMG src="/media_stat/images/snapIcon.jpg" alt="" WIDTH="29" HEIGHT="33" BORDER="0"></td>
+<td><IMG src="/media_stat/images/snapIcon.jpg" WIDTH="29" HEIGHT="33" BORDER="0"></td>
 <td>&nbsp;</td>
 <td class="text11" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
 <font class="title18">Add EBT Card</font><br>

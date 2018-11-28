@@ -1,8 +1,12 @@
 /* quickshop */
 #quickshop {
-	width: 970px;
-	margin: 0 auto;
 	font-size: 12px;
+	width: var(--sitemod_content-width);
+	min-width: var(--sitemod_content-minwidth);
+	max-width: var(--sitemod_content-maxwidth);
+	padding: var(--sitemod_content-padding);
+	margin: 0 auto;
+	box-sizing: border-box;
 }
 #quickshop .header {
 	margin-right:25px;
@@ -107,9 +111,10 @@
 }
 .qs-container:before {
 	content: '';
+	box-sizing: border-box;
 	display: block;
 	position: absolute;
-  width: 173px; /* 175 - 2 */
+	width: 175px; /* 175 - 2 */
 	height: 100%;
 	background: #f1eaf1;
 	border-left: 1px solid #d8c4d8;
@@ -124,12 +129,16 @@
 }
 .qs-menu {
 	position: relative;
-  width: 167px; /* 175 - 2 - 6 */
+	width: 175px; /* 175 - 2 - 6 */
 	float: left;
 	background: #f1eaf1;
 	border-left: 1px solid #d8c4d8;
 	border-right: 1px solid #d8c4d8;
 	padding: 10px 3px 3px 3px;
+	float: none;
+	display: inline-block;
+	vertical-align: top;
+	box-sizing: border-box;
 }
 [data-feature-quickshop="2_0"] .qs-menu {
   width: 180px;
@@ -139,8 +148,10 @@
   margin-top:16px;
 }
 .qs-content {
-	width: 775px;
-  float: right;
+	width: calc( 100% - 182px );
+	float: none;
+	display: inline-block;
+	box-sizing: border-box;
 }
 [data-feature-quickshop="2_0"] .qs-content {
 	width: 788px;
@@ -303,9 +314,10 @@
 }
 
 .qs-content .itemlist-item-productimage_wrapper{
-  width:116px;
-  max-height:116px;
-  margin:12px 0 12px 0;
+  width: 150px;
+  max-height: 150px;
+  margin: 5px 3px;
+  box-sizing: border-box;
 }
 
 .qs-content .itemlist-item-productimage_wrapper .expertrating{

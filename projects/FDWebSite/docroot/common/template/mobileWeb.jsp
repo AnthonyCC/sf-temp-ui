@@ -47,7 +47,7 @@
 	<meta name="fragment" content="!">
 
     <fd:CanonicalPageLink/>
-    <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
 
     <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
 	<script>
@@ -59,7 +59,7 @@
 	<%
 		//any page that has timeslots needs prototype
 		if (isCheckout || (mobweb_uri.indexOf("/your_account/reserve_timeslot.jsp") != -1) || (mobweb_uri.indexOf("/your_account/delivery_info_avail_slots.jsp") != -1)) {
-			%><jwr:script src="/fdproto.js" useRandomParam="false" /><%
+			%><jwr:script src="/protoscriptbox.js" useRandomParam="false" /><%
 		}
 	%>
 
@@ -224,7 +224,7 @@
 						<%-- container with qs-container is required --%>
 						<div class="qs-container"><tmpl:get name="menu" /></div>
 					<% } %>
-					<section class="content">
+					<section class="content<%= (isReorder) ? " qs-content": "" %>">
 						<tmpl:get name="content" />
 					</section>
 				    <% if (isReorder) { %>

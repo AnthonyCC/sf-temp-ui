@@ -84,13 +84,14 @@ user.setSoTemplateCart(new FDCartModel());
 	    </div>
   	</tmpl:put>
   
+	<tmpl:put name="ecpage">so_new</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
 		<div class="standing-orders-3-cont">
 
 		<% if (user.isEligibleForStandingOrders()) {%>
 		
-		<div class="standing-orders-3 w970p">
+		<div class="standing-orders-3">
 
 			<div class="standing-orders-3-create-header">
 				Complete your settings
@@ -158,6 +159,7 @@ user.setSoTemplateCart(new FDCartModel());
 	</tmpl:put>
 
 	<tmpl:put name="extraJs">
+		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 		<jwr:script src="/qsstandingorder.js" useRandomParam="false" />
 	</tmpl:put>

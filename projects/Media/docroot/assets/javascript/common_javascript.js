@@ -1150,26 +1150,14 @@ function extract_query_string(theForm) {
 	}
 
 
-function curvyCornersHelper(elemId, settingsObj) {
-                if (document.getElementById(elemId)) {
-						try {
-	                        var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
-						} catch(e) {
-							//ignore
-						}
-                }
-        }
+	function curvyCornersHelper(elemId, settingsObj) {
+		try {
+			curvyCorners(); //prints warning if polyfill is avail
+		} catch(e) {
+			//ignore
+		}
+    }
 
-var ccSettings = {
-                tl: { radius: 6 },
-                tr: { radius: 6 },
-                bl: { radius: 6 },
-                br: { radius: 6 },
-                topColour: "#ffffff",
-                bottomColour: "#ffffff",
-                antiAlias: true,
-                autoPad: true
-        };		
 		
 function doOverlayWindow(olURL, titleVar) {
 	var titleString = titleVar || '';
@@ -1206,11 +1194,6 @@ function doOverlayWindow(olURL, titleVar) {
                                         $('MB_window').style.height = 'auto';
                                         $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
                                         //$('MB_content').style.padding = '20px';
-
-                                        ccSettings.topColour = "#ffffff";
-                                        ccSettings.bottomColour = "#ffffff";
-                                        curvyCornersHelper('MB_frame', ccSettings);					
-							
                         },
                         afterHide: function() { 
 							window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY);
@@ -1245,10 +1228,6 @@ function doOverlayWindow(olURL, titleVar) {
 					$('MB_window').style.height = 'auto';
 					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
 					//$('MB_content').style.padding = '20px';
-
-					ccSettings.topColour = "#ffffff";
-					ccSettings.bottomColour = "#ffffff";
-					curvyCornersHelper('MB_frame', ccSettings);
 			},
 			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 		});
@@ -1544,16 +1523,25 @@ if ($jq && $jq.ui) { /* requires jquery ui */
 			}
 		};
 		$jq( document ).tooltip({
-			items: ".fdCoupon_det, .fdCoupon_cb",
+			items: ".fdCoupon_det, .fdCoupon_cb, .fdCoupon_cbCont .fake-checkbox",
 			tooltipClass: "cDetToolTip",
 			content: function() {
 				var element = $jq( this );
 				if ( $jq(element).is(":checked") ) { return null; }
-				if (element.hasClass('fdCoupon_cb')) {
+				
+				//prevent tooltip in cases where it doesn't make sense
+				if ( element.is(":checked") ) { return null; }
+				if (element.hasClass('fake-checkbox')) {
+					if (element.closest('.fake-checkbox-wrapper').find('input[type="checkbox"]').is(":disabled")) {
+						return null;
+					}
+				}
+
+				if (element.hasClass('fdCoupon_cb') || element.hasClass('fake-checkbox')) {
 					$jq( document ).tooltip({ tooltipClass: "cDetToolTipClickToApply" });
 					$jq( document ).tooltip({ 
 						position: {
-							my: "left-16 bottom-16",
+							my: "left-16 bottom-12",
 							at: "center top",
 							collision: 'ttFlipCustom',
 							using: function( position, feedback ) {
@@ -1572,7 +1560,7 @@ if ($jq && $jq.ui) { /* requires jquery ui */
 					$jq( document ).tooltip({ tooltipClass: "cDetToolTip" });
 					$jq( document ).tooltip({ 
 						position: {
-							my: "left-40 bottom-30",
+							my: "left-40 bottom-10",
 							at: "center top",
 							collision: 'ttFlipCustom',
 							using: function( position, feedback ) {

@@ -25,8 +25,8 @@
 
 [data-component="carousel"] ul li {
 	text-indent:0;
-	width: 156px;
-  margin-bottom: 0;
+	margin-bottom: 0;
+	border: 1px solid transparent;
 }
 
 [data-component="carousel"] ul.pager {
@@ -37,7 +37,7 @@
   margin: auto;
   padding: 0;
   line-height: 8px;
-  height: 8px;
+  height: 9px;
   background: transparent;
   text-align: center;
   border: none;

@@ -620,7 +620,7 @@ var dataLayer = window.dataLayer || [];
 
     productData = fd.modules.common.productSerialize(productE)[0] || {};
 
-    productData.brand = productE.find('.portrait-item-header-name').first().find('b').text();
+    productData.brand = productE.find('.portrait-item-header-brandname').text();
     productData.name = productData.brand ? productE.find('.product-name-no-brand').first().text() : productE.find('.portrait-item-header-name').first().text() || productE.find('.mealkit-products-list-item-head').first().text();
     productData.price = productE.attr('data-price');
     productData.in_stock = productE.attr('data-in-stock');

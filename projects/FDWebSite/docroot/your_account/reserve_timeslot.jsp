@@ -75,7 +75,8 @@ if (mobWeb) {
 	  <jwr:style src="/timeslots.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraJs">
-	  <jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
+		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
+		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 	</tmpl:put>
   	<tmpl:put name="jsmodules">
     	<%@ include file="/common/template/includes/i_jsmodules.jspf" %>

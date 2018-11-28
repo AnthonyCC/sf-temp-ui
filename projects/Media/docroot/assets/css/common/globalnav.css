@@ -24,18 +24,19 @@ body{
 
 .globalnav_top a.logo {
 	display: block;
-	float: left;
 	clear: left;
-	/*width: 159px;*/
-  /*margin-bottom: 6px;*/
+}
+/* only on checkout success */
+[data-ec-page="success"] .globalnav_top a.logo {
+	float: left;
 }
 
 .globalnav_top a.logo img{
-	display: block;
-	/*width: 159px;*/
-	padding-bottom: 9px;
+	display: initial;
+	padding-bottom: 0;
 }
 .globalnav_top a.logo.logo-cos{
+	max-width: 159px;
 	padding: 0 18px 0 0;
 	font-family: "Brandon Text";
 	text-transform: uppercase;
@@ -84,7 +85,6 @@ body{
 
 .globalnav_top .topnavitem a{
   float: left;
-  margin: 9px 0 0 0px;
   font-family: Verdana;
   font-size: 14px;
   font-weight: normal;
@@ -195,11 +195,6 @@ a#yourAccount_reorder{
 	background-image: url(/media_stat/images/buttons/reorder_icons.png);
 	background-position: 0px -14px;
 }
-
-#yourAccount_reorder:hover #reorder-icon-big{
-/* 	background-position: -22px -14px; */
-}
-
 
 #topSearchField {
 	width: 185px;
@@ -743,6 +738,8 @@ ul.subdepartments {
 }
 
 .top-nav {
+  width: var(--sitemod_content-width);
+  max-width: var(--sitemod_content-maxwidth);
   font: 18px/54px 'TradeGothic', 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif;
   position: relative;
 }
@@ -804,7 +801,6 @@ ul.subdepartments {
 .globalNavigation .basic-skin{
   font: 18px 'TradeGothic', 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif;
   color:#FFF;
-  box-shadow: 0 2px 3px rgba(79,79,79,.68);
   text-shadow: 1px 1px 0 rgb(116,145,76);
   text-align:left;
 }
@@ -959,11 +955,11 @@ ul.subdepartments {
 }
 
 [data-component="globalnav-menu"] .alignPopupRight > .department[data-component="globalnav-popup-body"] {
-  right: 30px;
+  right: 0;
   left: auto;
-	-moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
-	-webkit-box-shadow: 0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
-	box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
+  -moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
+  -webkit-box-shadow: 0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
+  box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
 }
 
 [data-component="globalnav-menu"] .subdepartments .alignPopupRight > [data-component="globalnav-popup-body"] {
@@ -1192,9 +1188,13 @@ ul.subdepartments {
 }
 
 table[data-component="footer-cont"] {
+	margin: 15px auto 0 auto;
+	border: 0;
+}
+
+table[data-component="footer-cont"] .gnav-footer {
 	margin: 0 auto;
 	width: 970px;
-	border: 0;
 }
 
 .container.global.hasFDX {
@@ -1207,4 +1207,35 @@ table[data-component="footer-cont"] {
 }
 .globalnav_top .topnavitem {
   margin-top: 0;
+}
+table[data-component="footer-cont"] .bottom-nav-cont {
+	background-color: #6AAA6D;
+	-webkit-box-shadow: 0px 2px 3px 0px rgba(79, 79, 79, 0.68);
+	-moz-box-shadow: 0px 2px 3px 0px rgba(79, 79, 79, 0.68);
+	box-shadow: 0px 2px 3px 0px rgba(79, 79, 79, 0.68);
+}
+.nav-container {
+  min-width: calc( var(--sitemod_content-minwidth) + 2px ) ;
+}
+.nav-container .bottom-nav {
+	box-sizing: border-box;
+}
+.nav-container,
+.bottom-nav,
+table[data-component="footer-cont"] {
+  width: var(--sitemod_content-width);
+  max-width: var(--sitemod_content-maxwidth);
+}
+
+[data-gc-page] .globalNavigation {
+	-webkit-box-shadow: 0 2px 3px rgba(79,79,79,.68);
+	-moz-box-shadow: 0 2px 3px rgba(79,79,79,.68);
+	box-shadow: 0 2px 3px rgba(79,79,79,.68);
+	width: calc( var(--sitemod_content-width) - 20px );
+	min-width: var(--sitemod_content-minwidth);
+	max-width: calc( var(--sitemod_content-maxwidth) - 20px );
+	padding: var(--sitemod_content-padding);
+	margin: 0 auto;
+	box-sizing: border-box;
+	background-color: #6AAA6D;
 }

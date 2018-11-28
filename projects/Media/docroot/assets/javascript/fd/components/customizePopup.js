@@ -85,14 +85,15 @@ var FreshDirect = FreshDirect || {};
         $(this.bodySelector + ' .productDisplay-skuconfig').html(this.skuControlTemplate({sku:sku}));
       }
     },
-    callback:{
-      value:function(value){
+    callback: {
+      value: function(value){
         this.skus=value.skus.reduce(function(prev,current){
           prev[current.skuCode]=current;
           prev[current.skuCode].soldBySalesUnit=value.soldBySalesUnit;
           prev[current.skuCode].quantityText=value.quantityText;
           return prev;
         },{});
+
         if(!value.atcItemId && this.dataConfig.atcId) {
           value.atcItemId=this.dataConfig.atcId;
         }
@@ -108,26 +109,36 @@ var FreshDirect = FreshDirect || {};
         this.refreshBody(value);
         this.refreshSkuControls();
 
-		$jq('button[data-component="addToSOButton"]').on('click', function() {
-			addToSoCustomize($(this));
-			return false;
-		});
-		if($jq('button[data-component="addToSOButton"]').length > 0 && $jq("#customizePopup").hasClass("shown") && $jq("#customizePopup").hasClass("soShow")){
-			$jq(document).trigger("soCustomizePopup");
-		}
+        $jq('button[data-component="addToSOButton"]').on('click', function() {
+          addToSoCustomize($(this));
+          return false;
+        });
+
+        if($jq('button[data-component="addToSOButton"]').length > 0 && $jq("#customizePopup").hasClass("shown") && $jq("#customizePopup").hasClass("soShow")){
+          $jq(document).trigger("soCustomizePopup");
+        }
+        
         $('#'+this.popupId+' .so-test-added-toggler').on('click', function(e) {
-			e.stopPropagation();
+          e.stopPropagation();
 
-			function sOResultsClose() {
-				$('.so-results-content').addClass('so-close');
-			}
+          function sOResultsClose() {
+            $('.so-results-content').addClass('so-close');
+          }
 
-			$jq(this).closest('.so-container').find('.so-results-content').toggleClass('so-close');
-			window.setTimeout(sOResultsClose, 3000);
-			return false;
-		});
+          $jq(this).closest('.so-container').find('.so-results-content').toggleClass('so-close');
+      
+          window.setTimeout(sOResultsClose, 3000);
+          
+          return false;
+        });
+        
         //update initial pricing display
         $jq('#'+this.popupId+' [data-component="productDataConfiguration"]:first').trigger('change');
+
+        // focus first focusable element
+        setTimeout(function () {
+          this.popup.focus(event);
+        }.bind(this), 10);
       }
     },
     open: {
@@ -135,7 +146,7 @@ var FreshDirect = FreshDirect || {};
         var item = config.item,
             cartData = config.cartData,
             request = {};
-        this.popup.show($(config.element));
+        this.popup.show($(config.element), null, null, true); //handle focus in callback
         this.popup.clicked = true;
 
         request.productId = item.productId;

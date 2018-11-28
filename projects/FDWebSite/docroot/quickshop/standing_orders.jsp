@@ -47,7 +47,7 @@
 					<%@ include file="/quickshop/includes/manage_standing_orders.jspf" %>
 				</div>
 		    <% } else { %>
-				<div class="standing-orders-3 w970p">
+				<div class="standing-orders-3">
 					<%@ include file="/quickshop/includes/first_standing_order.jspf" %>
 				</div>
 		    <% } %>
@@ -70,6 +70,7 @@
   
 	
   <tmpl:put name="extraJs">
+  	<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
     <fd:javascript src="/assets/javascript/timeslots.js" />
     <%@ include file="/shared/template/includes/ccl.jspf" %> <%-- FIXME: absolute horror, currently needed for some functionality on standing orders pages, an extreme cleanup or replacement would be essential here ... --%>
   </tmpl:put>

@@ -23,7 +23,7 @@
   display: inline-block;
   height: 23px;
   overflow: hidden;
-  background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);
+  /*background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);*/
   cursor: pointer;
 }
 
@@ -175,7 +175,7 @@
   right: 10px;
   min-width: 112px;
   height: 27px;
-  background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);
+  /*background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);*/
   background-position: -148px 0px;
 }
 
@@ -201,7 +201,7 @@
 #popupcart span.close {
   display: none;
   cursor: pointer;
-  background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);
+  /*background-image: url(/media_stat/images/navigation/sidecart/sidecart_buttons.png);*/
   background-position: 0px -69px;
   overflow: hidden;
   width: 64px;
