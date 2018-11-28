@@ -1480,6 +1480,7 @@ public class BrowseUtil {
             catalogInfo = getCatalogInfo(requestMessage.getCatalogKey());
             plantId = catalogInfo.getKey().getPlantId();
             pc = new PricingContext(catalogInfo.getKey().getPricingZone());
+            user.getUserContext().setPricingContext(pc);
             catalogInfo.setShowKey(false);
         } else {
             catalogInfo = getCatalogInfo(requestMessage, user);
@@ -1659,7 +1660,7 @@ public class BrowseUtil {
     }
 
     public static SkuInfo getSkuInfo(ProductModel prodModel, String plantID, PricingContext context) {
-        SkuModel sku = prodModel.getDefaultSku();
+        SkuModel sku = prodModel.getDefaultSku(context);
         if (sku == null && prodModel.getSkus().size() > 0) {
             sku = prodModel.getSku(0);
         }
