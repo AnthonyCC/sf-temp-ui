@@ -80,7 +80,7 @@ public class BackOfficeSelfCreditService {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    LOGGER.error("Exception while closing conenction with Backoffice Self-Credit service.", e);
+                    LOGGER.error("Exception while closing connection with Backoffice Self-Credit service.", e);
                 }
             }
         }
