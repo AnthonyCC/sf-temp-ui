@@ -144,7 +144,7 @@ var FreshDirect = FreshDirect || {};
       if (options.length === 1 && el.attr('data-custom-select-light-class')) {
         popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div>No eligible orders found</button></li>';          
       } else if(el.attr('data-custom-select-light-class')){
-        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div>'+Select.unescape($option.html())+'</button></li>';
+        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div><span>'+Select.unescape($option.html())+'</span></button></li>';
       } else {
         popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
       }
