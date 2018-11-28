@@ -60,7 +60,7 @@ public class FDCachedFactory {
 	private final static Map productUpcCache = new ConcurrentHashMap();
 
 	/**
-	 * Thread that reloads expired productInfos, every 10 seconds.
+	 * Thread that reloads expired zone info, every 10 seconds.
 	 */
 	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache, 10000) {
 		@Override
@@ -77,7 +77,7 @@ public class FDCachedFactory {
 				}
 
 			} catch (Exception ex) {
-				LOGGER.warn("Error occured in FDProductInfoRefresh", ex);
+				LOGGER.warn("Error occured in FDZoneRefresh", ex);
 			}
 		}
 	};
@@ -95,7 +95,7 @@ public class FDCachedFactory {
 				LOGGER.info("******* " + recentlyUpdatedSkuCode.size() + " productInfos were updated -> ["
 						+ StringUtil.join(recentlyUpdatedSkuCode, ",") + "]");
 
-				if (recentlyUpdatedSkuCode.size() == 0) {
+				if (recentlyUpdatedSkuCode.isEmpty()) {
 					return;
 				}
 
@@ -112,7 +112,7 @@ public class FDCachedFactory {
 				// cache these
 				FDProductInfo tempi;
 				for (Iterator<FDProductInfo> i = pis.iterator(); i.hasNext();) {
-					tempi = (FDProductInfo) i.next();
+					tempi = i.next();
 					this.cache.update(tempi.getSkuCode(), tempi);
 				}
 			} catch (FDResourceException ex) {
