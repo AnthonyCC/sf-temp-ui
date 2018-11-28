@@ -1735,7 +1735,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.carttabcars", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
-        defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
 
         defaults.put("feature.rollout.productCard2018", "GLOBAL:ENABLED,false;");
