@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.python.parser.ast.boolopType;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
