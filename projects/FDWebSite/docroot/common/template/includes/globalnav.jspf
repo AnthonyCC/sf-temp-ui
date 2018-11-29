@@ -38,7 +38,6 @@
 			}
 		} %>
 	</script>
-    <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
 	<%@ include file="/common/template/includes/globalnav_sr.jspf" %>
 <% } else { %>
 
