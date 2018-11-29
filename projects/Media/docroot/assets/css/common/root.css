@@ -39,8 +39,8 @@
 		--sitemod_perrow: 2;
 	}
 }
-/* < 382w, change to 1 across */
-@media screen and (max-width: 382px){
+/* < 374px, change to 1 across */
+@media screen and (max-width: 374px){
 	:root {
 		--sitemod_perrow: 1;
 	}

@@ -2916,6 +2916,10 @@ a.imgButtonWhite:hover,
 		letter-spacing: -0.1px;
 		color: #4fa157;
 	}
+	/* view cart */
+	.cartline-coupon.triangle-red.triangle-right .fdCoupon_cont {
+		display: inline-block;
+	}
 		
 	/* grid products */
 	.grid-item-coupon {

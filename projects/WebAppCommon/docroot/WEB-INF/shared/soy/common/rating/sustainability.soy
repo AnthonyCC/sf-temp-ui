@@ -4,6 +4,7 @@
  * @param ratingValue sustainability rating value
  */
 {template .sustainability}
+{if isNonnull($ratingValue)}
 {let $ratingText}
 	{switch $ratingValue}
 	{case '00'}not rated
@@ -16,4 +17,5 @@
 {/let}
 
 <img src="/media_stat/images/ratings/fish_{$ratingValue}.svg" alt="sustainability rating {$ratingText}" class="sustrating" />
+{/if}
 {/template}

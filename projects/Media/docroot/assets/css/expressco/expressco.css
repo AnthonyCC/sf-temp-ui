@@ -47,19 +47,19 @@
 }
 
 .checkout__header{
-  /* height:52px; */
+  width: var(--sitemod_content-width);
+  min-width: var(--sitemod_content-minwidth);
+  max-width: var(--sitemod_content-maxwidth);
+  margin: 0 auto;
+  padding: var(--sitemod_content-padding);
   position:relative;
   padding-top: 14px;
   padding-bottom: 8px;
-  padding-left: 10px;
-  padding-right: 10px;
   box-sizing: border-box;
   height: auto;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 100%;
-  min-width: var(--sitemod_content-minwidth);
 }
 .checkout__header .line {
   height: 6px;
