@@ -3877,14 +3877,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "from cust.sale s, cust.complaint c "
 			+ "where s.status = 'PPG' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' "
 			+ "and c.id not in (select complaint_id from cust.complaintline where c.id = complaint_id and method = 'CSH') "
-			+ "and c.CREATED_BY <> ? " + "union all " + "select c.id as complaint_id "
+			+ "and c.CREATED_BY <> ? " 
+			+ "union all " + "select c.id as complaint_id "
 			+ "from cust.sale s, cust.complaint c "
-			+ "where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?"
-			+ "union all " + "select c.id as complaint_id " + "from cust.sale s, cust.complaint c "
-			+ "where s.status = 'ENR' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?"
-			+ "union all " + "select c.id as complaint_id " + "from cust.sale s, cust.complaint c "
-			+ "where s.status = 'CPG' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?";
-
+			+ "where s.status in ('STL', 'ENR', 'CPG') and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?";
+	
 	public List<String> getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -3892,18 +3889,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement(PENDING_COMPLAINT_QUERY);
-			// ps.setDouble(1,
-			// ErpServicesProperties.getCreditAutoApproveAmount());
 			ps.setBigDecimal(1, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
 			ps.setString(2, ErpServicesProperties.getSelfCreditAgent());
-			// ps.setDouble(2,
-			// ErpServicesProperties.getCreditAutoApproveAmount());
 			ps.setBigDecimal(3, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
 			ps.setString(4, ErpServicesProperties.getSelfCreditAgent());
-			ps.setBigDecimal(5, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
-			ps.setString(6, ErpServicesProperties.getSelfCreditAgent());
-			ps.setBigDecimal(7, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
-			ps.setString(8, ErpServicesProperties.getSelfCreditAgent());
 			rs = ps.executeQuery();
 			List<String> lst = new ArrayList<String>();
 
