@@ -66,9 +66,10 @@ div.cssbutton.annotation:hover {
 
 .pdp .pdp-info {
 	overflow:hidden;
-  font-size: 14px;
-  line-height: 16px;
-  color: #333;
+	font-size: 14px;
+	line-height: 16px;
+	color: #333;
+	box-sizing: border-box;
 }
 
 .pdp-info .customerrating{
@@ -1134,17 +1135,19 @@ section.container.pdp section.main {
 section.container.pdp .main .content {
 	width: calc(100% - (175px + var(--sitemod_leftnavadj)) );
 	min-width: calc(100% - (175px + var(--sitemod_leftnavadj)) );
+	padding-left: 24px;
 }
 section.container.pdp .prodDetail .span-8 {
-	width: calc(100% - 382px );
+	width: calc(100% - 345px );
 	box-sizing: border-box;
-	min-width: 402px;
+	min-width: 423px;
 }
 section.container.pdp .pdp-productconfig {
 	max-width: 400px;
 }
 section.container.pdp [data-component="carousel"] .portrait-item {
 	width: calc( (100% / 2) - 11px );
+	max-width: calc( (100% / 2) - 11px );
 }
 .pdp .atc-info .incart-info[data-amount]:not([data-amount="0"]):after,
 .evenbetter-popup .incart-info[data-amount]:not([data-amount="0"]):after {

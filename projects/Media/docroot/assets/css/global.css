@@ -3595,3 +3595,7 @@ section.main .leftnav .menuBox label input:focus + span > span{
 .hidelist{
     list-style:none;
 }
+
+.expertrating .star {
+	margin-right: 1px;
+}
