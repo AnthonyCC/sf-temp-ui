@@ -26,7 +26,6 @@ final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 
 %>
-<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">

@@ -75,6 +75,7 @@ var FreshDirect = FreshDirect || {};
 
 	adProductSection.fixThoseHooklogicDisplayHeights = function(){
 		/* make all items in row the same min height (the height of the tallest elem in row) */
+		/* productCard2018 should fix this with fixed heights
 		$('ul.products.transactional').each(function (i,e) {
 			var $children = $(this).children('li.browseTransactionalProduct');
 			$children.css('min-height', Math.max.apply(null, 
@@ -83,6 +84,7 @@ var FreshDirect = FreshDirect || {};
 				})
 			)+'px');
 		});
+		*/
 		
 		//fetch all skus for page beacons
 		var activePage = (FreshDirect.browse.data.pager && FreshDirect.browse.data.pager.activePage) ? FreshDirect.browse.data.pager.activePage : 1

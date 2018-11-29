@@ -13,7 +13,7 @@
 <%-- 		<title><tmpl:get name='title'/></title> --%>
         <tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
-		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
 		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 	    

@@ -1,4 +1,4 @@
-.expertrating,
+
 .customerrating,
 .winerating,
 .sustrating {
@@ -7,7 +7,6 @@
 	vertical-align: baseline;
 }
 
-.expertrating,
 .customerrating,
 .winerating {
 	text-indent:100px;
@@ -21,19 +20,17 @@
 	height: 13px;
   width: 65px;
 }
-.expertrating:first-child,
+
 .customerrating:first-child,
 .winerating:first-child,
 .sustrating:first-child {
   margin-left: 0;
 }
 
-.expertrating,
 .customerrating,
 .winerating {
 	background:url(/media_stat/images/ratings/stars-sprite.png) repeat-x transparent 0 0;
 }
-.expertrating.smallrating,
 .customerrating.smallrating,
 .winerating.smallrating {
 	background:url(/media_stat/images/ratings/stars-sprite-small.png) repeat-x transparent 0 -39px;

@@ -64,8 +64,8 @@
     position: fixed;
 }
 #location-modify-order-message .modify-order-container {
-	width: 970px;
-    margin: 0 auto;
+	width: 100%;
+	margin: 0 auto;
 }
 .modify-order-bar .modify-delivery-label {
 	text-shadow: 1px 1px 0 #c85c19;
@@ -75,9 +75,10 @@
 }
 
 #locationbar-sticky-wrapper .locabar-right-sections {
-	position: fixed;
-	top: 5px;
+	position: absolute;
+	top: 3px;
 	height: 42px;
+	right: 0;
 }
 #location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
 	display: none; /* hide during modify */

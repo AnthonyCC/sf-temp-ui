@@ -56,8 +56,7 @@ public class LoggedIn extends Message {
     
     private boolean purchaseDlvPassEligible;
     private boolean showDeliveryPassBanner;
-    private String dpFreeDeliveryPromoWarning1;
-    private String dpFreeDeliveryPromoWarning2;
+    private String dpFreeDeliveryPromoWarning;
     private boolean fdxdpenabled;
     private List<String> dpskulist;
     private boolean dpActive;
@@ -361,20 +360,12 @@ public class LoggedIn extends Message {
 		this.showDeliveryPassBanner = showDeliveryPassBanner;
 	}
 
-	public String getDpFreeDeliveryPromoWarning1() {
-		return dpFreeDeliveryPromoWarning1;
+	public String getDpFreeDeliveryPromoWarning() {
+		return dpFreeDeliveryPromoWarning;
 	}
 
-	public void setDpFreeDeliveryPromoWarning1(String dpFreeDeliveryPromoWarning1) {
-		this.dpFreeDeliveryPromoWarning1 = dpFreeDeliveryPromoWarning1; 
-	}
-	
-	public String getDpFreeDeliveryPromoWarning2() {
-		return dpFreeDeliveryPromoWarning2;
-	}
-
-	public void setDpFreeDeliveryPromoWarning2(String dpFreeDeliveryPromoWarning2) {
-		this.dpFreeDeliveryPromoWarning2 = dpFreeDeliveryPromoWarning2; 
+	public void setDpFreeDeliveryPromoWarning(String dpFreeDeliveryPromoWarning) {
+		this.dpFreeDeliveryPromoWarning = dpFreeDeliveryPromoWarning; 
 	}
 
 	public double getOrderminimumamt() {

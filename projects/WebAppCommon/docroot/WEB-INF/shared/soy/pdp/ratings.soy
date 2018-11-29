@@ -14,7 +14,9 @@
 {if $sustainabilityRating}<li>{call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
 <span class="sustrating-text"><a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',800,585)">Sustainability Rating</a>
 </span></li>{/if}
-{if $expertRating}<li>{call pdp.expertRating}{param ratingValue:$expertRating /}{/call}</li>{/if}
+{if $expertRating and $expertRating > 0}
+	<li><a href="#explanatory" data-component="accordion-opener" data-accordion-target="pdp-explanatory">{call common.rating.expert}{param ratingValue:$expertRating /}{/call}</a></li>
+{/if}
 {if $bazaarVoice}<li><label for="pdp-customerReview" id="BVRRSummaryContainer"></label></li>{/if}
 {if $wineRating}<li>{call common.rating.wine}{param ratingValue:$wineRating /}{/call}</li>{/if}
 {if $customerRating}<li>{call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}</li>{/if}

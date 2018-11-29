@@ -70,7 +70,7 @@ var FreshDirect = FreshDirect || {};
     if(this.el.attr('data-custom-select-light-class')) {
       $('.selectButton '+this.el.attr('data-custom-select-light-class')+' ').addClass('overlay-open');
       setTimeout(function() {
-        let firstElement = $('.browse-popup-content ul li').filter(function() {
+        var firstElement = $('.browse-popup-content ul li').filter(function() {
           return $(this).css('display') != 'none';
         })[0];
         $(firstElement).find('button').focus();
@@ -114,13 +114,7 @@ var FreshDirect = FreshDirect || {};
         popupcontent = '';
 
     widget.find('.title').first().html(Select.unescape(title));
-    var optionsExistClass;
-    if (options.length > 1) {
-      optionsExistClass = 'multiple-options';
-    } else {
-      optionsExistClass = 'empty-options';
-    }
-    popupcontent += '<ul class="customselect '+optionsExistClass+'" data-value="'+selected.val()+'">';
+    popupcontent += '<ul class="customselect" data-value="'+selected.val()+'">';
     if (el.attr('data-custom-select-light-class')) {
       popupcontent = '<div class="select-close-container"><span class="select--header">Select an Order</span><button nofocus="" class="overlay-close-icon close-icon" type="button" data-close-overlay="" style="z-index: 462;" tabindex="9">close</button></div>'
       var optionsExistClass;

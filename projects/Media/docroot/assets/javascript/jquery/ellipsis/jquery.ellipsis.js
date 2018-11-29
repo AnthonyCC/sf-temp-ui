@@ -10,6 +10,10 @@
  * adds a class to the last 'allowed' line of text so you can apply
  * text-overflow: ellipsis;
  */
+/*
+  includes pull request(s):
+    fixes resize event stutter on iOS devices #8
+*/
 (function(factory) {
   'use strict';
 
@@ -210,6 +214,8 @@
 
     // only bind to window resize if required
     if (base.opts.responsive) {
+      var $window = $(window);
+      var windowWidth = $window.width();
 
       /**
        * resize() resets necessary vars
@@ -217,6 +223,14 @@
        * the Ellipsis script
        */
       var resize = function() {
+        // Scrolling on iOS6+ fires the resize event. This ensures the width has actually changed
+        // before continuing. https://tinyurl.com/ios-scroll-resize
+        if ($window.width() === windowWidth) {
+          return;
+        }
+        
+        windowWidth = $window.width();
+
         lines = [];
         currLine = 0;
         currOffset = null;

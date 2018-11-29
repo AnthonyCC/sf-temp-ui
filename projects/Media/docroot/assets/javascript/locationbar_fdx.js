@@ -4,18 +4,40 @@
 //var COLOR_NONSELECTED = '#4fa157', COLOR_SELECTED = '#458d4e';
 var COLOR_NONSELECTED = '#fff', COLOR_SELECTED = '#f6faf6';
 
+function setupPopUpCartPostion() {
+	$jq( '#locabar_popupcart' ).position({
+		my: 'right top',
+		at: 'right bottom+8',
+		of: '#locabar_popupcart_trigger',
+		collision : 'none'
+	});
+};
+
+function alignAddressMenu() {
+	if ($jq('#locabar_addresses').length) {
+		$jq( '#locabar_addresses' ).position({
+			my: 'center top',
+			at: 'center bottom+8',
+			of: '#locabar_addresses_trigger'
+		});
+	}
+}
+
+function alignUserMenu() {
+	$jq( '#locabar_user' ).position({
+		my: 'center top',
+		at: 'center bottom+8',
+		of: '#locabar_user_trigger',
+		collision : 'none'
+	});
+	if ($jq( '#locabar_user' ).offset().top < 0) {
+		window.setTimeout(alignUserMenu, 5000);
+	}
+}
+
 $jq(function() {
 	if ($jq('#popupcart').length) {
 		$jq('#popupcart').appendTo('#locabar_popupcart');
-		
-		var setupPopUpCartPostion = function() {
-			$jq( '#locabar_popupcart' ).position({
-				my: 'right top',
-				at: 'right bottom+8',
-				of: '#locabar_popupcart_trigger',
-				collision : 'none'
-			});
-		};
 
 		$jq('#locabar_popupcart_trigger').on('mouseenter', setupPopUpCartPostion);
 		
@@ -34,25 +56,11 @@ $jq(function() {
 	}
 
 	/* align to triggers */
-
-	function alignAddressMenu() {
-		if ($jq('#locabar_addresses').length) {
-			$jq( '#locabar_addresses' ).position({
-				my: 'center top',
-				at: 'center bottom+8',
-				of: '#locabar_addresses_trigger'
-			});
-		}
-	}
 	alignAddressMenu();
 	$jq('#sitemessage').on('alertClose', alignAddressMenu);
 
 	if ($jq('#locabar_user').length) {
-		$jq( '#locabar_user' ).position({
-			my: 'center top',
-			at: 'center bottom+8',
-			of: '#locabar_user_trigger'
-		});
+		alignUserMenu();
 	}
 });
 
@@ -275,7 +283,7 @@ $jq("#selectAddressList-menu").on('hover mouseover', function(e) {
 FreshDirect.locabar.lastFocusElemId = '';
 $jq('.locabar_triggers').on('focus retClose', function(event) {
 	var prevId = FreshDirect.locabar.lastFocusElemId;
-	if (prevId !== '' && ( ($jq(this).attr('id') !== $jq(prevId).attr('id')) || (event.type == 'retClose') )) {
+			if (prevId !== '' && ( ($jq(this).attr('id') !== $jq(prevId).attr('id')) || (event.type == 'retClose') )) {
 		$jq(prevId).removeClass('hover');
 		$jq(prevId).find('[aria-hidden="false"]:first').attr('aria-hidden', true);
 	} 

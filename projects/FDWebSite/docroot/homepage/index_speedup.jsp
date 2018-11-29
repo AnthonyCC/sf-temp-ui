@@ -65,7 +65,7 @@
     <fd:IncludeMedia name="/media/editorial/site_pages/javascript.html" />
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 
-    <jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+    <jwr:script src="/fdlibs.js" useRandomParam="false" />
     <script type="text/javascript">
 
   		var FreshDirect = FreshDirect || {};
@@ -368,7 +368,7 @@
       <% } %>
     }());
     </script>
-  	<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+  	<jwr:script src="/fdlibs.js" useRandomParam="false" />
     <% if (request.getAttribute("noyui") == null || !request.getAttribute("noyui").equals(true)) { %>
       <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
       <jwr:script src="/fdccl.js"  useRandomParam="false" />

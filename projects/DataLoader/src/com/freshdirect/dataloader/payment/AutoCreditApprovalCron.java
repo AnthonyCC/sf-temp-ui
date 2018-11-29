@@ -119,7 +119,17 @@ public class AutoCreditApprovalCron {
 					String selfComplaintId = pendingSelfComplaint.getComplaintId();
 					try {
 						LOGGER.info("Auto approve STARTED for self-issued complaint ID : " + selfComplaintId);
-						sb.approveComplaint(selfComplaintId, true, initiator, true, ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
+						if (isSF2_0_AndServiceEnabled) {
+							CustomerComplaintService.getInstance().approveComplaint(selfComplaintId, true, initiator, true,
+									ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
+						} else {
+							if (sb == null) {
+								FDCustomerManagerHome home = (FDCustomerManagerHome) ctx
+										.lookup("freshdirect.fdstore.CustomerManager");
+								sb = home.create();
+							}
+							sb.approveComplaint(selfComplaintId, true, initiator, true, ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint());
+						}
 			            LOGGER.info("Auto approve FINISHED for self-issued complaint ID : " + selfComplaintId);
 					} catch (ErpComplaintException ex) {
 						errorFlg = true;

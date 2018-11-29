@@ -89,6 +89,7 @@
 	</tmpl:put>
 
 	<tmpl:put name="extraJs">
+		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 		<fd:javascript src="/assets/javascript/timeslots.js" />
 		<jwr:script src="/qsstandingorder.js" />
 	</tmpl:put>

@@ -15,7 +15,7 @@
 	<head>
 		<tmpl:get name="seoMetaTag"/>
 		<fd:CanonicalPageLink/>
-		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	

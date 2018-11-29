@@ -36,10 +36,14 @@
 -------------------------------------------------------------- */
 
 /* A container should group all your columns. */
-.container {
-  width: 970px;
+section.container {
+  width: 970px; /* ie fix for css var polyfill delay */
+  width: var(--sitemod_content-width);
+  min-width: var(--sitemod_content-minwidth);
+  max-width: var(--sitemod_content-maxwidth);
+  padding: var(--sitemod_content-padding);
+  box-sizing: border-box;
   margin: 0 auto;
-  max-width: 100%;
 }
 
 /* Use this class on any div.span / container to see the grid. */
