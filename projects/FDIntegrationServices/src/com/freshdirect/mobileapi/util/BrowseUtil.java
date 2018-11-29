@@ -1371,7 +1371,7 @@ public class BrowseUtil {
 	
 	            }
         	}catch(Exception e){
-        		LOG.error("Error in BrowseUtil getting data for product - " + p.getContentKey().getId() + " : " + e.getMessage());
+        		LOG.error("Error in BrowseUtil getting data for product - " + p!=null&&p.getContentKey()!=null?p.getContentKey().getId() + " : " + e.getMessage():"product is null");
         	}
         }
 
