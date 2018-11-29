@@ -1138,9 +1138,10 @@ section.container.pdp .main .content {
 	padding-left: 24px;
 }
 section.container.pdp .prodDetail .span-8 {
-	width: calc(100% - 345px );
+	width: calc(100% - 333px );
 	box-sizing: border-box;
 	min-width: 423px;
+	margin-left: 0;
 }
 section.container.pdp .pdp-productconfig {
 	max-width: 400px;
