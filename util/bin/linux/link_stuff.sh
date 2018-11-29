@@ -12,7 +12,15 @@ if [ ! -d "$CURRENTDIR/projects" ]; then
 fi
 
 ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared        "$CURRENTDIR"/projects/DlvAdmin/docroot/WEB-INF/shared
-ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared        "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared
+mkdir "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared
+rm "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared/soy
+rm "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared/tld
+rm "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared/xml
+rm "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/tags
+ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared/soy       "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared/soy
+ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared/tld       "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared/tld
+ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared/xml       "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/shared/xml
+ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared/tags       "$CURRENTDIR"/projects/FDWebSite/docroot/WEB-INF/tags
 ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared        "$CURRENTDIR"/projects/DlvConfirm/docroot/WEB-INF/shared
 ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared        "$CURRENTDIR"/projects/CRM/docroot/WEB-INF/shared
 ln -s  "$CURRENTDIR"/projects/WebAppCommon/docroot/WEB-INF/shared        "$CURRENTDIR"/projects/ERPSAdmin/docroot/WEB-INF/shared
@@ -36,3 +44,4 @@ ln -s  "$CURRENTDIR"/projects/Media/docroot/ccassets                        "$CU
 ln -s  "$CURRENTDIR"/projects/Media/docroot/media_stat                      "$CURRENTDIR"/projects/CRM/docroot/media_stat
 ln -s  "$CURRENTDIR"/projects/Media/docroot/media                           "$CURRENTDIR"/projects/FDWebSite/docroot/media           
 
+echo "success"
