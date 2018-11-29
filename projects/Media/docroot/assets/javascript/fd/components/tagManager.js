@@ -563,6 +563,60 @@ var dataLayer = window.dataLayer || [];
       });
 
       return {event: 'user-signup-failure'};
+    },
+    selfCreditRequestACredit: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step1',
+        eventLabel: 'refund request'  
+      });
+      return null;
+    },
+    selfCreditContinueToReviewCredit: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step2',
+        eventLabel: 'continue'  
+      });
+      return null;
+    },
+    selfCreditCommentClick: function () {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'comment',
+        eventLabel: 'leave comment'  
+      });
+      return null;
+    },
+    selfCreditReviewRequest: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step3',
+        eventLabel: 'review request'  
+      });
+      return null;
+    },
+    selfCreditEditClick: function () {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'back',
+        eventLabel: 'edit request' 
+      });
+      return null;
+    },
+    selfCreditSubmitRequest: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step4',
+        eventLabel: 'submit request' 
+      });
+      return null;
     }
   };
   fd.gtm.PROCESSORS.cartLineChange = fd.gtm.PROCESSORS.ATCData;
