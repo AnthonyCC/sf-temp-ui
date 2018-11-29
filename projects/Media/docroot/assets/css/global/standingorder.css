@@ -95,7 +95,7 @@
 		font-weight: bold;
 	}
 	.thxgiving-addtocart .addtocart-left {
-		width: 400px;
+		width: calc( 100% - 350px );
 	}
 	.thxgiving-addtocart .addtocart-right {
 		width: 325px;

@@ -260,11 +260,14 @@ public class ProductDetailPopulator {
         // Populate product basic-level data
         populateBasicProductData(data, user, product);
 
-        // Populate product level data
-        populateProductData(data, user, product, sku, fdProduct, priceCalculator, lineData, true, false);
-
-        // Populate pricing data
+        //this is needed before pricing
+        populateSimpleProductData(data, product, sku, false);
+        
+        // Populate pricing data - needs to be done before bursts
         populatePricing(data, fdProduct, productInfo, priceCalculator, user);
+        
+        // Populate product level data - this call populates bursts
+        populateProductData(data, user, product, sku, fdProduct, priceCalculator, lineData, true, false);
 
         // Populate sku-level data for the default sku only
         populateSkuData(data, user, product, sku, fdProduct);
@@ -1043,6 +1046,10 @@ public class ProductDetailPopulator {
 
         /* compare against prop limits */
         // determine what to display
+        if ( (item.getGrpLink() == null || "".equals(item.getGrpLink())) && item.getSavingString() != null && !"".equals(item.getSavingString()) ) {
+        	item.setBadge("scaledeal");
+        }
+        
         if ((FDStoreProperties.getBurstsLowerLimit() <= deal) && (FDStoreProperties.getBurstUpperLimit() >= deal)) {
             item.setDeal(deal);
         } else if (isFree) {

@@ -105,19 +105,14 @@ input#signupbtn:hover,input#signinbtn:hover {
 	text-align: center;
 }
 
-#sulCont .errMsg{
-	/*width: 292px;*/
-}
 
 #sulCont span.error_img {
-  /* background:url( "/media_stat/images/common/red_arrow.png") no-repeat; */
   display:block;
   width:17px;
   height:12px;
 }
 
 #sulCont #litesignup span.error_img {
-  /* background:url( "/media_stat/images/common/red_arrow.png") no-repeat; */
   position: absolute;
   top: 35px;
   left: -60px;
@@ -318,9 +313,6 @@ input[type="socialButton"] {
 	font-size: 12px;
 	font-weight: 400;
 	line-height: 12px;
-}
-#sulCont form#lost_password {
-    /* padding-top: 18px; */
 }
 
 #sulCont form#lost_password input#altEmail[type="checkbox"]{
@@ -741,14 +733,10 @@ form {
 	text-align: left;
 }
 .youraccount input{
-/* 		width: 150px; */
 	padding: 1px;
 }
 .youraccount input.radio{
 	width: auto;
-}
-.youraccount_contact .youraccount_left_2 input:last-child {
-	/*width: 45px;*/
 }
 .youraccount_contact .youraccount_phone_ext{
 	padding: 0 0 0 5px;
@@ -848,9 +836,6 @@ form {
 .youraccount_continue a:first-child img{
 	padding: 0 8px 0 0;
 }
-.youraccount input.ext56{
-/* 	width:45px; */
-}
 .ext56{
 width:auto;
 }
@@ -874,6 +859,9 @@ padding-top:5px;
 	margin: 7px 0;
 }
 
+.login-ajax-overlay.fixedpopup .fixedPopupContent {
+	max-height: 655px;
+}
 #sulCont #social-login-g-recaptcha{
 	padding: 15px 0 0;
 }

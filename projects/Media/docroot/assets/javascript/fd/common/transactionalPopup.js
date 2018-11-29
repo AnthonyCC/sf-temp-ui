@@ -64,7 +64,7 @@ var FreshDirect = FreshDirect || {};
       }
     },
     open: {
-      value: function (config) {
+      value: function (config, event) {
         /* close previous one, fixes timing error issue APPDEV-6437 */
         fd.common[this.popupId].close();
         var target = config.element,
@@ -80,7 +80,7 @@ var FreshDirect = FreshDirect || {};
             $img = $(pimg).find('img.portrait-item-productimage'),
             imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null,
             parentContainer = $(target).closest('[data-transactional-align="true"]');
-
+            
         this.currentTarget = target;
 
         if (imgBottom) {
@@ -205,6 +205,12 @@ var FreshDirect = FreshDirect || {};
             // adjust image wrapper size
             mainHolder.find('.portrait-item-productimage_wrapper').css('line-height', maxImageSize+'px');
 
+            //adjust pricing container height
+            $('#'+popupId+' .portrait-item-price-cont').height($('#'+popupId+' .portrait-item-price').height());
+
+            //adjust group link position
+            $('#'+popupId+' .grpLink-cont').css('bottom', $('#'+popupId+' .portrait-item-header').height()+'px');
+
             if (related.length) {
 
               // adjust image wrapper size
@@ -251,8 +257,8 @@ var FreshDirect = FreshDirect || {};
                   relatedHolder.css({
                     visibility: 'visible',
                     left: 0,
-                    paddingLeft: '15px',
-                    marginLeft: '-15px'
+                    paddingLeft: '0',
+                    marginLeft: '0'
                   });
                 } else {
                   relatedHolder.css({
@@ -275,34 +281,34 @@ var FreshDirect = FreshDirect || {};
               }, this), 500);
             }
 
-          if($("body").hasClass("ie8")){
-            // fix for: icon font does not appear on :before in IE8, only on hover
-            $('#'+popupId + ' ' + "[data-component='addToListButton']").trigger('focus');
-          }
+            if($("body").hasClass("ie8")){
+              // fix for: icon font does not appear on :before in IE8, only on hover
+              $('#'+popupId + ' ' + "[data-component='addToListButton']").trigger('focus');
+            }
 
 
-          /* hooklogic click event */
-          $('#'+popupId + ' [data-hooklogic-beacon-click]').closest('#'+popupId).find('a,button,.portrait-item-productimage_wrapper').each(function(i,e) {
-        	  if (!$(e).data('hooklogic-beacon-click')) {
-                	/* exclusion elems */
-                	if (
-                		$(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
-                	) { return;
-                	} else {
-                		$(e).data('hooklogic-beacon-click', 'true');
-                		$(e).on('click', function(event) {
-                			var id = $(this).closest('.portrait-item').attr('id') + '_hlClick';
-                			if ($('#'+popupId).find('img#'+id).length !== 0) {
-                				return; //stop multiple firings
-                			}
-                        	var url = $('#'+popupId + ' [data-hooklogic-beacon-click]:first').data('hooklogic-beacon-click');
-                        	$('#'+popupId).append('<img alt="" class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
-                		});
-                	}
-        	  }
-          });
+            /* hooklogic click event */
+            $('#'+popupId + ' [data-hooklogic-beacon-click]').closest('#'+popupId).find('a,button,.portrait-item-productimage_wrapper').each(function(i,e) {
+              if (!$(e).data('hooklogic-beacon-click')) {
+                    /* exclusion elems */
+                    if (
+                      $(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
+                    ) { return;
+                    } else {
+                      $(e).data('hooklogic-beacon-click', 'true');
+                      $(e).on('click', function(event) {
+                        var id = $(this).closest('.portrait-item').attr('id') + '_hlClick';
+                        if ($('#'+popupId).find('img#'+id).length !== 0) {
+                          return; //stop multiple firings
+                        }
+                            var url = $('#'+popupId + ' [data-hooklogic-beacon-click]:first').data('hooklogic-beacon-click');
+                            $('#'+popupId).append('<img alt="" class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
+                      });
+                    }
+              }
+            });
 
-          }, this));
+          }, this), event);
         }
       }
     }
@@ -367,16 +373,6 @@ var FreshDirect = FreshDirect || {};
 
   };
 
-  $(function() {
-	  if ($.fn['ellipsis']) {
-      $('.product-name-no-brand').each(function(i,e) {
-        window.requestAnimationFrame(function() {
-          $(e).ellipsis({ lines: 4 });
-        });
-      });
-	  }
-  });
-
    $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
 
     // block popup open if we force it in browseMain
@@ -387,6 +383,7 @@ var FreshDirect = FreshDirect || {};
 
     var element = $(event.currentTarget).closest('[data-component="product"]'),
         config = {
+          event: event,
           element: element,
           productId:element.data('productId'),
           catId:element.data('catId')
@@ -395,7 +392,7 @@ var FreshDirect = FreshDirect || {};
       config.virtualCategory = element.data('virtualCategory');
     }
     if ((!element.hasClass('unavailable') || element.hasClass('useReplacement')) && element.closest('.stepping[data-component="carousel"]').length === 0) {
-      transactionalPopup.open(config);
+      transactionalPopup.open(config, event);
     }
 
    });

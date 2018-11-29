@@ -34,24 +34,26 @@
 	<tmpl:get name="topwarningbar" />
 	
 	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %><%= (isModifyingOrder) ? " modify-order-bar" : "" %>">
-		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && modifyingOrder != null) { %>
-			<%@ include file="/shared/template/includes/i_modifyorderbar.jspf" %>
-			
-		<% } else { %>
-			<div id="location-tabs">
-				<div class="locabar-spacer"></div>
-				<tmpl:get name="tab_fd" />
-				<tmpl:get name="tab_cos" />
-				<tmpl:get name="tab_fdx" />
+		<div class="locationbar-content">
+			<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && modifyingOrder != null) { %>
+				<%@ include file="/shared/template/includes/i_modifyorderbar.jspf" %>
+				
+			<% } else { %>
+				<div id="location-tabs">
+					<div class="locabar-spacer"></div>
+					<tmpl:get name="tab_fd" />
+					<tmpl:get name="tab_cos" />
+					<tmpl:get name="tab_fdx" />
+				</div>
+			<%} %>
+			<%-- fright sections --%>
+			<div class="locabar-right-sections" role="menubar">
+				<tmpl:get name="messages" />
+				<% if (!isModifyingOrder){ %>
+				<tmpl:get name="zip_address" />
+				<% } %>
+				<tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
 			</div>
-		<%} %>
-		<%-- fright sections --%>
-		<div class="locabar-right-sections" role="menubar">
-			<tmpl:get name="messages" />
-			<% if (!isModifyingOrder){ %>
-			<tmpl:get name="zip_address" />
-			<% } %>
-			<tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
 		</div>
 	</div>
 	

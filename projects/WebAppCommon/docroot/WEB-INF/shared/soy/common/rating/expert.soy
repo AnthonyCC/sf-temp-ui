@@ -5,9 +5,23 @@
  */
 {template .expert}
 {if $ratingValue>0}
-  <b class="expertrating smallrating rating-{$ratingValue*1}">
-  {let $ratingFormatted: ( strContains(''+round($ratingValue/2, 1), '.0') ) ? round($ratingValue/2) : round($ratingValue/2, 1) /}
-   Rating {$ratingFormatted} out of 5
-  </b>
+	{let $ratingFormatted: ( strContains(''+round($ratingValue/2, 1), '.0') ) ? round($ratingValue/2) : round($ratingValue/2, 1) /}
+	
+	{let $fullStars: floor($ratingValue/2) /}
+	{let $halfStars: ( strContains(''+round($ratingValue/2, 1), '.0') ) ? 0 : 1 /}
+	{let $emptyStars: 5 - $fullStars - $halfStars /}
+	
+	<b class="expertrating">
+		{for $s in range($fullStars)}
+			<img class="star star-full" src="/media_stat/images/ratings/star-filled.svg" />
+		{/for}
+		{for $s in range($halfStars)}
+			<img class="star star-half" src="/media_stat/images/ratings/star-half.svg" />
+		{/for}
+		{for $s in range($emptyStars)}
+			<img class="star star-empty" src="/media_stat/images/ratings/star-empty.svg" />
+		{/for}
+		<span class="offscreen">Rating {$ratingFormatted} out of 5</span>
+	</b>
 {/if}
 {/template}

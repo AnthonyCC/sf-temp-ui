@@ -1,10 +1,10 @@
 .atc-info .incart-info {
   display: block;
-	font-family:Verdana, sans-serif;
-	color:#6baa4e;
-	font-weight:bold;
-	font-size:9px;
-	text-align: center;
+  font-family:Verdana, sans-serif;
+  color:#6baa4e;
+  font-weight:bold;
+  font-size:9px;
+  text-align: center;
   line-height: 16px;
 }
 .atc-info .incart-message {

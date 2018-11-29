@@ -3,6 +3,7 @@
 /** PASS-THROUGH METHOD
  * @param? badge
  * @param? deal
+ * @param? savingString
  * @param? usq
  */
 {template .bursts autoescape="false"}
@@ -12,43 +13,43 @@
 /**
  * @param? badge
  * @param? deal
+ * @param? savingString
  * @param? usq
  */
 {template .cssbursts autoescape="false"}
 	{let $burstType}
-		{if $deal > 0}
-			deal
-		{elseif isNonnull($badge)}
+		{if isNonnull($badge)}/* for "deal" badge is null */
 			{$badge}
+		{elseif $deal > 0}/* allow this value to be set with other badge types */
+			deal
 		{/if}
 	{/let}
 
 	{if $burstType != ''}
 		<div class="cssBurst {$burstType}">
-			<span><span><span><span><span><span>/* points */
-				<p>
+				<div>
 					{switch $burstType}
+						{case 'scaledeal'}
+							{$savingString}
 						{case 'deal'}
-							SAVE<br />{$deal}%
+							save&nbsp;{$deal}%
 						{case 'fav'}
-							your fave
+							your&nbsp;fave
 						{case 'new'}
 							new
 						{case 'back'}
-							it's back
+							it's&nbsp;back
 						{case 'free'}
 							free
 						{case 'going'}
-							LAST<br/>CHANCE
+							last&nbsp;chance
 					{/switch}
-				</p>
-			</span></span></span></span></span></span>
+				</div>
 		</div>
 	{/if}
 
 	{if $usq}<span class="cssburst-wine burst-wine"><span class="offscreen">wine&spirits</span></span>{/if}
 {/template}
-
 
 /**
  * @param? badge

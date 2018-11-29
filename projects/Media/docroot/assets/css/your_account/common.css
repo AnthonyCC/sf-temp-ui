@@ -60,3 +60,31 @@
 .order-details .cancel-order-btn {
 	float: right;
 }
+
+section.container {
+  width: var(--sitemod_content-width);
+  min-width: var(--sitemodcontent-minwidth);
+  max-width: var(--sitemod_content-maxwidth);
+  padding: var(--sitemod_content-padding);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+
+[data-pagetype="act_manage"] .W_NO_NAV_TOTAL  {
+	width: 100%;
+}
+
+[data-pagetype="act_manage"] .W_YA_MANAGE_TOTAL {
+	width: 100%;
+	padding: 0 5%;
+}
+[data-pagetype="act_manage"] .W_YA_CT {
+	width: 100%;
+}
+[data-pagetype="act_manage"] .W_YA_CT table {
+	width: 100%;
+}
+[data-pagetype="act_manage"] .W_YA_MAIN ~ .W_YA_CT {
+	width: calc( 100% - 601px );
+}

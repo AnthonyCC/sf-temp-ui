@@ -171,10 +171,10 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  PopupContent.prototype.showWithDelay = function ($trigger, align, callback) {
+  PopupContent.prototype.showWithDelay = function ($trigger, align, callback, event) {
     if (this.delay === null) {
       this.delay = setTimeout($.proxy(function () {
-        this.show($trigger, align);
+        this.show($trigger, align, event);
         if (callback) {
           callback();
         }
@@ -182,9 +182,8 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  PopupContent.prototype.show = function ($trigger, align) {
-    var screenOffset, boundingRect;
-
+  PopupContent.prototype.show = function ($trigger, align, event, noFocus) {
+    var noFocus = !!noFocus;
     this.lastFocused = document.activeElement;
 
     if (this.delay) { this.clearDelay(); }
@@ -214,26 +213,17 @@ var FreshDirect = FreshDirect || {};
       if (this.config.overlay && this.$overlay) {
         this.$overlay.css({display: "block"});
       }
-      var el = this.$el;
-      setTimeout(function(){
-        boundingRect = el[0].getBoundingClientRect();
 
-        screenOffset =  $(window).height() - (boundingRect.bottom);
-        if(screenOffset<0) {
-          try {
-            el.smoothScroll();
-          } catch (e) {}
-        }
-      },500);
-
-      // focus first focusable element
-      setTimeout(function () {
-        this.focus();
-      }.bind(this), 10);
+      if (!noFocus) {
+        // focus first focusable element
+        setTimeout(function () {
+          this.focus(event);
+        }.bind(this), 10);
+      }
     }
   };
 
-  PopupContent.prototype.focus = function () {
+  PopupContent.prototype.focus = function (event) {
     var $el = this.$el,
         lastEl = '';
 
@@ -259,10 +249,9 @@ var FreshDirect = FreshDirect || {};
       }
     });
 
-
     // set new tabindices for popup
     if ($el.attr('data-tabindex') !== 'manual') {
-        $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
+        $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not(':hidden').not('[nofocus]').each(function (i, tiel) {
           var $tiel = $(tiel);
 
           lastEl = i+1;
@@ -270,17 +259,13 @@ var FreshDirect = FreshDirect || {};
           $tiel.attr('tabindex', lastEl);
         });
     }
-  //tabindex order for overlays and popup
+
+    //tabindex order for overlays and popup
     $el.find('.qs-popup-close-icon,.qs-popup-help-icon').each(function(i,e) {
         if (!$(e).is(':hidden')) {
               $(e).attr('tabindex', lastEl+=1);
         }
     });
-
-//    if ($el.find('.qs-popup-close-icon').length > 0 ) {
-//        var close = $el.find('.qs-popup-close-icon')[0];
-//        $(close).attr('tabindex', lastEl+1);
-//      }
 
     // focus first element
     if ($el.find('.portrait-item[data-component="product"]').attr('data-dontfocusform') !== 'true' && $el.find('form').length > 0) {
@@ -291,13 +276,82 @@ var FreshDirect = FreshDirect || {};
     var $lowestTabElem = null;
 
     $el.find('[tabindex]').not('[tabindex="-1"]').each(function(i,e) {
-        if ($lowestTabElem === null || $jq(e).attr('tabIndex') < $jq($lowestTabElem).attr('tabIndex')) {
+        if ((e !== null) && $lowestTabElem === null || $jq(e).attr('tabIndex') < $jq($lowestTabElem).attr('tabIndex')) {
             $lowestTabElem = $jq(e);
         }
     });
 
     if ($lowestTabElem !== null) {
-        $lowestTabElem.focus();
+      this.focusOnElem($lowestTabElem, this.$el, -205, event);
+    }
+  };
+  
+  PopupContent.prototype.focusOnElem = function($focusElem, $scrollElem, scrollOffset, event) {
+
+    if (!$focusElem) { return; }
+    if (!$scrollElem) { $scrollElem = $focusElem; }
+    if (!scrollOffset) { scrollOffset = 0; }
+
+    function focuser($focusElem, preventScroll) {
+      if (preventScroll) {
+        /* current browsers no scrolling */
+        $focusElem.focus({
+          preventScroll: true
+        });
+      } else {
+        $focusElem.focus();
+      }
+      if ($focusElem.is(":focus")) {
+        return false;
+      } else {
+        $focusElem.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+        
+        // Set focus again
+        if (preventScroll) {
+          /* current browsers no scrolling */
+          $focusElem.focus({
+            preventScroll: true
+          });
+        } else {
+          $focusElem.focus();
+        }
+      };
+    }
+
+    /* scroll to only if $scrollElem is outside the view port */
+    if (!$('html, body').hasClass('animating') && !fd.utils.isInViewPort( ($scrollElem.getBoundingClientRect === undefined) ? $scrollElem.get(0) : $scrollElem )) {
+      var scrollElemOffset = $scrollElem.offset();
+      var scrollTopTo = (scrollElemOffset.top + scrollOffset); //default alignment
+
+      /* if we have the mouse event, we can prevent over-scroll */
+      if (event) {
+        var scrollElemBoundingRect = ($scrollElem.getBoundingClientRect === undefined) ? $scrollElem.get(0).getBoundingClientRect() : $scrollElem.getBoundingClientRect();
+        var docScrollOffset = fd.utils.getDocumentScrollOffset();
+        var cursorOffset = fd.utils.getCursorOffset(event);
+  
+        var cursorBuffer = 30; //buffer so scrolling isn't edge-to-edge
+  
+        //scrolling up or down?
+        scrollTopTo = ( (docScrollOffset.top - (scrollElemOffset.top + scrollOffset)) >= 0 )
+          ? Math.max( (scrollElemOffset.top + scrollOffset), (docScrollOffset.top + scrollElemBoundingRect.top) - ((cursorOffset.top-cursorBuffer) - docScrollOffset.top) )
+          : Math.min( (scrollElemOffset.top + scrollOffset), (scrollElemOffset.top + scrollElemBoundingRect.height) - ((cursorOffset.top+cursorBuffer) - docScrollOffset.top) );
+      }
+
+      /* smooth scroll via jquery */
+      $('html, body').addClass('animating').animate({
+        scrollTop: scrollTopTo
+      }, {
+        queue: false,
+        duration: 400,
+        complete: function() {
+          setTimeout(function() {
+            $('html, body').removeClass('animating');
+          }, 500);
+          focuser($focusElem, false);
+        }
+      });
+    } else {
+      focuser($focusElem, $('html, body').hasClass('animating'));
     }
   };
 

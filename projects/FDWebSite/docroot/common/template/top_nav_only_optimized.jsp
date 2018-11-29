@@ -15,7 +15,7 @@
 <html lang="en-US" xml:lang="en-US">
 <head>
 	<tmpl:get name="seoMetaTag"/>
-	<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 <%		
     {

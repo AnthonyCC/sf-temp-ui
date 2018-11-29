@@ -5,9 +5,13 @@
   text-align:left;
 }
 
+.content-module.product-list .content .transactional {
+  padding-right: 11px;
+}
+
 .content-module.product-list .content .transactional li {
   box-sizing: border-box;
-  width: 25%;
+  /* width: 25%; */
 }
 
 .content-module.product-list .content .sections section {

@@ -347,6 +347,8 @@
     font-size: 13px;
     line-height: normal;
     padding: 15px 0;
+    text-align: center;
+    width: 100%;
   }
   #selfCreditIssueReport .meal-bundle-header .helpline-phone-number {
     text-decoration: underline;

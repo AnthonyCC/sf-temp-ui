@@ -66,9 +66,10 @@ div.cssbutton.annotation:hover {
 
 .pdp .pdp-info {
 	overflow:hidden;
-  font-size: 14px;
-  line-height: 16px;
-  color: #333;
+	font-size: 14px;
+	line-height: 16px;
+	color: #333;
+	box-sizing: border-box;
 }
 
 .pdp-info .customerrating{
@@ -146,9 +147,6 @@ div.cssbutton.annotation:hover {
 
 .pdp .heatRating{
 	margin:0px;
-}
-
-.pdp .ratings li:first-child {
 }
 
 .pdp .ratings li {
@@ -240,7 +238,7 @@ div.cssbutton.annotation:hover {
 .pdp .scale-deal-link,
 .pdp .scale-deal-link:hover,
 .pdp .scale-deal-link:visited {
-	display:block;
+	display: inline-block;
 	color:#360;
 }
 
@@ -323,6 +321,7 @@ div.cssbutton.annotation:hover {
 	margin-top:20px;
 	padding:5px 10px;
 	height:18px;
+	position: relative;
 }
 
 .pdp-ecoupon .fdCoupon_cont{
@@ -336,6 +335,8 @@ div.cssbutton.annotation:hover {
 
 .pdp-ecoupon .fdCoupon_detCont{
 	margin-left:10px;
+	font-size: 17px;
+	color: #888;
 }
 
 .pdp-ecoupon .fdCoupon_cbCont{
@@ -601,17 +602,18 @@ div.cssbutton.annotation:hover {
 
 #evenBetterPopup .pdp-evenbetter-image,
 .pdp .pdp-evenbetter-image {
-	width:109px;
-	padding-left:15px;
+	width: 111px;
+	padding-left: 10px;
 	display:inline-block;
 	text-align:center;
-	margin-right:10px;
+	margin-right: 10px;
 	vertical-align:top;
+	box-sizing: border-box;
 }
 
 #evenBetterPopup .pdp-evenbetter-image .portrait-item-burst_wrapper,
 .pdp .pdp-evenbetter-image .portrait-item-burst_wrapper {
-	height:85px;
+	height: 85px;
 }
 
 #evenBetterPopup .pdp-evenbetter-image img,
@@ -638,12 +640,13 @@ div.cssbutton.annotation:hover {
 
 #evenBetterPopup .pdp-evenbetter-productinfo,
 .pdp .pdp-evenbetter-productinfo {
-	width:233px;
+	width: 221px;
 	padding-right:15px;
 	display:inline-block;
 	vertical-align:top;
 	font-size:14px;
 	color:#333;
+	box-sizing: border-box;
 }
 
 #evenBetterPopup .pdp-evenbetter-productinfo i,
@@ -703,8 +706,6 @@ div.cssbutton.annotation:hover {
 	font-size:12px;
 }
 
-#evenBetterPopup .skucontrol-variations {
-}
 /* Quantity Picker Overrides */
 .pdp-atc .pdp-atc-buttons .qtyinput,
 #evenBetterPopup .pdp-evenbetter-quantity .qtyinput,
@@ -1123,3 +1124,36 @@ a.pdp-accordion-recipes-item {
 	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
 }
 */
+
+section.container.pdp section.main {
+	width: var(--sitemod_content-width);
+	min-width: var(--sitemod_content-minwidth);
+	max-width: var(--sitemod_content-maxwidth);
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+section.container.pdp .main .content {
+	width: calc(100% - (175px + var(--sitemod_leftnavadj)) );
+	min-width: calc(100% - (175px + var(--sitemod_leftnavadj)) );
+	padding-left: 24px;
+}
+section.container.pdp .prodDetail .span-8 {
+	width: calc(100% - 333px );
+	box-sizing: border-box;
+	min-width: 423px;
+	margin-left: 0;
+}
+section.container.pdp .pdp-productconfig {
+	max-width: 400px;
+}
+section.container.pdp [data-component="carousel"] .portrait-item {
+	width: calc( (100% / 2) - 11px );
+	max-width: calc( (100% / 2) - 11px );
+}
+.pdp .atc-info .incart-info[data-amount]:not([data-amount="0"]):after,
+.evenbetter-popup .incart-info[data-amount]:not([data-amount="0"]):after {
+	content: " in cart";
+}
+.pdp .portrait-item .atc-info .incart-info[data-amount]:not([data-amount="0"]):after {
+	content: "";
+}

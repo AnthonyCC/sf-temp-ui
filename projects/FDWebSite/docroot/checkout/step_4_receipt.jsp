@@ -73,25 +73,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			if(FDStoreProperties.getSMSOverlayFlag() && fdCustomer.getCustomerSmsPreferenceModel().getSmsPreferenceflag()==null ){
 				if(session.getAttribute("SMSAlert" + _ordNum) == null){
 					%>
-		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 		<script language="javascript">
-						function curvyCornersHelper(elemId, settingsObj) {
-							if (document.getElementById(elemId)) {
-								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
-							}
-						}
-
-						var ccSettings = {
-							tl: { radius: 18 },
-							tr: { radius: 18 },
-							bl: { radius: 18 },
-							br: { radius: 18 },
-							topColour: "#FFFFFF",
-							bottomColour: "#FFFFFF",
-							antiAlias: true,
-							autoPad: true
-						};
-
 						/* display an overlay containing a remote page */
 						function doSmsRemoteOverlay(olURL) {
 							var olURL = olURL || '';
@@ -114,8 +96,6 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
                                        $('MB_window').style.height = 'auto';
                                        $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
                                        $('MB_content').style.padding = '0px';
-
-                                       curvyCornersHelper('MB_frame', ccSettings);
 		                        },
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });
@@ -146,8 +126,6 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 										$('MB_window').style.height = 'auto';
 										$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
 										$('MB_content').style.padding = '0px';
-
-                                       curvyCornersHelper('MB_frame', ccSettings);
 		                        },
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });
@@ -163,25 +141,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 					//Store the flag to capture the user has seen the window atleast once event
 					FDCustomerManager.storeSMSWindowDisplayedFlag(curridentity.getErpCustomerPK());
 					%>
-		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 		<script language="javascript">
-						function curvyCornersHelper(elemId, settingsObj) {
-							if (document.getElementById(elemId)) {
-								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
-							}
-						}
-
-						var ccSettings = {
-							tl: { radius: 6 },
-							tr: { radius: 6 },
-							bl: { radius: 6 },
-							br: { radius: 6 },
-							topColour: "#FFFFFF",
-							bottomColour: "#FFFFFF",
-							antiAlias: true,
-							autoPad: true
-						};
-
 						/* display an overlay containing a remote page */
 						function doRemoteOverlay(olURL) {
 							var olURL = olURL || '';
@@ -204,8 +164,6 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
                                        $('MB_window').style.height = 'auto';
                                        $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
                                        $('MB_content').style.padding = '0px';
-
-                                       curvyCornersHelper('MB_frame', ccSettings);
 		                        },
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });
@@ -236,8 +194,6 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 										$('MB_window').style.height = 'auto';
 										$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
 										$('MB_content').style.padding = '0px';
-
-                                       curvyCornersHelper('MB_frame', ccSettings);
 		                        },
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });

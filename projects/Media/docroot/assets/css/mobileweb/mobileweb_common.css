@@ -478,7 +478,7 @@ footer .copyright {
 	top: 0;
 	bottom: initial;
 	left: initial;
-	right: 0;
+	/* right: 0; */
 	background-image: url('/media/mobileweb/images/close-grey-icon.png');
 	background-size: 100%;
 	height: 24px;
@@ -968,7 +968,7 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page .portrait-item-coupon .fdCoupon_data{
 		display: block;
-	    position: absolute;
+		position: absolute;
 	    left: 2px;
 	    right: 2px;
 	    top: 23px;
@@ -983,19 +983,19 @@ li.cleanli .gen-arrow {
 	.prodDetail .pdp-ecoupon,
 	.mm-page .products .portrait-item-coupon{
 		overflow: hidden;
-		background-color: #fff;
-		color: #8957c5;
-		margin-top: 0px;
+		/* background-color: #fff; */
+		/* color: #8957c5; */
+		/* margin-top: 0px; */
 	}
 	.mm-page .products .portrait-item-coupon{
 		position: relative;
 		height: 42px;
-		width: 100%;
-		box-sizing: border-box;
-		margin: 0 0 15px;
-		padding: 3px 3px 6px;
-		border: 1px solid #dce6be;
-		background: #fbfafa;
+		/* width: 100%; */
+		/* box-sizing: border-box; */
+		/* margin: 0 0 15px; */
+		/* padding: 3px 3px 6px; */
+		/* border: 1px solid #dce6be; */
+		/* background: #fbfafa; */
 	}
 	.pdp-ecoupon.open,
 	.mm-page .products .portrait-item-coupon.open{
@@ -1035,14 +1035,10 @@ li.cleanli .gen-arrow {
 	.mm-page .products .portrait-item-coupon.open .fdCoupon_collapseArrow {
 		background-position: 0px 0;
 	}
-	.pdp-ecoupon .fdCoupon_msg,
-	.mm-page .products .portrait-item-coupon .fdCoupon_msg{
-		color: #8957c5;
-	}
 	.pdp-ecoupon .fdCoupon_cont.isClipped .fdCoupon_applied,
 	.mm-page .products .portrait-item-coupon .fdCoupon_cont.isClipped .fdCoupon_applied{
 		font-weight: bold;
-		color: #8957c5;
+		color: #4fa157;
 		font-size: 10px;
 		display: inline-block;
 		position: relative;
@@ -1066,10 +1062,10 @@ li.cleanli .gen-arrow {
 		/* setting the checkbox */
 		/* short arm */
 		width: 5px;
-		border-bottom: 3px solid #8957c5;
+		border-bottom: 3px solid #4fa157;
 		/* long arm */
 		height: 11px;
-		border-right: 3px solid #8957c5;
+		border-right: 3px solid #4fa157;
 		
 		/* rotate the mirrored L to make it a checkbox */
 		transform: rotate(45deg);
@@ -1102,10 +1098,10 @@ li.cleanli .gen-arrow {
 		
 		/* short arm */
 		width: 8px;
-		border-bottom: 2px solid #8957c5;
+		border-bottom: 2px solid #4fa157;
 		/* long arm */
 		height: 8px;
-		border-right: 2px solid #8957c5;
+		border-right: 2px solid #4fa157;
 		
 		transform: rotate(45deg);
 		-o-transform: rotate(45deg);
@@ -1184,6 +1180,14 @@ li.cleanli .gen-arrow {
 		.mm-page .so .cssbutton[data-component="addToSOButton"] {
 			width: 90px;
 		}
+	}
+	li.portrait-item {
+		
+/* width: 100%; */
+		
+margin-left: 3px;
+		
+width: calc( (100% / var(--sitemod_perrow)) - 3px );
 	}
 	
 	/* PDP HOLIDAY MEAL OVERRIDES */
@@ -1283,22 +1287,22 @@ li.cleanli .gen-arrow {
 	.mm-page .pdp-compOptProducts ul.products,
 	.mm-page .pdp-optProducts ul.products,
 	.mm-page #quickshop ul.products{
-		width: 100%;
+		/* width: 100%; */
 		margin: 8px 0 8px;
 		box-sizing: border-box;
-		display: flex;
+		/* display: flex; */
 	}
 	.mm-page #quickshop ul.products{
-		display: flex;
-		padding: 0;		
+		/* display: flex; */
+		/* padding: 0; */
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item,
 	.mm-page .pdp-optProducts ul.products li.portrait-item,
 	.mm-page #quickshop ul.products li.portrait-item{
-		width: 46%;
-		margin: 0 3% 0 1%;
-		border: 0;
+		/* width: 46%; */
+		/* margin: 0 3% 0 1%; */
+		/* border: 0; */
 		box-sizing: border-box;
 		background: #FFFFFF;
 	}
@@ -1309,19 +1313,19 @@ li.cleanli .gen-arrow {
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item:first-child,
 	.mm-page .pdp-optProducts ul.products li.portrait-item:first-child,
 	.mm-page #quickshop ul.products li.portrait-item:first-child{
-		margin: 0 1% 0 3%;
+		/* margin: 0 1% 0 3%; */
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item:last-child,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item:last-child,
 	.mm-page .pdp-optProducts ul.products li.portrait-item:last-child,
 	.browseContent .sectionContent ul.products li.portrait-item.lastInLine,
 	.mm-page #quickshop ul.products li.portrait-item:last-child{
-		padding: 0 9px 0 9px;
-		margin: 0 3% 0 1%;
+		/* padding: 0 9px 0 9px; */
+		/* margin: 0 3% 0 1%; */
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item:first-child,
 	.mm-page #quickshop ul.products li.portrait-item:first-child{
-		margin: 0 1% 0 3%;
+		/* margin: 0 1% 0 3%; */
 	}
 	.mm-page .browseContent .sectionContent ul.products li.portrait-item,
 	.mm-page .pdp-compOptProducts ul.products li.portrait-item,
@@ -3033,6 +3037,7 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 			width: 0;
 			top: 25px;
 			border: 0;
+			display: none;
 		}
 		section.main .leftnav {
 			position: absolute;
@@ -3074,4 +3079,11 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
         }
         .assistivetext{
 	          font-size:14px;
-        }
+		}
+
+#location-alerts,
+#messages,
+#locationbar_fdx_promo {
+	min-width: 100%;
+	max-width: 100%;
+}

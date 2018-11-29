@@ -8,7 +8,7 @@
     <title>Timeslot Selector Test</title>
   </head>
   <body>
-    <jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+    <jwr:script src="/fdlibs.js" useRandomParam="false" />
     <soy:import packageName="common"/>
     <h1>Timeslot Selector Test</h1>
     <jwr:style src="/newhomepage.css" media="all" />

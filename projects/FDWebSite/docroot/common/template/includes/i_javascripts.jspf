@@ -8,59 +8,33 @@
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
 <%@ page import='javax.servlet.http.Cookie' %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
 <%-- this file will be included in the <head> tag --%>
-	<%--
-		using the same /directory/version/ system as scriptaculous for jquery
-		also to avoid conflicts, jQuery's $ will always be set to $jq
-	--%>
+<%
+	String reqUri_i_javascript = request.getRequestURI().toLowerCase();
+%>
 
-  <%-- Feature version switcher --%>
-  <features:potato />
-	<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
+<%-- Feature version switcher --%>
+<features:potato />
 
+<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
+
+<% if (reqUri_i_javascript.indexOf("/index.jsp") == 0) { %>
+	<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+<% } else { %>
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
-	<jwr:script src="/assets/javascript/jquery/corner/jquery.corner.js" useRandomParam="false" />
-	
-	<jwr:script src="/fdmisc.js" useRandomParam="false" />
+<% } %>
 
-	<%@ include file="/common/template/includes/extol_tags.jspf" %>
+<%@ include file="/common/template/includes/extol_tags.jspf" %>
 
+<% if (request.getAttribute("noyui") == null || !request.getAttribute("noyui").equals(true)) { %>
+	<jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
+	<jwr:script src="/fdccl.js"  useRandomParam="false" />
+<% } %>
 
-	<script type="text/javascript" language="javascript">
+<jwr:script src="/fdmisc.js" useRandomParam="false" />
 
-
-		var $jq;
-		var jqInit = false;
-		function initJQuery() {
-			if (typeof(jQuery) == 'undefined') {
-				if (!jqInit) {
-					jqInit = true;
-				}
-				setTimeout("initJQuery()", 100);
-			} else {
-				$jq = jQuery.noConflict();
-			}
-		}
-		initJQuery();
-	</script>
-
-	<script>
-	(function ($) {
-		$(function () {
-
-			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
-			if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
-		});
-	})($jq);
-	</script>
-
-	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
-		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
-	<% } %>
-
-	<jwr:script src="/roundedcorners.js" useRandomParam="false" />
-	
-	<%@ include file="/common/template/includes/i_javascripts_common_bottom.jspf" %>
+<%@ include file="/common/template/includes/i_javascripts_common_bottom.jspf" %>

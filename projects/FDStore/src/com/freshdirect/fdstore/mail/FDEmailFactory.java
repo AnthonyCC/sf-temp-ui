@@ -261,6 +261,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
+	@Deprecated  /* this method is moved to BackOffice */
 	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint, EnumEStoreId eStoreId, FDOrderI order) {
 		FDConfirmCreditEmail email = null;
 		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);

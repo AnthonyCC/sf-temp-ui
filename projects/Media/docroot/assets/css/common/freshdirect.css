@@ -3,7 +3,7 @@ body[developer] *:focus {
   
 }
 :focus{
-	outline: #5fb069 solid 2px;
+  outline: #5fb069 solid 2px;
 }
 /* exceptions for focus */
 
@@ -26,13 +26,13 @@ div#topnavitem_signup a,
 div#topnavitem_standingorders a,
 .dropdown-column li a:focus,
 .subdepartments > li > span > a:link{
-	outline:none;
+  outline:none;
 }
 .portrait-item-header-name{
-	display:block;
+  display:block;
 }
 a.portrait-item-header-name:focus,[data-component="categorylink"]:focus .name{
-	text-decoration:underline !important;
+  text-decoration:underline !important;
 }
 /* disable ipad highlight */
 * {
@@ -310,16 +310,16 @@ h3.centerline span {
 }
 
 #popupcart .content .cartline[data-freeproduct="true"] .qtyinput{
-	opacity: .5;
-	filter: alpha(opacity=50);
-	pointer-events: none;
-   	cursor: default;
+  opacity: .5;
+  filter: alpha(opacity=50);
+  pointer-events: none;
+     cursor: default;
 }
 
 #popupcart .content .cartline[data-freeproduct='true'] .price,
 #popupcart .content .cartline .price.product-price-free{
-	color: #c00;
-	font-weight: bold;
+  color: #c00;
+  font-weight: bold;
 }
 
 /* }}} */
@@ -346,7 +346,8 @@ section.main:before {
   content: '';
   display: block;
   position: absolute;
-  width: 173px; /* 175 - 2 */
+  width: 173px; /* ie fix for css var polyfill delay */
+  width: calc( 173px + var(--sitemod_leftnavadj) );
   border: 1px solid #dce6be;
   background: #f0f5e1;
   top: 0;
@@ -362,7 +363,7 @@ section.main .leftnav {
   float: left;
   position: relative;
   background: #f0f5e1;
-  width: 167px; /* 175 - 2 - 6 */
+  width: calc( 167px + var(--sitemod_leftnavadj) ); /* 175 - 2 - 6 */
   border-left: 1px solid #dce6be;
   border-right: 1px solid #dce6be;
   margin: 1px 0;
@@ -391,6 +392,9 @@ section.main .content {
   float: right;
   width: 775px;
   /* margin-left: 20px; */
+  box-sizing: border-box;
+  width: calc( 100% - (185px + var(--sitemod_leftnavadj)) );
+  padding: 0px 5px 0 4px;
 }
 
 section.main .breadcrumbs {
@@ -411,9 +415,9 @@ section.main .browse-breadcrumbs-department .breadcrumbs {
 }
 
 section.main .browse-breadcrumbs-category .breadcrumbs {
-	padding: 6px 0 0 0;
-	margin-bottom: 10px;
-	border-bottom: 1px solid #e0e3d0;
+  padding: 6px 0 0 0;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e0e3d0;
 }
 section.main .browse-breadcrumbs-subcategory .breadcrumbs {
   border-bottom: none;
@@ -425,10 +429,10 @@ section.main .breadcrumbs li {
 }
 
 section.main .breadcrumbs li a, section.main .breadcrumbs li a:link {
-	text-decoration: none;
+  text-decoration: none;
 }
 section.main .breadcrumbs li a:hover, section.main .breadcrumbs li a:focus, section.main .breadcrumbs li a:active, section.main .breadcrumbs li a:visited {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 section.main .breadcrumbs li:before {
@@ -580,7 +584,7 @@ section.main .leftnav .menuBox[data-selectiontype="LINK"] + .menuBox[data-select
 }
 
 section.main .leftnav .menuBoxPadded {
-	padding-top: 30px !important;
+  padding-top: 30px !important;
 }
 
 section.main .leftnav .menuBox h3 {
@@ -813,7 +817,7 @@ section.main .leftnav .menuBox input[type="checkbox"] {
   position: absolute;
   left: 1px;
   height: 20px;
-	vertical-align: middle;
+  vertical-align: middle;
 }
 
 #menupopup {
@@ -974,14 +978,14 @@ section.main .leftnav .menuBox button.category.emptypopup {
 }
 /*Font Style APPDEV-3961*/
 .wallet-title-header, .acc-payment-methods-title-header {
-	/* font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 14px; color: rgb(51, 51, 51); */ 
-	font-size: 14px;
+  /* font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 14px; color: rgb(51, 51, 51); */ 
+  font-size: 14px;
     font-family: Verdana;
     font-weight: bold;
     color: #333;
 }
 .wallet-title-footer {
-	padding-top: 20px;
+  padding-top: 20px;
 }
 .errorcontainer span.error em {
   font-style: normal;
@@ -1011,75 +1015,75 @@ div.popupcontentghost button.selected.category.popup.leftnav-category-popup-butt
 div.popupcontentghost button.selected.category.popup.leftnav-category-popup-button.cssbutton.green.hover:focus,
 section.main .leftnav .menuBox li.selected:focus input[type="radio"] + span,
 section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
-	color: #FFFFFF;
-	text-decoration: underline;
+  color: #FFFFFF;
+  text-decoration: underline;
 }
 /* PP Changes */
 #add-new-payment-method-checking-acc-disabled-master{
-	display: inline-block;
-	float: left;
-	width: 174px;
+  display: inline-block;
+  float: left;
+  width: 174px;
     margin: 0px 40px 0px 0;
 }
 .add-payment-methods-button.cssbutton.green{
-	width: 150px;
+  width: 150px;
     margin: 15px 40px 5px 0;
     padding: 12px;
     float: left;
 }
 .add-payment-methods-button.cssbutton.green.disabled{
-	opacity: 0.5;
-	cursor: default;
+  opacity: 0.5;
+  cursor: default;
 }
 .wallet-title-header, .acc-payment-methods-title-header {
-	/* font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 14px; color: rgb(51, 51, 51); */ 
-	font-size: 14px;
+  /* font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 14px; color: rgb(51, 51, 51); */ 
+  font-size: 14px;
     font-family: Verdana;
     font-weight: bold;
     color: #333;
 }
 .wallet-title-header img {
-	position: relative;
+  position: relative;
     left: 19px;
     cursor: pointer;
 }
 #PP-connect{
-	float: left;
+  float: left;
     vertical-align: middle;
     margin: 15px 5px;
 }
 .disconnectWallet{ display: inline-block; }
 .disconnect-cssbutton-green{
-	color: rgb(255, 255, 255);
-	background: #669933;
-	text-shadow: 1px 1px #555555;
+  color: rgb(255, 255, 255);
+  background: #669933;
+  text-shadow: 1px 1px #555555;
     border-radius: 5px;
     box-shadow: -1px -1px 2px 0 rgba(128, 128, 128, 0.3) inset,1px 1px 2px 0 rgba(240, 240, 240, 0.8) inset;
     cursor: pointer;
     -webkit-font-smoothing: antialiased;
-	margin-left: 6px;
+  margin-left: 6px;
     font-size: 10px;
     padding: 3px 10px 3px 20px;
 }
 #PP_logo{ 
-	display: inline-block; 
-	vertical-align: middle; 
-	float: left;
+  display: inline-block; 
+  vertical-align: middle; 
+  float: left;
     margin: 15px 10px;}
 #PP_wrapper{
-	display: inline-block;
+  display: inline-block;
     vertical-align: middle;
     float: center;
     margin: 0;
     text-align: center;
 }
 .wallet-connected-indicator{ 
-	color: #669933; 
-	font-weight: bold;
+  color: #669933; 
+  font-weight: bold;
     margin-top: 3px;
 }
 .wallet-connected-indicator img{
-	vertical-align: middle;
+  vertical-align: middle;
 }
 
 .draftIndicator {
@@ -1118,10 +1122,10 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 }
 /* why are these duplicated from expressco.css? */
 .wallet-error-msg{
-	padding-bottom: 4px;
+  padding-bottom: 4px;
 }
 .wallet-error-msg span{
-	color: #c94747;
+  color: #c94747;
     font-size: 10px;
     font-weight: bold;
     vertical-align: top;
@@ -1137,16 +1141,16 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     margin-top: 15px;
 }
 #PP_ERROR_WRAPPER #PP_ERROR{
-	position: relative;
+  position: relative;
 }
 #PP_ERROR_WRAPPER #PP-connect{
     margin: 0;
 }
 .accessibleblurinput{
-	background-color:transparent;
-	border:1px inset;
-	user-select:none;
-	width:60px;
+  background-color:transparent;
+  border:1px inset;
+  user-select:none;
+  width:60px;
 }
 button.quantity_minus:focus,button.quantity_plus:focus,a.quantity_minus:focus,a.quantity_plus:focus{
     background-color: #5fb067 !important;
@@ -1155,10 +1159,10 @@ button.quantity_minus:focus,button.quantity_plus:focus,a.quantity_minus:focus,a.
     outline:none !important;
 }
 a.menu-header.header-skin.reset-link:focus{
-	background-color: #5fb067 !important;
+  background-color: #5fb067 !important;
     border-color: #306238 !important;
     box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
-	
+  
 }
 button.standing-orders-3-so-settings-item-name-change:focus,#quickshop .qs-tabs a:focus {
     text-decoration:underline !important;
@@ -1171,7 +1175,116 @@ a.lv-link:focus {
     display: inline-block;
 }
 input[aria-label="estimated price:"][disabled="disabled"],input[aria-label="estimated quantity"][disabled="disabled"]{
-	background-color: #ffff;
+  background-color: #ffff;
     border: 1px solid #0000006e;
     text-align: right;
+}
+
+
+[data-pagetype="recipe_dept"] section.container,
+[data-pagetype="recipe_cat"] section.container,
+[data-pagetype="recipe_subcat"] section.container,
+[data-pagetype="recipe"] section.container,
+[data-pagetype="recipe_search"] section.container  {
+  width: var(--sitemod_content-width);
+  min-width: var(--sitemod_content-minwidth);
+  max-width: var(--sitemod_content-maxwidth);
+  padding: var(--sitemod_content-padding);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+[data-pagetype="recipe_dept"] .W_RIGHT_NAV_TOTAL,
+[data-pagetype="recipe_dept"] .W_RECIPE_DEPT_BODY_TOTAL,
+[data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_TOTAL,
+[data-pagetype="recipe_subcat"] .W_RECIPE_SUBCAT_BODY_TOTAL,
+[data-pagetype="recipe_subcat"] .W_RECIPE_SUBCAT_BODY_PAGENAV_TOTAL,
+[data-pagetype="recipe"] .W_RECIPE_DL_NAVS_TOTAL,
+[data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL,
+[data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_TOTAL,
+[data-pagetype="recipe_cat"] .W_RECIPE_DR_NAVS_TOTAL,
+[data-pagetype="recipe_cat"] .W_RECIPE_CAT_BODY_TOTAL,
+[data-pagetype="recipe_cat"] .W_RECIPE_DR_NAVS_LEFT {
+  width: 100%;
+}
+
+[data-pagetype="recipe_dept"] .W_RECIPE_DEPT_BODY_TOTAL-391 {
+  width: calc( 100% - 391px );
+}
+
+[data-pagetype="recipe_dept"] .W_RIGHT_NAV_LEFT {
+  max-width: calc( 100% - 205px );
+  width: calc( 100% - 205px );
+}
+[data-pagetype="recipe_dept"] .W_RIGHT_NAV_CENTER_PADDING {
+  max-width: 14px;
+  width: 14px;
+}
+[data-pagetype="recipe_dept"] .W_RIGHT_NAV_RIGHT {
+  max-width: 191px;
+  width: 191px;
+}
+[data-pagetype="recipe_dept"] .W_RECIPE_DEPT_BODY_TOTAL td,
+[data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL td {
+  box-sizing: border-box;
+}
+
+[data-pagetype="recipe_dept"] form[name="recipeSearch"] > table {
+  width: 100%;
+  max-width: 741px;
+}
+[data-pagetype="recipe_dept"] form[name="recipeSearch"] #_keyword {
+  width: 100%;
+}
+[data-pagetype="recipe_dept"] .RECIPE_DEPT_BODY_SEARCH_KEYWORD  {
+  max-width: 500px;
+}
+[data-pagetype="recipe_dept"] .RECIPE_DEPT_BODY_SEARCH_FIND  {
+  max-width: 87px;
+  width: 87px;
+}
+[data-pagetype="recipe_dept"] .RECIPE_DEPT_BODY_SEARCH_ADVANCED  {
+  max-width: 154px;
+  width: 154px;
+}
+
+[data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_LEFT,
+[data-pagetype="recipe"] .W_RECIPE_DL_NAVS_LEFT {
+  max-width: 150px;
+  width: 150px;
+}
+[data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_CENTER,
+[data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_CENTER,
+[data-pagetype="recipe"] .W_RECIPE_DL_NAVS_RIGHT {
+  width: 100%;
+}
+
+[data-pagetype="recipe_subcat"] td.W_RECIPE_DLR_NAVS_CENTER,
+[data-pagetype="recipe"] td.W_RECIPE_DL_NAVS_RIGHT {
+  padding-left: 20px;
+}
+[data-pagetype="recipe_subcat"] .W_RECIPE_DLR_NAVS_RIGHT {
+  max-width: 191px;
+  width: 191px;
+}
+
+[data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL-50 {
+  width: calc( 100% - 50px );
+}
+[data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL-295 {
+  width: calc( 100% - 295px );
+}
+[data-pagetype="recipe"] .W_RECIPE_BODY_TOTAL-150 {
+  width: calc( 100% - 150px );
+}
+
+[data-pagetype="recipe"] .recipe_leftBorder,
+[data-pagetype="recipe"] .recipe_rightBorder {
+  width: 8px;
+}
+
+[data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_CENTER > table {
+  min-width: 612px;
+}
+[data-pagetype="recipe_search"] .W_RECIPE_DLR_NAVS_CENTER fieldset br {
+  display: none;
 }

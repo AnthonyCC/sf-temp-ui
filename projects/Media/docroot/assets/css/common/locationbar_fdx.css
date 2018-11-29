@@ -1,7 +1,6 @@
 /* overrides */
 	#toptoolbar {
 		z-index: 450;
-		/*height:42px;*/
 	}
 	#locationbar {
 		background-color: #4fa157;
@@ -14,7 +13,7 @@
 		max-height: 42px; /* fix height for browse pages */
 		margin-top: 0px;
 		font-family: Verdana;
-		min-width: 970px;
+		margin: 0 auto;
 	}
 	#sidecartbuttons {
 		display: none;
@@ -88,10 +87,6 @@
 		box-shadow: none!important;
 		width:inherit!important;
 	}
-	#popupcart .body {
-		/*margin-left: 15px;
-		margin-right: 15px;*/
-	}
 	#popupcart .body th, #popupcart .body td{
 		padding-left: 15px;
 		padding-right: 15px;
@@ -146,7 +141,6 @@
 	}
 	#popupcart .footer .totalprice {
 		padding-right: 50px;
-		display: inline-block;
 		float: right;
 	}
 	#popupcart .footer .save-amount{
@@ -247,28 +241,31 @@
 		padding: 10px 0;
 		margin-top: 0;
 		min-width: 970px;
+  		max-width: 970px; /* ie fix for css var polyfill delay */
+		max-width: var(--sitemod_content-maxwidth);
+		margin: 0 auto;
 	}
 	.globalnav_top .topnavitem {
         /*float: right; */
-		margin: 9px 0 0 0px;
+        /* margin: 9px 0 0 0px; */
         font-family: Verdana;
         font-size: 14px;
         font-weight: normal;
         color: #5c7440;
+        line-height: 40px;
+        margin: 0;
  }
 	.globalnav_top .nav {
 		bottom: initial;
 		position: relative;
 		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
-	.globalnav_top .topnavitem, .globalnav_top .topnavitem a {
-		margin: 5px 0 0 0px;
-	}
-	.container.globalnav_top.hasFDX {
-		padding: 5px 0 10px 0;
-	}
+	.container.globalnav_top.hasFDX,
 	.container.globalnav_top.hasFDX.inReorder {
-		padding: 10px 0px 0 0px;
+		padding: 5px 10px 10px 10px;
 	}
 	
 	#topSearchField {
@@ -291,10 +288,6 @@
 	    border-bottom-right-radius: 0px;
 	}
 
-	center #topSearchField{
-		/*height: 40px!important;*/
-	}
-
 	#topSearchField:focus {
 		border: 1px solid #4fa157;
 	}
@@ -312,8 +305,10 @@
 	}
 
 	.globalnav_top .nav .searchform {
+		display: block;
+		float: none;
 		margin-top: 0;
-		width: 280px;
+		width: 100%;
 	}
 	/* no create account/standing order button */
 	.globalnav_top .nav .searchform.widen {
@@ -323,13 +318,18 @@
 	.globalnav_top .topnavitem .signUpButton{
 		margin-top: -4px;
 	}
-
+	
 	#messages {
-		width: 970px;
+		width: var(--sitemod_content-width);
+		min-width: var(--sitemod_content-minwidth);
+		max-width: var(--sitemod_content-maxwidth);
+		padding: var(--sitemod_content-padding);
+		margin: 0 auto;
+		box-sizing: border-box;
 		position: relative;
 		text-align: center;
-		margin: 0 auto;
 	}
+
 	#messages.open ul {
 		max-height: none;
 		box-shadow: 0px 3px 9.9px 0.1px rgba(0, 0, 0, 0.3);
@@ -345,7 +345,7 @@
 		top: 0;
 		bottom: initial;
 		left: initial;
-		right: 0;
+		right: 10px;
 		background-image:  url('/media/layout/nav/globalnav/fdx/close-x.png');
 		height: 12px;
 		width: 12px;
@@ -365,7 +365,9 @@
 
 .searchform-cont {
 	/*position: relative;*/
-	float: left;
+	/* float: left; */
+	width: calc( 100% - 600px );
+	max-width: 500px;
 	margin-left: 25px;
 	/*padding-left: 25px;
 	width:450px;*/
@@ -424,7 +426,7 @@
 .locabar-spacer {
 	display: inline-block;
 	clear: both;
-	width: calc(50vw - 496px);
+	width: 30px;
 }
 
 .locabar-tab {
@@ -588,9 +590,6 @@
 	min-width: 220px;
 
 	margin-left:-90px;
-}
-#locabar_addresses, #locabar_user, #popupcart{
-
 }
 #locabar_user .section-cont {
 	padding: 20px 30px 0 30px;
@@ -844,7 +843,7 @@
 }
 
 .side-spacer{
-	width: calc(50vw - 494px);
+	width: 30px;
 	visibility: hidden;
 	opacity: 0;
 }
@@ -1228,7 +1227,7 @@ option.address-icon {
 	background: #FFFFFF;
 }
 .alert-cont {
-	width: 970px;
+	width: 100%;
 	position: relative;
 	display: none;
 }
@@ -1288,14 +1287,8 @@ option.address-icon {
 	width: calc(100% - 125px);
 }
 
-#nodeliver-form form.n div.text13{
-}
-
 .alerts #newzip {
 	vertical-align: top;
-}
-.alerts #location-email {
-	/*width: 217px;*/
 }
 
 .hasFDX .top-nav {
@@ -1705,10 +1698,6 @@ option.address-icon {
     font-weight: normal !important;
 }
 
-#nodeliver-form #location-email{
-	/*width: 182px;*/
-}
-
 #nodeliver-form #location-submit,
 #nodeliver-form #location-email{
 	margin-top: 5px;
@@ -1760,8 +1749,7 @@ option.address-icon {
     font-weight: normal;
     font-size: 14px;
     line-height: normal;
-    float:left;
-    display:inline-block;
+    float: left;
 }
 
 .section-warning .text13 div:nth-child(2), .section-warning .text13.bold{
@@ -1889,6 +1877,7 @@ option.address-icon {
 	}
 	.locabar-right-sections {
 		border-bottom: 1px solid #e3e3e3;
+		margin-left: auto;
 	}
 	.locabar-right-sections .locabar-section {
 	    border-left: 1px solid #dadada;
@@ -2013,6 +2002,12 @@ option.address-icon {
 		overflow-y: hidden;
 		position: relative;
 		opacity: 0;
+		width: calc( var(--sitemod_content-maxwidth) + 4px );
+		min-width: calc( var(--sitemod_content-minwidth) );
+		max-width: calc( var(--sitemod_content-maxwidth) + 4px );
+		padding: var(--sitemod_content-padding);
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 	#locationbar_fdx_promo.open {
 		max-height: 100px;
@@ -2033,6 +2028,8 @@ option.address-icon {
 	#locationbar {
     	background-color: #efefef;
     	border-top: 2px solid #efefef;
+    	display: flex;
+    	justify-content: space-between;
  }
 	.locabar_addresses-reservation-existing-time, .locabar_addresses-reservation-none {
 	    padding: 10px;
@@ -2163,4 +2160,32 @@ option.address-icon {
 }
 a#popup_cart:focus {
     outline: none;
+}
+#topnavitem_help {
+	margin-left: auto;
+}
+#topnavitem_dlvType {
+	width: 35px;
+}
+#topnavitem_signup {
+	float: none !important;
+}
+#locationbar-sticky-wrapper {
+	min-width: var(--sitemod_content-minwidth);
+}
+
+#locationbar-sticky-wrapper #locationbar #location-modify-order-message {padding-left: 30px;}
+
+.locabar-spacer, .side-spacer {
+	width: 30px;
+	display: inline-block;
+}
+.locationbar-content {
+	position: relative;
+	height: 42px;
+	width: 100%;
+	min-width: calc( var(--sitemod_content-minwidth) );
+	max-width: 970px; /* ie fix for css var polyfill delay */
+	max-width: calc( var(--sitemod_content-maxwidth) );
+	margin: 0 auto;
 }

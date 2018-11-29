@@ -1,5 +1,13 @@
 /* global, non-browser specific, css */
 
+#location-alerts {
+	width: var(--sitemod_content-width);
+	min-width: var(--sitemod_content-minwidth);
+	max-width: var(--sitemod_content-maxwidth);
+	padding: var(--sitemod_content-padding);
+	margin: 0 auto;
+	box-sizing: border-box;
+}
 
 html { height: 100%; }
 body { color: #333; font-family : Verdana, Arial, sans-serif; font-size : 10px; height: 100%; }
@@ -732,7 +740,7 @@ a.wine_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration:
 .normal-price{color:#333;font-weight:bold;}
 .normal-price-tiered{color:#333;font-weight:normal;}
 .save-base-price{color:rgb(136,136,136);font-weight:normal;}
-.about-price{font-size: 11px;color: #666666;line-height: 1.4em;font-weight:normal;display: block;}
+.about-price{font-size: 10px; line-height: 1.4em;font-weight:normal;display: block;}
 .fav-label{color:#969;font-weight:bold;}
 
 
@@ -1740,8 +1748,6 @@ div.control, div.slotRow, div.time {
 	{
 		color: #333;
 	}
-	.ddpp .price {
-	}
 	.ddpp .subtotalInfo {
 		font-family : Verdana, Arial, sans-serif;
 		font-size : 10px;
@@ -1758,9 +1764,6 @@ div.control, div.slotRow, div.time {
 
 	.ddpp .prodImageCont img {
 		height: 100%;
-	}
-
-	.ddpp .ddpp_normal_prod_list_imgCont {
 	}
 
 	.ddpp .confDescription {
@@ -2047,6 +2050,7 @@ div.control, div.slotRow, div.time {
 		-moz-border-radius: 10px !important;
 		-webkit-box-shadow: 4px 4px 10px #999 !important;
 		-moz-box-shadow: 4px 4px 10px #999 !important;
+		box-shadow: 4px 4px 10px #999 !important;
 		background-color: white !important;
 		border: 1px solid #999 !important;
 		overflow:hidden !important;
@@ -2057,6 +2061,7 @@ div.control, div.slotRow, div.time {
 		-moz-border-radius: 10px !important;
 		-webkit-box-shadow: 4px 4px 10px #999 !important;
 		-moz-box-shadow: 4px 4px 10px #999 !important;
+		box-shadow: 4px 4px 10px #999 !important;
 		background-color: white !important;
 		border: 1px solid #999 !important;
 		overflow:hidden !important;
@@ -2186,13 +2191,14 @@ div.control, div.slotRow, div.time {
 		display: block;
 	}
 	.burst-wine  {
-		background: url(/media/images/layout/small_wine.png) no-repeat right bottom;
-		width: 49px;
+		background: url(/media_stat/images/bursts/icon-wine-n-spirits.svg) no-repeat right bottom;
+		width: 45px;
 		height: 37px;
 		position: absolute;
-		bottom: 10px;
-		right: 0;
+		top: 0;
+		right: 8px;
 		display: block;
+		background-color: #fff;
 	}
 	.burst-usq .without-background {
 		background: none;
@@ -2206,6 +2212,7 @@ div.control, div.slotRow, div.time {
 	-moz-border-radius: 10px !important;
 	-webkit-box-shadow: 4px 4px 10px #999 !important;
 	-moz-box-shadow: 4px 4px 10px #999 !important;
+	box-shadow: 4px 4px 10px #999 !important;
 	background-color: white !important;
 	border: 1px solid #75a5d6 !important;
 	top:0 !important;
@@ -2900,9 +2907,14 @@ a.imgButtonWhite:hover,
 	}
 	
 	.fdCoupon_cont {
-		line-height: 15px;
 		font-weight: normal;
-		display: inline;
+		/* display: inline; */
+		font-size: 12px;
+		font-weight: bold;
+		font-style: normal;
+		font-stretch: normal;
+		letter-spacing: -0.1px;
+		color: #4fa157;
 	}
 		
 	/* grid products */
@@ -3043,13 +3055,15 @@ a.imgButtonWhite:hover,
 	
 	.fdCoupon_cbCont {
 		margin-left: 3px;
+		width: 17px;
+		display: inline-block;
 	}
 	
 	.fdCoupon_cb {
 		margin: 0;
 		vertical-align: bottom;
 		top: -1px;
-    	position: relative;
+		position: relative;
 	}
 	
 	.fdCoupon_img {
@@ -3059,39 +3073,76 @@ a.imgButtonWhite:hover,
 	
 	.fdCoupon_msg {
 		margin-left: 6px;
-		/* margin-right: 6px; */
 		/*margin-top: -16px;
 		top: 50%;*/
+		font-family: Verdana;
+		font-size: 11.5px;
 		font-weight: bold;
-		color: #9702D7;
-		font-size: 10px !important;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: normal;
+		letter-spacing: normal;
+		text-align: center;
+		color: #888888;
 	}
-	
-	.fdCoupon_detCont {
-		font-size: 10px !important;
-	}
-	
+		
 	.portrait-item span.fdCoupon_detCont {
-    margin-left: 5px;
+    overflow: hidden;
+    position: relative;
+    font-size: 12px;
+    overflow: visible;
   }
 
+  a.fdCoupon_det {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: #4fa157;
+    border-bottom: 1px dashed #4fa157;
+  }
 	.fdCoupon_detCont, a.fdCoupon_det, a.fdCoupon_det:active, a.fdCoupon_det:link, a.fdCoupon_det:visited, a.fdCoupon_det:hover {
-		color: #666;
 		text-decoration: none;
 		font-family: Verdana;
 	}
 	.portrait-item .fdCoupon_detCont, .portrait-item a.fdCoupon_det, .portrait-item a.fdCoupon_det:active, .portrait-item a.fdCoupon_det:link, .portrait-item a.fdCoupon_det:visited, .portrait-item a.fdCoupon_det:hover {
-		color: #888;
 		text-decoration: none;
 		font-family: Verdana;
 	}
-	a.fdCoupon_det:hover,
-	.portrait-item a.fdCoupon_det:hover {
-	    text-decoration: underline;
-	}
-	
-	.fdCoupon_detContent {
-	}
+  .fdCoupon_cbCont .fake-checkbox:before,
+  .fdCoupon_cbCont .fake-checkbox:after {
+    text-align: center;
+    font-size: 14px;
+    line-height: 14px;
+    height: 12px;
+    width: 12px;
+    top: 1px;
+    border: none;
+  }
+  
+  .fdCoupon_cbCont [type="checkbox"]:checked + .fake-checkbox:before,
+  .fdCoupon_cbCont [type="checkbox"]:checked + .fake-checkbox:after {
+    top: 1px;
+    background: #4fa157;
+  }
+  .fdCoupon_cbCont [type="checkbox"]:disabled + .fake-checkbox:after {
+    padding-bottom: 1px;
+  }
+  .fdCoupon_cbCont [type="checkbox"]:disabled + .fake-checkbox:before,
+  .fdCoupon_cbCont [type="checkbox"]:disabled + .fake-checkbox:after {
+    top: 1px;
+    background: #fafafa;
+    color: #4fa157;
+    box-shadow: none;
+    cursor: default;
+  }
+  .fdCoupon_cbCont [type="checkbox"]:checked + .fake-checkbox:after,
+  .fdCoupon_cbCont [type="checkbox"]:disabled + .fake-checkbox:after {
+    top: 0px;
+    height: 12px;
+    width: 12px;
+    border: none;
+  }
 		
 	/* status msgs */
 	
@@ -3239,7 +3290,7 @@ a.imgButtonWhite:hover,
 
 		/* click to apply */
 			.cDetToolTipClickToApply, .cDetToolTipClickToApply .arrow:after {
-		        background: #59ac48;
+		        background: #4fa157;
 		        border: none;
 		    }
 		    
@@ -3480,6 +3531,7 @@ table.order_history_table tr:nth-child(1) th{
 a.portrait-item-image-link{
 	display:block;
 	color:#333;
+	overflow: hidden;
 }
 
 a.portrait-item-image-link:focus .portrait-item-header{
@@ -3527,7 +3579,7 @@ section.main .leftnav .menuBox label input:focus + span > span{
 }
 /* bug fix for the overlapping content in browse, search and reorder pages */
 
-div#quickshop,.container.browse section.main,section.container.srch section.main{
+.container.browse section.main,section.container.srch section.main{
 	min-width:970px;
 }
 .assistivetext{
@@ -3542,4 +3594,8 @@ div#quickshop,.container.browse section.main,section.container.srch section.main
 }
 .hidelist{
     list-style:none;
+}
+
+.expertrating .star {
+	margin-right: 1px;
 }
