@@ -461,3 +461,6 @@
 	margin: 0 auto;
 	box-sizing: border-box;
 }
+[data-ec-page="success"] > .container.globalnav_top {
+  padding-top: 14px;
+}
