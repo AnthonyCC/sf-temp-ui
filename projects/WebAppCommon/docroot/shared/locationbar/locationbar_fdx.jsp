@@ -402,7 +402,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 	%>
 	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section">
 		<div id="locabar_addresses_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" role="menuitem">
-				<div class="bold cursor-pointer">
+				<div class="cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
 						<div class="locabar-addresses-addzip">
@@ -416,7 +416,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 						</div>
 
 						<div class="locabar-addresses-addzip-2ndline">
-							<%= zipAddDisplayString %>
+							<strong><%= zipAddDisplayString %></strong>
 							<div class="locabar-arrow"></div>
 						</div>
 					</div>
@@ -534,7 +534,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 		        <% if (!signedIn) {%>
 					<a id="locabar_user_login_link" class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage-current>
 		        <% } %>
-					<div class="bold cursor-pointer">
+					<div class="cursor-pointer">
 						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>
 						<div style="display: inline-block;">
 							<div class="locabar-user-greeting-cont">
@@ -542,7 +542,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 									<%= greetingsString %>
 					            </div>
 					            <div class="locabar-user-action">
-									<%= actionString %><div class="locabar-arrow"></div>
+									<strong><%= actionString %></strong><div class="locabar-arrow"></div>
 					            </div>
 							</div>
 						</div>

@@ -48,7 +48,7 @@
 	<div><display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_cartConfSing"></display:FDCoupon></div>
     <fd:CCLCheck>
 		<!-- Add to Shopping List  -->
-		<a href="/unsupported.jsp" onclick="window.parent.CCL.add_recent_cart_items(); window.parent.document.quickbuyPanel.hide(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a></span>
+		<a href="/unsupported.jsp" onclick="window.parent.CCL.add_recent_cart_items(); window.parent.document.quickbuyPanel.hide(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" alt="save to shopping list" style="border: 0;"/></a></span>
 		<div></div>
 	</fd:CCLCheck>
    	<div class="prdsep">&nbsp;</div>
@@ -65,17 +65,17 @@
 			altImage = new Image("/media/images/temp/soon_100x100.gif", 100, 100);
 		}
 	%>		<div>
-				<img src="<%= altImage.getPath() %>" style="width: <%= altImage.getWidth() %>px; height <%= altImage.getHeight() %>px; vertical-align: top;">
-				<img src="<%= descImage.getPath() %>" style="width: <%= descImage.getWidth() %>px; height <%= descImage.getHeight() %>px; vertical-align: top;">
+				<img alt="" src="<%= altImage.getPath() %>" style="width: <%= altImage.getWidth() %>px; height <%= altImage.getHeight() %>px; vertical-align: top;">
+				<img alt="" src="<%= descImage.getPath() %>" style="width: <%= descImage.getWidth() %>px; height <%= descImage.getHeight() %>px; vertical-align: top;">
 			</div>
 	<%
 	} else {
-	%>		<img src="<%= productNode.getDetailImage().getPath() %>" style="width: <%= productNode.getDetailImage().getWidth() %>px; height <%= productNode.getDetailImage().getHeight() %>px; ">
+	%>		<img src="<%= productNode.getDetailImage().getPath() %>" alt="" style="width: <%= productNode.getDetailImage().getWidth() %>px; height <%= productNode.getDetailImage().getHeight() %>px; ">
 	<%
 	}
 	%>
 </div>
-<img src="/media_stat/images/quickbuy/close.gif" style="position: absolute; bottom: 1em; left: 1em; color: grey; cursor: pointer;" onclick="window.parent.document.quickbuyPanel.hide();">
+<img src="/media_stat/images/quickbuy/close.gif" alt="close" style="position: absolute; bottom: 1em; left: 1em; color: grey; cursor: pointer;" onclick="window.parent.document.quickbuyPanel.hide();">
 <script>
 YAHOO.util.Event.onDOMReady(function(e) {
 	window.parent.updateYourCartPanel();

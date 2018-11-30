@@ -438,7 +438,7 @@ if (isAvailable ) {
 		      <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr><td  align="left">
 	<%	      if (imgMedia!=null) {   %><img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
-	<%	      if (mediaPath!=null) { %><br><bt><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
+	<%	      if (mediaPath!=null) { %><br><br><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
 		       <br><br></td></tr>
 		    </table>
 		    <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
@@ -496,7 +496,7 @@ if (isAvailable ) {
 			<tr valign="top">
 			<td width="115">
 			<span style="display:inline-block;position:relative;">
-			<img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>">
+			<img src="<%=dispObj.getImagePath()%>" alt="" border="0" name="<%=imgName%>">
 			<fd:USQProductBurst product="<%=null%>" suffix="swap" forceLogo="true"/></span></td>
 			<script type="text/javascript">
 				<%="swapImageWithBurst(\""+imgName+"\",\""+dispObj.getImagePath()+"\",\""+dispObj.isAlcoholic(dfltSku)+"\",\"burst-wine-swap\")"%>

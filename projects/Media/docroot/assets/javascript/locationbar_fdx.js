@@ -281,7 +281,7 @@ $jq("#selectAddressList-menu").on('hover mouseover', function(e) {
 
 /* keyboard navigation */
 FreshDirect.locabar.lastFocusElemId = '';
-$jq('.locabar_triggers').on('focus retClose', function(event) {
+$jq('.locabar_triggers,#popup_cart').on('focus retClose', function(event) {
 	var prevId = FreshDirect.locabar.lastFocusElemId;
 			if (prevId !== '' && ( ($jq(this).attr('id') !== $jq(prevId).attr('id')) || (event.type == 'retClose') )) {
 		$jq(prevId).removeClass('hover');
@@ -291,10 +291,10 @@ $jq('.locabar_triggers').on('focus retClose', function(event) {
 $jq('.locabar_triggers').on('mouseenter', function(event) {
 	$jq(this).parent().addClass('mouse');
 });
-$jq('.locabar_triggers').on('mouseleave', function(event) {
+//$jq('.locabar_triggers_menu ').on('mouseleave', function(event) {
 	//if keyboard <-> mouse
-	//$jq(this).parent().removeClass('mouse');
-});
+	//$jq(this).parent().removeClass('hover');
+//});
 
 $jq('.locabar_triggers').on('keyup', function(event) {
 	var $this = $jq(this);
@@ -427,6 +427,9 @@ $jq('.locabar_addresses-anon-deliverable-change-zip-toggle-btn').on('click', fun
 	
 	//return false;
 });
+//$jq('#locabar_user_login_link').on('focus', function(event) {
+//	$jq('#locabar_addresses_trigger').removeClass("hover");
+//});
 
 
 
@@ -555,12 +558,12 @@ $jq('#locabar_addresses_trigger').on('keydown', function(event){
 	}
 });
 //reset the values of modify order section when we focus using mouse
-$jq(".locabar-modify-order-section").on('hover', function(){
+$jq(".locabar-modify-order-section").on('mouseover', function(){
 	$jq("#locabar_orders").css("opacity","");
 	$jq("#locabar_orders").css("visibility","");
 });
 
-$jq("#locabar_addresses_trigger").on('hover', function(){
+$jq("#locabar_addresses_trigger").on('mouseover', function(){
 		if (!$jq('#nodeliver-form:visible').length) {
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","");
@@ -784,7 +787,7 @@ $jq(function(){
   	});
   	
   	
-  	$jq(".locabar-addresses-section").on('hover', function(){
+  	$jq(".locabar-addresses-section").on('mouseover', function(){
   		if($jq("#location-alerts #sitemessage").css("display")=="block"){
   			$jq("#locabar_addresses").hide();
   		}

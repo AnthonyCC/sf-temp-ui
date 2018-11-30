@@ -812,9 +812,9 @@
 .assistive-mode .pdp-cc .cc-total strong,.assistive-mode .pdp-cc .cc-total{
 	color:#333 !important;
 }
-.assistive-mode .storefront-catering-header h2{
-	background-color:#637387 !important;
-}
+/* .assistive-mode .storefront-catering-header h2{ */
+/* 	background-color:#637387 !important; */
+/* } */
 .assistive-mode .storefront-catering-header h2 .storefront-catering-step {
     background-color: #4B5E68 !important;
 }

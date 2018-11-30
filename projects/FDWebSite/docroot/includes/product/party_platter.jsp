@@ -398,7 +398,7 @@ if (isAvailable ) { %>
 				   <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 					<tr><td  align="left">
 	<%	  			if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
-	<%	  			if (introCopyPath!=null) { %><br><bt><fd:IncludeMedia name='<%= introCopyPath %>'/> <%  }  %>
+	<%	  			if (introCopyPath!=null) { %><br><br><fd:IncludeMedia name='<%= introCopyPath %>'/> <%  }  %>
 					<br><br></td></tr>
 				   </table>
 				   <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
@@ -451,7 +451,7 @@ if (isAvailable ) { %>
 		<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr valign="top">
 			<td width="115">
-			<a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>"></a></td>
+			<a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" alt="" border="0" name="<%=imgName%>"></a></td>
 			<td width="<%=maxWidth-115%>">
 				<table width="<%=maxWidth-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<% 			} 
