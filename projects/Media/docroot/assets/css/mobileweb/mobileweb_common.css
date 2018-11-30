@@ -115,6 +115,8 @@ img {
 }
 .navbar-header {
 	padding: 2px 5px;
+	clear: both;
+	box-sizing: border-box;
 }
 .navbar-toggle {
 	width: 44px;
