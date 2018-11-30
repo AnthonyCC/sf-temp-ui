@@ -969,16 +969,18 @@ li.cleanli .gen-arrow {
 	.mm-page .portrait-item-coupon .fdCoupon_data{
 		display: block;
 		position: absolute;
-	    left: 2px;
-	    right: 2px;
-	    top: 23px;
+		left: 2px;
+		right: 2px;
+		top: 3px;
 	}
 	.mm-page .products .portrait-item-coupon .fdCoupon_cont{
 		display: block;
 	}
-	.prodDetail-atc .pdp-ecoupon .fdCoupon_msg,
-	.mm-page .products .portrait-item-coupon .fdCoupon_msg{
+	.prodDetail-atc .pdp-ecoupon .fdCoupon_msg {
 		float: right;
+	}
+	.mm-page .products .portrait-item-coupon .fdCoupon_msg {
+		float: left;
 	}
 	.prodDetail .pdp-ecoupon,
 	.mm-page .products .portrait-item-coupon{
@@ -989,13 +991,7 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page .products .portrait-item-coupon{
 		position: relative;
-		height: 42px;
-		/* width: 100%; */
-		/* box-sizing: border-box; */
-		/* margin: 0 0 15px; */
-		/* padding: 3px 3px 6px; */
-		/* border: 1px solid #dce6be; */
-		/* background: #fbfafa; */
+		height: 13px;
 	}
 	.pdp-ecoupon.open,
 	.mm-page .products .portrait-item-coupon.open{
@@ -1008,7 +1004,7 @@ li.cleanli .gen-arrow {
 		/*line-height: 1em;*/
 	}
 	.mm-page .products .portrait-item-coupon .fdCoupon_detContent{
-		padding: 30px 5px 5px;
+		padding: 28px 5px 5px;
 	}
 	.pdp-ecoupon .fdCoupon_detContent > .fdCoupon_detContent_expiration,
 	.mm-page .products .portrait-item-coupon .fdCoupon_detContent > .fdCoupon_detContent_expiration{
@@ -1392,6 +1388,7 @@ width: calc( (100% / var(--sitemod_perrow)) - 3px );
 	.mm-page .portrait-item-controls .addtocart.ATCHasItemsMobile{
 		background-image: url('/media/mobileweb/images/fd-added-32.png');
 		padding-top: 5px;
+		display: none;
 	}
 	.mm-page .portrait-item-controls .addtocart.ATCinProgress,
 	.mm-page .portrait-item-controls .customize.ATCinProgress{
@@ -1642,7 +1639,9 @@ width: calc( (100% / var(--sitemod_perrow)) - 3px );
 	.mm-page .checkout__header{
 		height: 45px;
 		padding: 8px 8px 0px 8px;
-    }
+		min-width: 100%;
+		max-width: 100;
+		}
     .mm-page #messages.visHidden{
     	height: 3px;
     }
@@ -3086,4 +3085,14 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 #locationbar_fdx_promo {
 	min-width: 100%;
 	max-width: 100%;
+}
+[data-ismobweb="true"][data-ec-page="view_cart"] #content > .container,
+[data-ismobweb="true"][data-ec-page="checkout"] #expresscheckout > .container {
+	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
+}
+[data-ismobweb="true"] [data-component="drawer"][data-drawer-columns="1"] {
+	margin: 0;
+	/* max-width:100%; */
 }
