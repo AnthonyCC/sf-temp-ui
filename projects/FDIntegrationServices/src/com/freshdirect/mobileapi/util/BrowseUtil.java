@@ -29,6 +29,7 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
@@ -1484,6 +1485,12 @@ public class BrowseUtil {
             plantId = catalogInfo.getKey().getPlantId();
             pc = new PricingContext(catalogInfo.getKey().getPricingZone());
             user.getUserContext().setPricingContext(pc);
+            FulfillmentContext fulfillmentctx = FulfillmentContext.createDefault();
+            fulfillmentctx.setPlantId(plantId);
+            fulfillmentctx.setDistChannel(pc.getZoneInfo().getDistributionChanel());
+            fulfillmentctx.setSalesOrg(pc.getZoneInfo().getSalesOrg());
+            fulfillmentctx.setAlcoholRestricted(false);
+            user.getUserContext().setFulfillmentContext(fulfillmentctx);
             catalogInfo.setShowKey(false);
         } else {
             catalogInfo = getCatalogInfo(requestMessage, user);
