@@ -971,14 +971,16 @@ li.cleanli .gen-arrow {
 		position: absolute;
 	    left: 2px;
 	    right: 2px;
-	    top: 23px;
+		top: 3px;
 	}
 	.mm-page .products .portrait-item-coupon .fdCoupon_cont{
 		display: block;
 	}
-	.prodDetail-atc .pdp-ecoupon .fdCoupon_msg,
-	.mm-page .products .portrait-item-coupon .fdCoupon_msg{
+	.prodDetail-atc .pdp-ecoupon .fdCoupon_msg {
 		float: right;
+	}
+	.mm-page .products .portrait-item-coupon .fdCoupon_msg {
+		float: left;
 	}
 	.prodDetail .pdp-ecoupon,
 	.mm-page .products .portrait-item-coupon{
@@ -986,7 +988,7 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page .products .portrait-item-coupon{
 		position: relative;
-		height: 42px;
+		height: 13px;
 	}
 	.pdp-ecoupon.open,
 	.mm-page .products .portrait-item-coupon.open{
@@ -999,7 +1001,7 @@ li.cleanli .gen-arrow {
 		/*line-height: 1em;*/
 	}
 	.mm-page .products .portrait-item-coupon .fdCoupon_detContent{
-		padding: 30px 5px 5px;
+		padding: 28px 5px 5px;
 	}
 	.pdp-ecoupon .fdCoupon_detContent > .fdCoupon_detContent_expiration,
 	.mm-page .products .portrait-item-coupon .fdCoupon_detContent > .fdCoupon_detContent_expiration{
@@ -1353,6 +1355,7 @@ li.cleanli .gen-arrow {
 	.mm-page .portrait-item-controls .addtocart.ATCHasItemsMobile{
 		background-image: url('/media/mobileweb/images/fd-added-32.png');
 		padding-top: 5px;
+		display: none;
 	}
 	.mm-page .portrait-item-controls .addtocart.ATCinProgress,
 	.mm-page .portrait-item-controls .customize.ATCinProgress{
