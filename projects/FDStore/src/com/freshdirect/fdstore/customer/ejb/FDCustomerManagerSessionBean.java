@@ -3875,12 +3875,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final String PENDING_COMPLAINT_QUERY = "select c.id as complaint_id "
 			+ "from cust.sale s, cust.complaint c "
-			+ "where s.status = 'PPG' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' "
-			+ "and c.id not in (select complaint_id from cust.complaintline where c.id = complaint_id and method = 'CSH') "
-			+ "and c.CREATED_BY <> ? " 
-			+ "union all " + "select c.id as complaint_id "
-			+ "from cust.sale s, cust.complaint c "
-			+ "where s.status in ('STL', 'ENR', 'CPG') and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' and c.CREATED_BY <> ?";
+			+ "where ((s.status = 'PPG'  and c.id not in (select complaint_id from cust.complaintline where c.id = complaint_id and method = 'CSH')) or (s.status in ('STL', 'ENR', 'CPG'))) "
+			+ "and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' "
+			+ "and c.CREATED_BY <> ? "; 
 	
 	public List<String> getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException {
 		Connection conn = null;
@@ -3891,8 +3888,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ps = conn.prepareStatement(PENDING_COMPLAINT_QUERY);
 			ps.setBigDecimal(1, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
 			ps.setString(2, ErpServicesProperties.getSelfCreditAgent());
-			ps.setBigDecimal(3, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
-			ps.setString(4, ErpServicesProperties.getSelfCreditAgent());
 			rs = ps.executeQuery();
 			List<String> lst = new ArrayList<String>();
 
