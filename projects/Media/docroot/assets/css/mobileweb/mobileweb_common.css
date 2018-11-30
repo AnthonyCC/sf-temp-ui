@@ -115,6 +115,8 @@ img {
 }
 .navbar-header {
 	padding: 2px 5px;
+	clear: both;
+	box-sizing: border-box;
 }
 .navbar-toggle {
 	width: 44px;
@@ -472,7 +474,7 @@ footer .copyright {
 	float: left !important;
 }
 .pull-right {
-	float: right!important;
+	float: right !important;
 }
 .close-x, #messages.open .close-handler, #modifyorderalert .alert-closeHandler {
 	top: 0;
@@ -1625,6 +1627,8 @@ width: calc( (100% / var(--sitemod_perrow)) - 3px );
 /* RECEIPT */
 	.mm-page #successpage .container {
 		width: 100%;
+		min-width: 100%;
+		max-width: 100%;
 	}
 	.mm-page #successpage .successtotal-left, .successtotal-right {
 	    display: block;
