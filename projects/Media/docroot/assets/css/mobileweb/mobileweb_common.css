@@ -1594,6 +1594,8 @@ li.cleanli .gen-arrow {
 /* RECEIPT */
 	.mm-page #successpage .container {
 		width: 100%;
+		min-width: 100%;
+		max-width: 100%;
 	}
 	.mm-page #successpage .successtotal-left, .successtotal-right {
 	    display: block;
