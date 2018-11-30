@@ -115,8 +115,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
         " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
-        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT SERVICE_TYPE FROM " +
-        " CUST.ADDRESS WHERE ID=?), ?, ?, ?, ?, ?, ?, ?)";	
+        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?)";	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);		
 		PreparedStatement ps = conn.prepareStatement(STORE_DELIVERY_INFO);
@@ -210,7 +209,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setDouble(43, this.model.getMinDurationForModStart());  
 		ps.setDouble(44, this.model.getMinDurationForModification());
 		ps.setString(45, this.model.getOrderMobileNumber()!=null?this.model.getOrderMobileNumber().getPhone():"");
-		ps.setString(46, address.getId());		
+		ps.setString(46, (address.getServiceType()!=null)?address.getServiceType().getName():EnumServiceType.HOME.getName());		
         
 		//COS17-76
 		ps.setString(48, address.isNotifyOrderPlaceToSecondEmail()? "Y" : "");
