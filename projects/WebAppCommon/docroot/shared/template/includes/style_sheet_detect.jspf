@@ -11,7 +11,9 @@
     boolean style_sheet_detect_isReorder = (style_sheet_detect_uri.indexOf("/quickshop/") != -1) ? true : false;
     boolean style_sheet_detect_isCheckout = (style_sheet_detect_uri.indexOf("/expressco/") != -1) ? true : false;
 %>
-
+	<% if (request.getAttribute("__yui_included__") != null) { %>
+		<jwr:style src="/yuipartial.css" media="all" />
+	<% } %>
  <jwr:style src="/grid.css" media="all" />
  <%-- global css files, header, footer, etc. --%>
  <jwr:style src="/global.css" media="all" />

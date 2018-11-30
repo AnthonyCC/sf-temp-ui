@@ -32,6 +32,7 @@
 
 <% if (request.getAttribute("noyui") == null || !request.getAttribute("noyui").equals(true)) { %>
 	<jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
+	<% request.setAttribute("__yui_included__", Boolean.TRUE); %>
 	<jwr:script src="/fdccl.js"  useRandomParam="false" />
 <% } %>
 

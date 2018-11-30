@@ -37,8 +37,8 @@ String[] checkErrorType = {EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserI
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 String fldTitle 			= request.getParameter("title");
-String fldName 				= request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
-String fldLastName 			= request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
+String fldName 				= NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "");
+String fldLastName 			= NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
 String fldHomePhone 		= request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
 String fldBusinessPhone 	= request.getParameter("busphone");
 String fldBusinessPhoneExt 	= request.getParameter("busphoneext");
@@ -65,7 +65,6 @@ String fldTermsAndConditions = request.getParameter(EnumUserInfoName.CUSTOMER_AG
 boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(), session, SessionName.SIGNUP_ATTEMPT);
 String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.SIGN_UP);
 	
-//String fldHtmlEmail 		= request.getParameter("isSendHTMLEmail");
 String fldHowDidYouHear 	= request.getParameter("howDidYouHear");
 if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
     fldTermsAndConditions = "checked";
@@ -203,8 +202,8 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<label for="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>">*&nbsp;Home Phone #</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2" class="text12">&nbsp;&nbsp;<input id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" aria-describedby="homephone_signup_error" type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><span id="homephone_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-	<label for="homephoneext">&nbsp;&nbsp;Ext.&nbsp;&nbsp;<span class="offscreen">extension for home phone number</span></label><input id="homephoneext" type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=request.getParameter("homephoneext")%>" />
+	<td width="565" colspan="2" class="text12">&nbsp;&nbsp;<input id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" aria-describedby="homephone_signup_error" type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=NVL.apply(fldHomePhone,"")%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><span id="homephone_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+	<label for="homephoneext">&nbsp;&nbsp;Ext.&nbsp;&nbsp;<span class="offscreen">extension for home phone number</span></label><input id="homephoneext" type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=NVL.apply(request.getParameter("homephoneext"),"")%>" />
 	</td>
 </tr>
 <tr valign="top">
@@ -219,8 +218,8 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input aria-describedby="workphone_signup_error" type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>" <%=EnumServiceType.CORPORATE.equals(serviceType) ? "required=\"true\"" : ""%> /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span id="workphone_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-		<label for="busphoneext">&nbsp;&nbsp;<font class="text12">Ext.<span class="offscreen">extension for work phone number</span></font>&nbsp;&nbsp;</label><input id="busphoneext" type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=fldBusinessPhoneExt%>" />
+		&nbsp;&nbsp;<input aria-describedby="workphone_signup_error" type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=NVL.apply(fldBusinessPhone,"")%>" <%=EnumServiceType.CORPORATE.equals(serviceType) ? "required=\"true\"" : ""%> /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span id="workphone_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		<label for="busphoneext">&nbsp;&nbsp;<font class="text12">Ext.<span class="offscreen">extension for work phone number</span></font>&nbsp;&nbsp;</label><input id="busphoneext" type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=NVL.apply(fldBusinessPhoneExt,"")%>" />
 	</td>
 </tr>
 
@@ -231,8 +230,8 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input id="cellphone" aria-describedby="alternatenumber_signup_error" type="text" maxlength="14" size="21" class="text11" name="cellphone" value="<%=fldCellPhone%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><span id="alternatenumber_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
-		<label for="cellphoneext">&nbsp;&nbsp;<font class="text12">Ext.<span class="offscreen">extension for alternate phone number</span></font>&nbsp;&nbsp;</label><input id="cellphoneext" type="text" maxlength="6" size="4" class="text11" name="cellphoneext" value="<%=fldCellPhoneExt%>" />
+		&nbsp;&nbsp;<input id="cellphone" aria-describedby="alternatenumber_signup_error" type="text" maxlength="14" size="21" class="text11" name="cellphone" value="<%=NVL.apply(fldCellPhone,"")%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><span id="alternatenumber_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		<label for="cellphoneext">&nbsp;&nbsp;<font class="text12">Ext.<span class="offscreen">extension for alternate phone number</span></font>&nbsp;&nbsp;</label><input id="cellphoneext" type="text" maxlength="6" size="4" class="text11" name="cellphoneext" value="<%=NVL.apply(fldCellPhoneExt,"")%>" />
 	</td>
 </tr>
 
@@ -285,7 +284,7 @@ if(user.isDepotUser()){
 		<label for="<%=EnumUserInfoName.EMAIL.getCode()%>">*&nbsp;E-mail Address</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.EMAIL.getCode()%>" aria-describedby="email_signup_error" size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%= fldEmail%>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span id="email_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.EMAIL.getCode()%>" aria-describedby="email_signup_error" size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=NVL.apply(fldEmail,"")%>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span id="email_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
@@ -293,7 +292,7 @@ if(user.isDepotUser()){
 		<label for="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>">*&nbsp;Repeat E-mail</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" aria-describedby="repeatemail_signup_error" size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldRepeatEmail %>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span id="repeatemail_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" aria-describedby="repeatemail_signup_error" size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=NVL.apply(fldRepeatEmail,"") %>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span id="repeatemail_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
 	<td width="120"></td>
@@ -307,7 +306,7 @@ if(user.isDepotUser()){
 		<label for="<%=EnumUserInfoName.PASSWORD.getCode()%>">*&nbsp;Password</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.PASSWORD.getCode()%>" aria-describedby="pwd_signup_error" class="text9" size="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span id="pwd_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input id="<%=EnumUserInfoName.PASSWORD.getCode()%>" aria-describedby="pwd_signup_error" class="text9" size="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%=NVL.apply(fldPassword,"") %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span id="pwd_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
@@ -315,7 +314,7 @@ if(user.isDepotUser()){
 		<label for="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>">*&nbsp;Repeat Password</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input id="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" aria-describedby="repeatpwd_signup_error" class="text9" size="21" type="password" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="" value="<%= fldRepeatPassword %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><span id="repeatpwd_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input id="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" aria-describedby="repeatpwd_signup_error" class="text9" size="21" type="password" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="" value="<%=NVL.apply(fldRepeatPassword,"") %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><span id="repeatpwd_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="top">
 	<td width="120" align="right" class="text12"></td>
@@ -332,7 +331,7 @@ if(user.isDepotUser()){
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td height="25">
-		&nbsp;&nbsp;<input id="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" aria-describedby="hint_signup_error" size="21" type="text" maxlength="25" class="text9" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" value="<%= fldPasswordHint%>" />
+		&nbsp;&nbsp;<input id="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" aria-describedby="hint_signup_error" size="21" type="text" maxlength="25" class="text9" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" value="<%=NVL.apply(fldPasswordHint,"")%>" />
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><span id="hint_signup_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="top">

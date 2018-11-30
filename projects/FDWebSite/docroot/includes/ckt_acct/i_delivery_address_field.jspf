@@ -247,11 +247,11 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 		<tr valign="TOP">
 			<td ROWSPAN="14"><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1" border="0"></td>
 			<td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"><span class="errortext"></fd:ErrorHandler><label for="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>">*&nbsp;First Name&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
-			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br><input type="text" SIZE="21" aria-describedby="firstname_error" maxlength="25" class="text11" id="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldFirstName %>">&nbsp;(full name or first initial)<span id="firstname_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></span></td>
+			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br><input type="text" SIZE="21" aria-describedby="firstname_error" maxlength="25" class="text11" id="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=NVL.apply(fldFirstName , "")%>">&nbsp;(full name or first initial)<span id="firstname_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></span></td>
 		</tr>
 		<tr valign="MIDDLE">
 			<td align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>"><span class="errortext"></fd:ErrorHandler><label for="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>">*&nbsp;Last Name&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
-			<td colspan="2"><input type="text" maxlength="25" SIZE="21" aria-describedby="lastname_error" class="text11" id="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName %>">&nbsp;&nbsp;<span id="lastname_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
+			<td colspan="2"><input type="text" maxlength="25" SIZE="21" aria-describedby="lastname_error" class="text11" id="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=NVL.apply(fldLastName , "")%>">&nbsp;&nbsp;<span id="lastname_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
 		</tr>
 		<tr valign="MIDDLE">
             <td colspan="3">
@@ -275,7 +275,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
                         }
                     //-->
                     </script>
-                    <input type="radio" aria-label="Residential" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %> onclick="cosApt(this);"><span class="text12bold">Residential</span>&nbsp;&nbsp;<input type="radio" aria-label="business or school" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %> onclick="cosApt(this);"><a href="javascript:popup('/cos_info.jsp','small')"><span class="text12bold">Business or School</span></a><br>
+                    <input type="radio" aria-label="Residential" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%=NVL.apply( EnumServiceType.HOME.getName(), "")%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %> onclick="cosApt(this);"><span class="text12bold">Residential</span>&nbsp;&nbsp;<input type="radio" aria-label="business or school" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%=NVL.apply( EnumServiceType.CORPORATE.getName(), "")%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %> onclick="cosApt(this);"><a href="javascript:popup('/cos_info.jsp','small')"><span class="text12bold">Business or School</span></a><br>
                     <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
                 </td>
                 </table></fieldset>
@@ -286,7 +286,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 			<label for="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>">Company&nbsp;Name&nbsp;&nbsp;</label>
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>'></span></fd:ErrorHandler>
 			</td>
-			<td colspan="2"><input type="text" maxlength="50" class="text11" aria-describedby="companyname_error" size="21" id="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%= fldCompanyName%>"> (required for commercial addresses only)
+			<td colspan="2"><input type="text" maxlength="50" class="text11" aria-describedby="companyname_error" size="21" id="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%=NVL.apply( fldCompanyName, "")%>"> (required for commercial addresses only)
 			<span id="companyname_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span>
 			</td>
 		</tr>
@@ -298,12 +298,12 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1SS.getCode()%>"></span></fd:ErrorHandler>
 			</td>
 			<td colspan="2">
-				<input type="text" SIZE="21" maxlength="50" class="text11" aria-describedby="streetaddress_error" id="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%= fldAddress1 %>">&nbsp;&nbsp;
+				<input type="text" SIZE="21" maxlength="50" class="text11" aria-describedby="streetaddress_error" id="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%=NVL.apply( fldAddress1 , "")%>">&nbsp;&nbsp;
 				
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"><span class="errortext"></fd:ErrorHandler>
 				&nbsp;<label for="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>"><span id="aptText"><%= EnumServiceType.HOME.equals(fldServiceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span></label> 
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
-				&nbsp;&nbsp;<input type="text" maxlength="10" class="text11" size="4" aria-describedby="appartment_error"  id="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= fldApartment %>">&nbsp;&nbsp;
+				&nbsp;&nbsp;<input type="text" maxlength="10" class="text11" size="4" aria-describedby="appartment_error"  id="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%=NVL.apply( fldApartment , "")%>">&nbsp;&nbsp;
 				
 			</td>
 		</tr>
@@ -323,7 +323,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 		</tr>
 		<tr valign="MIDDLE">
 			<td align="right" class="text12"><label for="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>">Address Line 2&nbsp;&nbsp;</label></td>
-			<td colspan="2"><input type="text" maxlength="50" class="text11" size="21" id="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" name="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" value="<%= fldAddress2%>"></td>
+			<td colspan="2"><input type="text" maxlength="50" class="text11" size="21" id="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" name="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" value="<%=NVL.apply( fldAddress2, "")%>"></td>
 		</tr>
 		<tr valign="MIDDLE">
 			<td align="right" class="text12">
@@ -332,7 +332,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>"></span></fd:ErrorHandler>
 			</td>
 			<td colspan="2">
-				<input type="text" size="21" class="text11" aria-describedby="city_error" id="<%= EnumUserInfoName.DLV_CITY.getCode()%>" name="<%= EnumUserInfoName.DLV_CITY.getCode()%>" required="true" value="<%= fldCity %>">&nbsp;&nbsp;<span id="city_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
+				<input type="text" size="21" class="text11" aria-describedby="city_error" id="<%= EnumUserInfoName.DLV_CITY.getCode()%>" name="<%= EnumUserInfoName.DLV_CITY.getCode()%>" required="true" value="<%=NVL.apply( fldCity , "")%>">&nbsp;&nbsp;<span id="city_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
 		</tr>
 		<tr>
 			<td align="right" class="text12">
@@ -341,11 +341,11 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>"></span></fd:ErrorHandler>
 			</td>
 			<td colspan="2">
-				<div class="aptfields"><input type="text" class="text11" aria-describedby="state_error" id="<%= EnumUserInfoName.DLV_STATE.getCode()%>" name="<%= EnumUserInfoName.DLV_STATE.getCode()%>" required="true" size="3" value="<%= fldState%>">&nbsp;&nbsp;&nbsp;</div>
+				<div class="aptfields"><input type="text" class="text11" aria-describedby="state_error" id="<%= EnumUserInfoName.DLV_STATE.getCode()%>" name="<%= EnumUserInfoName.DLV_STATE.getCode()%>" required="true" size="3" value="<%=NVL.apply( fldState, "")%>">&nbsp;&nbsp;&nbsp;</div>
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>"><span class="errortext"></fd:ErrorHandler>
 				<label for="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>">&nbsp;&nbsp;*&nbsp;Zip Code</label>
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>"></span></fd:ErrorHandler>&nbsp;&nbsp;
-				<div class="zipcodefld"><input type="text" class="text11" aria-describedby="zipcode_error" id="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%= fldZipCode %>">&nbsp;&nbsp;<span id="zipcode_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
+				<div class="zipcodefld"><input type="text" class="text11" aria-describedby="zipcode_error" id="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%=NVL.apply( fldZipCode , "")%>">&nbsp;&nbsp;<span id="zipcode_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></div>
 			</td>
 		</tr>
 		<tr>
@@ -358,8 +358,8 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				<label for="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>">*&nbsp;Contact #&nbsp;&nbsp;</label>
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>"></span></fd:ErrorHandler>
 			</td>
-			<td colspan="2" class="text12"><input type="text" size="16" class="text11" aria-describedby="homephone_error" id="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>" value="<%=fldHomePhone%>" required="true">&nbsp;&nbsp;
-			<label for="homephoneext">&nbsp;&nbsp;Ext.<span class="offscreen">extension for contact number</span>&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="homephoneext" name="homephoneext" value="<%=fldHomePhoneExt%>"></td>
+			<td colspan="2" class="text12"><input type="text" size="16" class="text11" aria-describedby="homephone_error" id="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>" value="<%=NVL.apply(fldHomePhone, "")%>" required="true">&nbsp;&nbsp;
+			<label for="homephoneext">&nbsp;&nbsp;Ext.<span class="offscreen">extension for contact number</span>&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="homephoneext" name="homephoneext" value="<%=NVL.apply(fldHomePhoneExt, "")%>"></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -371,8 +371,8 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				<label for="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>">&nbsp;Alt Contact #&nbsp;&nbsp;</label>
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>"></span></fd:ErrorHandler>
 			</td>
-			<td colspan="2" class="text12"><input type="text" size="16" class="text11" aria-describedby="alternatecontact_error" id="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" value="<%=fldAltContactPhone%>">&nbsp;&nbsp;
-			<label for="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>">&nbsp;&nbsp;Ext.<span class="offscreen">extension for alternate contact number</span>&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" value="<%=fldAltContactExt%>"></td>
+			<td colspan="2" class="text12"><input type="text" size="16" class="text11" aria-describedby="alternatecontact_error" id="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" value="<%=NVL.apply(fldAltContactPhone, "")%>">&nbsp;&nbsp;
+			<label for="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>">&nbsp;&nbsp;Ext.<span class="offscreen">extension for alternate contact number</span>&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" value="<%=NVL.apply(fldAltContactExt, "")%>"></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -406,7 +406,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 	</font><BR><label for="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>">Please enter any information our delivery person will need to get your order to your door.</label></td>
 	</tr>
 	<tr valign="top">
-		<td width="645"><input type="text" class="text11" id="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" name="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" size="50" maxLength="80" value="<%=(fldDlvInstructions!=null)?fldDlvInstructions.replaceAll("\"","&quot;"):"none"%>"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="27"><br></td>
+		<td width="645"><input type="text" class="text11" id="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" name="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" size="50" maxLength="80" value="<%=NVL.apply((fldDlvInstructions!=null)?fldDlvInstructions.replaceAll("\"","&quot;"):"none", "")%>"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="27"><br></td>
 	</tr>
 	</table>
 
@@ -486,7 +486,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 					<span id="instructions_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><%=errorMsg%><br/></fd:ErrorHandler></span><br /><br /></td>
 				</tr>
 				<tr>
-					<td valign="top"><input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/><input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" value="<%= unattendedOptIn ? "OPT_IN" : "OPT_OUT" %>"/><input type="checkbox" class="checkbox" name="optInOutElem" id="optInOutElem" value="OPT_IN"  onclick="resetUnattendedDeliveryInstructions()" <%= unattendedOptIn ? "" : "checked" %> /></td>
+					<td valign="top"><input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/><input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" value="<%=NVL.apply( unattendedOptIn ? "OPT_IN" : "OPT_OUT" , "")%>"/><input type="checkbox" class="checkbox" name="optInOutElem" id="optInOutElem" value="OPT_IN"  onclick="resetUnattendedDeliveryInstructions()" <%= unattendedOptIn ? "" : "checked" %> /></td>
 					<td style="font-size: 12px;"><label for="optInOutElem">I do not want this service.<span class="offscreen">Select this if you do not authorize FreshDirect to deliver your order if you are not home.</span></label><br />
 						(Select this if you do not authorize FreshDirect to deliver your order if you are not home.)</td>
 				</tr>
@@ -528,7 +528,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 				   back door, garage, etc).<br/>
 				   <input type="text" aria-describedby="deliveryinstructions_error" SIZE="50" maxlength="80" 
 						  name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"
-						  id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"  value="<%= fldUnattendedDeliveryInstructions %>"
+						  id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"  value="<%=NVL.apply( fldUnattendedDeliveryInstructions , "")%>"
 						  <%= !unattendedOptIn ? "disabled" : ""%>
 				/>
 				   <span id="deliveryinstructions_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><%=errorMsg%><br/></fd:ErrorHandler></span>
@@ -578,7 +578,7 @@ if(showDoorman){
 
 	<tr valign="MIDDLE">
 		<td width="55" align="right">
-		<input type="checkbox" id="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode()%>" <%=deliverToDoorman==true?"checked":""%>/>
+		<input type="checkbox" id="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=NVL.apply(EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode(), "")%>" <%=deliverToDoorman==true?"checked":""%>/>
 		
 		</td>
 		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text12"><font class="text12bold"><label for="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>">Leave with Doorman</label></font> (Please make sure doorman will accept packages.)<br></td>
@@ -633,15 +633,15 @@ if(showAltDelivery){
 	<table>
 	<tr valign="MIDDLE">
 	     
-		<td width="55" align="right"><input type="radio" class="radio" aria-label="none" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.NO_ALT_DELIVERY.getCode()%>" <%=isAltDelivery==false?"checked":""%> ></td>
+		<td width="55" align="right"><input type="radio" class="radio" aria-label="none" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=NVL.apply(EnumUserInfoName.NO_ALT_DELIVERY.getCode(), "")%>" <%=isAltDelivery==false?"checked":""%> ></td>
 		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text14"><b>None</b><br></td>
 	</tr>
 	<tr>
-		<td width="55" align="right"><input type="radio" class="radio" aria-label="Doorman(Please make sure doorman will accept packages)" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode()%>" <%=deliverToDoorman==true?"checked":""%> ></td>
+		<td width="55" align="right"><input type="radio" class="radio" aria-label="Doorman(Please make sure doorman will accept packages)" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=NVL.apply(EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode(), "")%>" <%=deliverToDoorman==true?"checked":""%> ></td>
 		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text14"><b>Doorman</b> (Please make sure doorman will accept packages)<br></td>
 	</tr>
 	<tr valign="top">
-		<td width="55" align="right" valign="middle"><input type="radio" class="radio" aria-label="Someone else in your building, Must be in your building, please enter all contact info below." name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode()%>" <%=deliverToNeighbor==true?"checked":""%>></td>
+		<td width="55" align="right" valign="middle"><input type="radio" class="radio" aria-label="Someone else in your building, Must be in your building, please enter all contact info below." name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=NVL.apply(EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode(), "")%>" <%=deliverToNeighbor==true?"checked":""%>></td>
 		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text14">
 			<font class="space2pix"><br></font><b>Someone else in your building</b>&nbsp;&nbsp;&nbsp;<br>
 			Must be in your building, please enter all contact info below.<br></td> 
@@ -672,7 +672,7 @@ if(showAltDelivery){
 			<label for="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>">*Last Name&nbsp;&nbsp;</label>
 			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>"></span></fd:ErrorHandler>
 		</td>
-		<td width="565"><input type="text" class="text11" maxlength="50" aria-describedby="lastname1_error"  id="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>" size="21" value="<%=fldAltLastName%>"> <span id="lastname1_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
+		<td width="565"><input type="text" class="text11" maxlength="50" aria-describedby="lastname1_error"  id="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>" size="21" value="<%=NVL.apply(fldAltLastName, "")%>"> <span id="lastname1_error" class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
 	</tr>
 	<tr>
 		<td width="115" align="right" class="text12">
@@ -680,7 +680,7 @@ if(showAltDelivery){
 			<label for="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>">*<span id="aptTextAlt"><%= EnumServiceType.HOME.equals(fldServiceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span>&nbsp;&nbsp;</label>
 			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
 		</td>
-		<td width="565"><input type="text"  maxlength="10" class="text11" size="4" aria-describedby="apt1_error" id="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>" value="<%=fldAltApartment%>"> <span id="apt1_error"  class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
+		<td width="565"><input type="text"  maxlength="10" class="text11" size="4" aria-describedby="apt1_error" id="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>" value="<%=NVL.apply(fldAltApartment, "")%>"> <span id="apt1_error"  class="errortext"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></span></td>
 	</tr>
 	<tr>
 		<td width="115" align="right" class="text12">
@@ -689,8 +689,8 @@ if(showAltDelivery){
 			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>"></span></fd:ErrorHandler>
 		</td>
 		<td width="565" valign="middle">
-		<input type="text" aria-describedby="altphone1_error"  maxlength="13" SIZE="21" class="text11" id="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>" value="<%=fldAltPhone%>">
-		<label for="<%=EnumUserInfoName.DLV_ALT_EXT.getCode()%>">&nbsp;&nbsp;Ext.</label><input type="text" maxlength="6" size="4" class="text11" id="<%=EnumUserInfoName.DLV_ALT_EXT.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_EXT.getCode()%>" value="<%=fldAltExt%>">
+		<input type="text" aria-describedby="altphone1_error"  maxlength="13" SIZE="21" class="text11" id="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>" value="<%=NVL.apply(fldAltPhone, "")%>">
+		<label for="<%=EnumUserInfoName.DLV_ALT_EXT.getCode()%>">&nbsp;&nbsp;Ext.</label><input type="text" maxlength="6" size="4" class="text11" id="<%=EnumUserInfoName.DLV_ALT_EXT.getCode()%>" name="<%=EnumUserInfoName.DLV_ALT_EXT.getCode()%>" value="<%=NVL.apply(fldAltExt, "")%>">
 		</td>
 	</tr>
 	<tr>
