@@ -2170,7 +2170,10 @@ a#popup_cart:focus {
 	min-width: var(--sitemod_content-minwidth);
 }
 
-#locationbar-sticky-wrapper #locationbar #location-modify-order-message {padding-left: 30px;}
+#locationbar-sticky-wrapper #locationbar #location-modify-order-message {
+	padding-left: 30px;
+	box-sizing: border-box;
+}
 
 .locabar-spacer, .side-spacer {
 	width: 30px;

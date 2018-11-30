@@ -3054,7 +3054,8 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 	max-width: 100%;
 }
 [data-ismobweb="true"][data-ec-page="view_cart"] #content > .container,
-[data-ismobweb="true"][data-ec-page="checkout"] #expresscheckout > .container {
+[data-ismobweb="true"][data-ec-page="checkout"] #expresscheckout > .container,
+[data-ismobweb="true"] .drawer__content {
 	width: 100%;
 	min-width: 100%;
 	max-width: 100%;
