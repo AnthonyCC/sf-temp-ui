@@ -1606,6 +1606,8 @@ li.cleanli .gen-arrow {
 	.mm-page .checkout__header{
 		height: 45px;
 		padding: 8px 8px 0px 8px;
+		min-width: 100%;
+		max-width: 100;
     }
     .mm-page #messages.visHidden{
     	height: 3px;
@@ -3050,4 +3052,14 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 #locationbar_fdx_promo {
 	min-width: 100%;
 	max-width: 100%;
+}
+[data-ismobweb="true"][data-ec-page="view_cart"] #content > .container,
+[data-ismobweb="true"][data-ec-page="checkout"] #expresscheckout > .container {
+	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
+}
+[data-ismobweb="true"] [data-component="drawer"][data-drawer-columns="1"] {
+	margin: 0;
+	/* max-width:100%; */
 }
