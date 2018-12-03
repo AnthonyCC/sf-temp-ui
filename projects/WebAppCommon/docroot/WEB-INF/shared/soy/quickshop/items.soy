@@ -338,7 +338,7 @@
     				{/if}
 			</div>
 			<div class="itemlist-item-price">
-				{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
+				{if $item.dealInfo and not $item.grpLink}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
 				{if $item.savingString and not $item.grpLink}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
 				{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
 			</div>
