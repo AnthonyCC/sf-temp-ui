@@ -386,7 +386,7 @@
 #confirmpopup.qs-deletelist .qs-popup-content button + button {
 	margin-top: 20px;
 }
-.qs-content .portrait-item-productimage-cont {
+.qs-content .portrait-item-productimage-cont.listview {
 	float: left;
 }
 .qs-content .grpLink-cont {
