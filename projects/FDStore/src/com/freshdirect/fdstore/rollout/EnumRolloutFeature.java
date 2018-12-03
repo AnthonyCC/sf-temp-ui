@@ -29,7 +29,8 @@ public enum EnumRolloutFeature {
     modOrderConfirmPageRedesign("modOrderConfirmPageRedesign", "2018"),
     aggregatedfilterimprovement2018("aggregatedfilterimprovment", "2018"),
     backOfficeSelfCredit("backOfficeSelfCredit", "2018"),
-    productCard2018("productCard", "2018");
+    productCard2018("productCard", "2018"),
+    livechat("livechat", "2018");
 
     private final EnumRolloutFeature child;
     private final String cookieName;
