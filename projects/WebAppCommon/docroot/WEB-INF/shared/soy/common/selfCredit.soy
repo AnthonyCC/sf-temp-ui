@@ -117,7 +117,7 @@
   {else}
     <div class="review">
       <div class="self-credit-header section-container">
-        <h1>Review Credit Request</h1>
+        <h1 tabindex="1">Review Credit Request</h1>
         <p>
           Once submitted, you will generally receive an email confirming your store credit within 24 hours.
         </p>
@@ -144,12 +144,12 @@
             <div class="self-credit-comment-info">
               <div class="{if $comment} hide{/if}">
                 <span class="text14">Have additional thoughts about this order?</span>
-                <button onclick="FreshDirect.components.selfCreditIssueReportPopup.commentClick(event)">Leave a comment for further review</button>
+                <button tabindex="3" onclick="FreshDirect.components.selfCreditIssueReportPopup.commentClick(event)">Leave a comment for further review</button>
               </div>
               <div class="self-credit-comment-container {if not $comment} hide{/if}">
                 <label for="self-credit-comment">Additional Comments</label>
                 <i class="form-field-info-flag">Optional</i>
-                <textarea id="self-credit-comment" name="self-credit-comment" maxlength="250" rows="4" data-max-length-display>{if ($comment)}{$comment}{/if}</textarea>
+                <textarea tabindex="3" id="self-credit-comment" name="self-credit-comment" maxlength="250" rows="4" data-max-length-display>{if ($comment)}{$comment}{/if}</textarea>
               </div>
             </div>
             <table>
@@ -198,7 +198,7 @@
             {/call}
           </button></div>
           <div class="sc-submit-button">
-            <button class="cssbutton green credit-request-submit-button" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
+            <button tabindex="2" class="cssbutton green credit-request-submit-button" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
               {call .ariaReview}
                 {param title: 'Submit Request' /}
                 {param reviewData: $reviewData /}
