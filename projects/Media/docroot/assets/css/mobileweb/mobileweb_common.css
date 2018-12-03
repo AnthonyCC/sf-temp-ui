@@ -1162,7 +1162,7 @@ li.cleanli .gen-arrow {
 	    margin: 32px 0 29px;
 	    padding: 0;
 	    display: table;
-	    width: 800px;
+	    width: 100%;
 	}
 	#nutritionPopup.mobWeb-nutritionPopup .fixedPopupContent .qs-popup-content{
 		padding: 0;
@@ -1390,6 +1390,8 @@ width: calc( (100% / var(--sitemod_perrow)) - 3px );
 	.mm-page .portrait-item-controls .addtocart.ATCHasItemsMobile{
 		background-image: url('/media/mobileweb/images/fd-added-32.png');
 		padding-top: 5px;
+	}
+	.portrait-item-price-cartinfo-cont .atc-info { /* hide new indicator */
 		display: none;
 	}
 	.mm-page .portrait-item-controls .addtocart.ATCinProgress,
