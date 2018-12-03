@@ -759,3 +759,19 @@ ul.products .description-skin{
 .container.browse .carousels .noCarousel2 .c2 {
 	display: none;
 }
+
+/* fix widths when carousels don't have products */
+.container.browse .carousels.THREE_ONE .hasCarousel1.noCarousel2 .c1,
+.container.browse .carousels.THREE_ONE .noCarousel1.hasCarousel2 .c2,
+.container.browse .carousels.TWO_TWO .hasCarousel1.noCarousel2 .c1,
+.container.browse .carousels.TWO_TWO .noCarousel1.hasCarousel2 .c2 {
+	width: 100%;
+}
+
+.container.browse .carousels.THREE_ONE .hasCarousel1.noCarousel2 .c1 [data-component="carousel"] ul li.portrait-item,
+.container.browse .carousels.THREE_ONE .noCarousel1.hasCarousel2 .c2 [data-component="carousel"] ul li.portrait-item,
+.container.browse .carousels.TWO_TWO .hasCarousel1.noCarousel2 .c1 [data-component="carousel"] ul li.portrait-item,
+.container.browse .carousels.TWO_TWO .noCarousel1.hasCarousel2 .c2 [data-component="carousel"] ul li.portrait-item {
+	min-width: calc(100% / 4);
+	margin: 0;
+}

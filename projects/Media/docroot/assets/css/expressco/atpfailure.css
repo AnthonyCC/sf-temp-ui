@@ -229,6 +229,7 @@
 
 #atpfailure [data-component="carousel"] ul li.portrait-item {
   width: calc( (100% / 2) - 12px);
+  max-width: calc( (100% / 2) - 12px);
 }
 
 #atpfailure [data-component="carousel"]{
