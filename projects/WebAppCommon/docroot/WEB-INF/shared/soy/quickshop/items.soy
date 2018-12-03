@@ -282,14 +282,20 @@
 				{param productPageUrl:$item.productPageUrl /}
 			{/call}
 		</form>
-		<div class="portrait-item-productimage_wrapper itemlist-item-productimage_wrapper">
-			{if not $item.discontinued}<a href="{$item.productPageUrl}">{/if}
-				<div class="portrait-item-burst_wrapper itemlist-item-burst_wrapper">
-					<img class="portrait-item-productimage itemlist-item-productimage lazyload"  data-src="{($mobWeb or $productCardVersion != '2018') ? $item.productDetailImage : $item.productZoomImage}"  alt="{$item.productAltText}" />
-					{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-				</div>
-			{if not $item.discontinued}</a>{/if}
-			{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
+		<div class="portrait-item-productimage-cont">
+			<div class="portrait-item-productimage_wrapper itemlist-item-productimage_wrapper">
+				{if not $item.discontinued}<a href="{$item.productPageUrl}">{/if}
+					<div class="portrait-item-burst_wrapper itemlist-item-burst_wrapper">
+						<img class="portrait-item-productimage itemlist-item-productimage lazyload"  data-src="{($mobWeb or $productCardVersion != '2018') ? $item.productDetailImage : $item.productZoomImage}"  alt="{$item.productAltText}" />
+						{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param savingString:$item.savingString /}{param usq:$item.usq /}{/call}
+					</div>
+				{if not $item.discontinued}</a>{/if}
+				{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
+			</div>
+				<div class="grpLink-cont icon-chevron-right-after"><a href="{$item.grpLink}" class="portrait-item-price-deal hasDealInfo hasGrpLink">test</a></div>
+			{if $item.dealInfo and $item.grpLink}
+				<div class="grpLink-cont icon-chevron-right-after"><a href="{$item.grpLink}" class="portrait-item-price-deal hasDealInfo hasGrpLink">{$item.dealInfo}</a></div>
+			{/if}
 		</div>
 		<div class="itemlist-center-content">
 			<div class="itemlist-item-header">
@@ -334,7 +340,7 @@
 			</div>
 			<div class="itemlist-item-price">
 				{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
-				{if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
+				{if $item.savingString and not $item.grpLink}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
 				{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
 			</div>
 			{if $item.available}
