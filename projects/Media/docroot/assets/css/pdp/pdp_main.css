@@ -1157,3 +1157,8 @@ section.container.pdp [data-component="carousel"] .portrait-item {
 .pdp .portrait-item .atc-info .incart-info[data-amount]:not([data-amount="0"]):after {
 	content: "";
 }
+
+/* hide deals in groups */
+.pdp-groupProducts .cssBurst.deal {
+	display: none;
+}
