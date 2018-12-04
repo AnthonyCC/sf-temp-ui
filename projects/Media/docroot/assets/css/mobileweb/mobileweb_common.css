@@ -3070,3 +3070,7 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 	margin: 0;
 	/* max-width:100%; */
 }
+.fdCoupon_img {
+	display: inline-block;
+	float: left;
+}

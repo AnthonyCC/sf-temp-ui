@@ -19,6 +19,7 @@
     {call common.ecoupon.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
   {/if}
   <span class="fdCoupon_data">
+	<img src="/media_stat/images/ecoupon/logo-small.png" alt="FD coupon" class="fdCoupon_img" />
   	<span name="{$couponName}_applied" class="fdCoupon_applied"></span>
     {call common.ecoupon.messageHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
     {if not $detailsFirst}
