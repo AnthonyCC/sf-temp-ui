@@ -335,11 +335,14 @@ public class ProductDetailPopulator {
         // Populate product basic-level data
         populateBasicProductData(data, user, product);
 
-        // Populate product level data
-        populateProductData(data, user, product, sku, fdProduct, priceCalculator, lineData, false, false);
+        //this is needed before pricing
+        populateSimpleProductData(data, product, sku, false);
 
         // Populate pricing data
         populatePricing(data, fdProduct, productInfo, priceCalculator, user);
+
+        // Populate product level data
+        populateProductData(data, user, product, sku, fdProduct, priceCalculator, lineData, false, false);
 
         // Populate sku-level data for the default sku only
         populateSkuData(data, user, product, sku, fdProduct);
@@ -694,7 +697,7 @@ public class ProductDetailPopulator {
         populateAvailabilityMessages(item, productModel, fdProduct, sku);
     }
     
-    private static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
+    public static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
         if (productModel != null && productModel.getCategory() != null && productModel.getCategory().getDepartment() != null) { // this can happen if the product is orphan
             item.setCatId(usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName());
             item.setDepartmentId(productModel.getCategory().getDepartment().getContentKey().getId());
@@ -1743,8 +1746,10 @@ public class ProductDetailPopulator {
             try {
                 FDProductInfo productInfo_fam = sku.getProductInfo();
                 FDProduct fdProduct = sku.getProduct();
-                populateProductData(data, user, product, sku, fdProduct, priceCalculator, null, true, true);
+                //this is needed before pricing
+                populateSimpleProductData(data, product, sku, false);
                 populatePricing(data, fdProduct, productInfo_fam, priceCalculator, user);
+                populateProductData(data, user, product, sku, fdProduct, priceCalculator, null, true, true);
             } catch (FDResourceException exc) {
                 LOG.debug("Pricing and ERPS parts of " + product.getContentKey() + " are not populated due to missing resource", exc);
             } catch (FDSkuNotFoundException exc) {

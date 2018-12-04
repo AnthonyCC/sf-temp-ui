@@ -310,12 +310,12 @@
 }
 
 .qs-content .itemlist-center-content{
-  margin:28px 0 28px 140px; /* 116+24 */
+  margin: 28px 0 28px 180px; /* 116+24 */
 }
 
 .qs-content .itemlist-item-productimage_wrapper{
-  width: 150px;
-  max-height: 150px;
+  width: 175px;
+  max-height: 175px;
   margin: 5px 3px;
   box-sizing: border-box;
 }
@@ -389,6 +389,6 @@
 .qs-content .portrait-item-productimage-cont.listview {
 	float: left;
 }
-.qs-content .grpLink-cont {
+.qs-content  .listview .grpLink-cont {
 	bottom: 0;
 }
