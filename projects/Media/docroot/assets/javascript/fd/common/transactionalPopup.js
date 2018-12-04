@@ -247,7 +247,7 @@ var FreshDirect = FreshDirect || {};
               }
 
               this.showRelated = setTimeout($.proxy(function () {
-                var wwidth = $(".container").length ? $(".container").first()[0].getBoundingClientRect().right : $(window).width(),
+                var wwidth = $('.container:not([id*="oas"])').length ? $('.container.global:not([id*="oas"])').first()[0].getBoundingClientRect().right : $(window).width(),
                     ppos = $('#'+popupId).position().left;
 
                 this.showRelated = null;

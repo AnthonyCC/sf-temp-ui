@@ -287,7 +287,7 @@
 				{if not $item.discontinued}<a href="{$item.productPageUrl}">{/if}
 					<div class="portrait-item-burst_wrapper itemlist-item-burst_wrapper">
 						<img class="portrait-item-productimage itemlist-item-productimage lazyload"  data-src="{($mobWeb or $productCardVersion != '2018') ? $item.productDetailImage : $item.productZoomImage}"  alt="{$item.productAltText}" />
-						{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param savingString:$item.savingString /}{param usq:$item.usq /}{/call}
+						{if not $item.grpLink}{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param savingString:$item.savingString /}{param usq:$item.usq /}{/call}{/if}
 					</div>
 				{if not $item.discontinued}</a>{/if}
 				{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
@@ -338,8 +338,7 @@
     				{/if}
 			</div>
 			<div class="itemlist-item-price">
-				{if $item.dealInfo and not $item.grpLink}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
-				{if $item.savingString and not $item.grpLink}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
+				{if $item.dealInfo and not $item.grpLink}<div class="itemlist-item-price-deal dealinfo">{$item.dealInfo}</div>{/if}
 				{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
 			</div>
 			{if $item.available}
