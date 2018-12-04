@@ -52,7 +52,7 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.productTransform = productTransform;
-  
+
   fd.gtm.timeslots = function(action, pageName) {
       var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
 
@@ -95,6 +95,26 @@ var dataLayer = window.dataLayer || [];
     return name;
   };
   fd.gtm.deBrand = deBrand;
+
+  var priceToFloat = function (price) {
+    return parseFloat((''+price).replace(/\$/, ''));
+  };
+  fd.gtm.priceToFloat = priceToFloat;
+
+  var realPrice = function (product) {
+    var qty = parseInt(product.quantity, 10) || 1;
+    var price = priceToFloat(product.price);
+    var cfgPrice = priceToFloat(product.configuredPrice);
+    var liPrice = priceToFloat(product.lineItemTotal);
+    var rPrice = cfgPrice && cfgPrice !== price ? cfgPrice / qty : price;
+
+    if (liPrice) {
+      rPrice = liPrice / qty;
+    }
+
+    return '$'+rPrice.toFixed(2);
+  };
+  fd.gtm.realPrice = realPrice;
 
   var getDeliveryType = function (dtype) {
     dtype = dtype.toUpperCase();
@@ -205,7 +225,7 @@ var dataLayer = window.dataLayer || [];
     },
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
-          qty = parseInt(productData.quantity, 10) || 0,
+          qty = parseInt(productData.quantity, 10) || 1,
           product = {
             // id: productData.id, // #AN-162
             id: productData.sku,
@@ -348,18 +368,19 @@ var dataLayer = window.dataLayer || [];
               },
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
+                var qty = parseInt(productData.quantity, 10) || 1; // quantity should be an integer
                 return {
                   // id: productData.id, // #AN-162
                   id: productData.sku,
                   name: deBrand(productData.name, productData.brand),
-                  price: productData.price,
+                  price: fd.gtm.realPrice(productData),
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  quantity: qty,
                   configuredPrice: productData.configuredPrice,
                   lineItemTotal: productData.lineItemTotal
                 };
@@ -392,18 +413,19 @@ var dataLayer = window.dataLayer || [];
             checkout: {
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
+                var qty = parseInt(productData.quantity, 10) || 1; // quantity should be an integer
                 return {
                   // id: productData.id, // #AN-162
                   id: productData.sku,
                   name: deBrand(productData.name, productData.brand),
-                  price: productData.price,
+                  price: fd.gtm.realPrice(productData),
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  quantity: qty, // quantity should be an integer
                   configuredPrice: productData.configuredPrice
                 };
               })
