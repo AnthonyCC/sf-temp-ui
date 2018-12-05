@@ -13,6 +13,10 @@
 		<title>Gift Card Examples</title>
 		
 
+  	<%
+  		/* skip yui on this page */
+  		request.setAttribute("noyui", true);
+  	%>
 	<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 	<jwr:script src="/giftcards.js" useRandomParam="false" />
 

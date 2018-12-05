@@ -188,6 +188,10 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
   </tmpl:put>
 
   <tmpl:put name="leastPrioritizeJs">
+  	<%
+  		/* skip yui on this page */
+  		request.setAttribute("noyui", true);
+  	%>
   <jwr:script src="/protoscriptbox.js" useRandomParam="false" />
     <jwr:script src="/assets/javascript/timeslots.js" async="true" useRandomParam="false" 
     onload="fd && fd.expressco && fd.expressco.checkout && fd.expressco.checkout.timeslotDrawerDependencyLoaded()" />

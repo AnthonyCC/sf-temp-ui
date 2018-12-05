@@ -614,7 +614,7 @@ p.cartsection__tax{
   border-color: transparent transparent transparent #f00000;
 }
 
-..cartcoupon-message-cont {
+.cartcoupon-message-cont {
 	position: relative;
 }
 .cartcoupon-message-cont:before {

@@ -261,8 +261,15 @@ public class QuickShopHelper {
 			PriceCalculator priceCalculator = productModel.getPriceCalculator();
 
 			ProductDetailPopulator.populateBasicProductData(item, user, productModel);
-			ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst, true);
+			
+			//this is needed before pricing
+			ProductDetailPopulator.populateSimpleProductData(item, productModel, skuModel, false);
+			
+			// Populate pricing data - needs to be done before bursts
 			ProductDetailPopulator.populatePricing(item, fdProduct, productInfo, priceCalculator, user);
+						
+			ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst, true);
+			
 
 			try {
 				ProductDetailPopulator.populateSkuData(item, user, productModel, skuModel, fdProduct);
