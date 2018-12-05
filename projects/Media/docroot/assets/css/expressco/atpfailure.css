@@ -242,6 +242,8 @@
 
 #atpfailure .fixedPopupContent{
   max-width:none;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .popupcontentoverlay.atpFailureOverlay{
