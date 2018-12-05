@@ -3071,6 +3071,7 @@ a.imgButtonWhite:hover,
 	}
 	
 	.fdCoupon_img {
+		display: none;
 		margin-left: 6px;
 		margin-bottom: -3px;
 	}

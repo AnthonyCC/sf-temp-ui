@@ -2527,9 +2527,19 @@ width: calc( (100% / var(--sitemod_perrow)) - 3px );
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon{
 		float: none;
+		position: relative;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon span[data-component="ecoupon-status"]{
 		display: block;
+	}
+	
+	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon:before{
+		position: absolute;
+		top: calc( 50% - 5px ); /* triangle-right is 10px */
+	}
+	
+	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon.triangle-red.triangle-right .fdCoupon_cont {
+		margin-left: 15px;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-quantity .select-wrapper .salesunit{
 		min-width: initial;
@@ -3102,4 +3112,8 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 [data-ismobweb="true"] [data-component="drawer"][data-drawer-columns="1"] {
 	margin: 0;
 	/* max-width:100%; */
+}
+.fdCoupon_img {
+	display: inline-block;
+	float: left;
 }

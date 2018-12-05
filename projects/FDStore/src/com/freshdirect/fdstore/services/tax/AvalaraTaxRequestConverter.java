@@ -41,7 +41,7 @@ public class AvalaraTaxRequestConverter {
 	private int taxlineId = 1000;
 
 	public GetTaxRequest convert(AvalaraContext avalaraContext) {
-		LOGGER.info("Cart to Request conversion begin");
+		LOGGER.info("Cart to Request conversion avalarabegin");
 		FDCartI cart = avalaraContext.getCart();
 		GetTaxRequest taxRequest = new GetTaxRequest();
 		ErpAddressModel fdDeliveryaddress = cart.getDeliveryAddress();
@@ -107,7 +107,7 @@ public class AvalaraTaxRequestConverter {
 		}
 		taxRequest.setCustomerCode(customercode);
 		taxRequest.setDiscount(BigDecimal.valueOf(cart.getTotalDiscountValue()));
-		LOGGER.info("Cart to Request conversion End");
+		LOGGER.info("Cart to Request conversion avalaraend:"+customercode);
 		return taxRequest;
 	}
 

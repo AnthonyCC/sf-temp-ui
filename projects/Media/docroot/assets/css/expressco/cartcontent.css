@@ -614,9 +614,16 @@ p.cartsection__tax{
   border-color: transparent transparent transparent #f00000;
 }
 
+..cartcoupon-message-cont {
+	position: relative;
+}
+.cartcoupon-message-cont:before {
+	position: absolute;
+	top: calc( 50% - 5px ); /* triangle-right is 10px */
+}
 .cartcoupon-message{
   display:inline-block;
-  margin-left:5px;
+  margin-left: 15px; /* triangleW + 5px */
   font-size: 12px;
   font-weight: bold;
   color: #f00;
