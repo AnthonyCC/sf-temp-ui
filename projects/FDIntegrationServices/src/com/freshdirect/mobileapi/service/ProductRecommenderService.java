@@ -107,11 +107,16 @@ public class ProductRecommenderService {
 
             // debug section
             final int numberOfRecommendedProducts = result.sizeOfRecommendedContent();
-            final String customerId = customer.getIdentity().getErpCustomerPK();
             final String cohortName = customer.getCohortName();
             final String variantId = result.getVariant().getId();
 
-            LOGGER.debug(numberOfRecommendedProducts + " products were recommended to customer id=" + customerId + ", cohort=" + cohortName + " by variant " + variantId + " of " + siteFeature + " site feature");
+            if (customer.getIdentity() == null) {
+                LOGGER.debug(numberOfRecommendedProducts + " products served to guest customer in cohort " + cohortName + " by variant " + variantId + " of " + siteFeature.getName() + " site feature");
+            } else {
+                final String customerId = customer.getIdentity().getErpCustomerPK();
+
+                LOGGER.debug(numberOfRecommendedProducts + " products served to customer id=" + customerId + " in cohort " + cohortName + " by variant " + variantId + " of " + siteFeature.getName() + " site feature");
+            }
         } catch (FDResourceException exc) {
             LOGGER.error("Failed to get recommendations for customer " + customer.getIdentity(), exc );
         }
