@@ -179,7 +179,7 @@ if (mobWeb) {
 			      		setTimeout(getTimeslots, 100);
 			    	}
 		  		};
-				getTimeslots();
+				$jq(function() { getTimeslots(); });
 			</script>
 		<% }%>
 	</tmpl:put>
