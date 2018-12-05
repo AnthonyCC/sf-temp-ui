@@ -2494,9 +2494,19 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon{
 		float: none;
+		position: relative;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon span[data-component="ecoupon-status"]{
 		display: block;
+	}
+	
+	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon:before{
+		position: absolute;
+		top: calc( 50% - 5px ); /* triangle-right is 10px */
+	}
+	
+	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon.triangle-red.triangle-right .fdCoupon_cont {
+		margin-left: 15px;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-quantity .select-wrapper .salesunit{
 		min-width: initial;
