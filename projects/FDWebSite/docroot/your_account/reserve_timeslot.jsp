@@ -75,6 +75,10 @@ if (mobWeb) {
 	  <jwr:style src="/timeslots.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraJs">
+	  	<%
+	  		/* skip yui on this page */
+	  		request.setAttribute("noyui", true);
+	  	%>
 		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 	</tmpl:put>
@@ -179,7 +183,7 @@ if (mobWeb) {
 			      		setTimeout(getTimeslots, 100);
 			    	}
 		  		};
-				$jq(function() { getTimeslots(); });
+				$jq(function () { getTimeslots(); });
 			</script>
 		<% }%>
 	</tmpl:put>

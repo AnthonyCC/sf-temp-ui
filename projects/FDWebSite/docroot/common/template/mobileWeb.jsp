@@ -59,6 +59,10 @@
 	<%
 		//any page that has timeslots needs prototype
 		if (isCheckout || (mobweb_uri.indexOf("/your_account/reserve_timeslot.jsp") != -1) || (mobweb_uri.indexOf("/your_account/delivery_info_avail_slots.jsp") != -1)) {
+		  	
+		  		/* skip yui on this page */
+		  		request.setAttribute("noyui", true);
+		  	
 			%><jwr:script src="/protoscriptbox.js" useRandomParam="false" /><%
 		}
 	%>

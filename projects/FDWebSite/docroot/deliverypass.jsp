@@ -110,6 +110,10 @@
 	</tmpl:put>
 	
 	<tmpl:put name="extraJs">
+	  	<%
+	  		/* skip yui on this page */
+	  		request.setAttribute("noyui", true);
+	  	%>
 		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
     	<fd:javascript src="/assets/javascript/timeslots.js" />
 	</tmpl:put>

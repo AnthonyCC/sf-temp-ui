@@ -2507,6 +2507,8 @@ li.cleanli .gen-arrow {
 	
 	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder .cartline-coupon.triangle-red.triangle-right .fdCoupon_cont {
 		margin-left: 15px;
+		height: 16px;
+		overflow: visible;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-quantity .select-wrapper .salesunit{
 		min-width: initial;
@@ -3083,4 +3085,7 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 .fdCoupon_img {
 	display: inline-block;
 	float: left;
+}
+.qs-content #productlist .portrait-item {
+    width: calc((100% / var(--sitemod_perrow)) - 3px) !important;
 }
