@@ -1,8 +1,8 @@
 .thxgiving-bundle {
+  width:775px;
   font-family: Verdana,Geneva,sans-serif;
   color:#333;
   font-size:16px;
-  padding-left: 10px;
 }
 
 .thxgiving-title {
@@ -24,13 +24,13 @@
 }
 
 .thxgiving-bundle-title {
-  width: calc( 100% - 220px );
+  width:550px;
   padding-right:25px;
   overflow:hidden;
   word-wrap:break-word;
+
   font-size:26px;
   font-weight: 700;
-  box-sizing: border-box;
 }
 
 .thxgiving-bundle-price {
@@ -61,7 +61,7 @@
 }
 
 .thxgiving-includes {
-  width: calc( 100% - 265px );
+  width:500px;
   font-size:16px;
   padding:0 12px;
   display:inline-block;
@@ -93,7 +93,7 @@
 .thxgiving-actions {
   display:inline-block;
   vertical-align: top;
-  width: calc( 100% - 600px );
+  width:265px;
   padding-left:10px;
   box-sizing: border-box;
 }
@@ -219,7 +219,6 @@
     font-size:16px;
     color:#333;
     padding:17px 12px 12px 12px;
-    box-sizing: border-box;
 }
 
 .thxgiving-addtocart[data-addtocart-functionality="disabled"] [data-component="ATCButton"]{
@@ -241,6 +240,21 @@
   margin: 0;
 }
 
+.thxgiving-recommendations li.portrait-item {
+  width: 136px;
+  max-width: 136px;
+  padding: 0 9px 0 9px;
+  margin: 0;
+  border-right: 1px solid #ddd;
+  display: table-cell;
+}
+
+.thxgiving-recommendations li.portrait-item.lastInLine {
+  padding-right: 0;
+  margin-right: 0;
+  border: none;
+}
+
 .thxgiving-recommendations .recommendation-title {
   font-weight:700;
   margin-top:50px;
@@ -254,11 +268,6 @@
 
 .thxgiving-recommendations .recommendation-editorial p{
   margin:0;
-}
-.thxgiving-recommendations ul.products.transactional {
-	padding: 0;
-	display: table;
-  width:100%;
 }
 
 .bundle-meal-details-menu [fd-ajaxcontent].active-item{

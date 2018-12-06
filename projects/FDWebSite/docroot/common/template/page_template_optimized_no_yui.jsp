@@ -43,8 +43,8 @@
 		<% /* Google Analytics Pixel */ %>
 		
 		
-		<jwr:script src="/fdlibs.js" useRandomParam="false" />
-		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
+		<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+		<jwr:script src="/fdproto.js" useRandomParam="false" />
 		<%-- jwr:script src="/fdlibsyui.js"  useRandomParam="false" / --%>
 		
 		<script type="text/javascript">

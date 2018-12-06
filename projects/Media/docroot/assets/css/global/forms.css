@@ -261,7 +261,7 @@ input[type="radio"]:disabled + .fake-radio:before {
 
 .fake-checkbox {
   position: relative;
-  padding-left: 20px;
+  padding-left: 27px;
 }
 
 .fake-checkbox:before {

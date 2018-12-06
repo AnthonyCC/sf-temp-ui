@@ -70,7 +70,7 @@ var FreshDirect = FreshDirect || {};
     if(this.el.attr('data-custom-select-light-class')) {
       $('.selectButton '+this.el.attr('data-custom-select-light-class')+' ').addClass('overlay-open');
       setTimeout(function() {
-        var firstElement = $('.browse-popup-content ul li').filter(function() {
+        let firstElement = $('.browse-popup-content ul li').filter(function() {
           return $(this).css('display') != 'none';
         })[0];
         $(firstElement).find('button').focus();

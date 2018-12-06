@@ -23,7 +23,7 @@
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-	String pageTemplate = "/common/template/dnav.jsp";
+	String pageTemplate = "/common/template/dnav_pwdstrng.jsp";
 	if (mobWeb) {
 		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
 	}
@@ -34,30 +34,12 @@
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="FreshDirect - Your Account - User Name, Password, & Contact Info" pageId="signin_info"></fd:SEOMetaTag>
 	</tmpl:put>
-	<tmpl:put name='customhead' direct='true'>
-    	<jwr:style src="/your_account.css" media="all"/>
-	</tmpl:put>
-	<tmpl:put name='extraJs' direct='true'>
-		<jwr:script src="/assets/javascript/jquery.hint.js" useRandomParam="false" />
-		<jwr:script src="/assets/javascript/jquery.pwstrength.js" useRandomParam="false" />
-		<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
-		<script type="text/javascript">
-			jQuery(function($jq) {
-				var pwd = $jq('#password1');
-				if (pwd && pwd.pwstrength) {
-					pwd.pwstrength();
-				}
-			});
-	  	</script>
-		<fd:javascript src="/assets/javascript/phone_number.js"/>
-		<fd:javascript src="/assets/javascript/webpurify.jQuery.js" />
-	</tmpl:put>
-	<tmpl:put name='extraCss' direct='true'>
-		<%--  Added for Password Strength Display --%>
-	    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
-		<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
+  <tmpl:put name='customhead' direct='true'>
+    <jwr:style src="/your_account.css" media="all"/>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
+<fd:javascript src="/assets/javascript/phone_number.js"/>
+<fd:javascript src="/assets/javascript/webpurify.jQuery.js" />
 
 	<script type="text/javascript">
 		$jq(document).ready(function() {
@@ -82,7 +64,24 @@
 		</script>
 		
 		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
-					<script language="javascript">	
+					<script language="javascript">
+						function curvyCornersHelper(elemId, settingsObj) {
+							if (document.getElementById(elemId)) {
+								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+							}
+						}
+						
+						var ccSettings = {
+							tl: { radius: 6 },
+							tr: { radius: 6 },
+							bl: { radius: 6 },
+							br: { radius: 6 },
+							topColour: "#FFFFFF",
+							bottomColour: "#FFFFFF",
+							antiAlias: true,
+							autoPad: true
+						};
+	
 						/* display an overlay containing a remote page */
 						function doRemoteOverlay(olURL) {
 							var olURL = olURL || '';
@@ -105,6 +104,8 @@
                                        $('MB_window').style.height = 'auto';
                                        $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
                                        $('MB_content').style.padding = '0px';
+
+                                       curvyCornersHelper('MB_frame', ccSettings);
 		                        },
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });

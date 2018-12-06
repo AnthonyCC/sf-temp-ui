@@ -11,7 +11,7 @@
 <html lang="en-US" xml:lang="en-US">
 <head>
 	<title>Your receipt from FreshDirect-Your order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
-	<link rel="stylesheet" href="https://www.freshdirect.com/assets/css/emails.css"/>
+	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
 </head>
 <body bgcolor="#FFFFFF">
 <table cellpadding="0" cellspacing="0" width="100%">

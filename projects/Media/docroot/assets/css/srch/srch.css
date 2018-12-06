@@ -18,6 +18,10 @@
   margin:0;
 }
 
+.srch section.main .content {
+  float: right;
+  width: 775px;
+}
 
 .srch section.tabs nav.tabs {
   float:left;
@@ -169,8 +173,6 @@
 .srch .ddpp-item .portrait-item{
   max-width:202px;
   width:202px;
-  margin: 21px 6px 14px 5px;
-  border-color: transparent;
 }
 
 .srch .ddpp-ribbon{

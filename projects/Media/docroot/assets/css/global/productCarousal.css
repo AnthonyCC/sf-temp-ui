@@ -12,7 +12,7 @@
 
 .content-module.product-carousel [data-component="carousel"] ul[data-component="carousel-list"] li {
   box-sizing: border-box;
-  width: calc( (100% / var(--sitemod_perrow)) - 11px );
+  width: 25%;
 }
 .content-module.product-carousel [data-component="carousel"] [data-component="carousel-mask"] {
   margin-bottom: 20px;

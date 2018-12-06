@@ -180,11 +180,10 @@ public class BrowseDataPagerHelper {
 			
 			int itemFailedToPopulated = populateProducts(entityList, fetchResults, nav, user, fetchResults.get(CURRENT_PAGE_LAST_ITEM_INDEX) - fetchResults.get(CURRENT_PAGE_FIRST_ITEM_INDEX));
 			fetchResults.put(ITEM_COUNT, fetchResults.get(ITEM_COUNT) - itemFailedToPopulated);
+			itemNumberToBeDropped -= itemFailedToPopulated;
 			
 			//we reached the end of current page so we need the last item index 
 			fetchResults.put(LAST_ITEM_INDEX, fetchResults.get(LAST_ITEM_INDEX) - Math.max(0, itemNumberToBeDropped));
-			
-			itemNumberToBeDropped -= itemFailedToPopulated;
 			
 			//accumulating logical item index by '(int)rounding' to the next PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD multiple
 			if (entityListSize > 0) {

@@ -1,3 +1,4 @@
+/* init jquery with $jq (for use in bundles) */
 var $jq;
 var jqInit = false;
 function initJQuery() {
@@ -8,7 +9,6 @@ function initJQuery() {
 		setTimeout("initJQuery()", 100);
 	} else {
 		$jq = jQuery.noConflict();
-		jqInit = void 0;
 	}
 }
 initJQuery();

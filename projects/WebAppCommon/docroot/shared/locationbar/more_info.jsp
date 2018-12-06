@@ -41,7 +41,7 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 			</div>
 		</form>
 		<div id="footer"><div id="footer_text">Already have an account with FreshDirect?</div><a href="/login/login.jsp" target="_top" id="login"></a><a href="#" target="_top" id="continue"><img src="/media_stat/images/locationbar/more_info_continue.png"></a></div>
-		<jwr:script src="/fdlibs.js" useRandomParam="false" />
+		<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
 		<jwr:script src="/commonjavascript.js" useRandomParam="false" />
 		<jwr:script src="/assets/javascript/more_info.js" useRandomParam="false" />
 	</body>

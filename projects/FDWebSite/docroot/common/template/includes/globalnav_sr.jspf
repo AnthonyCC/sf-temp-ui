@@ -323,7 +323,6 @@ if(user != null) {
 
 
 	<div class="container global<%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
-		<!-- nav: ${globalnav.media} -->
 	    <nav class="gnav" data-component="globalnav">
 	        <c:if test="${not empty globalnav.media}">
 	            <fd:IncludeMedia name="${globalnav.media}"></fd:IncludeMedia>

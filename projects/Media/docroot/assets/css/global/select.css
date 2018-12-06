@@ -189,9 +189,9 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
 }
 #FDCustomSelect[data-custom-select-light-class] .customselect li:hover
   {
+  background: #eee;
   text-decoration: none;
   text-decoration-color: transparent;
-  background: #edf5ee;
 }
 #FDCustomSelect[data-custom-select-light-class] li button {
   padding: 0;
@@ -309,7 +309,7 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
     outline: #fff;
   }
   #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus span {
-    border: 2px solid #4fa157;
+    border: none;
   }
   #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus .checkbox-helper span {
     border: 2px solid #4fa157;

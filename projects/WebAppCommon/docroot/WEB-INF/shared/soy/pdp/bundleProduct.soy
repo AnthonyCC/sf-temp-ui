@@ -133,7 +133,6 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 
 /**
 * @param? optionalProducts
-* @param? abFeatures
 * @param? mobWeb
 */
 {template .bundleProductRecommendation autoescape="false"}
@@ -145,7 +144,6 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 	    <div class="{($mobWeb) ? ' pdp-optProducts-prods' : ''}">
 		    {call common.productList}
 		      {param productList:$rec.optionalProducts /}
-		      {param abFeatures:$abFeatures /}
 		      {param mobWeb:$mobWeb /}
 		    {/call}
 	    </div>

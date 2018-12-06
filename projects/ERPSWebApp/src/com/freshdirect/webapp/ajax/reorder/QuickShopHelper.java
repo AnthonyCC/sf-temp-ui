@@ -204,15 +204,11 @@ public class QuickShopHelper {
 
 		ProductDetailPopulator.populateBasicProductData(item, user, productModel);
 		//APPDEV-4178 : "Your Fave" Bursts should not display in Reorder"
-		
-		//this is needed before pricing
-		ProductDetailPopulator.populateSimpleProductData(item, productModel, skuModel, false);
-		// Populate pricing data - needs to be done before bursts
-		ProductDetailPopulator.populatePricing(item, latestFdProduct, latestFdProductInfo, priceCalculator, user);
-		// Populate product level data - this call populates bursts
+
 		//ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true, true);
 		ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, false, true);
 
+		ProductDetailPopulator.populatePricing(item, latestFdProduct, latestFdProductInfo, priceCalculator, user);
 
 		populateOrderLineData(item, productSelection);
 
@@ -261,15 +257,8 @@ public class QuickShopHelper {
 			PriceCalculator priceCalculator = productModel.getPriceCalculator();
 
 			ProductDetailPopulator.populateBasicProductData(item, user, productModel);
-			
-			//this is needed before pricing
-			ProductDetailPopulator.populateSimpleProductData(item, productModel, skuModel, false);
-			
-			// Populate pricing data - needs to be done before bursts
-			ProductDetailPopulator.populatePricing(item, fdProduct, productInfo, priceCalculator, user);
-						
 			ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst, true);
-			
+			ProductDetailPopulator.populatePricing(item, fdProduct, productInfo, priceCalculator, user);
 
 			try {
 				ProductDetailPopulator.populateSkuData(item, user, productModel, skuModel, fdProduct);
