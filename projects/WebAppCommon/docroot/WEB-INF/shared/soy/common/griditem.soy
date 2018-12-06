@@ -185,7 +185,7 @@
 	{let $badge: ($freeSamplePromoProduct and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel'))))?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
 	{let $isUnavailable: ( not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel')))) ) ? true : false /}
-	<li class="portrait-item {$isUnavailable ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	<li class="portrait-item {$isUnavailable ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{call common.getUUID}{param uuid:$uuid /}{param productId:$productId /}{/call}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
 	data-in-stock="{$available}"
