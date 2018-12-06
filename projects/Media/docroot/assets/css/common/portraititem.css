@@ -227,7 +227,9 @@
   clear: both;
   display: none;
 }
-
+.portrait-item-replacement {
+  clear: both;
+}
 .portrait-item-replacement > span {
   text-align: center;
 }
