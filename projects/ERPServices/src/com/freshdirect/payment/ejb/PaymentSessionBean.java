@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.naming.Context;
@@ -48,10 +49,12 @@ import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.model.NotificationModel;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
-import com.freshdirect.fdstore.ecoupon.FDCouponManager;
+import com.freshdirect.fdstore.ecoupon.FDCouponManagerHome;
+import com.freshdirect.fdstore.ecoupon.FDCouponManagerSB;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -77,6 +80,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 
 	private transient ErpSaleHome erpSaleHome = null;
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
+	private static FDCouponManagerHome FdCouponHome =null;
 		
 	/**
 	 * capture the authorization for a given sale id
@@ -92,6 +96,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		if(this.erpSaleHome == null){
 			this.lookupErpSaleHome();
 		}
+		
 		
 		ErpPaymentMethodI paymentMethod = null;
 		int captureCount = 0;
@@ -277,7 +282,21 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			}
 			
 			//Committing coupons, if any.
-			FDCouponManager.postConfirmPendingCouponTransactions(saleId);
+//			FDCouponManager.postConfirmPendingCouponTransactions(saleId);
+
+			FDCouponManagerSB sb;
+			try {
+				sb = getFDCouponManagerHome().create();
+				sb.postConfirmPendingCouponTransactions(saleId);
+			} catch (RemoteException e1) {
+				FdCouponHome=null;
+				throw e1;
+			} catch (CreateException e1) {
+				FdCouponHome=null;
+				throw e1;
+			}
+			
+			
 		}catch(ErpTransactionException e){
 			LOGGER.warn(e);
 			try{
@@ -365,12 +384,35 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		}
 	}
 	
+	
 	private PostSettlementNotificationHome getPostSettlementNotificationHome() {
 		try {
 			return (PostSettlementNotificationHome) LOCATOR.getRemoteHome("freshdirect.payment.Notification");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
+	}
+	private FDCouponManagerHome getFDCouponManagerHome() {
+		if(FdCouponHome!=null)
+			return FdCouponHome;
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			FdCouponHome= (FDCouponManagerHome) ctx.lookup(FDStoreProperties.getFDCouponManagerHome());
+			return FdCouponHome;
+		} catch (NamingException ne) {
+			throw new EJBException(ne);
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException ne) {
+				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
+			}
+		}
+	
+	
 	}
 	
 	private ErpCaptureModel doFDCapture(ErpAuthorizationModel auth, double amount, double tax) {
@@ -480,11 +522,11 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			eb.markAsEnroute();
 			utx.commit();
 			LOGGER.info("unconfirm: change the Status from CPG to ENR - done. saleId="+saleId);
-			ErpCouponTransactionModel couponTransModel =FDCouponManager.getConfirmPendingCouponTransaction(saleId);
+			ErpCouponTransactionModel couponTransModel =getConfirmPendingCouponTransaction(saleId);
 			if(null !=couponTransModel){
 				couponTransModel.setTranTime(new Date());
 				couponTransModel.setTranStatus(EnumCouponTransactionStatus.CANCEL);
-				FDCouponManager.updateCouponTransaction(couponTransModel);
+				updateCouponTransaction(couponTransModel);
 			}
 		}catch(Exception e){
 			LOGGER.warn(e);
@@ -496,6 +538,38 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			throw new EJBException(e);
 		}
 	}
+
+	private void updateCouponTransaction(
+			ErpCouponTransactionModel couponTransModel)  throws FDResourceException,RemoteException,CreateException{
+		FDCouponManagerSB sb;
+		try {
+			sb = getFDCouponManagerHome().create();
+			sb.updateCouponTransaction(couponTransModel);
+			
+		} catch (RemoteException e1) {
+			FdCouponHome=null;
+			throw e1;
+		} catch (CreateException e1) {
+			FdCouponHome=null;
+			throw e1;
+		}
+		}
+
+	private ErpCouponTransactionModel getConfirmPendingCouponTransaction(
+			String saleId) throws FDResourceException,RemoteException,CreateException {
+		FDCouponManagerSB sb;
+			try {
+				sb = getFDCouponManagerHome().create();
+				ErpCouponTransactionModel erpCoupMod = sb.getConfirmPendingCouponTransaction(saleId);
+				return erpCoupMod;
+			} catch (RemoteException e1) {
+				FdCouponHome=null;
+				throw e1;
+			} catch (CreateException e1) {
+				FdCouponHome=null;
+				throw e1;
+			}
+			}
 
 	public void voidCaptures(String saleId) throws ErpTransactionException {
 		List captures = null;
@@ -835,7 +909,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			}
 			
 			//Committing coupons, if any.
-			FDCouponManager.postConfirmPendingCouponTransactions(saleId);
+			postConfirmPendingCouponTransactions(saleId);
 			
 			//TODO: Decide whether to introduce new status 'SETTLEMENT_SAP_PENDING' or not.
 			//Check the sale status, if its settled, settle the sale in SAP.
@@ -862,6 +936,21 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			
 	}
 	
+	private void postConfirmPendingCouponTransactions(String saleId)throws FDResourceException,RemoteException,CreateException {
+		FDCouponManagerSB sb;
+		try {
+			sb = getFDCouponManagerHome().create();
+			sb.postConfirmPendingCouponTransactions(saleId);
+			
+		} catch (RemoteException e1) {
+			FdCouponHome=null;
+			throw e1;
+		} catch (CreateException e1) {
+			FdCouponHome=null;
+			throw e1;
+		}
+		}
+
 	private GatewayType getGatewayType(ErpPaymentMethodI pm) {
 		String profileId = pm.getProfileID();
 		if (StringUtil.isEmpty(profileId) && !EnumCardType.PAYPAL.equals(pm.getCardType())) {
