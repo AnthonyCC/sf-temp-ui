@@ -17,6 +17,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
@@ -346,7 +347,7 @@ public class FDCouponGateway {
 
 	private static void logCouponActivity(FDCouponActivityLogModel couponActvityLog) {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponActivityLogSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled( FDEcommProperties.FDCouponActivityLogSB)){
 				IECommerceService commerceService =   FDECommerceService.getInstance();
 				commerceService.logCouponActivity(couponActvityLog);
 			}else{
