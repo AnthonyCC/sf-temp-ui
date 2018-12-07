@@ -22,6 +22,6 @@
  * @param? type message type
  */
 {template .atcInCartContent autoescape="false"}
-	<div class="incart-info {$type ?: ''}" data-amount="{call common.printNum}{param number:$amount /}{/call}">{if $amount >0}{call common.printNum}{param number:$amount /}{/call}{/if}</div>
+	<div class="incart-info {$type ?: ''}" data-amount="{call common.printNum}{param number:$amount /}{/call}">{if $amount >0}{call common.printNum}{param number:$amount /}{/call} in cart{/if}</div>
 	<div class="incart-message {$type ?: ''}">{$message ? $message : ''}</div>
 {/template}

@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
-import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
@@ -96,7 +95,7 @@ public class RegistrationController extends BaseController implements SystemMess
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet
 	 * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -113,10 +112,10 @@ public class RegistrationController extends BaseController implements SystemMess
 		}else if (ACTION_REGISTER_FROM_FDX.equals(action)) {
 			RegisterMessageEx requestMessage = parseRequestObject(request,
 					response, RegisterMessageEx.class);
-			model = registerEX(model, requestMessage, request, response,user);			
+			model = registerEX(model, requestMessage, request, response,user);
 		}else if (ACTION_REGISTER_FROM_SOCIAL.equals(action)) {
 			ExternalAccountRegisterRequest requestMessage = parseRequestObject(request,response, ExternalAccountRegisterRequest.class);
-			model = registerSocial(model, requestMessage, request, response,user);			
+			model = registerSocial(model, requestMessage, request, response,user);
 		}  else if (ACTION_ADD_DELIVERY_ADDRESS.equals(action)) {
         	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
             model = addDeliveryAddress(model, user, requestMessage, request);
@@ -130,7 +129,7 @@ public class RegistrationController extends BaseController implements SystemMess
         	} else {
         		model = addDeliveryAddress(model, user, requestMessage, request);
         	}
-          
+
         } else if (ACTION_SET_MOBILE_PREFERENCES.equals(action)) {
         	MobilePreferenceRequest requestMessage = parseRequestObject(request, response, MobilePreferenceRequest.class);
             model = setMobilePreferences(model, user, requestMessage, request );
@@ -139,7 +138,7 @@ public class RegistrationController extends BaseController implements SystemMess
         	model = setEmailPreference(model, user, requestMessage, request);
         } else if (ACTION_GET_EMAIL_PREFERENCES.equals(action)){
         	model = getEmailPreference(model, user, request);
-        }	
+        }
 		else if (ACTION_GET_MOBILE_PREFERENCES.equals(action)) {
 	            model = getMobilePreferences(model, user, request );
 		}
@@ -151,7 +150,7 @@ public class RegistrationController extends BaseController implements SystemMess
 			MobilePreferenceRequest requestMessage = parseRequestObject(request, response, MobilePreferenceRequest.class);
 			 model = setMobilePreferencesFirstOrderFD(model, user, requestMessage, request );
 		}
-		
+
 		else if(ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDER.equals(action)){
 			OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
 			 model = setMobilePreferencesFirstOrder(model, user, requestMessage, request );
@@ -203,12 +202,12 @@ public class RegistrationController extends BaseController implements SystemMess
 		setResponseMessage(model, responseMessage, user);
 		return model;
 	}
-	
-	
+
+
 	private ModelAndView registerEX(ModelAndView model,
 			RegisterMessageEx requestMessage, HttpServletRequest request,
 			HttpServletResponse response, SessionUser user) throws FDException,
-			NoSessionException, JsonException {	
+			NoSessionException, JsonException {
 		Message responseMessage = null;
 		FDIdentity userIdentity = null;
 		// validate captcha if it's enabled
@@ -218,27 +217,27 @@ public class RegistrationController extends BaseController implements SystemMess
 		if (!isCaptchaSuccess) {
 				responseMessage = new Message();
 		        responseMessage.setStatus(Message.STATUS_FAILED);
-		       
+
 	            responseMessage.addErrorMessage("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
-		        
+
 	            setResponseMessage(model, responseMessage, user);
 				return model;
-			
+
 		}
 		try{
 				userIdentity = FDCustomerManager.login(requestMessage.getEmail());
 			} catch(Exception ex){
-				
-			}		
+
+			}
 		if(userIdentity == null){
-		
+
 		if(user == null)
 			 throw new NoSessionException("No session");
-		
+
 	    final boolean isWebRequest = isExtraResponseRequested(request);
 
 	    UserUtil.touchUser(request, user.getFDSessionUser());
-		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());		
+		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
 		RegisterMessage registerMessage = new RegisterMessage();
 		registerMessage.setFirstName(requestMessage.getFirstName());
 		registerMessage.setLastName(requestMessage.getLastName());
@@ -252,9 +251,9 @@ public class RegistrationController extends BaseController implements SystemMess
 		registerMessage.setRafclickid(requestMessage.getRafclickid());
 		registerMessage.setRafpromocode(requestMessage.getRafpromocode());
 		registerMessage.setCaptchaToken(requestMessage.getCaptchaToken());
-		
-		ResultBundle resultBundle = tagWrapper.register(registerMessage);	
-		
+
+		ResultBundle resultBundle = tagWrapper.register(registerMessage);
+
 		if (resultBundle != null) {
 			if (resultBundle.getActionResult() != null
 					&& resultBundle.getActionResult().getErrors() != null
@@ -267,35 +266,35 @@ public class RegistrationController extends BaseController implements SystemMess
 						request.getSession(), SessionName.SIGNUP_ATTEMPT));
 				return model;
 			}
-		}	
+		}
 
-		
-		FDSessionUser fduser = user.getFDSessionUser();        
+
+		FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
-		
+
 		MobilePreferenceRequest mobilePreferenceRequest = new MobilePreferenceRequest();
-		mobilePreferenceRequest.setMobile_number(requestMessage.getMobile_number());		
-    	if(requestMessage.isRecieveSMSAlerts()){	    	
+		mobilePreferenceRequest.setMobile_number(requestMessage.getMobile_number());
+    	if(requestMessage.isRecieveSMSAlerts()){
 			mobilePreferenceRequest.setOrder_notices("Y");
 			mobilePreferenceRequest.setOrder_exceptions("Y");
-			mobilePreferenceRequest.setOffers("Y");			
+			mobilePreferenceRequest.setOffers("Y");
     	}else{;
 	    	mobilePreferenceRequest.setOrder_notices("N");
 			mobilePreferenceRequest.setOrder_exceptions("N");
-			mobilePreferenceRequest.setOffers("N");		
+			mobilePreferenceRequest.setOffers("N");
     	}
     	FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(identity);
 		ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest,  FDCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
-					
+
 		ActionResult result = resultBundle.getActionResult();
 		ActionResult result1 = resultBundle1.getActionResult();
 		//	ActionResult result2 = resultBundleAdd.getActionResult();
-		
+
 		propogateSetSessionValues(request.getSession(), resultBundle);
 		propogateSetSessionValues(request.getSession(), resultBundle1);
-		//	propogateSetSessionValues(request.getSession(), resultBundleAdd);			
+		//	propogateSetSessionValues(request.getSession(), resultBundleAdd);
 		//	if (result.isSuccess() && result1.isSuccess() && result2.isSuccess()) {
-		
+
         final boolean isSuccess = result.isSuccess() && result1.isSuccess();
 
         if (isSuccess) {
@@ -341,17 +340,17 @@ public class RegistrationController extends BaseController implements SystemMess
 	            responseMessage = getErrorMessage(result, request);
 	        }
 	        responseMessage.addWarningMessages(result.getWarnings());
-		    
+
 		}
 
-		
-		
+
+
 		} else{
 			List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(requestMessage.getEmail());
 			if(providers!=null && providers.size()!=0){
-				responseMessage = Message.createFailureMessage(MessageFormat.format(MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE, providers));	
+				responseMessage = Message.createFailureMessage(MessageFormat.format(MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE, providers));
 			} else {
-			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());	
+			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());
 			}
 		}
 		if (responseMessage.getErrors() == null || responseMessage.getErrors().size() == 0) {
@@ -364,9 +363,9 @@ public class RegistrationController extends BaseController implements SystemMess
 		setResponseMessage(model, responseMessage, user);
 		return model;
 	}
-	
+
 	private ModelAndView registerSocial(ModelAndView model, ExternalAccountRegisterRequest requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser user) throws FDException, JsonException, NoSessionException{
-		
+
 		Message responseMessage = null;
 		FDIdentity userIdentity = null;
 		String userToken = "", providerName="";
@@ -375,21 +374,21 @@ public class RegistrationController extends BaseController implements SystemMess
 		userToken = requestMessage.getUserToken();
 		providerName = requestMessage.getProvider();
 		String source = requestMessage.getSource();
-		
+
 		request.setAttribute("userToken", userToken);
 		request.setAttribute("provider", providerName);
-		
+
 		if(userToken == null || userToken.length() == 0 || providerName == null || providerName.length()==0)
 		{
 			LOGGER.debug("user token is missing");
 			throw new FDException("Invalid user token or provider");
-		
+
 		}
 		else
 		{
 			if(StringUtils.isEmpty(source) || EnumExternalLoginSource.SOCIAL.value().equals(source)){
 				SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
-				
+
 				if(socialProvider != null && userToken != null)
 					socialUser = socialProvider.getSocialUserProfileByUserToken(userToken,providerName);
 				if(socialUser == null)
@@ -401,24 +400,24 @@ public class RegistrationController extends BaseController implements SystemMess
 				{
 					if(!requestMessage.getEmail().equalsIgnoreCase(socialUser.get("email")))
 						throw new FDException("User Email did not match with Social Email.");
-					
+
 					session.setAttribute(SessionName.SOCIAL_USER,socialUser);
 				}
 			}
 		}
-			
+
 		try{
 			//userIdentity = FDCustomerManager.login(requestMessage.getEmail(),requestMessage.getPassword());
 			userIdentity = FDCustomerManager.login(requestMessage.getEmail());
 		} catch(Exception ex){
-			
-		}		
+
+		}
 		if(userIdentity == null){
-		
+
 		if(user == null || user.getFDSessionUser() == null)
 			throw new FDException("FD Session User could not be found");
-			
-		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());		
+
+		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
 		RegisterMessage registerMessage = new RegisterMessage();
 		registerMessage.setFirstName(requestMessage.getFirstName());
 		registerMessage.setLastName(requestMessage.getLastName());
@@ -435,12 +434,12 @@ public class RegistrationController extends BaseController implements SystemMess
 		registerMessage.setZipCode(requestMessage.getZipCode());
 		registerMessage.setWorkPhone(requestMessage.getWorkPhone());
 		registerMessage.setDlvhomephone(requestMessage.getDlvhomephone());
-		
-		ExternalAccountLinkRequest linkRequest = new ExternalAccountLinkRequest(requestMessage.getEmail(), requestMessage.getPassword(), 
+
+		ExternalAccountLinkRequest linkRequest = new ExternalAccountLinkRequest(requestMessage.getEmail(), requestMessage.getPassword(),
 				requestMessage.getUserToken(), requestMessage.getUserToken(), requestMessage.getProvider(), requestMessage.getSource());
-		
-		ResultBundle resultBundle = tagWrapper.registerSocial(requestMessage);	
-		
+
+		ResultBundle resultBundle = tagWrapper.registerSocial(requestMessage);
+
 		if (resultBundle != null) {
 			if (resultBundle.getActionResult() != null
 					&& resultBundle.getActionResult().getErrors() != null
@@ -450,38 +449,38 @@ public class RegistrationController extends BaseController implements SystemMess
 				setResponseMessage(model, responseMessage, user);
 				return model;
 			}
-		}	
-		
-		FDSessionUser fduser = user.getFDSessionUser();        
+		}
+
+		FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
-		
-				
+
+
 		MobilePreferenceRequest mobilePreferenceRequest = new MobilePreferenceRequest();
-		mobilePreferenceRequest.setMobile_number(requestMessage.getMobile_number());		
-    	if(requestMessage.isRecieveSMSAlerts()){	    	
+		mobilePreferenceRequest.setMobile_number(requestMessage.getMobile_number());
+    	if(requestMessage.isRecieveSMSAlerts()){
 			mobilePreferenceRequest.setOrder_notices("Y");
 			mobilePreferenceRequest.setOrder_exceptions("Y");
-			mobilePreferenceRequest.setOffers("Y");			
+			mobilePreferenceRequest.setOffers("Y");
     	}else{;
 	    	mobilePreferenceRequest.setOrder_notices("N");
 			mobilePreferenceRequest.setOrder_exceptions("N");
-			mobilePreferenceRequest.setOffers("N");		
+			mobilePreferenceRequest.setOffers("N");
     	}
-				
+
     	propogateSetSessionValues(request.getSession(), resultBundle);
     //	ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest, cm);
     	FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(identity);
-    	
+
     	ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest,  FDCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
-		
+
 		ActionResult result = resultBundle.getActionResult();
 		ActionResult result1 = resultBundle1.getActionResult();
-		
+
 		propogateSetSessionValues(request.getSession(), resultBundle);
 		propogateSetSessionValues(request.getSession(), resultBundle1);
 		//Message responseMessage = null;
 		if (result.isSuccess() && result1.isSuccess()) {
-			
+
 			ExternalAccountManager.linkUserTokenToUserId(
 					identity.getFDCustomerPK(),
 					linkRequest.getEmail(),
@@ -492,8 +491,8 @@ public class RegistrationController extends BaseController implements SystemMess
 					linkRequest.getEmail(),
 					linkRequest.getEmail(),
 					"N");
-		
-	
+
+
             if (request.getSession().getAttribute(SessionName.APPLICATION) == null) {
                 request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, null));
             }
@@ -503,9 +502,9 @@ public class RegistrationController extends BaseController implements SystemMess
 			// Create a new Visitor object.
 			//responseMessage = formatLoginMessage(user);
 			responseMessage = new ExternalAccountLoginResponse();
-			
+
 			responseMessage.setStatus(Message.STATUS_SUCCESS);
-			
+
 			((ExternalAccountLoginResponse) responseMessage).setLoggedInSuccess(true);
 			((ExternalAccountLoginResponse) responseMessage).setFdxdpenabled(FDStoreProperties.isDlvPassFDXEnabled());
 			((ExternalAccountLoginResponse) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
@@ -513,7 +512,7 @@ public class RegistrationController extends BaseController implements SystemMess
 				((ExternalAccountLoginResponse) responseMessage).setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
 	        }
 			responseMessage.setSuccessMessage("User registered and successfully logged in");
-			
+
 			resetMobileSessionData(request);
 
 		} else {
@@ -521,9 +520,9 @@ public class RegistrationController extends BaseController implements SystemMess
 		}
 		responseMessage.addWarningMessages(result.getWarnings());
 		} else{
-			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());			
+			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());
 		}
-		
+
 		setResponseMessage(model, responseMessage, user);
 		return model;
 
@@ -547,7 +546,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		responseMessage.setItemsInCartCount(user
 				.getItemsInCartCount());
         responseMessage.setOrderCount(user.getOrderHistory().getValidOrderCount());
-        responseMessage.setFdxOrderCount(user.getOrderHistory().getValidOrderCount(EnumEStoreId.FDX));
+        responseMessage.setFdxOrderCount(user.getOrderHistory().getSettledOrderCount(EnumEStoreId.FDX));
 		responseMessage.setOrders(java.util.Collections.<OrderHistory.Order>emptyList());
 		responseMessage.setFdUserId(user.getPrimaryKey());
 
@@ -556,7 +555,7 @@ public class RegistrationController extends BaseController implements SystemMess
 			responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
 		}*/
 		responseMessage.setBrowseEnabled(MobileApiProperties.isBrowseEnabled());
-		
+
 		responseMessage.setSelectedServiceType(user.getSelectedServiceType() != null ? user.getSelectedServiceType().toString() : "");
 		responseMessage.setCohort(user.getCohort());
 		responseMessage.setTotalOrderCount(user.getTotalOrderCount());
@@ -566,7 +565,7 @@ public class RegistrationController extends BaseController implements SystemMess
         responseMessage.setOrderminimumamt(user.getMinimumOrderAmount());
 		return responseMessage;
 	}
-	
+
     private ModelAndView addDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest requestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         // APPDEV-4315- Intermittent: Cannot Create Address -Start
@@ -580,7 +579,7 @@ public class RegistrationController extends BaseController implements SystemMess
             ActionResult result = null;
 
             // === FKMW - validate form fields before submitting them to the app layer ===
-            
+
             final boolean isWebRequest = isExtraResponseRequested(request);
             if (isWebRequest) {
                 result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
@@ -590,19 +589,19 @@ public class RegistrationController extends BaseController implements SystemMess
                     responseMessage = getErrorMessage(result, request);
                 }
             }
-            
+
             // === FKMW end ===
-            
+
             if (responseMessage == null) {
                 RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
                 ResultBundle resultBundle = tagWrapper.addDeliveryAddress(requestMessage);
                 result = resultBundle.getActionResult();
-    
+
                 propogateSetSessionValues(request.getSession(), resultBundle);
                 if (result.isSuccess()) {
-    
+
                     ErpAddressModel eam = (ErpAddressModel) resultBundle.getExtraData(RegistrationControllerTagWrapper.KEY_RETURNED_SAVED_ADDRESS);
-    
+
                     List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
                     ShipToAddress newelyAdded = null;
                     for (ErpAddressModel toCheck : addresses) {
@@ -614,7 +613,7 @@ public class RegistrationController extends BaseController implements SystemMess
                     responseMessage = new AddAddressResponse();
                     responseMessage.setSuccessMessage("Delivery Address added successfully.");
                     ((AddAddressResponse) responseMessage).setAddedAddress(newelyAdded);
-    
+
                 } else {
                     responseMessage = getErrorMessage(result, request);
                 }
@@ -640,12 +639,12 @@ public class RegistrationController extends BaseController implements SystemMess
                 responseMessage = Message.createSuccessMessage(ACTION_EDIT_DELIVERY_ADDRESS);
                 throw new FDActionNotAllowedException("This account is not enabled to change delivery address.");
             }
-            
-            
+
+
             ActionResult result = null;
 
             // === FKMW - validate form fields before submitting them to the app layer ===
-            
+
             final boolean isWebRequest = isExtraResponseRequested(request);
             if (isWebRequest) {
                 result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
@@ -655,17 +654,17 @@ public class RegistrationController extends BaseController implements SystemMess
                     responseMessage = getErrorMessage(result, request);
                 }
             }
-            
+
             // === FKMW end ===
-            
+
             if (responseMessage == null) {
                 RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
                 ResultBundle resultBundle = tagWrapper.editDeliveryAddress(requestMessage);
-    
+
                 result = resultBundle.getActionResult();
-    
+
                 propogateSetSessionValues(request.getSession(), resultBundle);
-    
+
                 if (result.isSuccess()) {
                     responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
                 } else {
@@ -683,12 +682,12 @@ public class RegistrationController extends BaseController implements SystemMess
         // APPDEV-4315- Intermittent: Cannot Create Address -End
         return model;
     }
-    
+
     private ModelAndView setMobilePreferences(ModelAndView model, SessionUser user, MobilePreferenceRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	Message responseMessage = null;   
-    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-        FDSessionUser fduser = user.getFDSessionUser();        
+    	Message responseMessage = null;
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+        FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
 		if(identity!=null){
 			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
@@ -705,19 +704,19 @@ public class RegistrationController extends BaseController implements SystemMess
 	        } else {
 	            responseMessage = getErrorMessage(result, request);
 	        }
-	        responseMessage.addWarningMessages(result.getWarnings());   
+	        responseMessage.addWarningMessages(result.getWarnings());
 		}else{
 			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
 		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView setMobilePreferencesFirstOrder(ModelAndView model, SessionUser user, OrderMobileNumberRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	Message responseMessage = null;   
-    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-        FDSessionUser fduser = user.getFDSessionUser();        
+    	Message responseMessage = null;
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+        FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
 		if(identity!=null){
 			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
@@ -729,19 +728,19 @@ public class RegistrationController extends BaseController implements SystemMess
 	        } else {
 	            responseMessage = getErrorMessage(result, request);
 	        }
-	        responseMessage.addWarningMessages(result.getWarnings());   
+	        responseMessage.addWarningMessages(result.getWarnings());
 		}else{
 			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
 		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView setMobilePreferencesFirstOrderFD(ModelAndView model, SessionUser user, MobilePreferenceRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	Message responseMessage = null; 
-    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-        FDSessionUser fduser = user.getFDSessionUser();        
+    	Message responseMessage = null;
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+        FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
 		if(identity!=null){
 			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
@@ -753,53 +752,53 @@ public class RegistrationController extends BaseController implements SystemMess
 	        } else {
 	            responseMessage = getErrorMessage(result, request);
 	        }
-	        responseMessage.addWarningMessages(result.getWarnings());   
+	        responseMessage.addWarningMessages(result.getWarnings());
 		}else{
 			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
 		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
    private ModelAndView setEmailPreference(ModelAndView model, SessionUser user, EmailPreferenceRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
 
     	Message responseMessage = null;
-    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-    	
-        FDSessionUser fduser = user.getFDSessionUser();        
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+
+        FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
 		if(identity!=null){
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-			
+
 			if("Y".equalsIgnoreCase(reqestMessage.getEmail_subscribed()) ){
 				cm.setEmailPreferenceLevel("2");
 			} else {
 				cm.setEmailPreferenceLevel("0");
 			}
-										       
+
 			ResultBundle resultBundle = tagWrapper.setEmailPreferences(reqestMessage, cm);
 			ActionResult result = resultBundle.getActionResult();
 			propogateSetSessionValues(request.getSession(), resultBundle);
-			
+
 			if(result.isSuccess()){
 				responseMessage = Message.createSuccessMessage("Successfully changed email preference");
 			} else {
 				responseMessage = getErrorMessage(result, request);
 			}
-			
+
 			responseMessage.addWarningMessages(result.getWarnings());
 		}else{
 			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
 		}
     	setResponseMessage(model, responseMessage, user);
-    	
+
     	return model;
     }
-    
+
     private ModelAndView getEmailPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-    	
-        FDSessionUser fduser = user.getFDSessionUser();        
+
+        FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
 		if(identity!=null){
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -814,19 +813,19 @@ public class RegistrationController extends BaseController implements SystemMess
 			Message responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
 			setResponseMessage(model, responseMessage, user);
 		}
-    	
+
     	return model;
     }
-    
+
     private ModelAndView getMobilePreferences(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-       
-    	FDSessionUser fduser = user.getFDSessionUser();        
+
+    	FDSessionUser fduser = user.getFDSessionUser();
 		FDIdentity identity  = fduser.getIdentity();
 		if(identity!=null){
 			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
 			FDCustomerEStoreModel customerSmsPreferenceModel =fdCustomerModel.getCustomerSmsPreferenceModel();
 			MobilePreferencesResult mobileresponseMessage = new MobilePreferencesResult();
-			
+
 			if(EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
 				{
 					  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices())? false:true);
@@ -839,22 +838,22 @@ public class RegistrationController extends BaseController implements SystemMess
 					  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getOffers())? false:true);
 					  mobileresponseMessage.setMobile_number(customerSmsPreferenceModel.getMobileNumber()!=null?customerSmsPreferenceModel.getMobileNumber().getPhone():"");
 		    	     }
-			
+
 	    	setResponseMessage(model, mobileresponseMessage, user);
 		}else{
 			Message responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
 			setResponseMessage(model, responseMessage, user);
 		}
     	return model;
-    
+
     }
-    
+
     private ModelAndView setMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-    	Message responseMessage = null; 
-    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
+    	Message responseMessage = null;
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
         FDSessionUser fduser = user.getFDSessionUser();
         ResultBundle resultBundle = tagWrapper.setMobileGoGreenPreference(fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
-       
+
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
         if (result.isSuccess()) {
@@ -862,29 +861,29 @@ public class RegistrationController extends BaseController implements SystemMess
         } else {
             responseMessage = getErrorMessage(result, request);
         }
-        responseMessage.addWarningMessages(result.getWarnings());   
-    	
+        responseMessage.addWarningMessages(result.getWarnings());
+
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView getMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
 	        FDSessionUser fduser = user!=null?user.getFDSessionUser():null;
     		String goGreen=null;
     		GoGreenPreferencesResult goGreenPreferencesResult = new GoGreenPreferencesResult();
-    		
+
     		if(fduser!=null&&fduser.getIdentity()!=null&&fduser.getUserContext()!=null&&fduser.getUserContext().getStoreContext()!=null&&fduser.getUserContext().getStoreContext().getEStoreId()!=null&&
     				EnumEStoreId.FD.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
-    			
+
     			  goGreen=GoGreenService.defaultService().loadGoGreenOption(fduser);
-    		
+
 				if ("".equalsIgnoreCase(goGreen) || goGreen == null)
 					goGreenPreferencesResult.setGo_green("N");
 				else
 					goGreenPreferencesResult.setGo_green(goGreen);
-		
+
 				setResponseMessage(model, goGreenPreferencesResult, user);
-		    			
+
 		        	return model;
         }
 }

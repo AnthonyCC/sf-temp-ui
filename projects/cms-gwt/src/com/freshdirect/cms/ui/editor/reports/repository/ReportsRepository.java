@@ -28,8 +28,8 @@ import org.springframework.util.Assert;
 
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
+import com.freshdirect.cms.ui.editor.reports.service.ContentKeyRowMapper;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 
 @Repository
@@ -221,13 +221,6 @@ public class ReportsRepository {
             + "where def_name = 'recommender' "
             + "order by parent_contentnode_id, ordinal";
 
-    private static final RowMapper<ContentKey> CONTENT_KEY_MAPPER = new RowMapper<ContentKey>() {
-        @Override
-        public ContentKey mapRow(ResultSet resultSet, int pos) throws SQLException {
-            return ContentKeyFactory.get(resultSet.getString(1));
-        }
-    };
-
     private static final class ReportMapper implements RowMapper<Map<Attribute,Object>> {
 
         private final Attribute[] attributes;
@@ -249,6 +242,9 @@ public class ReportsRepository {
         }
     };
 
+    @Autowired
+    private ContentKeyRowMapper contentKeyRowMapper;
+
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -257,13 +253,13 @@ public class ReportsRepository {
     }
 
     public List<ContentKey> fetchUnreachableStoreObjects() {
-        List<ContentKey> result = jdbcTemplate.query(QUERY_UNREACHABLE, CONTENT_KEY_MAPPER);
+        List<ContentKey> result = jdbcTemplate.query(QUERY_UNREACHABLE, contentKeyRowMapper);
 
         return result;
     }
 
     public List<ContentKey> fetchRecentlyModifiedObjects() {
-        List<ContentKey> result = jdbcTemplate.query(QUERY_RECENTLY_MODIFIED, CONTENT_KEY_MAPPER);
+        List<ContentKey> result = jdbcTemplate.query(QUERY_RECENTLY_MODIFIED, contentKeyRowMapper);
 
         return result;
     }

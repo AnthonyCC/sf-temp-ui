@@ -1,14 +1,16 @@
 .drawer__content{
   font-family:Verdana, Geneva, sans-serif;
-  width: 100%;
-  min-width: var(--sitemod_content-minwidth);
+  width:970px;
   box-sizing: border-box;
+  
   display: flex;
   flex-direction: row;
   flex-wrap:wrap;
+  
   display: -ms-flexbox;
   -ms-flex-direction:row;
   -ms-flex-wrap:wrap;
+  
   display: -webkit-flex;
   -webkit-flex-direction: row;
   -webkit-flex-wrap:wrap;
@@ -69,7 +71,7 @@
 .drawer__itemright{
   display: inline-block;
   margin-bottom:30px;
-  max-width: calc(100% - 95px);
+  max-width: 210px;
   word-wrap: break-word;
 }
 

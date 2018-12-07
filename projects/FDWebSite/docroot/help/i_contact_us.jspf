@@ -158,7 +158,7 @@
 				<label for="home_phone" class="bold inline">Home Phone #:</label>
 				<input type="text" name="home_phone" id="home_phone" size="21" value="<%=homePhone%>" maxlength="15" />
 				<label for="home_phone_ext">Ext.<span class="offscreen">extension for home phone number</span></label>
-				<input type="text" name="home_phone_ext" id="home_phone_ex" size="4" value="<%=homePhoneExt%>" maxlength="6" />
+				<input type="text" name="home_phone_ext" id="home_phone_ext" size="4" value="<%=homePhoneExt%>" maxlength="6" />
 			</div>
 			<div class="form-group">
 				<label for="work_phone" class="bold inline">Work Phone #:</label>

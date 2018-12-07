@@ -14,7 +14,7 @@ import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 
 /**
- * Mobile API wrapper for com.freshdirect.fdstore.customer.FDOrderHistory 
+ * Mobile API wrapper for com.freshdirect.fdstore.customer.FDOrderHistory
  * which implements OrderHistoryI
  */
 public class OrderHistory {
@@ -33,6 +33,10 @@ public class OrderHistory {
 
     public int getValidOrderCount(EnumEStoreId storeId) {
         return orderHistory.getValidOrderCount(storeId);
+    }
+
+    public int getSettledOrderCount(EnumEStoreId storeId) {
+        return orderHistory.getSettledOrderCount(storeId);
     }
 
     public List<OrderInfo> getRegularOrderInfos() {
@@ -76,7 +80,7 @@ public class OrderHistory {
     };
 
     /**
-     * Used mostly in homepage where pending and refused orders should be notified to users. 
+     * Used mostly in homepage where pending and refused orders should be notified to users.
      */
     public OrderInfo getClosestPendingOrderInfo(Date now) {
 

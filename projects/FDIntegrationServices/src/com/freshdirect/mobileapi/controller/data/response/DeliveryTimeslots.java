@@ -86,11 +86,11 @@ public class DeliveryTimeslots extends CheckoutResponse {
 	            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable(), user)));
 	        }
         }
-//        if(user.getUserContext()!=null&&user.getUserContext().getStoreContext()!=null&&
-//        		user.getUserContext().getStoreContext().getEStoreId()!=null&&
-//        		user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)){
-//        	timeSlots = combineUnavailableTS(timeSlots);
-//        }
+        if(user.getUserContext()!=null&&user.getUserContext().getStoreContext()!=null&&
+        		user.getUserContext().getStoreContext().getEStoreId()!=null&&
+        		user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)){
+        	timeSlots = combineUnavailableTS(timeSlots);
+        }
         List<String> restrictionMessages = result!=null?result.getMessages():null;
         if(restrictionMessages != null) {
 	        for (String restrictionMessage : restrictionMessages) {

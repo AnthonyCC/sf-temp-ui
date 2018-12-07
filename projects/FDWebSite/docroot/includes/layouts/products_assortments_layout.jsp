@@ -45,6 +45,17 @@
 	<fd:CheckLoginStatus   />
 	<% }
 
+	if (FDStoreProperties.isCclAjaxDebugClient()) {
+		// debug JS libs
+		%>
+		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
+		<%
+		} else {
+			// production JS libs
+		%>
+		<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
+		<%
+		}
 %>
 <display:InitLayout/>
 <%
@@ -320,6 +331,12 @@
 			};
 
 			$jq(document).ready(function(){
+				$jq('.ddpp_feat_prod').corner('round 4px');
+				$jq('#ddpp_feat_prod_cont').corner('round 4px');
+				$jq('#sortSep').corner('round 4px');
+				$jq('#ddpp_BNDgro_viewAll').corner('round 4px');
+				$jq('#ddpp_BNDfro_viewAll').corner('round 4px');
+				$jq('#ddpp_BNDdai_viewAll').corner('round 4px');
 
 				$jq('.ddpp_feat_prod').hover(function() {
 					if (!$jq(this).find('.CTAButtonFP').data('usedCTA')) {

@@ -30,6 +30,7 @@ final int W_SEARCH_NAV_RIGHT = 820;
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 %>
+<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">

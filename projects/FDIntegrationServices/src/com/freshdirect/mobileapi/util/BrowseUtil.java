@@ -1338,6 +1338,7 @@ public class BrowseUtil {
             return null;
 
         List<com.freshdirect.mobileapi.catalog.model.Product> returnableProductList = new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
+        try{
         com.freshdirect.mobileapi.catalog.model.Category cat = new com.freshdirect.mobileapi.catalog.model.Category(category.getContentName(), category.getFullName());
 
         List<ProductModel> catProducts = new ArrayList<ProductModel>();
@@ -1375,7 +1376,7 @@ public class BrowseUtil {
 	
 	            }
         	}catch(Exception e){
-        		LOG.error("Error in BrowseUtil getting data for product - " + p.getContentKey().getId() + " : " + e.getMessage());
+        		LOG.error("Error in BrowseUtil getting data for product - " + p!=null&&p.getContentKey()!=null?p.getContentKey().getId() + " : " + e.getMessage():"product is null");
         	}
         }
 
@@ -1390,7 +1391,9 @@ public class BrowseUtil {
 
         if (cat.getCategories().size() > 0 || cat.getProducts().size() > 0)
             catalog.addCategory(cat);
-
+        }catch(Exception e){
+    		LOG.error("Error in BrowseUtil getting products for category - " + category.getContentKey().getId() + " : " + e.getMessage());
+    	}
         return returnableProductList;
     }
 

@@ -989,11 +989,25 @@ CCLPanel.prototype.handleJSONExceptionNoLogin = function(result, exception) {
 
 // Generate curvy corners for the panel
 CCLPanel.prototype.makeCurvy = function(colorBottom) {
-	try {
-		curvyCorners(); //prints warning if polyfill is avail
-	} catch(e) {
-		//ignore
-	}
+
+    if (!this.fullCorn) {
+        var full_settings = {
+            tl: { radius: 6 },
+            tr: { radius: 6 },
+            bl: { radius: 6 },
+            br: { radius: 6 },
+            topColour: "#996699",
+            antiAlias: true,
+            autoPad: false
+        };
+ 
+        if (colorBottom){
+        	full_settings.bottomColour= "#996699";
+        }
+        
+        this.fullCorn = new curvyCorners(full_settings, this.innerElement);
+        this.fullCorn.applyCornersToAll();
+    }
 };
 
 // Reapply the curvy corners if already applied (workaround for Safari)

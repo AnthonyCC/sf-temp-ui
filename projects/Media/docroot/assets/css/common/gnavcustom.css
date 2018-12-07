@@ -50,14 +50,9 @@ GLOBAL NAV DROPDOWNS
 
 
 .top-nav-items  {
+	width: 1000px;
 	position: absolute;
 	z-index: 35;
-}
-
-.top-nav-items,
-.bottom-nav-items {
-	margin: 0 auto;
-	width: 970px;
 }
 
 

@@ -32,7 +32,8 @@ public class TagFilter extends AbstractProductItemFilter {
 	public boolean apply(FilteringProductItem prod) throws FDResourceException {
 		
 		for (TagModel includeValue : includeValues){
-			if (prod.getProductModel().getAllTags().contains(includeValue)){
+			if (prod!=null && prod.getProductModel()!=null && prod.getProductModel().getAllTags()!=null 
+					&& !prod.getProductModel().getAllTags().isEmpty() && prod.getProductModel().getAllTags().contains(includeValue)){
 				return invertChecker(true);
 			}
 		}

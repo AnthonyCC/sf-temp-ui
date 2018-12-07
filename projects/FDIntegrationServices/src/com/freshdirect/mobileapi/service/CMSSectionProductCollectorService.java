@@ -9,11 +9,11 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.CMSPotatoSectionModel;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
+import com.freshdirect.storeapi.content.CMSPageRequest;
 import com.freshdirect.storeapi.content.CMSSectionModel;
 import com.freshdirect.storeapi.content.CMSWebPageModel;
 import com.freshdirect.storeapi.content.CategoryModel;
@@ -44,31 +44,31 @@ public class CMSSectionProductCollectorService {
         // hiding default constructor
     }
 
-    public void addProductsToSection(SessionUser user, CMSWebPageModel page) {
+    public void addProductsToSection(SessionUser user, CMSWebPageModel page, CMSPageRequest cmsPageRequest) {
         if (page != null) {
             List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
             List<String> errorProductKeys = new ArrayList<String>();
             for (final CMSSectionModel section : page.getSections()) {
                 LOGGER.debug("Loading section data: " + section.getName());
                 final CMSPotatoSectionModel potatoSection = CMSPotatoSectionModel.withSection(section);
-                potatoSection.setProducts(collectProductPotatos(user, section.getProductList(), errorProductKeys));
-                potatoSection.getProducts().addAll(collectProductPotatosFromCategories(user, potatoSection));
+                potatoSection.setProducts(collectProductPotatos(user, section.getProductList(), errorProductKeys, cmsPageRequest.isPreview()));
+                potatoSection.getProducts().addAll(collectProductPotatosFromCategories(user, potatoSection, cmsPageRequest.isPreview()));
                 appendProductListFieldOnSection(potatoSection);
-                if (areMustHaveSectionProductsAvailable(section.getMustHaveProdList(), section.getProductList(), errorProductKeys, user)) {
+                if (areMustHaveSectionProductsAvailable(section.getMustHaveProdList(), section.getProductList(), errorProductKeys, user, cmsPageRequest.isPreview())) {
                     sectionWithProducts.add(potatoSection);
                 }
                 errorProductKeys.clear();
             }
             page.setSections(sectionWithProducts);
-            applySectionLimits(page);
+            applySectionLimits(page, cmsPageRequest.isPreview());
         }
     }
 
-    private List<ProductPotatoData> collectProductPotatos(SessionUser user, Set<ProductModel> products) {
+    private List<ProductPotatoData> collectProductPotatos(SessionUser user, Set<ProductModel> products, boolean enableProductIncomplete) {
         final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
         if (products != null) {
             for (final ProductModel product : products) {
-                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(product, user.getFDSessionUser(), false, FDStoreProperties.getPreviewMode());
+                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(product, user.getFDSessionUser(), false, enableProductIncomplete);
                 if (data != null && data.getProductData() != null && data.getProductData().isAvailable()) {
                     potatoes.add(data);
                 }
@@ -77,14 +77,14 @@ public class CMSSectionProductCollectorService {
         return potatoes;
     }
 
-    private List<ProductPotatoData> collectProductPotatos(SessionUser user, List<String> productKeys, List<String> errorProductKeys) {
+    private List<ProductPotatoData> collectProductPotatos(SessionUser user, List<String> productKeys, List<String> errorProductKeys, boolean enableProductIncomplete) {
         final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
         List<String> productKeysToRemove = new ArrayList<String>();
         if (productKeys != null) {
             for (final String productKey : productKeys) {
                 // extract CMS id
                 final String prodId = productKey.substring(FDContentTypes.PRODUCT.name().length() + 1);
-                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
+                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false, enableProductIncomplete);
                 if (data != null && data.getProductData() != null && data.getProductData().isAvailable()) {
                     potatoes.add(data);
                 } else {
@@ -98,7 +98,8 @@ public class CMSSectionProductCollectorService {
         return potatoes;
     }
 
-    private boolean areMustHaveSectionProductsAvailable(List<String> mustHaveProductkeys, List<String> productKeys, List<String> errorProductKeys, SessionUser user) {
+    private boolean areMustHaveSectionProductsAvailable(List<String> mustHaveProductkeys, List<String> productKeys, List<String> errorProductKeys, SessionUser user,
+            boolean enableProductIncomplete) {
         boolean allMustHaveProductsAreAvailable = true;
         if (mustHaveProductkeys != null && productKeys != null) {
             for (String mustHaveProductId : mustHaveProductkeys) {
@@ -108,7 +109,7 @@ public class CMSSectionProductCollectorService {
                 }
 
                 final String prodId = mustHaveProductId.substring(FDContentTypes.PRODUCT.name().length() + 1);
-                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
+                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false, enableProductIncomplete);
                 if (data == null || !data.getProductData().isAvailable()) {
                     allMustHaveProductsAreAvailable = false;
                     break;
@@ -118,7 +119,7 @@ public class CMSSectionProductCollectorService {
         return allMustHaveProductsAreAvailable;
     }
 
-    private List<ProductPotatoData> collectProductPotatosFromCategories(SessionUser user, CMSSectionModel sectionModel) {
+    private List<ProductPotatoData> collectProductPotatosFromCategories(SessionUser user, CMSSectionModel sectionModel, boolean enableProductIncomplete) {
         List<ProductPotatoData> productsFromCategories = new ArrayList<ProductPotatoData>();
         List<CategoryModel> categories = new ArrayList<CategoryModel>();
         if (sectionModel.getCategoryList() != null && !sectionModel.getCategoryList().isEmpty()) {
@@ -134,7 +135,7 @@ public class CMSSectionProductCollectorService {
             for (CategoryModel category : categories) {
                 BrowseDataBuilderFactory.getInstance().collectAllProducts(category, NavDepth.getMaxLevel(), user.getFDSessionUser(), products);
             }
-            productsFromCategories = collectProductPotatos(user, products);
+            productsFromCategories = collectProductPotatos(user, products, enableProductIncomplete);
         }
         return productsFromCategories;
     }
@@ -148,11 +149,11 @@ public class CMSSectionProductCollectorService {
         potatoSectionModel.setProductList(productKeys);
     }
 
-    private void applySectionLimits(CMSWebPageModel webPageModel) {
+    private void applySectionLimits(CMSWebPageModel webPageModel, boolean isPreviewRequest) {
         List<CMSSectionModel> sections = webPageModel.getSections();
         List<CMSSectionModel> limitAppliedSections = new ArrayList<CMSSectionModel>();
         for (CMSSectionModel section : sections) {
-            if (shouldDisplaySection(section)) {
+            if (shouldDisplaySection(section) || isPreviewRequest) {
                 if (shouldLimitProductNumber(section) && section.getProductList().size() > section.getMaximumProductLimit()) {
                     section.setProductList(section.getProductList().subList(0, section.getMaximumProductLimit()));
                     if (section instanceof CMSPotatoSectionModel) {

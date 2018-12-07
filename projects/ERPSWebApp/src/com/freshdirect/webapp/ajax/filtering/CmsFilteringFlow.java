@@ -605,7 +605,7 @@ public class CmsFilteringFlow {
         }
 
         if (nav.isMenuBoxAndFilterRequested()) {
-            setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+            NavigationUtil.setupAllAndActiveFiltersForSearch(nav, navigationModel);
         }
 
         BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel,
@@ -618,14 +618,14 @@ public class CmsFilteringFlow {
             navigationModel.getRecipeResults().clear();
             processProducts(nav.getPageType(), navigationModel, searchResults);
             searchPageType = SearchPageType.PRODUCT;
-            setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+            NavigationUtil.setupAllAndActiveFiltersForSearch(nav, navigationModel);
             browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
         } else if (SearchPageType.PRODUCT.name.equalsIgnoreCase(nav.getActiveTab()) && 0 == nav.getProductHits() && !searchResults.getRecipes().isEmpty()) {
             nav.setActiveTab(SearchPageType.RECIPE.name);
             navigationModel.setProductListing(false);
             processRecipes(navigationModel, searchResults);
             searchPageType = SearchPageType.RECIPE;
-            setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+            NavigationUtil.setupAllAndActiveFiltersForSearch(nav, navigationModel);
             browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
         }
 
@@ -804,7 +804,7 @@ public class CmsFilteringFlow {
         // refresh context sensitive filters
         if (navigationModel.getActiveFilters().size() > 0 && searchPageType == SearchPageType.PRODUCT && browseDataContext.getSectionContexts().size() > 0) {
             refreshResultDependantFilters(nav.getPageType(), navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
-            setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+            NavigationUtil.setupAllAndActiveFiltersForSearch(nav, navigationModel);
         }
 
         browseDataContext.setNavigationModel(navigationModel);
@@ -941,11 +941,6 @@ public class CmsFilteringFlow {
         MenuItemSorter.getDefaultMenuItemSorter().sortItemsByName(menuBoxData);
     }
 
-    private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDUserI user, NavigationModel navigationModel) {
-        navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav));
-        navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
-    }
-
     private void processRecipes(NavigationModel navigationModel, SearchResults recipeResults) {
         navigationModel.setRecipeListing(true);
         for (FilteringSortingItem<Recipe> recipe : recipeResults.getRecipes()) {
@@ -1078,6 +1073,12 @@ public class CmsFilteringFlow {
         // filtering and grouping
         BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
+
+        // -- CREATE MENU --
+        // create menuBuilder based on page type
+        MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null);
+        // create menu
+        navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
 
         if (!nav.isPdp() &&
         		!nav.populateSectionsOnly() &&

@@ -44,7 +44,6 @@ import com.freshdirect.storeapi.content.ProductFilterGroupType;
 import com.freshdirect.storeapi.content.ProductFilterModel;
 import com.freshdirect.storeapi.content.ProductFilterMultiGroupModel;
 import com.freshdirect.storeapi.content.ProductItemFilterI;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.Recipe;
 import com.freshdirect.storeapi.content.RecipeSearchPage;
 import com.freshdirect.storeapi.content.SuperDepartmentModel;
@@ -218,27 +217,6 @@ public class NavigationUtil {
 			model.setPreferenceCategories(prefCategories);
 			model.setCategorySections(department.getCategorySections());
 
-            if (!navigator.isPdp()) {
-                // -- CREATE FILTERS --
-
-                if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, user)) {
-                    for (CategoryModel categoryModel : regularCategories) {
-                        for (ProductModel productModel : categoryModel.getProducts()) {
-                            FilterCollector.defaultFilterCollector().collectBrandFilters(model, productModel);
-                        }
-                    }
-
-                    for (CategoryModel categoryModel : prefCategories) {
-                        for (ProductModel productModel : categoryModel.getProducts()) {
-                            FilterCollector.defaultFilterCollector().collectBrandFilters(model, productModel);
-                        }
-                    }
-                }
-
-                model.setAllFilters(createBrowseFilterGroups(model, navigator));
-                model.setActiveFilters(selectActiveFilters(model.getAllFilters(), navigator));
-            }
-
 			if(((ProductContainer)node).isShowPopularCategories()){
 
 				List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
@@ -254,13 +232,7 @@ public class NavigationUtil {
 			}
 
 		} else if(model.isSuperDepartment()) {
-
 			model.setDepartmentsOfSuperDepartment(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
-
-			//no filters in case of super department
-			model.setAllFilters(new ArrayList<ProductFilterGroup>());
-			model.setActiveFilters(new HashSet<ProductItemFilterI>());
-
 		}
 
 		// set brand filter location
@@ -268,18 +240,11 @@ public class NavigationUtil {
 			model.setBrandFilterLocation(((CategoryModel)node).getBrandFilterLocation(EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGROY.toString()));
 		}
 
-		// -- CREATE MENU --
-		// create menuBuilder based on page type
-		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth(), model.isSuperDepartment(), null); //TODO
-
 		// are we showing products?
 		model.setProductListing( !model.isSuperDepartment() && model.getNavDepth()!=NavDepth.DEPARTMENT && (
 				model.getNavDepth()!=NavDepth.CATEGORY ||
 				((CategoryModel)model.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories().size()==0 ||
 				navigator.isAll()));
-
-		// create menu
-		model.setLeftNav(menuBuilder.buildMenu(model.getAllFilters(), model, navigator));
 
 		return model;
 	}
@@ -311,6 +276,16 @@ public class NavigationUtil {
 			}
 		}
         return selectionMap;
+    }
+
+    public static void setupAllAndActiveFiltersForBrowse(CmsFilteringNavigator nav, NavigationModel navigationModel) {
+        navigationModel.setAllFilters(createBrowseFilterGroups(navigationModel, nav));
+        navigationModel.setActiveFilters(selectActiveFilters(navigationModel.getAllFilters(), nav));
+    }
+
+    public static void setupAllAndActiveFiltersForSearch(CmsFilteringNavigator nav, NavigationModel navigationModel) {
+        navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav));
+        navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
     }
 
     public static List<ProductFilterGroup> createBrowseFilterGroups(NavigationModel navigationModel, CmsFilteringNavigator navigator) {

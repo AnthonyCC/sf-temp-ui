@@ -15,6 +15,7 @@
 <%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
 <%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
 <%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%-- <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %> --%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -309,6 +310,18 @@
       ]
     }
     </script>
-
+	<script>
+		window.FreshDirect = window.FreshDirect || {};
+		var fd = window.FreshDirect;
+		var dataLayer = window.dataLayer || [];
+		
+		fd.gtm = fd.gtm || {};
+		fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
+		fd.gtm.auth = '<%= FDStoreProperties.getGoogleTagManagerAuthToken() %>';
+		fd.gtm.preview = '<%= FDStoreProperties.getGoogleTagManagerPreviewId() %>';
+		fd.gtm.gakey = '<%= FDStoreProperties.getGoogleAnalyticsKey() %>';
+		fd.gtm.gadomain = '<%= FDStoreProperties.getGoogleAnlayticsDomain() %>';
+	</script>
+	<jwr:script src="/fdgtm.js" useRandomParam="false" />
 	</tmpl:put>
 </tmpl:insert>

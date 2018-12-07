@@ -193,6 +193,7 @@ public class CmsPermissionManager {
         OTHER_ROOT_KEYS.add(RootContentKey.RECIPES.contentKey); // FD only
         OTHER_ROOT_KEYS.add(RootContentKey.STARTER_LISTS.contentKey);
         OTHER_ROOT_KEYS.add(RootContentKey.DONATION_ORGANIZATIONS.contentKey);
+        OTHER_ROOT_KEYS.add(RootContentKey.SMART_YMALS.contentKey);
     }
 
     private static final Set<ContentType> OTHER_CONTENT_TYPES = new HashSet<ContentType>();

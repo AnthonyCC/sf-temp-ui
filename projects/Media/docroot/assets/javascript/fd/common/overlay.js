@@ -159,22 +159,36 @@ var FreshDirect = FreshDirect || {};
         $('input, button, textarea, select, a, [tabindex]').each(function (i, tiel) {
           var $tiel = $(tiel);
 
-          $tiel.attr('tabindex', '-1');
+          if ($tiel.closest($el).size() === 0) {
+            $tiel.attr('tabindex', '-1');
+          }
         });
 
-        $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').not('.overlay [data-view-all-popup]').each(function (i, tiel) {
-          var $tiel = $(tiel);
+        $el.find('[tabindex]').each(function (i, tiel) {
+          var $tiel = $(tiel),
+              ti = $tiel.prop('tabindex') || 0;
 
-          lastEl = i+1;
+          if (lastEl <= ti) {
+            lastEl = ti + 1;
+          }
+        });
 
-          $tiel.attr('tabindex', lastEl);
+        $el.find('input, button, textarea, select, a, [tabindex]').not('[disabled]').not('[type="hidden"]').not('[nofocus]').not('.overlay [data-view-all-popup]').each(function (i, tiel) {
+          var $tiel = $(tiel),
+              ti = $tiel.prop('tabindex') || 0;
+
+          if (!ti) {
+            $tiel.attr('tabindex', lastEl);
+          }
+
+          lastEl += 1;
         });
 
         if ($el.find('.overlay-close-icon').length > 0 ) {
-          var close = $el.find('.overlay-close-icon').each(function (i, close) {
-            var $close = $(close);
+          $el.find('.overlay-close-icon').each(function (i, closeEl) {
+            var $close = $(closeEl);
 
-            lastEl = lastEl+i+1;
+            lastEl += 1;
 
             $close.attr('tabindex', lastEl);
           });
@@ -183,13 +197,13 @@ var FreshDirect = FreshDirect || {};
         var $lowestTabElem = null;
 
         $el.find('[tabindex]').not('[tabindex="-1"]').each(function(i,e) {
-            if ($lowestTabElem === null || parseInt($(e).attr('tabindex')) < parseInt($($lowestTabElem).attr('tabindex'))) {
-                $lowestTabElem = $(e);
-            }
+          if ($lowestTabElem === null || parseInt($(e).attr('tabindex'), 10) < parseInt($($lowestTabElem).attr('tabindex'), 10)) {
+            $lowestTabElem = $(e);
+          }
         });
 
         if ($lowestTabElem !== null) {
-            $lowestTabElem.focus();
+          $lowestTabElem.focus();
         }
       }
     },

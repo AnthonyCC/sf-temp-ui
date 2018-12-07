@@ -5,7 +5,7 @@
 <head>
   <%-- <title>FreshDirect</title> --%>
     <fd:SEOMetaTag title="FreshDirect"/>
-  <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
   <%
     request.getSession(false).removeAttribute(SessionName.LOGIN_SUCCESS);
     request.getSession(false).removeAttribute(SessionName.SOCIAL_LOGIN_SUCCESS);

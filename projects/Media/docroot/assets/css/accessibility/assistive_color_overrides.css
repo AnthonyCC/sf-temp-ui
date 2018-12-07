@@ -812,9 +812,9 @@
 .assistive-mode .pdp-cc .cc-total strong,.assistive-mode .pdp-cc .cc-total{
 	color:#333 !important;
 }
-.assistive-mode .storefront-catering-header h2{
-	background-color:#637387 !important;
-}
+/* .assistive-mode .storefront-catering-header h2{ */
+/* 	background-color:#637387 !important; */
+/* } */
 .assistive-mode .storefront-catering-header h2 .storefront-catering-step {
     background-color: #4B5E68 !important;
 }
@@ -917,6 +917,9 @@
 	color: #408245 !important;
     border: 1px solid #4fa157 !important;
 }
+.assistive-mode .atc-info .incart-info{
+	color: #333 !important;
+}
  .assistive-mode .footer__findout a{
    color: #5d5f36 !important;
  }
@@ -995,24 +998,6 @@ color: #B93D3F;
 .assistive-mode #addpaymentmethod_masterpass a{
 	color:#333;
 	text-decoration:underline;
-}
-
-/* site mod */
-.assistive-mode .portrait-item-price-cartinfo-cont .atc-info .incart-info {
-	background-color: #AF3D08 !important;
-}
-.assistive-mode table[data-component="footer-cont"] .bottom-nav-cont {
-	background-color: #096D19;
-}
-.assistive-mode .cssBurst {
-	background-color: #096D19;
-}
-.assistive-mode .cssBurst:after {
-	border-left: 17px solid #096D19;
-	border-right: 0px solid #096D19;
-}
-.assistive-mode[data-gc-page] .globalNavigation {
-	background-color: #096D19;
 }
 .assistive-mode .fdCoupon_msg{
 	color:#333;

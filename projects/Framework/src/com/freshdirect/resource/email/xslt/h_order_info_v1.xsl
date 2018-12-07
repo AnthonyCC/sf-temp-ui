@@ -179,7 +179,7 @@
   				<xsl:choose>
 					<xsl:when test="discount != ''">
 					<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-						<td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;">(<xsl:value-of select="format-number(basePrice, '$###,##0.00', 'USD')"/>)</td>                
+                        <td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;">(<xsl:value-of select="unitPrice"/>)</td>                
                         <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></td>
                         <td width="10" style="font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
                         <td colspan="3" width="70" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = 'true'">&nbsp;D</xsl:if></td>                    
@@ -192,7 +192,7 @@
 		   	
 					<xsl:otherwise>
 					<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
-						<td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;">(<xsl:value-of select="format-number(basePrice, '$###,##0.00', 'USD')"/>)</td>                
+                        <td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;">(<xsl:value-of select="unitPrice"/>)</td>                
                         <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></td>
                         <td width="10" style="font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
                         <td colspan="3" width="70" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true' or number(groupQuantity) &gt; 0">&nbsp;S</xsl:if><xsl:if test="depositValue = 'true'">&nbsp;D</xsl:if></td>                    

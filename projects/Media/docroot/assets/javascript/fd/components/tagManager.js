@@ -52,7 +52,7 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.productTransform = productTransform;
-  
+
   fd.gtm.timeslots = function(action, pageName) {
       var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
 
@@ -95,6 +95,26 @@ var dataLayer = window.dataLayer || [];
     return name;
   };
   fd.gtm.deBrand = deBrand;
+
+  var priceToFloat = function (price) {
+    return parseFloat((''+price).replace(/\$/, ''));
+  };
+  fd.gtm.priceToFloat = priceToFloat;
+
+  var realPrice = function (product) {
+    var qty = parseInt(product.quantity, 10) || 1;
+    var price = priceToFloat(product.price);
+    var cfgPrice = priceToFloat(product.configuredPrice);
+    var liPrice = priceToFloat(product.lineItemTotal);
+    var rPrice = cfgPrice && cfgPrice !== price ? cfgPrice / qty : price;
+
+    if (liPrice) {
+      rPrice = liPrice / qty;
+    }
+
+    return '$'+rPrice.toFixed(2);
+  };
+  fd.gtm.realPrice = realPrice;
 
   var getDeliveryType = function (dtype) {
     dtype = dtype.toUpperCase();
@@ -205,7 +225,7 @@ var dataLayer = window.dataLayer || [];
     },
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
-          qty = parseInt(productData.quantity, 10) || 0,
+          qty = parseInt(productData.quantity, 10) || 1,
           product = {
             // id: productData.id, // #AN-162
             id: productData.sku,
@@ -348,18 +368,19 @@ var dataLayer = window.dataLayer || [];
               },
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
+                var qty = parseInt(productData.quantity, 10) || 1; // quantity should be an integer
                 return {
                   // id: productData.id, // #AN-162
                   id: productData.sku,
                   name: deBrand(productData.name, productData.brand),
-                  price: productData.price,
+                  price: fd.gtm.realPrice(productData),
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  quantity: qty,
                   configuredPrice: productData.configuredPrice,
                   lineItemTotal: productData.lineItemTotal
                 };
@@ -392,18 +413,19 @@ var dataLayer = window.dataLayer || [];
             checkout: {
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
+                var qty = parseInt(productData.quantity, 10) || 1; // quantity should be an integer
                 return {
                   // id: productData.id, // #AN-162
                   id: productData.sku,
                   name: deBrand(productData.name, productData.brand),
-                  price: productData.price,
+                  price: fd.gtm.realPrice(productData),
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  quantity: qty, // quantity should be an integer
                   configuredPrice: productData.configuredPrice
                 };
               })
@@ -555,6 +577,60 @@ var dataLayer = window.dataLayer || [];
       });
 
       return {event: 'user-signup-failure'};
+    },
+    selfCreditRequestACredit: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step 1',
+        eventLabel: 'refund request'  
+      });
+      return null;
+    },
+    selfCreditContinueToReviewCredit: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step 2',
+        eventLabel: 'continue'  
+      });
+      return null;
+    },
+    selfCreditCommentClick: function () {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'comment',
+        eventLabel: 'leave comment'  
+      });
+      return null;
+    },
+    selfCreditReviewRequest: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step 3',
+        eventLabel: 'review request'  
+      });
+      return null;
+    },
+    selfCreditEditClick: function () {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'back',
+        eventLabel: 'edit request' 
+      });
+      return null;
+    },
+    selfCreditSubmitRequest: function() {
+      dataLayer.push({
+        event: 'help-click',
+        eventCategory: 'credit request',
+        eventAction: 'step 4',
+        eventLabel: 'submit request' 
+      });
+      return null;
     }
   };
   fd.gtm.PROCESSORS.cartLineChange = fd.gtm.PROCESSORS.ATCData;
@@ -612,7 +688,7 @@ var dataLayer = window.dataLayer || [];
 
     productData = fd.modules.common.productSerialize(productE)[0] || {};
 
-    productData.brand = productE.find('.portrait-item-header-brandname').text();
+    productData.brand = productE.find('.portrait-item-header-name').first().find('b').text();
     productData.name = productData.brand ? productE.find('.product-name-no-brand').first().text() : productE.find('.portrait-item-header-name').first().text() || productE.find('.mealkit-products-list-item-head').first().text();
     productData.price = productE.attr('data-price');
     productData.in_stock = productE.attr('data-in-stock');
@@ -813,7 +889,15 @@ var dataLayer = window.dataLayer || [];
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
       location = 'pdp_' + productId;
     } else if ($('ul.breadcrumbs li').length) {
-      location = 'cat_' + safeNameSpacePlus($('ul.breadcrumbs li').toArray().map(function (li) { return li.textContent.toLowerCase(); }).join('_'));
+      location = 'cat_' + safeNameSpacePlus($('ul.breadcrumbs li').toArray().map(function (li) {
+        var bc = li.textContent.toLowerCase();
+        // AN-214 replace 'whats+good' with category id from the url
+        if (bc === "what's good") {
+          var wgd_id = fd.utils.getParameterByName('id');
+          bc = wgd_id ? wgd_id.replace('_', ' ') : bc;
+        }
+        return bc;
+      }).join('_'));
     } else if (searchParams) {
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
     } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {

@@ -448,6 +448,10 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, ContentTypes.Category.featuredRecommenderRandomizeProducts), "Randomize Products (only if Source Category is set)");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, ContentTypes.Category.featuredRecommenderSiteFeature), "Site Feature (ignored if Source Category is set)");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, ContentTypes.Category.featuredRecommenderSourceCategory), "Source Category");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByVirtualCategory), "Consumed by Virtual Category");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByDepartmentCarousel), "Consumed by Department Carousel");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByCategoryCarousel), "Consumed by Category Carousel");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByStoreCarousel), "Consumed by Store Carousel");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.FULL_NAME), "Full Name");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.GLANCE_NAME), "Glance Name");

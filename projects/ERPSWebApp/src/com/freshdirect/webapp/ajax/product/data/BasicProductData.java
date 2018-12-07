@@ -2,15 +2,23 @@ package com.freshdirect.webapp.ajax.product.data;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.UUID;
 
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 
+
 public abstract class BasicProductData implements Serializable {
+	
+			private synchronized static String generateUniqueId() {
+			            UUID uuid = UUID.randomUUID();
+			               String randomUUIDString = uuid.toString();
+			return randomUUIDString;
+			}
 
     private static final long serialVersionUID = -3918949741384207730L;
 
     // ============================ Product data ============================
-
+    protected String UUId=generateUniqueId();
     /**
      * Product content-ID
      */
@@ -271,6 +279,9 @@ public abstract class BasicProductData implements Serializable {
 
     public String getProductId() {
         return productId;
+    }
+    public String getUUId() {
+        return UUId;
     }
 
     public void setProductId(String productId) {

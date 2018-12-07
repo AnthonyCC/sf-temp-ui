@@ -80,6 +80,7 @@ public class SelfCreditController extends BaseController {
         Message response = new Message();
         try {
             selfCreditOrderDetailsData = SelfCreditOrderDetailsService.defaultService().collectOrderDetails(user.getFDSessionUser(), orderId);
+            response = new SelfCreditOrderDetailsData(selfCreditOrderDetailsData);
         } catch (FDResourceException e) {
             LOGGER.error("Failed to load details of order: " + orderId, e);
             response.setFailureMessage("Failed to load details of order: " + orderId);
@@ -99,7 +100,7 @@ public class SelfCreditController extends BaseController {
             LOGGER.error("Failed to load details of order: " + orderId, e);
             response.setFailureMessage("Failed to load details of order: " + orderId);
         }
-        response = new SelfCreditOrderDetailsData(selfCreditOrderDetailsData);
+       
         return response;
     }
 }

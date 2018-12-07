@@ -62,6 +62,9 @@ var FreshDirect = window.FreshDirect || {};
             url: API_URL,
             method: "GET"
           });
+          fd.gtm.updateDataLayer({
+            selfCreditRequestACredit: null
+          });
         };
       }
     },
@@ -107,6 +110,9 @@ var FreshDirect = window.FreshDirect || {};
     },
     submit: {
       value: function() {
+        fd.gtm.updateDataLayer({
+          selfCreditContinueToReviewCredit: null
+        });
         var orderId = $("#self-credit-order-select").val();
         if (!orderId) return;
         var order = $.grep(this.orders, function(order) {

@@ -53,9 +53,9 @@ public class ProductSavingTag extends BodyTagSupportEx {
 			buf.append("Any ");
 			buf.append(grpQty);
 
-			/*if(grpPricing != null) {
+			if(grpPricing != null) {
 				buf.append(" " +grpPricing.getShortDesc());				
-			}*/
+			}
 			buf.append(" for ");
 			buf.append(grpTotalPrice);
 		}

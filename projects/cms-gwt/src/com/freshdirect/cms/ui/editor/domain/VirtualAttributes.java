@@ -102,4 +102,13 @@ public final class VirtualAttributes {
             .readOnly()
             .build();
     }
+
+    public static final class Category {
+
+        public static final Relationship consumedByVirtualCategory = (Relationship) linkManyOf(ContentType.Category).toName("consumedByVirtualCategory").readOnly().build();
+        public static final Relationship consumedByDepartmentCarousel = (Relationship) linkManyOf(ContentType.Department).toName("consumedByDepartmentCarousel").readOnly()
+                .build();
+        public static final Relationship consumedByCategoryCarousel = (Relationship) linkManyOf(ContentType.Category).toName("consumedByCategoryCarousel").readOnly().build();
+        public static final Relationship consumedByStoreCarousel = (Relationship) linkManyOf(ContentType.Store).toName("consumedByStoreCarousel").readOnly().build();
+    }
 }
