@@ -16,6 +16,7 @@ public class Configuration implements Serializable {
 	private boolean masterPassEnabled;
 	private boolean payPalEnabled;
 	private boolean DCSEnabled;
+	private boolean liveChatEnabled;
 	
 
 	public boolean isAkamaiImageConvertorEnabled() {
@@ -89,6 +90,12 @@ public class Configuration implements Serializable {
 	}
 	public void setDCSEnabled(boolean DCSEnabled) {
 		this.DCSEnabled = DCSEnabled;
+	}
+	public boolean isLiveChatEnabled() {
+		return liveChatEnabled;
+	}
+	public void setLiveChatEnabled(boolean liveChatEnabled) {
+		this.liveChatEnabled = liveChatEnabled;
 	}
 	
 	

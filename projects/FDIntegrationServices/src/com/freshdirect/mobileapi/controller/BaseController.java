@@ -666,7 +666,8 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setPayPalEnabled(MobileApiProperties.isPayPalEnabled());
 		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch,
 																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
-
+		configuration.setLiveChatEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat,
+																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 		return configuration;
 	}
 
