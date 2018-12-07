@@ -99,8 +99,8 @@
   transform: rotate(45deg);
 }
 
-.content-module span,
-.content-module .module-header span {
+.content-module span.content-tittle-text-banner,
+.content-module .module-header span.module-text-banner{
   font-family: 'Brandon Text';
   font-weight: 500;
   font-size: 16px;
