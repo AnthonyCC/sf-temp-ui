@@ -1,0 +1,56 @@
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
+<%@ page import='javax.servlet.http.Cookie' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="fd-features" prefix="features" %>
+<%-- this file will be included in the <head> tag --%>
+<%
+	String reqUri_i_javascript_optimized = request.getRequestURI().toLowerCase();
+%>
+<%@ include file="/common/template/includes/extol_tags.jspf" %>
+
+  <%-- Feature version switcher --%>
+  <features:potato />
+	<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
+	<% if (reqUri_i_javascript_optimized.indexOf("/index.jsp") == 0) { %>
+		<jwr:script src="/fdlibs_opt2.js" useRandomParam="false" />
+	<% } else { %>
+		<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+	<% } %>
+  <% if (request.getAttribute("noyui") == null || !request.getAttribute("noyui").equals(true)) { %>
+    <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
+    <jwr:script src="/fdccl.js"  useRandomParam="false" />
+  <% } %>
+
+	<script type="text/javascript">
+
+		var FreshDirect = FreshDirect || {};
+		FreshDirect.USQLegalWarning = FreshDirect.USQLegalWarning || {};
+		FreshDirect.USQLegalWarning.sessionStore = '<%=session.getId()%>';
+
+		var $jq;
+		var jqInit = false;
+		function initJQuery() {
+			if (typeof(jQuery) == 'undefined') {
+				if (!jqInit) {
+					jqInit = true;
+				}
+				setTimeout("initJQuery()", 100);
+			} else {
+				$jq = jQuery.noConflict();
+			}
+		}
+		initJQuery();
+	</script>
+
+	<jwr:script src="/fdmisc.js" useRandomParam="false" />
+
+	<%@ include file="/common/template/includes/i_javascripts_common_bottom.jspf" %>
