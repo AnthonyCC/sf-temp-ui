@@ -8,7 +8,7 @@
 <%--     <title><tmpl:get name='title'/></title> --%>
     <tmpl:get name="seoMetaTag"/>
     <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf"%>
+    <%@ include file="/common/template/includes/i_javascripts_browse.jspf"%>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>

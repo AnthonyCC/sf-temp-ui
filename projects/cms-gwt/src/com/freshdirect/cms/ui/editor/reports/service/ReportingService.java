@@ -24,7 +24,6 @@ import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
-import com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.ui.editor.ReportAttributes;
 import com.freshdirect.cms.ui.editor.reports.data.HiddenProduct;
@@ -34,20 +33,12 @@ import com.freshdirect.cms.ui.editor.reports.repository.ReportsRepository;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 @Service
 public class ReportingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportingService.class);
-
-    private static final ContentKey ARCHIVE_DEPARTMENT_KEY = ContentKeyFactory.get(ContentType.Department, "Archive");
-
-    private static final Attribute CATEGORY_KEY_SELECTOR = AttributeBuilderSupport.stringAttribute("KEY|CATEGORY").build();
-    private static final Attribute NODE_KEY_SELECTOR = AttributeBuilderSupport.stringAttribute("KEY|NODE").build();
 
     // direct subfolders of CMSReports
     public static final ContentKey CMS_REPORTS_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1009");
@@ -101,94 +92,6 @@ public class ReportingService {
         }
     };
 
-    private abstract class PredicateForCmsReports<T> implements Predicate<T> {
-
-        @Override
-        public abstract boolean apply(T reportEntry);
-
-        protected boolean isOrphan(ContentKey contentKey) {
-            // orphans don't apply
-            final boolean orphan = contentProviderService.isOrphan(contentKey, RootContentKey.STORE_FRESHDIRECT.contentKey);
-            if (orphan) {
-                LOGGER.debug("Removing ORPHAN content " + contentKey);
-            }
-
-            return orphan;
-        }
-
-        protected boolean isArchived(ContentKey contentKey) {
-            final List<List<ContentKey>> contexts = contentProviderService.findContextsOf(contentKey);
-
-            boolean archived = false;
-
-            // non-orphan contents can have one or more contexts
-            // we presume that archived items reside only under Archive department
-            // and they do not maintain position elsewhere (applies only to products)
-            if (contexts.size() == 1) {
-                List<ContentKey> singleContext = contexts.get(0);
-
-                archived = singleContext.contains(ARCHIVE_DEPARTMENT_KEY);
-                if (archived) {
-                    LOGGER.debug("Removing ARCHIVE smart category " + contentKey);
-                }
-            }
-            return archived;
-
-        }
-    }
-
-    private final Predicate<Map<Attribute, Object>> orphanCategoryFilter = new PredicateForCmsReports<Map<Attribute,Object>>() {
-        @Override
-        public boolean apply(Map<Attribute, Object> reportEntry) {
-            final String encodedContentKey = (String) reportEntry.get(CATEGORY_KEY_SELECTOR);
-            if (encodedContentKey == null) {
-                return false;
-            }
-            ContentKey contentKey = ContentKeyFactory.get(encodedContentKey);
-
-            return !isOrphan(contentKey);
-        }
-    };
-
-    private final Predicate<Map<Attribute, Object>> orphanYmalSetNodeFilter = new PredicateForCmsReports<Map<Attribute,Object>>() {
-        @Override
-        public boolean apply(Map<Attribute, Object> reportEntry) {
-            final String encodedContentKey = (String) reportEntry.get(NODE_KEY_SELECTOR);
-            if (encodedContentKey == null) {
-                return false;
-            }
-            ContentKey contentKey = ContentKeyFactory.get(encodedContentKey);
-
-            return !isOrphan(contentKey);
-        }
-    };
-
-    private final Predicate<Map<Attribute, Object>> archiveCategoryFilter = new PredicateForCmsReports<Map<Attribute,Object>>() {
-        @Override
-        public boolean apply(Map<Attribute, Object> reportEntry) {
-            final String encodedContentKey = (String) reportEntry.get(CATEGORY_KEY_SELECTOR);
-            if (encodedContentKey == null) {
-                return false;
-            }
-            ContentKey contentKey = ContentKeyFactory.get(encodedContentKey);
-
-            return !isArchived(contentKey);
-        }
-    };
-
-    private final Predicate<Map<Attribute, Object>> archiveYmalSetNodesFilter = new PredicateForCmsReports<Map<Attribute,Object>>() {
-        @Override
-        public boolean apply(Map<Attribute, Object> reportEntry) {
-            final String encodedContentKey = (String) reportEntry.get(NODE_KEY_SELECTOR);
-            if (encodedContentKey == null) {
-                return false;
-            }
-            ContentKey contentKey = ContentKeyFactory.get(encodedContentKey);
-
-            return !isArchived(contentKey);
-        }
-    };
-
     @Autowired
     private ReportsRepository repository;
 
@@ -235,8 +138,8 @@ public class ReportingService {
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentHiddenProducts"), "Recent Hidden Products");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "scarabRules"), "Scarab merchandising rules");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Active Smart categories");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "ymalSets"), "Active YMAL sets");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Smart categories");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "ymalSets"), "YMAL sets");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsQuery, "orphans"), "Orphan Store Objects");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsQuery, "recent"), "Recently modified");
@@ -394,34 +297,17 @@ public class ReportingService {
             values.put(ReportAttributes.CmsReport.description, "Shows the active Scarab merchandising rules (include,exclude,promote,demote)");
             values.put(ReportAttributes.CmsReport.results, result);
         } else if ("ymalSets".equals(contentKey.id)) {
-            List<Map<Attribute,Object>> rawResult = repository.fetchYmalSets();
+            List<Map<Attribute,Object>> queryResult = repository.fetchYmalSets();
 
-            // Strip off inactive YMAL set holders
-            Iterable<Map<Attribute,Object>> filteredResult = Iterables.filter(rawResult, orphanYmalSetNodeFilter);
-            filteredResult = Iterables.filter(filteredResult, archiveYmalSetNodesFilter);
-
-            List<Map<Attribute,Object>> finalResult = Lists.newArrayList(filteredResult);
-
-            values.put(ReportAttributes.CmsReport.name, "Active YMAL sets");
+            values.put(ReportAttributes.CmsReport.name, "All YMAL sets");
             values.put(ReportAttributes.CmsReport.description, "Smart YMAL sets");
-            values.put(ReportAttributes.CmsReport.results, finalResult);
+            values.put(ReportAttributes.CmsReport.results, queryResult);
         } else if ("smartCatRecs".equals(contentKey.id)) {
-            List<Map<Attribute,Object>> rawResult = repository.fetchSmartCategoryRecommenders();
+            List<Map<Attribute,Object>> queryResult = repository.fetchSmartCategoryRecommenders();
 
-            final int smartCategoryCount = rawResult.size();
-
-            // Strip off inactive categories
-            Iterable<Map<Attribute,Object>> filteredResult = Iterables.filter(rawResult, orphanCategoryFilter);
-            filteredResult = Iterables.filter(filteredResult, archiveCategoryFilter);
-
-            List<Map<Attribute,Object>> finalResult = Lists.newArrayList(filteredResult);
-            final int filteredSmartCategoryCount = finalResult.size();
-
-            LOGGER.debug("Retained " + filteredSmartCategoryCount + " smart categories from total " + smartCategoryCount);
-
-            values.put(ReportAttributes.CmsReport.name, "Active Smart categories");
+            values.put(ReportAttributes.CmsReport.name, "All Smart categories");
             values.put(ReportAttributes.CmsReport.description, "Smart category recommenders");
-            values.put(ReportAttributes.CmsReport.results, finalResult);
+            values.put(ReportAttributes.CmsReport.results, queryResult);
         } else if ("brokenMediaLinks".equals(contentKey.id)) {
             List<Map<Attribute, Object>> result = repository.fetchBrokenMediaLinks();
 

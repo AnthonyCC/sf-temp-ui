@@ -143,12 +143,24 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
   border-top: none;
 }
 #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button {
+  align-items: center;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
   font-family: "Verdana", Geneva, Tahoma, sans-serif;
   font-size: 14px;
   height: 100%;
   padding: 0 10px;
   width: 100%;
+}
+#FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li.selected button .checkbox-helper {
+  background: url('/media_stat/images/quickshop/icon-check-small.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center center;
+  height: 20px;
+  margin-right: 10px;
+  width: 14px;
 }
 #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button b {
   font-family: "Verdana", Geneva, Tahoma, sans-serif;
@@ -177,16 +189,20 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
 }
 #FDCustomSelect[data-custom-select-light-class] .customselect li:hover
   {
+  background: #eee;
   text-decoration: none;
   text-decoration-color: transparent;
-  background: #edf5ee;
 }
 #FDCustomSelect[data-custom-select-light-class] li button {
   padding: 0;
 }
+#FDCustomSelect[data-custom-select-light-class] li button:focus {
+  background-color: #eee;
+}
 #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus {
   outline: transparent;
 }
+
 @media (max-width: 768px) {
   .browse-popup.shown {
     bottom: 14%;
@@ -268,7 +284,7 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
     padding-right: 20px;
     position: relative;
     width: 26px;
-    transform: translateY(50%);
+    /* transform: translateY(50%); */
   }
   #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus,
   #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li:hover,
@@ -286,7 +302,16 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
     padding: 0 20px 0 0;
     width: 100%;
   }
+  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button span {
+    display: block;
+  }
+  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus span:focus {
+    outline: #fff;
+  }
   #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus span {
+    border: none;
+  }
+  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button:focus .checkbox-helper span {
     border: 2px solid #4fa157;
   }
   #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button b {
@@ -294,7 +319,6 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
     font-size: 16px;
     left:46px;
     letter-spacing: 0.3px;
-    position: relative;
     text-transform: uppercase;
   }
   #FDCustomSelect[data-custom-select-light-class] li .checkbox-helper span {
@@ -306,7 +330,13 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
   #FDCustomSelect[data-custom-select-light-class] ul.customselect li.selected {
     background: #ffffff;
   }
-  #FDCustomSelect[data-custom-select-light-class] ul.customselect li.selected span {
+  #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li.selected button .checkbox-helper {
+    background: none;
+    width: 26px;
+    height: 26px;
+    margin-right: 0;
+  }
+  #FDCustomSelect[data-custom-select-light-class] ul.customselect li.selected .checkbox-helper span {
     background-image: url('/media_stat/images/common/check-radio-selected.svg');
     background-position: center center;
     background-size: 180%;

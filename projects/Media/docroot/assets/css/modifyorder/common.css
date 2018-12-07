@@ -27,13 +27,10 @@
 .cancel-modify-confirm-popup .qs-popup-content .buttons button+button {
 	margin-top: 20px;
 }
-.modify-order-bar, #locationbar-sticky-wrapper #locationbar.modify-order-bar {
+.modify-order-bar {
 	color: #ffffff;
 	background-color: #f68139;
-	height: 46px;
-	max-height: 46px;
-	box-sizing: border-box;
-	border-top-color: #f68139;
+	height: 50px;
 }
 .modify-order-bar .cssbutton.cancel-changes-link {
 	font-weight: bold;
@@ -60,14 +57,15 @@
 #location-modify-order-message {
     line-height: 50px;
     font-size: 16px;
+    border-bottom: solid 1px #dddddd;
     text-shadow: 1px 1px 0 #c85c19;
     top: -3px;
     width: 100%;
     position: fixed;
 }
 #location-modify-order-message .modify-order-container {
-	width: 100%;
-	margin: 0 auto;
+	width: 970px;
+    margin: 0 auto;
 }
 .modify-order-bar .modify-delivery-label {
 	text-shadow: 1px 1px 0 #c85c19;
@@ -77,10 +75,9 @@
 }
 
 #locationbar-sticky-wrapper .locabar-right-sections {
-	position: absolute;
-	top: 3px;
+	position: fixed;
+	top: 5px;
 	height: 42px;
-	right: 0;
 }
 #location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
 	display: none; /* hide during modify */
@@ -143,7 +140,7 @@
 	line-height: 30px;
 }
 [data-ismobweb="true"]  #location-modify-order-bar {
-	padding: 10px 0 0 0;
+	padding: 17px 0 0 0;
 }
 #locationbar-sticky-wrapper #locabar_user_trigger > a,
 #locationbar-sticky-wrapper #locabar_user_trigger > a:active,

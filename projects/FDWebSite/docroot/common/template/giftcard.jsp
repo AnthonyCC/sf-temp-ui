@@ -32,8 +32,6 @@ final int W_GIFTCARD_TOTAL = 970;
 	<tmpl:get name="seoMetaTag"/>
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	
-	<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 	<jwr:script src="/giftcards.js" useRandomParam="false" />
 	<style>
 		.W_GIFTCARD_TOTAL { width: <%= W_GIFTCARD_TOTAL %>px; }

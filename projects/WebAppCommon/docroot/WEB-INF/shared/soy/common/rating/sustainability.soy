@@ -4,18 +4,18 @@
  * @param ratingValue sustainability rating value
  */
 {template .sustainability}
-{if isNonnull($ratingValue)}
-{let $ratingText}
-	{switch $ratingValue}
-	{case '00'}not rated
-	{case '01'}avoid
-	{case '02'}good
-	{case '03'}best
-	{case '04'}on path
-	{default}{sp}
-	{/switch}
-{/let}
-
-<img src="/media_stat/images/ratings/fish_{$ratingValue}.svg" alt="sustainability rating {$ratingText}" class="sustrating" />
-{/if}
+{switch $ratingValue}
+{case '00'}
+<img src="/media/brands/fd_seafood_popup_all/fish_gray.gif" alt="sustainability rating not rated" class="sustrating">
+{case '01'}
+<img src="/media/brands/fd_seafood_popup_all/fish_red.gif" alt="sustainability rating avoid" class="sustrating">
+{case '02'}
+<img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
+{case '03'}
+<img src="/media/brands/fd_seafood_popup_all/fish_dark_green.gif" alt="sustainability rating best" class="sustrating">
+{case '04'}
+<img src="/media/brands/fd_seafood_popup_all/fish_blue.gif" alt="sustainability rating on path" class="sustrating">
+{default}
+{sp}
+{/switch}
 {/template}

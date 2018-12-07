@@ -25,11 +25,11 @@
   </listener>
   <listener>
     <listener-class>com.freshdirect.dataloader.zoneinfo.WLSSapZoneServer</listener-class>
-  </listener>
+  </listener-->
   <listener>
         <listener-class>com.freshdirect.fdstore.warmup.WLSWarmup</listener-class>
   </listener>
-  <listener>
+  <!--listener>
     <listener-class>com.freshdirect.dataloader.productpromotion.WLSSapProductPromotionServer</listener-class>
   </listener>
   

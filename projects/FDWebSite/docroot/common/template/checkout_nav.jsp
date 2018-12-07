@@ -20,7 +20,6 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 	<head>
     	<tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 		
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

@@ -147,7 +147,7 @@
 	          		$jq('#qs-carousel').html(common.qsBottomTabbedCarousel(data));
 	          		if (FreshDirect.common.tabbedRecommender) {
 		          		var firstTab = $jq('#qs-carousel [data-component="tabbedRecommender"] [data-tabname]:first-child');
-						fd.common.tabbedRecommender.selectTab($jq('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
+						fd.common.tabbedRecommender.selectTab($('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
 					}
               FreshDirect.components.carousel.changePage($jq('#qs-carousel [data-component="carousel"]').first(), null);
 	          	});

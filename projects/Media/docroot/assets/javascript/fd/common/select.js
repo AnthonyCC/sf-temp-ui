@@ -70,11 +70,16 @@ var FreshDirect = FreshDirect || {};
     if(this.el.attr('data-custom-select-light-class')) {
       $('.selectButton '+this.el.attr('data-custom-select-light-class')+' ').addClass('overlay-open');
       setTimeout(function() {
-        var firstElement = $('.browse-popup-content ul li').filter(function() {
+        let firstElement = $('.browse-popup-content ul li').filter(function() {
           return $(this).css('display') != 'none';
         })[0];
         $(firstElement).find('button').focus();
       }, 300);
+      $('.browse-popup-content ul li').mouseenter(function(){
+          $('.browse-popup-content ul li button:focus').blur();
+      }).mouseleave(function() {
+        $('.selectButton')[0].focus();
+      })
       $('#FDCustomSelect.browse-popup').attr('data-custom-select-light-class', this.el.attr('data-custom-select-light-class'));
     }else{
       $('#FDCustomSelect.browse-popup').removeAttr(this.el.attr('data-custom-select-light-class'));
@@ -139,7 +144,7 @@ var FreshDirect = FreshDirect || {};
       if (options.length === 1 && el.attr('data-custom-select-light-class')) {
         popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div>No eligible orders found</button></li>';          
       } else if(el.attr('data-custom-select-light-class')){
-        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div>'+Select.unescape($option.html())+'</button></li>';
+        popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button"><div class="checkbox-helper"><span></span></div><span>'+Select.unescape($option.html())+'</span></button></li>';
       } else {
         popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+Select.unescape($option.html())+'</button></li>';
       }

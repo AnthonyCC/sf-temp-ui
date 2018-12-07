@@ -3,10 +3,9 @@ html,body {
 }
 
 .holder {
-	width: 100%;
+	width: 970px;
 	position: relative;
 	zoom: 1;
-	min-width: var(--sitemod_content-minwidth);
 }
 
 .oas_feature_frame {
@@ -173,13 +172,4 @@ html,body {
 
 .oas-homepageredesign .oas-container .right-side {
   flex-direction: column;
-}
-
-#content.homepage {
-	width: var(--sitemod_content-width);
-	min-width: var(--sitemod_content-minwidth);
-	max-width: var(--sitemod_content-maxwidth);
-	padding: var(--sitemod_content-padding);
-	margin: 0 auto;
-	box-sizing: border-box;
 }

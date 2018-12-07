@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -399,8 +400,10 @@ public class PaymentService {
             if (payment.getBankAccountType() != null) {
                 paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
             }
+            if(!EnumPaymentType.MAKE_GOOD.equals(payment.getPaymentType())){
             paymentData.setReferencedOrderId(payment.getReferencedOrder());
             paymentData.setPaymentTypeDescription(payment.getPaymentType().getDescription());
+            }
 			paymentData.seteWalletID(payment.geteWalletID());
         	paymentData.setVendorEWalletID(payment.getVendorEWalletID());
         	paymentData.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());

@@ -512,8 +512,8 @@ public abstract class BaseController extends AbstractController implements Messa
      * @param action
      * @param user
      * @return
-     * @throws com.freshdirect.framework.template.TemplateException 
-     * @throws IOException 
+     * @throws com.freshdirect.framework.template.TemplateException
+     * @throws IOException
      */
     protected abstract ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model,
             String action, SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException, IOException, com.freshdirect.framework.template.TemplateException;
@@ -701,7 +701,7 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setItemsInCartCount(user
                 .getItemsInCartCount());
         responseMessage.setOrderCount(history.getValidOrderCount());
-        responseMessage.setFdxOrderCount(history.getValidOrderCount(EnumEStoreId.FDX));
+        responseMessage.setFdxOrderCount(history.getSettledOrderCount(EnumEStoreId.FDX));
         responseMessage.setFdUserId(user.getPrimaryKey());
         responseMessage.setErpCustomerPK(getSessionUserId(user));
 
@@ -971,7 +971,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         if (pages != null) {
             for (CMSWebPageModel page : pages) {
-                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page);
+                CMSSectionProductCollectorService.getDefaultService().addProductsToSection(user, page, pageRequest);
                 pageRequest.limitSections(page);
             }
         }

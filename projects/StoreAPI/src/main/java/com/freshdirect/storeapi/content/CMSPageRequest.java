@@ -3,6 +3,8 @@ package com.freshdirect.storeapi.content;
 import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.fdstore.FDStoreProperties;
+
 public class CMSPageRequest {
 	private String pageType;
 	private Date requestedDate;
@@ -38,7 +40,7 @@ public class CMSPageRequest {
 	}
 
 	public boolean isPreview() {
-		return preview;
+        return preview || FDStoreProperties.getPreviewMode();
 	}
 
 	public void setPreview(boolean preview) {

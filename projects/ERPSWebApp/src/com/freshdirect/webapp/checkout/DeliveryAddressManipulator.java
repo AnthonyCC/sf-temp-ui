@@ -343,19 +343,21 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
 		
 		AddressModel originalAddress = new ErpAddressModel();
+		boolean isCorpAddress = false;
 		if (EnumServiceType.CORPORATE.getName().equalsIgnoreCase(deliveryAddressModel.getServiceType().getName())) {				/* APPDEV-7472 */
 			originalAddress = FDCustomerManager.getAddress(user.getIdentity(), shipToAddressId);
+			isCorpAddress = true;
 		}
 		performEditDeliveryAddress(event, user, result, session, cart, actionName, erpAddress, deliveryAddressModel,shipToAddressId);
 		
-		if (StandingOrderHelper.isEligibleForSo3_0(user)) {
+		if (StandingOrderHelper.isEligibleForSo3_0(user) && isCorpAddress) {
 			boolean  removeTimeslotsOnTemplate = true;
 			try {
 				FDDeliveryZoneInfo oldAddressZone = FDDeliveryManager.getInstance().getZoneInfo(originalAddress, new Date(),
 						null, null, user.getUserId());
 				FDDeliveryZoneInfo updatedAddressZone = FDDeliveryManager.getInstance().getZoneInfo(erpAddress,
 						new Date(), null, null, user.getUserId());
-				if (oldAddressZone.getZoneCode().equalsIgnoreCase(updatedAddressZone.getZoneCode()))
+				if (null != oldAddressZone && oldAddressZone.getZoneCode().equalsIgnoreCase(updatedAddressZone.getZoneCode()))
 					removeTimeslotsOnTemplate = false;
 			} catch (FDInvalidAddressException e) {
 				LOGGER.warn("something went wrong when making call to logistics address from editAddress Page Nav: ", e);

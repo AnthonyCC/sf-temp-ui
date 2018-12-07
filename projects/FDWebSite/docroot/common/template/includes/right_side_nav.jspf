@@ -63,7 +63,7 @@ if (cnm != null) {
         </tr>
         <tr>
             <td bgcolor="#996699" valign="bottom" width="1"><img src="/media_stat/images/layout/996699.gif"
-			    width="1" height="1"><br></td>
+			    alt="" width="1" height="1"><br></td>
 			<td align="center" width="138"><img src="/media_stat/images/layout/clear.gif" ALT=""
 			    width="138" height="3"><br>
 <table border="0" cellspacing="0" cellpadding="0" width="130">
@@ -150,10 +150,10 @@ if(weRecommendImgProds.size() > 0) {
   </table>
 		    </td>
 		    <td width="1" bgcolor="#996699" valign="bottom"><img
-		        src="/media_stat/images/layout/996699.gif" width="1" height="1"></td>
+		        src="/media_stat/images/layout/996699.gif" alt="" width="1" height="1"></td>
 	    </tr>
 	    <tr valign="top">
-	        <td width="140" colspan="3"><img src="/media_stat/images/template/lists/we_recommend_btm_crnrs.gif" width="140" height="5" border="0"></td>
+	        <td width="140" colspan="3"><img src="/media_stat/images/template/lists/we_recommend_btm_crnrs.gif" alt=""  width="140" height="5" border="0"></td>
 	    </tr>
     </table>
 	<br>

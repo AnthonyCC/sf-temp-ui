@@ -22,9 +22,7 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<body
-	data-pagetype="<tmpl:get name='pageType'/>"
->
+<BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/common/template/includes/globalnav.jspf" %>
 <%
 	Map<String, String> folderMap=new LinkedHashMap<String, String>();

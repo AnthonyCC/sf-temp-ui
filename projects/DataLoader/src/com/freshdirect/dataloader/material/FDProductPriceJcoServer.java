@@ -273,6 +273,7 @@ public class FDProductPriceJcoServer extends FdSapServer {
 				for (final Map.Entry<String, List<MaterialPriceParameter>> priceRecordEntry : priceRecordMap.entrySet()) {
 					List<ErpMaterialPriceModel> priceRows = new ArrayList<ErpMaterialPriceModel>();
 					String materialNo = priceRecordEntry.getKey();
+					boolean regularPriceFound = false;
 					try {
 						if (priceRecordEntry.getValue().size() > 0) {
 							for (final MaterialPriceParameter priceRecord : priceRecordEntry.getValue()) {
@@ -289,7 +290,9 @@ public class FDProductPriceJcoServer extends FdSapServer {
 											"No base product found for the material");
 									break;
 								}
-
+								if(priceRecord.getScaleQuanity() <=0){
+									regularPriceFound = true;
+								}
 								// 2. check if master pricing zone exists
 
 								// 3. check if regular price is zero or negative
@@ -331,8 +334,14 @@ public class FDProductPriceJcoServer extends FdSapServer {
 								}
 							}
 						}
-
-						if (priceRows.size() > 0) {
+						if(!regularPriceFound){
+							LOG.error("Regular price is missing for material: " + priceRecordEntry.getKey());
+							for (final MaterialPriceParameter priceRecord : priceRecordEntry.getValue()) {
+								populateResponseRecord(result, priceRecord, materialPriceErrorTable, "Regular price is missing.");
+								break;
+							}
+						} 
+						else if (priceRows.size() > 0) {
 							// check for default price row per salesarea
 							checkIfDefaultPriceRowExists(priceRows);
 							if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){

@@ -175,7 +175,8 @@ public class BrowseDataBuilderFactory {
                 data.getCarousels().setCarousel2(carouselData);
             }
 
-			filterProducts(navigationModel, data);
+            collectProducts(sections, data.getUnfilteredItems());
+            filterProducts(data.getSectionContexts(), navigationModel.getActiveFilters());
 
 			return data;
 		}
@@ -279,7 +280,9 @@ public class BrowseDataBuilderFactory {
                 data.getCarousels().setCarousel2(carouselData);
             }
 
-			filterProducts(navigationModel, data);
+            collectProducts(sections, data.getUnfilteredItems());
+            setupBrowseFilters(navigationModel, user, nav, data.getUnfilteredItems());
+			filterProducts(data.getSectionContexts(), navigationModel.getActiveFilters());
 
 			return data;
 		}
@@ -359,9 +362,11 @@ public class BrowseDataBuilderFactory {
             data.setSectionContexts(checkEmpty(sections));
             appendCatDepthFields(data, cat, user, (nav.isAll() || subCats.size() == 0));
 
-			if(!nav.isPdp()){
-				filterProducts(navigationModel, data);
-			}
+            if (!nav.isPdp()) {
+                collectProducts(sections, data.getUnfilteredItems());
+                setupBrowseFilters(navigationModel, user, nav, data.getUnfilteredItems());
+                filterProducts(data.getSectionContexts(), navigationModel.getActiveFilters());
+            }
 
 			return data;
 		}
@@ -390,9 +395,11 @@ public class BrowseDataBuilderFactory {
             data.setSectionContexts(checkEmpty(sections));
             appendCatDepthFields(data, subCat, user, true);
 
-			if(!nav.isPdp()){
-				filterProducts(navigationModel, data);
-			}
+            if (!nav.isPdp()) {
+                collectProducts(sections, data.getUnfilteredItems());
+                setupBrowseFilters(navigationModel, user, nav, data.getUnfilteredItems());
+                filterProducts(sections, navigationModel.getActiveFilters());
+            }
 
 			return data;
 		}
@@ -428,9 +435,11 @@ public class BrowseDataBuilderFactory {
             data.setSectionContexts(checkEmpty(sections));
             appendCatDepthFields(data, subSubCat, user, true);
 
-			if(!nav.isPdp()){
-				filterProducts(navigationModel, data);
-			}
+            if (!nav.isPdp()) {
+                collectProducts(sections, data.getUnfilteredItems());
+                setupBrowseFilters(navigationModel, user, nav, data.getUnfilteredItems());
+                filterProducts(data.getSectionContexts(), navigationModel.getActiveFilters());
+            }
 
 			return data;
 		}
@@ -455,8 +464,9 @@ public class BrowseDataBuilderFactory {
 
             findSearchPageCarouselType(data, nav.getPageType());
 
-			int productHits = filterProducts(navigationModel, data);
-			nav.setProductHits(productHits);
+            collectProducts(sections, data.getUnfilteredItems());
+            int productHits = filterProducts(sections, navigationModel.getActiveFilters());
+            nav.setProductHits(productHits);
 
 			return data;
 		}
@@ -472,7 +482,8 @@ public class BrowseDataBuilderFactory {
 			sectionContext.setRecipeItems(ProductItemFilterUtil.createFilteringRecipeItems(navigationModel.getRecipeResults()));
 			sections.add(sectionContext);
 			browseDataContext.setSectionContexts(checkEmpty(sections));
-			int recipeHits = filterRecipes(navigationModel, browseDataContext);
+			collectRecipes(sections, browseDataContext.getUnfilteredItems());
+			int recipeHits = filterRecipes(sections, navigationModel.getActiveFilters());
 			nav.setRecipeHits(recipeHits);
 			return browseDataContext;
 		}
@@ -631,42 +642,73 @@ public class BrowseDataBuilderFactory {
         }
     }
 
+    private void setupBrowseFilters(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav, List<FilteringProductItem> allItems) {
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, user)) {
+            for (FilteringProductItem item : allItems) {
+                FilterCollector.defaultFilterCollector().collectBrandFilters(navigationModel, item.getProductModel());
+            }
+        }
+        NavigationUtil.setupAllAndActiveFiltersForBrowse(nav, navigationModel);
+    }
+    
     /**
+     * Populate an unfiltered product list into allItems.
+     * 
      * @param sections
      * @param allItems
-     * @param activeFilters
-     *
-     *            Apply active filters on sections. This method also populate an unfiltered product list into allItems.
      */
-    private int filterProducts(List<SectionContext> sections, List<FilteringProductItem> allItems, Set<ProductItemFilterI> activeFilters) {
-        int result = 0;
-        Iterator<SectionContext> it = sections.iterator();
-        while (it.hasNext()) {
-            SectionContext section = it.next();
+    private void collectProducts(List<SectionContext> sections, List<FilteringProductItem> allItems) {
+        for (SectionContext section : sections) {
             if (section.getProductItems() != null && section.getProductItems().size() > 0) {
                 allItems.addAll(section.getProductItems());
+            }
+            if (section.getSectionContexts() != null && section.getSectionContexts().size() > 0) {
+                collectProducts(section.getSectionContexts(), allItems);
+            }
+        }
+    }
+    
+    /**
+     * Apply active filters on sections.
+     * 
+     * @param sections
+     * @param activeFilters
+     */
+    private int filterProducts(List<SectionContext> sections,Set<ProductItemFilterI> activeFilters) {
+        int result = 0;
+        for (SectionContext section : sections) {
+            if (section.getProductItems() != null && section.getProductItems().size() > 0) {
                 section.setProductItems(ProductItemFilterUtil.getFilteredProducts(section.getProductItems(), activeFilters, true, true));
                 result += section.getProductItems().size();
             }
             if (section.getSectionContexts() != null && section.getSectionContexts().size() > 0) {
-                result += filterProducts(section.getSectionContexts(), allItems, activeFilters);
+                result += filterProducts(section.getSectionContexts(), activeFilters);
             }
         }
         return result;
     }
 
-    private int filterRecipes(List<SectionContext> sections, List<FilteringProductItem> allItems, Set<ProductItemFilterI> activeFilters) {
-        int result = 0;
+    private void collectRecipes(List<SectionContext> sections, List<FilteringProductItem> allItems) {
         for (SectionContext sectionContext : sections) {
             if (sectionContext.getRecipeItems() != null && sectionContext.getRecipeItems().size() > 0) {
                 allItems.addAll(sectionContext.getRecipeItems());
+            }
+            if (sectionContext.getSectionContexts() != null && sectionContext.getSectionContexts().size() > 0) {
+                collectRecipes(sectionContext.getSectionContexts(), allItems);
+            }
+        }
+    }
 
+    private int filterRecipes(List<SectionContext> sections, Set<ProductItemFilterI> activeFilters) {
+        int result = 0;
+        for (SectionContext sectionContext : sections) {
+            if (sectionContext.getRecipeItems() != null && sectionContext.getRecipeItems().size() > 0) {
                 // TODO: change ProductItemFilterUtil.getFilteredProducts showUnavProducts logic to process recipes.
                 sectionContext.setRecipeItems(ProductItemFilterUtil.getFilteredProducts(sectionContext.getRecipeItems(), activeFilters, true, false));
                 result += sectionContext.getRecipeItems().size();
             }
             if (sectionContext.getSectionContexts() != null && sectionContext.getSectionContexts().size() > 0) {
-                result += filterRecipes(sectionContext.getSectionContexts(), allItems, activeFilters);
+                result += filterRecipes(sectionContext.getSectionContexts(), activeFilters);
             }
         }
         return result;
@@ -709,20 +751,6 @@ public class BrowseDataBuilderFactory {
                 }
             }
         }
-    }
-
-    private int filterProducts(NavigationModel navigationModel, BrowseDataContext data) {
-        List<FilteringProductItem> allItems = new ArrayList<FilteringProductItem>();
-        int productHits = filterProducts(data.getSectionContexts(), allItems, navigationModel.getActiveFilters());
-        data.setUnfilteredItems(allItems);
-        return productHits;
-    }
-
-    private int filterRecipes(NavigationModel navigationModel, BrowseDataContext browseDataContext) {
-        List<FilteringProductItem> allItems = new ArrayList<FilteringProductItem>();
-        int recipeHits = filterRecipes(browseDataContext.getSectionContexts(), allItems, navigationModel.getActiveFilters());
-        browseDataContext.setUnfilteredItems(allItems);
-        return recipeHits;
     }
 
     private void appendHtml(DescriptiveDataI data, Html dataMedia, Html middleMedia, FDUserI user) {

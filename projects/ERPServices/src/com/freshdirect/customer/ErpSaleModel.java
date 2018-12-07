@@ -645,6 +645,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		allowedStatus.add(EnumSaleStatus.PAYMENT_PENDING);
 		allowedStatus.add(EnumSaleStatus.RETURNED);
 		allowedStatus.add(EnumSaleStatus.ENROUTE);
+		allowedStatus.add(EnumSaleStatus.CAPTURE_PENDING);
 
 		if (EnumComplaintStatus.REJECTED.equals(newComplaint.getStatus())) {
 			allowedStatus.add(EnumSaleStatus.ENROUTE);

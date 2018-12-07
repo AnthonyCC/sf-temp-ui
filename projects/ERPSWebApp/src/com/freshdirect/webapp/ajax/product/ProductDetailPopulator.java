@@ -260,14 +260,11 @@ public class ProductDetailPopulator {
         // Populate product basic-level data
         populateBasicProductData(data, user, product);
 
-        //this is needed before pricing
-        populateSimpleProductData(data, product, sku, false);
-        
-        // Populate pricing data - needs to be done before bursts
-        populatePricing(data, fdProduct, productInfo, priceCalculator, user);
-        
-        // Populate product level data - this call populates bursts
+        // Populate product level data
         populateProductData(data, user, product, sku, fdProduct, priceCalculator, lineData, true, false);
+
+        // Populate pricing data
+        populatePricing(data, fdProduct, productInfo, priceCalculator, user);
 
         // Populate sku-level data for the default sku only
         populateSkuData(data, user, product, sku, fdProduct);
@@ -335,12 +332,6 @@ public class ProductDetailPopulator {
         // Populate product basic-level data
         populateBasicProductData(data, user, product);
 
-        //this is needed before pricing
-        populateSimpleProductData(data, product, sku, false);
-        
-        // Populate pricing data
-        populatePricing(data, fdProduct, productInfo, priceCalculator, user);
-        
         // Populate product level data
         populateProductData(data, user, product, sku, fdProduct, priceCalculator, lineData, false, false);
 
@@ -697,16 +688,17 @@ public class ProductDetailPopulator {
         populateAvailabilityMessages(item, productModel, fdProduct, sku);
     }
     
-    public static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
-        item.setCatId(usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName());
-        item.setDepartmentId(
-                usePrimaryHome ? productModel.getParentNode().getParentNode().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId());
-        item.setSkuCode(sku.getSkuCode());
-        item.setCustomizePopup(!productModel.isAutoconfigurable());
-        item.setHasTerms(productModel.hasTerms());
-        item.setDiscontinued(productModel.isDiscontinued());
-        item.setOutOfSeason(productModel.isOutOfSeason());
-        item.setNewProduct(productModel.isNew());
+    private static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
+        if (productModel != null && productModel.getCategory() != null && productModel.getCategory().getDepartment() != null) { // this can happen if the product is orphan
+            item.setCatId(usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName());
+            item.setDepartmentId(productModel.getCategory().getDepartment().getContentKey().getId());
+            item.setSkuCode(sku.getSkuCode());
+            item.setCustomizePopup(!productModel.isAutoconfigurable());
+            item.setHasTerms(productModel.hasTerms());
+            item.setDiscontinued(productModel.isDiscontinued());
+            item.setOutOfSeason(productModel.isOutOfSeason());
+            item.setNewProduct(productModel.isNew());
+        }
     }
 
     private static void populateAvailable(ProductData item, FDUserI user, ProductModel productModel) {
@@ -1049,10 +1041,6 @@ public class ProductDetailPopulator {
 
         /* compare against prop limits */
         // determine what to display
-        if ( (item.getGrpLink() == null || "".equals(item.getGrpLink())) && item.getSavingString() != null && !"".equals(item.getSavingString()) ) {
-        	item.setBadge("scaledeal");
-        }
-        
         if ((FDStoreProperties.getBurstsLowerLimit() <= deal) && (FDStoreProperties.getBurstUpperLimit() >= deal)) {
             item.setDeal(deal);
         } else if (isFree) {
@@ -1745,10 +1733,8 @@ public class ProductDetailPopulator {
             try {
                 FDProductInfo productInfo_fam = sku.getProductInfo();
                 FDProduct fdProduct = sku.getProduct();
-                //this is needed before pricing
-                populateSimpleProductData(data, product, sku, false);
-                populatePricing(data, fdProduct, productInfo_fam, priceCalculator, user);
                 populateProductData(data, user, product, sku, fdProduct, priceCalculator, null, true, true);
+                populatePricing(data, fdProduct, productInfo_fam, priceCalculator, user);
             } catch (FDResourceException exc) {
                 LOG.debug("Pricing and ERPS parts of " + product.getContentKey() + " are not populated due to missing resource", exc);
             } catch (FDSkuNotFoundException exc) {

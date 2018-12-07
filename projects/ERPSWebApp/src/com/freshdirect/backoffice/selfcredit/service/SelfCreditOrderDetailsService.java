@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,9 @@ import com.freshdirect.backoffice.selfcredit.data.SelfCreditComplaintReason;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderDetailsData;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.customer.EnumComplaintStatus;
+import com.freshdirect.customer.ErpComplaintLineModel;
+import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -58,6 +62,7 @@ public class SelfCreditOrderDetailsService {
         FDOrderAdapter orderDetailsToDisplay = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), orderId);
         
         Map<String, List<ComplaintReason>> complaintReasonMap = collectAllComplaintReasons();
+        Map<String, Double> creditedQuantities = collectApprovedComplaintQuantity(orderDetailsToDisplay.getComplaints());
 
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
@@ -66,8 +71,9 @@ public class SelfCreditOrderDetailsService {
         	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
         	ProductModel product = fdCartLine.lookupProduct();
         	
-        	if (!isDeliverPass) {
-        		double deliveredQuantity = collectQuantity(fdCartLine) ;
+    		double deliveredQuantity = collectQuantity(fdCartLine, creditedQuantities);
+        	
+        	if (!isDeliverPass && Double.compare(deliveredQuantity, 0d) > 0) {
             	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == product) ?"" : product.getPrimaryBrandName());
@@ -93,10 +99,36 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-	private double collectQuantity(FDCartLineI fdCartLine) {
+	private double collectQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
-    	double displayQuantity = Double.parseDouble(quantity);
+    	double deliveredQuantity = Double.parseDouble(quantity);
+    	
+    	final String orderLineId = fdCartLine.getOrderLineId();
+    	double creditedQuantity = creditedQuantities.containsKey(orderLineId) ? creditedQuantities.get(orderLineId) : 0d;
+    	
+    	double displayQuantity = deliveredQuantity - creditedQuantity;
     	return  Double.compare(displayQuantity, 0d) == 0 ? 0d : (Double.compare(Math.floor(displayQuantity), 0d) == 0 ? 1d : Math.floor(displayQuantity));
+	}
+
+	private Map<String, Double> collectApprovedComplaintQuantity(Collection<ErpComplaintModel> complaints) {
+		Map<String, Double> creditedQuantitiesByOrderLineId = new HashMap<String, Double>();
+
+		for (ErpComplaintModel complaint : complaints) {
+			if (complaint.getStatus().equals(EnumComplaintStatus.APPROVED)) {
+				List<ErpComplaintLineModel> complaintLines = null != complaint.getComplaintLines() 
+						? complaint.getComplaintLines()
+								: new ArrayList<ErpComplaintLineModel>();
+				for (ErpComplaintLineModel complaintLine : complaintLines) {
+					String orderLineId = complaintLine.getOrderLineId();
+					Double creditedQuantity = complaintLine.getQuantity();
+					if (creditedQuantitiesByOrderLineId.containsKey(orderLineId)) {
+						creditedQuantity += creditedQuantitiesByOrderLineId.get(orderLineId);
+					}
+					creditedQuantitiesByOrderLineId.put(orderLineId, creditedQuantity);
+				}
+			}
+		}
+		return creditedQuantitiesByOrderLineId;
 	}
 
 	private List<String> collectCartonNumbers(List<FDCartonInfo> cartonContents) {

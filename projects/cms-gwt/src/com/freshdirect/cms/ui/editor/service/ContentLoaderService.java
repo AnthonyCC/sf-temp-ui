@@ -43,6 +43,7 @@ import com.freshdirect.cms.persistence.service.ERPSDataService;
 import com.freshdirect.cms.ui.editor.UnmodifiableContent;
 import com.freshdirect.cms.ui.editor.domain.AttributeValueSource;
 import com.freshdirect.cms.ui.editor.domain.VirtualAttributes;
+import com.freshdirect.cms.ui.editor.reports.repository.VirtualAttributeRepository;
 import com.freshdirect.cms.ui.editor.reports.service.ReportingService;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
@@ -110,6 +111,9 @@ public class ContentLoaderService {
 
     @Autowired
     private WhitespaceValidator whitespaceValidator;
+
+    @Autowired
+    private VirtualAttributeRepository virtualAttributeRepository;
 
     public void decorateModel(ContentKey key, ContentNodeModel model) {
 
@@ -203,135 +207,33 @@ public class ContentLoaderService {
                 gwtNode.setOriginalAttribute(key, gwtAttr);
             }
 
-            // Handle mixed types
-            if (ContentType.Sku == contentKey.type) {
+            if (Media.isMediaType(contentKey)) {
+                populateMediaTypeData(contentKey, gwtNode);
+            } else {
 
-                String materialId = erpsDataService.fetchSkuMaterialAssociations().get(contentKey.id);
-
-                MaterialData materialData = erpsDataService.fetchMaterialData().get(materialId);
-
-                List<ContentKey> materialKeys = new ArrayList<ContentKey>();
-                if (materialId != null) {
-                    materialKeys.add(ContentKeyFactory.get(ContentType.ErpMaterial, materialId));
+                switch (contentKey.type) {
+                    case Sku:
+                        populateSkuData(contentKey, gwtNode);
+                        break;
+                    case ErpMaterial:
+                        populateErpMaterialData(contentKey, gwtNode);
+                        break;
+                    case ErpClass:
+                        populateErpClassData(contentKey, gwtNode);
+                        break;
+                    case ErpCharacteristic:
+                        populateErpCharacteristicData(contentKey, gwtNode);
+                        break;
+                    case ErpCharacteristicValue:
+                        populateErpCharacteristicValueData(contentKey, gwtNode);
+                        break;
+                    case Category:
+                        populateCategoryData(contentKey, gwtNode);
+                        break;
+                    default:
+                        break;
                 }
 
-                if (materialData != null) {
-                    populateScalarAttribute(contentKey, VirtualAttributes.Sku.promoPrice, materialData.getPromoPrice(), gwtNode);
-                    final MaterialAvailabilityStatus availabilityStatus = materialData.getAvailabilityStatus();
-                    populateScalarAttribute(contentKey, VirtualAttributes.Sku.UNAVAILABILITY_STATUS, (availabilityStatus != null ? availabilityStatus.toString() : ""), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.Sku.materialVersion, materialData.getLatestMaterialVersion(), gwtNode);
-                }
-
-                populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.Sku.materials, materialKeys, gwtNode);
-
-            } else if (ContentType.ErpMaterial == contentKey.type) {
-                Map<String, String> su = erpsDataService.fetchSalesUnits().get(contentKey.id);
-
-                MaterialData materialData = erpsDataService.fetchMaterialData().get(contentKey.id);
-                if (materialData != null) {
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.UPC, materialData.getUpc(), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.DESCRIPTION, WordUtils.capitalizeFully(materialData.getDescription()), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.NAME, materialData.getName(), gwtNode);
-
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.atpRule, materialData.getAtpRule(), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.leadTime, materialData.getLeadTime(), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.alcoholicContent, materialData.isAlcoholicContent(), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.taxable, materialData.isTaxable(), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.kosher, materialData.isKosher(), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.platter, materialData.isPlatter(), gwtNode);
-                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.blockedDays, materialData.getBlockedDays(), gwtNode);
-                }
-
-                // erp classes
-                List<ContentKey> erpClassKeys = new ArrayList<ContentKey>();
-                List<String> classes = erpsDataService.fetchClasses(contentKey.id);
-                for (String erpClass : classes) {
-                    erpClassKeys.add(ContentKeyFactory.get(ContentType.ErpClass, erpClass));
-                }
-
-                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.classes, erpClassKeys, gwtNode);
-
-
-                // sales units
-                List<ContentKey> salesUnitKeys = new ArrayList<ContentKey>();
-                for (String salesUnitId : su.keySet()) {
-                    salesUnitKeys.add(ContentKeyFactory.get(ContentType.ErpSalesUnit, su.get(salesUnitId)));
-                }
-
-                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.salesUnits, salesUnitKeys, gwtNode);
-
-            } else if (ContentType.ErpClass == contentKey.type) {
-                // show characteristics
-                String classId = contentKey.id;
-                List<ContentKey> characteristicKeys = new ArrayList<ContentKey>();
-                List<String> charsOfClass = erpsDataService.fetchCharacteristics(classId);
-                for (String erpChar : charsOfClass) {
-                    characteristicKeys.add(ContentKeyFactory.get(ContentType.ErpCharacteristic, classId + "/" + erpChar));
-                }
-
-                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpClass.characteristics, characteristicKeys, gwtNode);
-
-            } else if (ContentType.ErpCharacteristic == contentKey.type) {
-                ErpCharacteristicKey erpKey = new ErpCharacteristicKey(contentKey);
-
-                gwtNode.setLabel(erpKey.getCharacteristicName());
-
-                List<ContentKey> erpValueKeys = new ArrayList<ContentKey>();
-                Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey);
-                for (String erpValueName : erpValues.keySet()) {
-                    ContentKey key = ContentKeyFactory.get(ContentType.ErpCharacteristicValue, erpKey.createValueKey(erpValueName).toString());
-                    erpValueKeys.add(key);
-                }
-
-                populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristic.name, erpKey.getCharacteristicName(), gwtNode);
-                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpCharacteristic.values, erpValueKeys, gwtNode);
-
-            } else if (ContentType.ErpCharacteristicValue == contentKey.type) {
-                ErpCharacteristicValueKey erpKey = new ErpCharacteristicValueKey(contentKey);
-
-                gwtNode.setLabel(erpKey.getCharacteristicValueName());
-
-                Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey.getCharacteristicKey());
-
-                String erpValueDesc = erpValues.get(erpKey.getCharacteristicValueName());
-
-                populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.FULL_NAME, erpValueDesc, gwtNode);
-                populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.name, erpKey.getCharacteristicValueName(), gwtNode);
-            } else if (Media.isMediaType(contentKey)) {
-                Optional<Media> associatedMedia = mediaService.getMediaByContentKey(contentKey);
-                if (associatedMedia.isPresent()) {
-                    final Media media = associatedMedia.get();
-
-                    populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.path, media.getUri(), gwtNode);
-                    populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.lastmodified, media.getLastModified(), gwtNode);
-
-                    if (ContentType.Image == contentKey.type) {
-                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.width, media.getWidth(), gwtNode);
-                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.height, media.getHeight(), gwtNode);
-                    } else if (ContentType.Html == contentKey.type) {
-                        Map<Attribute, Object> htmlValues = contentProviderService.getAttributeValues(contentKey,
-                                Arrays.asList(new Attribute[] { ContentTypes.Html.popupSize, ContentTypes.Html.title }));
-
-                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.popupSize, htmlValues.get(ContentTypes.Html.popupSize), gwtNode);
-                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.title, htmlValues.get(ContentTypes.Html.title), gwtNode);
-                    } else if (ContentType.MediaFolder == contentKey.type) {
-                        Set<ContentKey> childKeys = mediaService.getChildMediaKeys(contentKey);
-
-                        List<ContentKey> mediaItemKeys = new ArrayList<ContentKey>();
-                        List<ContentKey> subFolderKeys = new ArrayList<ContentKey>();
-
-                        for (ContentKey mediaKey : childKeys) {
-                            if (ContentType.MediaFolder == mediaKey.type) {
-                                subFolderKeys.add(mediaKey);
-                            } else {
-                                mediaItemKeys.add(mediaKey);
-                            }
-                        }
-
-                        populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.files, mediaItemKeys, gwtNode);
-                        populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.subFolders, subFolderKeys, gwtNode);
-                    }
-                }
             }
         }
 
@@ -342,7 +244,7 @@ public class ContentLoaderService {
         TabDefinition tabDef = editorService.gwtTabDefinition(key);
         GwtContentNode gwtNode = getGwtNode(key, tabDef);
         GwtNodeContext ctx = storeContextService.contextsOf(key);
-        String previewLink = previewLinkService.getLink(key);
+        String previewLink = previewLinkService.getLink(key, null);
 
         final GwtNodeData gwtNodeData = new GwtNodeData(gwtNode, tabDef, permission, ctx, previewLink);
         gwtNodeData.setParentMap(collectParentsPerStore(key));
@@ -588,6 +490,7 @@ public class ContentLoaderService {
         gwtNode.setOriginalAttribute(scalar.getName(), gwtAttr);
     }
 
+    @SuppressWarnings("unchecked")
     private Serializable toClientValues(Object value) {
         if (value instanceof List) {
             List<Object> result = new ArrayList<Object>();
@@ -712,6 +615,7 @@ public class ContentLoaderService {
     }
 
     private OneToManyAttribute translateRelationshipWithManyCardinality(ContentType type, Relationship relationship, CustomFieldDefinition customFieldDefinition, Object value, AttributeValueSource valueSource) {
+        @SuppressWarnings("unchecked")
         List<ContentKey> contentKeyList = (List<ContentKey>) value;
 
         final boolean isVariationMatrix = customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix;
@@ -834,5 +738,145 @@ public class ContentLoaderService {
     private void decorateIconOverride(ContentKey key, ContentNodeModel model) {
         String iconOverride = decorateContextOverride(key, false);
         model.setIconOverride(iconOverride);
+    }
+
+    private void populateSkuData(ContentKey contentKey, GwtContentNode gwtNode) {
+        String materialId = erpsDataService.fetchSkuMaterialAssociations().get(contentKey.id);
+
+        MaterialData materialData = erpsDataService.fetchMaterialData().get(materialId);
+
+        List<ContentKey> materialKeys = new ArrayList<ContentKey>();
+        if (materialId != null) {
+            materialKeys.add(ContentKeyFactory.get(ContentType.ErpMaterial, materialId));
+        }
+
+        if (materialData != null) {
+            populateScalarAttribute(contentKey, VirtualAttributes.Sku.promoPrice, materialData.getPromoPrice(), gwtNode);
+            final MaterialAvailabilityStatus availabilityStatus = materialData.getAvailabilityStatus();
+            populateScalarAttribute(contentKey, VirtualAttributes.Sku.UNAVAILABILITY_STATUS, (availabilityStatus != null ? availabilityStatus.toString() : ""), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.Sku.materialVersion, materialData.getLatestMaterialVersion(), gwtNode);
+        }
+
+        populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.Sku.materials, materialKeys, gwtNode);
+    }
+
+    private void populateErpMaterialData(ContentKey contentKey, GwtContentNode gwtNode) {
+        Map<String, String> su = erpsDataService.fetchSalesUnits().get(contentKey.id);
+
+        MaterialData materialData = erpsDataService.fetchMaterialData().get(contentKey.id);
+        if (materialData != null) {
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.UPC, materialData.getUpc(), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.DESCRIPTION, WordUtils.capitalizeFully(materialData.getDescription()), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.NAME, materialData.getName(), gwtNode);
+
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.atpRule, materialData.getAtpRule(), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.leadTime, materialData.getLeadTime(), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.alcoholicContent, materialData.isAlcoholicContent(), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.taxable, materialData.isTaxable(), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.kosher, materialData.isKosher(), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.platter, materialData.isPlatter(), gwtNode);
+            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.blockedDays, materialData.getBlockedDays(), gwtNode);
+        }
+
+        // erp classes
+        List<ContentKey> erpClassKeys = new ArrayList<ContentKey>();
+        List<String> classes = erpsDataService.fetchClasses(contentKey.id);
+        for (String erpClass : classes) {
+            erpClassKeys.add(ContentKeyFactory.get(ContentType.ErpClass, erpClass));
+        }
+
+        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.classes, erpClassKeys, gwtNode);
+
+        // sales units
+        List<ContentKey> salesUnitKeys = new ArrayList<ContentKey>();
+        for (String salesUnitId : su.keySet()) {
+            salesUnitKeys.add(ContentKeyFactory.get(ContentType.ErpSalesUnit, su.get(salesUnitId)));
+        }
+
+        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.salesUnits, salesUnitKeys, gwtNode);
+    }
+
+    private void populateErpClassData(ContentKey contentKey, GwtContentNode gwtNode) {
+        String classId = contentKey.id;
+        List<ContentKey> characteristicKeys = new ArrayList<ContentKey>();
+        List<String> charsOfClass = erpsDataService.fetchCharacteristics(classId);
+        for (String erpChar : charsOfClass) {
+            characteristicKeys.add(ContentKeyFactory.get(ContentType.ErpCharacteristic, classId + "/" + erpChar));
+        }
+
+        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpClass.characteristics, characteristicKeys, gwtNode);
+    }
+
+    private void populateErpCharacteristicData(ContentKey contentKey, GwtContentNode gwtNode) {
+        ErpCharacteristicKey erpKey = new ErpCharacteristicKey(contentKey);
+
+        gwtNode.setLabel(erpKey.getCharacteristicName());
+
+        List<ContentKey> erpValueKeys = new ArrayList<ContentKey>();
+        Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey);
+        for (String erpValueName : erpValues.keySet()) {
+            ContentKey key = ContentKeyFactory.get(ContentType.ErpCharacteristicValue, erpKey.createValueKey(erpValueName).toString());
+            erpValueKeys.add(key);
+        }
+
+        populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristic.name, erpKey.getCharacteristicName(), gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpCharacteristic.values, erpValueKeys, gwtNode);
+    }
+
+    private void populateErpCharacteristicValueData(ContentKey contentKey, GwtContentNode gwtNode) {
+        ErpCharacteristicValueKey erpKey = new ErpCharacteristicValueKey(contentKey);
+        gwtNode.setLabel(erpKey.getCharacteristicValueName());
+        Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey.getCharacteristicKey());
+        String erpValueDesc = erpValues.get(erpKey.getCharacteristicValueName());
+
+        populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.FULL_NAME, erpValueDesc, gwtNode);
+        populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.name, erpKey.getCharacteristicValueName(), gwtNode);
+    }
+
+    private void populateMediaTypeData(ContentKey contentKey, GwtContentNode gwtNode) {
+        Optional<Media> associatedMedia = mediaService.getMediaByContentKey(contentKey);
+        if (associatedMedia.isPresent()) {
+            final Media media = associatedMedia.get();
+
+            populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.path, media.getUri(), gwtNode);
+            populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.lastmodified, media.getLastModified(), gwtNode);
+
+            if (ContentType.Image == contentKey.type) {
+                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.width, media.getWidth(), gwtNode);
+                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.height, media.getHeight(), gwtNode);
+            } else if (ContentType.Html == contentKey.type) {
+                Map<Attribute, Object> htmlValues = contentProviderService.getAttributeValues(contentKey,
+                        Arrays.asList(new Attribute[] { ContentTypes.Html.popupSize, ContentTypes.Html.title }));
+
+                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.popupSize, htmlValues.get(ContentTypes.Html.popupSize), gwtNode);
+                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.title, htmlValues.get(ContentTypes.Html.title), gwtNode);
+            } else if (ContentType.MediaFolder == contentKey.type) {
+                Set<ContentKey> childKeys = mediaService.getChildMediaKeys(contentKey);
+
+                List<ContentKey> mediaItemKeys = new ArrayList<ContentKey>();
+                List<ContentKey> subFolderKeys = new ArrayList<ContentKey>();
+
+                for (ContentKey mediaKey : childKeys) {
+                    if (ContentType.MediaFolder == mediaKey.type) {
+                        subFolderKeys.add(mediaKey);
+                    } else {
+                        mediaItemKeys.add(mediaKey);
+                    }
+                }
+
+                populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.files, mediaItemKeys, gwtNode);
+                populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.subFolders, subFolderKeys, gwtNode);
+            }
+        }
+    }
+
+    private void populateCategoryData(ContentKey contentKey, GwtContentNode gwtNode) {
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByCategoryCarousel, virtualAttributeRepository.queryConsumedByCategoryCarousel(contentKey),
+                gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByDepartmentCarousel, virtualAttributeRepository.queryConsumedByDepartmentCarousel(contentKey),
+                gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByVirtualCategory, virtualAttributeRepository.queryConsumedByVirtualCategory(contentKey),
+                gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByStoreCarousel, virtualAttributeRepository.queryConsumedByStoreCarousel(contentKey), gwtNode);
     }
 }

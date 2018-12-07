@@ -20,7 +20,7 @@ bundle-title-ends -->{if $available}<p class="thxgiving-bundle-price">
  */
 {template .bundleProductImage}
   {if $images and length($images) > 0}
-    <img class="main-image" src="{$images[0].url}" />
+    <img alt="" class="main-image" src="{$images[0].url}" />
   {/if}
 {/template}
 
@@ -133,7 +133,6 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 
 /**
 * @param? optionalProducts
-* @param? abFeatures
 * @param? mobWeb
 */
 {template .bundleProductRecommendation autoescape="false"}
@@ -145,7 +144,6 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 	    <div class="{($mobWeb) ? ' pdp-optProducts-prods' : ''}">
 		    {call common.productList}
 		      {param productList:$rec.optionalProducts /}
-		      {param abFeatures:$abFeatures /}
 		      {param mobWeb:$mobWeb /}
 		    {/call}
 	    </div>

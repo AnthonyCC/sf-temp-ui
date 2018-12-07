@@ -451,7 +451,7 @@ public class DeliveryPassDAO {
 	private final static String GET_AUTORENEWAL_INFO_BY_ESTORE_QUERY = "select ci.customer_id,fdc.autorenew_dp_type from cust.customerinfo ci, cust.customer c, cust.fdcustomer fd, cust.fdcustomer_estore fdc  where "+
 			 "ci.customer_id=c.id and c.ACTIVE='1' and fd.erp_customer_id=c.id and fdc.fdcustomer_id=fd.id and fdc.HAS_AUTORENEW_DP='Y' and fdc.e_store=? and "+
 			 " exists ( select 1 from cust.delivery_pass dp where dp.customer_id=ci.customer_id "+
-			 "          and status IN ('ACT','RTU') and trunc(exp_date)<=trunc(sysdate-1) and dp.TYPE IN "+
+			 "          and status IN ('ACT') and trunc(exp_date)<=trunc(sysdate-1) and dp.TYPE IN "+
 			 "          (select sku_code from cust.dlv_pass_type where is_autorenew_dp='Y' and e_stores =?) "+
 			 "        )"+
 			 " and not exists ( select 1 from cust.delivery_pass dp where dp.customer_id=ci.customer_id "+

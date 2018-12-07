@@ -22,7 +22,7 @@ public class ExpertRatingFilter extends AbstractRangeFilter {
 		ProductModel node = ctx.getProductModel();
 		EnumOrderLineRating rating = node.getProductRatingEnum();
 		if (rating.getValue() > 0) {
-			final double val = rating.getValue()/2.0;
+            final double val = rating.getQualityRating();
 
 			return invertChecker(isWithinRange(val));
 		}

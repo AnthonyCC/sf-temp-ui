@@ -176,10 +176,10 @@
 		    	<div class="so-delete-popup">
 		    		<div class="so-delete-popup-header">Delete <span class="so-delete-popup-name">{$item.soName}</span> Standing Order?</div>
 		    		{if $item.activated}<div class="so-delete-popup-message">Deliveries scheduled for the next 24 hours will still be processed.</div>{/if}
-		    		<div class="so-delete-popup-message-custom">Please select your last delivery:</div>
+		    		<div class="so-delete-popup-message-custom"><label for="last_del">Please select your last delivery:</label></div>
 		    		<div class="so-delete-popup-select">
 			    		<div class="select-wrapper">
-				    		<select> 
+				    		<select id="last_del"> 
 					    		{foreach $deleteDate in $item.deleteDateRange}
 					    			<option>{$deleteDate}</option>
 					    		{/foreach}

@@ -47,7 +47,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		radioCheckedCur: null, //currently checked radio  (not checked -> cur ?(OnlyRow) -> last)
 		radioCheckedLast: null, //last checked radio (for re check on ao hide)
 		radioCheckedLastUndo: null, //last checked radio to undo color for
-		negSubt: (0-66-11-4-81-15), //assume a negative subtraction of hExt-fExt-daypart-three cutoffs-margin for row height
+		negSubt: (0-76-14-4-60-15), //assume a negative subtraction of hExt-fExt-daypart-two cutoffs-margin for row height
 		showPremiumSlots: false, //reorg based on prem.slots
 		premSlotsDayId: 'ts_d0_tsTable', //dayId where prem.slots is shown
 		premSlotsCO: null, //date object initialized with timestamp ref for cutoff timing (UTC ms)

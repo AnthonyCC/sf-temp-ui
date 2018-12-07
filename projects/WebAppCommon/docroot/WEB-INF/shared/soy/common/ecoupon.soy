@@ -11,19 +11,18 @@
 {if $couponDisplay } 
 	{let $couponName}fdCoupon_{$coupon.couponId}{/let}
 	<div name="{$couponName}_cont" class="fdCoupon_cont{if $couponClipped} isClipped{/if}" data-component="ecoupon" data-ecouponid="{$coupon.couponId}">
-	<label class="customcheckboxlabel fake-checkbox-wrapper">
-		{call ecfragments.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$couponClipped /}{param coupon:$coupon /}{/call}
-		{call ecfragments.detailsHtml}{param couponName:$couponName /}{/call}
-	</label>
+	{call common.ecoupon.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$couponClipped /}{param coupon:$coupon /}{/call}
+	<img src="/media_stat/images/ecoupon/logo-small.png" alt="FD coupon" class="fdCoupon_img">
   {if $detailsFirst}
-    {call ecfragments.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
+    {call common.ecoupon.detailsHtml}{param couponName:$couponName /}{/call}
+    {call common.ecoupon.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
   {/if}
   <span class="fdCoupon_data">
-	<img src="/media_stat/images/ecoupon/logo-small.png" alt="FD coupon" class="fdCoupon_img" />
   	<span name="{$couponName}_applied" class="fdCoupon_applied"></span>
     {call ecfragments.messageHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
     {if not $detailsFirst}
-      {call ecfragments.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
+      {call common.ecoupon.detailsHtml}{param couponName:$couponName /}{/call}
+      {call common.ecoupon.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
     {/if}
     <span data-component="ecoupon-status">{if $coupon.status.displayMessage}{call ecfragments.statusTextHtml}{param status:$couponStatusText /}{/call}{/if}</span>
   </span>

@@ -14,7 +14,7 @@
 <html lang="en-US" xml:lang="en-US">
 <head>
 <tmpl:get name="seoMetaTag" />
-<%@ include file="/common/template/includes/i_javascripts.jspf"%>
+<%@ include file="/common/template/includes/i_javascripts_browse.jspf"%>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf"%>
 
 <tmpl:get name='facebookmeta' />

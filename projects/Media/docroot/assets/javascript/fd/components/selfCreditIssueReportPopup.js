@@ -5,10 +5,11 @@ var FreshDirect = window.FreshDirect || {};
 (function(fd) {
   "use strict";
   var $ = fd.libs.$;
+  
   var DISPATCHER = fd.common.dispatcher;
-
+  
   var API_URL = "/api/selfcredit/orderdetails";
-
+  
   var CUSTOM_CLASSES = {
     MEDIUM: "overlay-medium selfcredit-overlay selfcredit-review",
     FULL_SCREEN: "overlay-fullscreen selfcredit-overlay"
@@ -75,8 +76,8 @@ var FreshDirect = window.FreshDirect || {};
             .removeClass(CUSTOM_CLASSES.MEDIUM)
             .removeClass(CUSTOM_CLASSES.FULL_SCREEN)
             .addClass(this.customClass);
-            return this.overlayEl && this.overlayEl[0] && this.overlayEl[0].scrollIntoView(true);
-        }
+            this.overlayEl && this.overlayEl[0] && this.overlayEl[0].scrollIntoView(true);
+          }
       },
       extendedRefresh: {
         value: function(data) {
@@ -149,11 +150,17 @@ var FreshDirect = window.FreshDirect || {};
             .find(".self-credit-comment-container.hide")
             .removeClass("hide");
           this.commentField.focus();
+          fd.gtm.updateDataLayer({
+            selfCreditCommentClick: null
+          });
         }
       },
       reviewRequest: {
         value: function(data) {
           if (validate(data)) {
+            fd.gtm.updateDataLayer({
+              selfCreditReviewRequest: null
+            });
             this.complaints = getValidComplaintLines(data);
             this.data.complaints = $.map(this.complaints, function(
               complaint,
@@ -204,16 +211,15 @@ var FreshDirect = window.FreshDirect || {};
               }
             });
           }
-          this.submitButton = $('.credit-request-submit-button');
-          setTimeout(function() {
-            this.submitButton.focus();
-          }.bind(this), 100);
         }
       },
       editRequest: {
         value: function() {
           this.data.comment = $("#self-credit-comment")[0].value;
           setReadOnly.call(this, false);
+          fd.gtm.updateDataLayer({
+            selfCreditEditClick: null
+          });
         }
       },
       submitRequest: {
@@ -232,6 +238,9 @@ var FreshDirect = window.FreshDirect || {};
                 note: this.data.comment
               })
             }
+          });
+          fd.gtm.updateDataLayer({
+            selfCreditSubmitRequest: null
           });
         }
       }

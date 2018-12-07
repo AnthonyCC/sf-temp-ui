@@ -10,7 +10,7 @@
 <html lang="en-US" xml:lang="en-US">
 <head>
 <title>Layout Browser</title>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
 </head>
 <body>
 <%!

@@ -149,13 +149,13 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 	   </div>
 	   <fd:CCLCheck>
 			<!-- Add to Shopping List  -->
-			<a href="/unsupported.jsp" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a><span style="padding-left: 15px"></span>
+			<a href="/unsupported.jsp" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" alt="save to shopping list" style="border: 0;"/></a><span style="padding-left: 15px"></span>
 			<div></div>
         </fd:CCLCheck>
      </td>
      <td valign="bottom" align="right">
 <%   if (itemShown < 1) {   %>  
-       <img src="<%= confirmImage.getPath() %>" border="0" width="<%= confirmImage.getWidth() %>" height="<%= confirmImage.getHeight() %>">
+       <img src="<%= confirmImage.getPath() %>" border="0" alt="" width="<%= confirmImage.getWidth() %>" height="<%= confirmImage.getHeight() %>">
 <%   } else {  %>
        <img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1" border="0">
 <%   }  %>

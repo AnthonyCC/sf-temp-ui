@@ -166,7 +166,7 @@ if (pgErrs.size()>0) {
 	}
 	%>
 	
-	<td width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><br><bt><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
+	<td width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><br><br><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
 	<a href="javascript:popup('/meal_item_detail.jsp?mcatId=<%=request.getParameter("catId")%>&mproductId=<%=request.getParameter("productId")%>&mskuCode=<%=defaultSku%>&catId=<%=request.getParameter("catId")%>&productId=<%=request.getParameter("productId")%>&skuCode=<%=defaultSku%>','large_long')"><b>Click here for details and cooking tips.</b></a>
 	</td>
 	</tr>
@@ -408,7 +408,7 @@ if (isAvailable ) { %>
 		<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr valign="top">
 			<td width="115">
-			<a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" border="0" width="<%=dispObj.getImageWidth()%>" height="<%=dispObj.getImageHeight()%>" name="<%=imgName%>" <%= Integer.parseInt(dispObj.getImageWidth()) < 50 ? "hspace=\"20\"":""%><%= Integer.parseInt(dispObj.getImageWidth()) == 80 ? "hspace=\"5\"":""%>></a></td>
+			<a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')"><img src="<%=dispObj.getImagePath()%>" border="0" alt="" width="<%=dispObj.getImageWidth()%>" height="<%=dispObj.getImageHeight()%>" name="<%=imgName%>" <%= Integer.parseInt(dispObj.getImageWidth()) < 50 ? "hspace=\"20\"":""%><%= Integer.parseInt(dispObj.getImageWidth()) == 80 ? "hspace=\"5\"":""%>></a></td>
 			<td width="<%=maxWidth-115%>">
 				<table width="<%=maxWidth-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<% } 

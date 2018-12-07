@@ -4,13 +4,13 @@
  * @param price
  */
 {template .formatDecimalPrice}
-{if $price - floor($price) == 0}
-	${floor($price)}
-{elseif $price * 10 - floor($price * 10) == 0}
-	${$price}0
-{else}
-	${$price}
-{/if}
+	{if $price - floor($price) == 0}
+		${floor($price)}
+	{elseif $price * 10 - floor($price * 10) == 0}
+		${$price}0
+	{else}
+		${$price}
+	{/if}
 {/template}
 
 /**
@@ -20,17 +20,15 @@
  * @param? scaleUnit
  */
 {template .price autoescape="false"}
-	{if $aboutPriceText}
-		<span class="about-price">{$aboutPriceText}</span>
-	{/if}
 	{if $price == 0}
 		<span class="free-price">FREE</span>
 	{elseif $wasPrice}
-		<span class="save-price-w-was">
-			<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span><span class="save-price-was-price"><s>{call common.formatDecimalPrice}{param price:$wasPrice /}{/call}</s></span>
-		</span>
+		<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>{call common.formatDecimalPrice}{param price:$wasPrice /}{/call}</s>
 	{else}
-		<span class="display-price">{call common.formatDecimalPrice}{param price:$price /}{/call}{if $scaleUnit}/{$scaleUnit}{/if}</span>
+		{call common.formatDecimalPrice}{param price:$price /}{/call}{if $scaleUnit}/{$scaleUnit}{/if}
+	{/if}
+	{if $aboutPriceText}
+		<span class="about-price">{$aboutPriceText}</span>
 	{/if}
 {/template}
 
@@ -155,4 +153,28 @@
 		{param ifSingleUL:true /}
 		{param mobWeb:$mobWeb /}
 	{/call}
+{/template}
+
+
+/**
+* @param? prefix
+* @param uuid
+* @param? catId
+* @param? productId
+* @param? skuCode
+* @param? suffix
+* @param? separator
+* @param? listId
+* @param? originalLineId
+*/
+{template .getUUID autoescape="false"}
+{let $separator: $separator ? $separator : '_' /}
+{if $prefix}{$prefix}{$separator}{/if}
+{if $uuid}{$uuid}{/if}
+{if $catId}{$separator}{$catId}{/if}
+{if $productId}{$separator}{$productId}{/if}
+{if $skuCode}{$separator}{$skuCode}{/if}
+{if $suffix}{$separator}{$suffix}{/if}
+{if $listId}{$separator}{$listId}{/if}
+{if $originalLineId}{$separator}{$originalLineId}{/if}
 {/template}
