@@ -335,6 +335,9 @@ public class ProductDetailPopulator {
         // Populate product level data
         populateProductData(data, user, product, sku, fdProduct, priceCalculator, lineData, false, false);
 
+        // Populate pricing data
+        populatePricing(data, fdProduct, productInfo, priceCalculator, user);
+
         // Populate sku-level data for the default sku only
         populateSkuData(data, user, product, sku, fdProduct);
 
@@ -688,7 +691,7 @@ public class ProductDetailPopulator {
         populateAvailabilityMessages(item, productModel, fdProduct, sku);
     }
     
-    public static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
+    private static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
         if (productModel != null && productModel.getCategory() != null && productModel.getCategory().getDepartment() != null) { // this can happen if the product is orphan
             item.setCatId(usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName());
             item.setDepartmentId(productModel.getCategory().getDepartment().getContentKey().getId());
