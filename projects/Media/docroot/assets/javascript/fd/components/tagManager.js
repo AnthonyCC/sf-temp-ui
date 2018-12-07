@@ -590,7 +590,7 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         event: 'help-click',
         eventCategory: 'credit request',
-        eventAction: 'step1',
+        eventAction: 'step 1',
         eventLabel: 'refund request'  
       });
       return null;
@@ -599,7 +599,7 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         event: 'help-click',
         eventCategory: 'credit request',
-        eventAction: 'step2',
+        eventAction: 'step 2',
         eventLabel: 'continue'  
       });
       return null;
@@ -617,7 +617,7 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         event: 'help-click',
         eventCategory: 'credit request',
-        eventAction: 'step3',
+        eventAction: 'step 3',
         eventLabel: 'review request'  
       });
       return null;
@@ -635,7 +635,7 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         event: 'help-click',
         eventCategory: 'credit request',
-        eventAction: 'step4',
+        eventAction: 'step 4',
         eventLabel: 'submit request' 
       });
       return null;
