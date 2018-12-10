@@ -22,6 +22,7 @@ import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDMuniAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
@@ -62,6 +63,8 @@ class FDAvailabilityMapper {
 		}
 
 		int pos = 0;
+		String custId = null;
+		boolean restrictionLog = false;
 		for ( FDCartLineI cartline : cart.getOrderLines() ) {
 			String posex = PosexUtil.getPosex(pos);
 			int orderlineSize = cartline.getErpOrderLineSize();
@@ -83,15 +86,19 @@ class FDAvailabilityMapper {
 			Set<EnumDlvRestrictionReason> applicableRestrictions = cartline.getApplicableRestrictions();			
 			
 			if(null !=cartline.getUserContext() && null !=cartline.getUserContext().getFdIdentity() && null !=cartline.getUserContext().getFdIdentity().getErpCustomerPK()){
-				LOGGER.info("RESTRICTIONS_LOG: Applicable restrictions for customer: "+ (cartline.getUserContext().getFdIdentity().getErpCustomerPK())+" , for sku: "+ cartline.getSkuCode()+" , for delivery date:"+ order.getRequestedDate()+" are: "+applicableRestrictions);
+				custId = cartline.getUserContext().getFdIdentity().getErpCustomerPK();
+				restrictionLog = custId !=null && FDStoreProperties.isRestrictionsLogEnabled();
+			}
+			if(restrictionLog) {
+				LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" ->Applicable restrictions ,for sku: "+ cartline.getSkuCode()+" , for delivery date:"+ order.getRequestedDate()+" are: "+applicableRestrictions);
 			}
 
 			if (!applicableRestrictions.isEmpty()) {
 
 				// apply delivery restrictions
 				List<RestrictionI> r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, applicableRestrictions);
-				if(null !=cartline.getUserContext() && null !=cartline.getUserContext().getFdIdentity() && null !=cartline.getUserContext().getFdIdentity().getErpCustomerPK()){
-					LOGGER.info("RESTRICTIONS_LOG: Filtered DELIVERY restrictions for customer: "+ (cartline.getUserContext().getFdIdentity().getErpCustomerPK())+" , for sku: "+ cartline.getSkuCode()+" , for delivery date:"+ order.getRequestedDate()+" are: "+r);
+				if(restrictionLog){
+					LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" DELIVERY RestrictionsApplied :"+r.toString());
 				}
 				LOGGER.debug(" filtered applicable restrictions :"+applicableRestrictions);
 
@@ -100,6 +107,9 @@ class FDAvailabilityMapper {
 					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address!=null?address.getState():null, county, r);
 					if(!filteredList.isEmpty())
 						inv = new FDRestrictedAvailability(inv, new DlvRestrictionsList(filteredList));
+					if(restrictionLog) {
+						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" Filtered DELIVERY+ALCOHOL RestrictionsApplied :"+filteredList.toString());
+					}
 				}
 
 				if (!originalDayKept || !(cartline instanceof FDModifyCartLineI)) {
@@ -107,6 +117,9 @@ class FDAvailabilityMapper {
 					r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.PURCHASE, applicableRestrictions);
 					if (!r.isEmpty()) {
 						inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), nextDay, new DateRange(now, now));
+						if(restrictionLog) {
+							LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" PURCHASE RestrictionsApplied :"+r.toString());
+						}
 					}
 				}
 
@@ -117,6 +130,9 @@ class FDAvailabilityMapper {
 					DateRange cutoff = new DateRange(rsv.getCutoffTime(), rsv.getCutoffTime());
 					DateRange delivery = new DateRange(rsv.getStartTime(), rsv.getEndTime());
 					inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), delivery, cutoff);
+					if(restrictionLog) {
+						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+"  CUTOFF RestrictionsApplied :"+r.toString());
+					}
 				}
 
 			}
@@ -132,7 +148,9 @@ class FDAvailabilityMapper {
 			}
 
 			cartInvMap.put(Integer.toString(cartline.getRandomId()), inv);
-
+			if(restrictionLog) {
+				LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+"  CartInvMap:"+inv.toString());
+			}
 			if (skipModifyLines && cartline instanceof FDModifyCartLineI) {
 				// orderlines that came from the original order were skipped
 				continue;
