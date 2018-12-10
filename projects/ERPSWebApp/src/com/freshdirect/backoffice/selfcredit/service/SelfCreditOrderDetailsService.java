@@ -158,11 +158,6 @@ public class SelfCreditOrderDetailsService {
 		return complaintReasons;
 	}
 
-    private String collectComplaintReasonName(ComplaintReason complaintReason) {
-        final boolean hasCustomerDisplayName = !StringUtils.isEmpty(complaintReason.getCustomerDisplayName());
-        return hasCustomerDisplayName ? complaintReason.getCustomerDisplayName() : complaintReason.getReason();
-    }
-
     private Map<String, List<SelfCreditComplaintReason>> collectAllComplaintReasons() throws JsonParseException, JsonMappingException, IOException {
         Map<String, List<SelfCreditComplaintReason>> complaintReasonMap = new HashMap<String, List<SelfCreditComplaintReason>>();
 
@@ -186,7 +181,7 @@ public class SelfCreditOrderDetailsService {
 
         String creditReasons = content.toString();
         ObjectMapper objectMapper = new ObjectMapper();
-        complaintReasonMap = objectMapper.readValue(creditReasons, new TypeReference<Map<String, List<ComplaintReason>>>() {
+        complaintReasonMap = objectMapper.readValue(creditReasons, new TypeReference<Map<String, List<SelfCreditComplaintReason>>>() {
         });
 
         return complaintReasonMap;
