@@ -8623,7 +8623,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public PendingSelfComplaintResponse getSelfIssuedComplaintsForAutoApproval()
 			throws RemoteException, FDResourceException {
-		List<PendingSelfComplaint> approvablePendingSelfComplaints = filterPendingSelfComplaints(
+		List<String> approvablePendingSelfComplaints = filterPendingSelfComplaints(
 				getPendingSelfComplaintsForAutoApproval());
 		;
 		PendingSelfComplaintResponse pendingSelfComplaintResponse = new PendingSelfComplaintResponse();
@@ -8631,13 +8631,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return pendingSelfComplaintResponse;
 	}
 
-	private List<PendingSelfComplaint> filterPendingSelfComplaints(List<PendingSelfComplaint> pendingSelfComplaints)
+	private List<String> filterPendingSelfComplaints(List<PendingSelfComplaint> pendingSelfComplaints)
 			throws FDResourceException, RemoteException {
 
 		LOGGER.info("Filtering process of pending self-issued complaints STARTED. Going to filter "
 				+ pendingSelfComplaints.size() + " self-issued complaints.");
 
-		List<PendingSelfComplaint> approvablePendingSelfComplaints = new ArrayList<PendingSelfComplaint>();
+		List<String> approvablePendingSelfComplaints = new ArrayList<String>();
 		Map<String, List<String>> submittedSelfComplaints = collectSubmittedSelfComplaintsByCustomerIdWithinQuantityDayRange();
 		Map<String, Double> submittedSelfComplaintAmounts = collectSubmittedSelfComplaintsByCustomerIdWithinAmountDayRange();
 
@@ -8705,7 +8705,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 
 			if (isEligibleForAutoApproval) {
-				approvablePendingSelfComplaints.add(pendingSelfComplaint);
+				approvablePendingSelfComplaints.add(pendingSelfComplaint.getComplaintId());
 				LOGGER.info("Eligibility check for self-issued complaint of ID : " + selfComplaintId + " FINISHED. "
 						+ "Self-issued complaint is eligible for auto-approval.");
 			}
