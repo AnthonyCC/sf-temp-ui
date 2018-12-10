@@ -595,7 +595,7 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("			</tr>\n");
 
 	if (!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-		%>document.observe("dom:loaded", function() { defaultColumnExpand(dayIndex,slotIndex); });
+		%>$jq(function() { defaultColumnExpand(dayIndex,slotIndex); });
 		<%
 	}
 %>

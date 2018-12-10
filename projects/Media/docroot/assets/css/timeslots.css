@@ -1118,3 +1118,19 @@ td.noTopBorder {
 .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateE, .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateC{
 	visibility:hidden !important;
 }
+
+.tsHeaderE, .tsTableE {
+	width: 223px;
+	border-right-color: rgb(51, 51, 51);
+	box-sizing: border-box;
+}
+.tsHeaderE, .tsTableE {
+	width: 223px;
+	border-right-color: rgb(51, 51, 51);
+	box-sizing: border-box;
+}
+.tsHeaderE, .tsTableE {
+	width: 223px;
+	border-right-color: rgb(51, 51, 51);
+	box-sizing: border-box;
+}

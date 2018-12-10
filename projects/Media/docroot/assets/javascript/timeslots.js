@@ -1,6 +1,10 @@
+/* jquery */
 var FreshDirect = FreshDirect || {};
 
 FreshDirect.fdTSDisplay = function(refIdArg) {
+	//reset $ to jQuery
+	var $ = $jq;
+
 	//check for required data
 	if (!window.refData && !window.refAdvData) {
 		return {}; //no data, no display
@@ -29,8 +33,8 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		emptyDayNewDayPart: 4, //day part for an empty day defaults to this
 		IEver: -1, //IE version for calc (-1 = not IE)
 		preExtend: true, //use pre-extend (IE<=7 is autoset to false)
-		noDeliveryCId: 'NDdayC', //container ID for no delivery (contracted view)
-		noDeliveryEId: 'NDdayE', //container ID for no delivery (expanded view)
+		noDeliveryCId: '#NDdayC', //container ID for no delivery (contracted view)
+		noDeliveryEId: '#NDdayE', //container ID for no delivery (expanded view)
 		rowHeight: 32, //height of a ts row, the TD (for calcdHeight)
 		cutoffHeight: 28, //height of cutoff (for calcdHeight)
 		emptyCellHtml: '<div class="tsContent"><div id="ts_d%%D%%_ts%%T%%_rbCont" class="fleft ts_rb">&nbsp;</div><div id="ts_d%%D%%_ts%%T%%_time" class="fleft tsCont ">&nbsp;</div></div>', //HTML for an empty cell
@@ -47,9 +51,9 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		radioCheckedCur: null, //currently checked radio  (not checked -> cur ?(OnlyRow) -> last)
 		radioCheckedLast: null, //last checked radio (for re check on ao hide)
 		radioCheckedLastUndo: null, //last checked radio to undo color for
-		negSubt: (0-76-14-4-60-15), //assume a negative subtraction of hExt-fExt-daypart-two cutoffs-margin for row height
+		negSubt: (0-66-11-4-81-15), //assume a negative subtraction of hExt-fExt-daypart-three cutoffs-margin for row height
 		showPremiumSlots: false, //reorg based on prem.slots
-		premSlotsDayId: 'ts_d0_tsTable', //dayId where prem.slots is shown
+		premSlotsDayId: '#ts_d0_tsTable', //dayId where prem.slots is shown
 		premSlotsCO: null, //date object initialized with timestamp ref for cutoff timing (UTC ms)
 		premSlotsTimerElem: null, //html elem where timer is displayed as child (pre extended)
 		premSlotsTimerElem_timer: 'premSlotsTimer', //html elem id for timer
@@ -57,7 +61,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		premSlotsTimerElemClass: 'premSlotTimer', //timer elems have this className
 		premSlotsClock: null, //timer interval storage
 		showDpTc: false, //show DP T & C
-		premSlotsDpTcElem: 'premDpTc', //the container for the dp t&c
+		premSlotsDpTcElem: '#premDpTc', //the container for the dp t&c
 		premDcTpAgreed: false, //has user agreed to dctp
 		intializeEventFuncs: this.refId+'InitializeFuncs', //check for, and run if found, function on an initialize (passes fdTSDisplay obj in as argsObj.thisObj)
 		preInitializeEventFuncs: this.refId+'PreInitializeFuncs', //check for, and run if found, function(s) before initialize (passes fdTSDisplay obj in as argsObj.thisObj)
@@ -70,25 +74,25 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 	//id templates, these are always the html element refs as well
 		this.idTemplates = {
 			//row (uses index, must be passed explicitly)
-			'rowId': 'timeslots_grid'+this.opts.indexVar,
+			'rowId': '#timeslots_grid'+this.opts.indexVar,
 			//day table
-			'dayId': 'ts_d'+this.opts.dayVar+'_tsTable',
+			'dayId': '#ts_d'+this.opts.dayVar+'_tsTable',
 			//timeslot items
-			'tsId': 'ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar,
-			'tsPId': 'ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_tr',
-			'tsRadio': 'ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_rb',
-			'tsRadioCont': 'ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_rbCont',
-			'tsTime': 'ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_time',
+			'tsId': '#ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar,
+			'tsPId': '#ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_tr',
+			'tsRadio': '#ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_rb',
+			'tsRadioCont': '#ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_rbCont',
+			'tsTime': '#ts_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_time',
 			//cutoff items
-			'coId': 'co_d'+this.opts.dayVar+'_ts'+this.opts.timeVar,
-			'coPId': 'co_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_tr',
+			'coId': '#co_d'+this.opts.dayVar+'_ts'+this.opts.timeVar,
+			'coPId': '#co_d'+this.opts.dayVar+'_ts'+this.opts.timeVar+'_tr',
 			//dayPart items
-			'dayPartId': 'daypart_d'+this.opts.dayVar,
-			'dayPartPId': 'daypart_d'+this.opts.dayVar+'_tr',
+			'dayPartId': '#daypart_d'+this.opts.dayVar,
+			'dayPartPId': '#daypart_d'+this.opts.dayVar+'_tr',
 			//headers/footer
-			'dayHeaderE': 'ts_d'+this.opts.dayVar+'_hE',
-			'dayHeaderC': 'ts_d'+this.opts.dayVar+'_hC',
-			'dayFooterE': 'ts_d'+this.opts.dayVar+'_fE'
+			'dayHeaderE': '#ts_d'+this.opts.dayVar+'_hE',
+			'dayHeaderC': '#ts_d'+this.opts.dayVar+'_hC',
+			'dayFooterE': '#ts_d'+this.opts.dayVar+'_fE'
 		};
 
 	//associative array of dayID = dayObj
@@ -142,7 +146,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						//if (this.opts.showPremiumSlots) { //add one row height to compensate for prem.slots
 						//	this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length+1, null, false, this.opts.negSubt);
 						//} else {
-							this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt);
+							this.rowObjs[rowId].ext.css('height', this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt));
 						//}
 					}
 				}
@@ -167,7 +171,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 					//set row calcd height
 					if (this.rowObjs[rowId].dayIds[0] && this.dayObjs[this.rowObjs[rowId].dayIds[0]]) {
-						this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt);
+						this.rowObjs[rowId].ext.css('height', this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt));
 					}
 				}
 				
@@ -190,7 +194,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					
 					//set row calcd height
 					if (this.rowObjs[rowId].dayIds[0] && this.dayObjs[this.rowObjs[rowId].dayIds[0]]) {
-						this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt);
+						this.rowObjs[rowId].ext.css('height', this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt));
 					}
 				}
 			}
@@ -202,12 +206,10 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				
 				//check for prem.slots info
 				if (lastCO) {
-					this.log('Timer CO:'+lastCO.innerHTML);
-					//hide existing CO display info
-					/* lastCO.childElements().each(function(e) { e.hide(); }); */
+					this.log('Timer CO:'+lastCO.html());
 					
 					//add t&c div for hover display (put this first, so it covers the timer)
-					if (this.opts.showDpTc && $('PREDPTCdayE')) { //PREDPTCdayE div is in the page
+					if (this.opts.showDpTc && $('#PREDPTCdayE')) { //PREDPTCdayE div is in the page
 						var firstPmTs = $(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSIds[this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart]);
 						var realTs = 0;
 						for (var i=this.dayObjs[this.rowObjs[rowId].dayIds[0]].dayPart; i < this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length; i++) {
@@ -220,13 +222,14 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							//styleString += 'top: '+this.getCalcdRowHeight(1, null, false, negSub)+';';
 							styleString += 'height: '+this.getCalcdRowHeight(realTs, null, false, 0)+';';
 
-						firstPmTs.insertBefore( new Element('div', {'id': this.opts.premSlotsDpTcElem, 'class': 'premSlotDpTc', 'style': styleString }), firstPmTs.firstChild );
+						/* FIX HERE */
+						//firstPmTs.insertBefore( new Element('div', {'id': (this.opts.premSlotsDpTcElem).replace('#',''), 'class': 'premSlotDpTc', 'style': styleString }), firstPmTs.firstChild );
 						
 						var dpTcElem = $(this.opts.premSlotsDpTcElem);
 						if (dpTcElem) {
 							
 							//add the content
-							dpTcElem.innerHTML = $('PREDPTCdayE').innerHTML;
+							dpTcElem.html($('#PREDPTCdayE').html());
 							//add mouse out to terms block
 							this.addEvent('mouseOvers', dpTcElem);
 
@@ -259,24 +262,24 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				}
 				
 				/* log change click event */
-                var timeslotId;
-                if (this.slotObjs[slot].radioExt != null) {
-                    timeslotId = this.slotObjs[slot].radioExt.value;
+				var timeslotId;
+				if (this.slotObjs[slot].radioExt != null) {
+					timeslotId = this.slotObjs[slot].radioExt.val();
 
-                    /* set the id to a hidden input for form submit */
-                    this.slotObjs[slot].addCustomEvent({
-                        event: 'click', 
-                        func: function(argsObj) {
-                            /* add it if it doesn't exist */
-                            if (!$$('#deliveryTimeslotId').length) {
-                                $$('.tsWrapper')[0].insertBefore( new Element('input', {'id': 'deliveryTimeslotId', name: 'deliveryTimeslotId', 'type': 'hidden' }), $$('.tsWrapper')[0].firstChild );
-                            }
-                            /* and set */
-                            $$('#deliveryTimeslotId')[0].value = argsObj.timeslotId;
-                        },    
-                        params: {'timeslotId': timeslotId}
-                    });
-                }
+					/* set the id to a hidden input for form submit */
+					this.slotObjs[slot].addCustomEvent({
+						event: 'click', 
+						func: function(argsObj) {
+							/* add it if it doesn't exist */
+							if (!$('#deliveryTimeslotId').length) {
+								$('.tsWrapper').prepend('<input id="deliveryTimeslotId" name="deliveryTimeslotId" type="hidden" />');
+							}
+							/* and set */
+							$('#deliveryTimeslotId').val(argsObj.timeslotId);
+						},    
+						params: {'timeslotId': timeslotId}
+					});
+				}
 			}
 			for (var day in this.dayObjs) {
 				//check extend queue
@@ -401,8 +404,10 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						case 'dayId':
 						case 'dayHeaderC':
 							//day needs expand
-							eventObject.observe('mouseover', this.dayMouseOver.bindAsEventListener(this, eventObject.id));
-							eventObject.observe('mouseout', this.dayMouseOut.bindAsEventListener(this, eventObject.id));
+							//eventObject.observe('mouseover', this.dayMouseOver.bindAsEventListener(this, eventObject.id));
+							//eventObject.observe('mouseout', this.dayMouseOut.bindAsEventListener(this, eventObject.id));
+							eventObject.on('mouseover', this.dayMouseOver);
+							eventObject.on('mouseout', this.dayMouseOut);
 							break;
 						default:
 					}
@@ -412,8 +417,11 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						case 'tsId':
 						case 'coId': //needed for DpTc
 							//day needs expand
-							eventObject.observe('mouseover', this.tsMouseOverClickOnly.bindAsEventListener(this, eventObject.id));
-							eventObject.observe('mouseout', this.tsMouseOutClickOnly.bindAsEventListener(this, eventObject.id));
+							//eventObject.observe('mouseover', this.tsMouseOverClickOnly.bindAsEventListener(this, eventObject.id));
+							//eventObject.observe('mouseout', this.tsMouseOutClickOnly.bindAsEventListener(this, eventObject.id));
+							
+							eventObject.on('mouseover', this.tsMouseOverClickOnly);
+							eventObject.on('mouseout', this.tsMouseOutClickOnly);
 							break;
 						default:
 					}
@@ -421,10 +429,12 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				case 'mouseClicks':
 					switch (objTypeAndRef.typeStr) {
 						case 'dayHeaderC':
-							eventObject.observe('click', this.dayMouseClick.bindAsEventListener(this, eventObject.id));
+							//eventObject.observe('click', this.dayMouseClick.bindAsEventListener(this, eventObject.id));
+							eventObject.on('click', this.dayMouseClick);
 							break;
 						case 'tsId':
-							eventObject.observe('click', this.tsMouseClick.bindAsEventListener(this, eventObject.id));
+							//eventObject.observe('click', this.tsMouseClick.bindAsEventListener(this, eventObject.id));
+							eventObject.on('click', this.tsMouseClick);
 							break;
 					}
 					break;
@@ -433,23 +443,19 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		}
 	/* event handlers*/
 		/* day-level mouse over */
-			this.dayMouseOver = function() {
-				var elemId = arguments[1];
-				var dayId = this.convertId(elemId, 'dayId');
-				var fdTSDisplay = this; //ref to fdTSDisplay
+			this.dayMouseOver = function(event) {
+				var dayId = fdTSDisplay.convertId($(this).attr('id'), 'dayId');
 				//fdTSDisplay.log('dayMouseOver ', elemId, dayId, this.opts.expandedDayId);
 
 				//once per day
-				if (dayId !== this.opts.expandedDayId) {
+				if (dayId !== fdTSDisplay.opts.expandedDayId) {
 					if (fdTSDisplay.opts.clickOnly) {
 						//add class for contracted gradient
-						if (fdTSDisplay.dayObjs[dayId].hCext.className.indexOf(' tsHeaderCMouseOver') === -1) {
-							fdTSDisplay.dayObjs[dayId].hCext.className += ' tsHeaderCMouseOver';
-						}
+						fdTSDisplay.dayObjs[dayId].hCext.addClass('tsHeaderCMouseOver');
 					}
-                    $jq('#'+dayId).addClass('mouse');
-					var waitTime = this.opts.mouseOverTimeLimit;
-					var expandedDay = this.opts.expandedDayId;
+					$(dayId).addClass('mouse');
+					var waitTime = fdTSDisplay.opts.mouseOverTimeLimit;
+					var expandedDay = fdTSDisplay.opts.expandedDayId;
 					//var isExpanded = this.dayObjs[dayId].isExpanded;
 					//var lastMouseOverElemId = this.opts.lastMouseOverElemId;
 
@@ -458,12 +464,12 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						if (dayId === expandedDay) { return; }
 						while(!fdTSDisplay.setDayAsExpanded(dayId)){};
 					}
-					if (this.opts.mouseOverSetTimeout === null) {
-						this.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
+					if (fdTSDisplay.opts.mouseOverSetTimeout === null) {
+						fdTSDisplay.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
 					}else{ //fix stuck mouseovers
-						clearTimeout(this.opts.mouseOverSetTimeout);
-						this.opts.mouseOverSetTimeout = null;
-						this.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
+						clearTimeout(fdTSDisplay.opts.mouseOverSetTimeout);
+						fdTSDisplay.opts.mouseOverSetTimeout = null;
+						fdTSDisplay.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
 					}
 				}
 
@@ -478,19 +484,17 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				}
 			}
 		/* day-level mouse out */
-			this.dayMouseOut = function() {
-				var elemId = arguments[1];
-				var fdTSDisplay = this; //ref to fdTSDisplay
-
-				var srcElem = arguments[0].target || arguments[0].srcElement;
-				var dayId = this.convertId(elemId, 'dayId');
-				var srcDayId = this.convertId(srcElem.id, 'dayId');
+			this.dayMouseOut = function(event) {
+				var elemId = $(this).attr('id');
+				var dayId = window.fdTSDisplay.convertId(elemId, 'dayId');
+				var srcDayId = window.fdTSDisplay.convertId(elemId, 'dayId');
 
 				//fdTSDisplay.log('dayMouseOut ', elemId, srcDayId);
 
 				if (fdTSDisplay.opts.clickOnly) {
 					//remove class for contracted gradient
-					fdTSDisplay.dayObjs[dayId].hCext.className = fdTSDisplay.dayObjs[dayId].hCext.className.replace(' tsHeaderCMouseOver', '');
+					
+					fdTSDisplay.dayObjs[dayId].hCext.removeClass('tsHeaderCMouseOver');
 				}
 
 				//don't clear on child elems
@@ -499,23 +503,22 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				//clear waiting event
 				clearTimeout(fdTSDisplay.opts.mouseOverSetTimeout);
 				//reset on mouse out
-				this.opts.mouseOverSetTimeout = null;
+				window.fdTSDisplay.opts.mouseOverSetTimeout = null;
 			}
 		/* day-level mouse click (left) */
 			this.dayMouseClick = function() {
-				var elemId = arguments[1];
-				var fdTSDisplay = this; //ref to fdTSDisplay
-				var srcElem = arguments[0].target || arguments[0].srcElement;
-				var dayId = this.convertId(elemId, 'dayId');
+				var elemId = $(this).attr('id');
+				var srcElem = event.target || event.currentTarget;
+				var dayId = fdTSDisplay.convertId(elemId, 'dayId');
 
 				while(!fdTSDisplay.setDayAsExpanded(dayId)){};
 
 			}
 		/* slot-level click */
-			this.tsMouseClick = function() {
-				var elemId = arguments[1];
-				var fdTSDisplay = this; //ref to fdTSDisplay
-				var srcElem = arguments[0].target || arguments[0].srcElement;
+			this.tsMouseClick = function(event) {
+				var elemId = '#'+$(this).attr('id');
+				var srcElem = $jq(event.target || event.currentTarget);
+				var srcElemId = '#'+srcElem.attr('id');
 				var dayId = fdTSDisplay.convertId(elemId, 'dayId');
 
 				var slotObj = fdTSDisplay.slotObjs[elemId];
@@ -524,19 +527,19 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				fdTSDisplay.log('Click Info Before:', fdTSDisplay.opts.radioCheckedCur, fdTSDisplay.opts.radioCheckedLast, fdTSDisplay.opts.radioCheckedLastUndo);
 				
 				//clear previously checked
-				$jq('#'+fdTSDisplay.opts.radioCheckedCur).attr('checked', null);
+				$jq(fdTSDisplay.opts.radioCheckedCur).attr('checked', null);
 
-				if (srcElem && srcElem.id === slotObj.radio) {
+				if (srcElem && srcElemId === slotObj.radio) {
 					//we already have the radio
 					if (!fdTSDisplay.opts.radioCheckedCur) {
 						//first time here?
 
 						//turn srcElem.id radio into a day id
-						var tempDayIdFirst = fdTSDisplay.convertId(srcElem.id, 'dayId');
+						var tempDayIdFirst = fdTSDisplay.convertId(srcElemId, 'dayId');
 						var rowObjFirst = fdTSDisplay.getRowObjByDayId(tempDayIdFirst);
 
 						//set as clicked
-						fdTSDisplay.opts.radioCheckedCur = srcElem.id;
+						fdTSDisplay.opts.radioCheckedCur = srcElemId;
 
 						//set as currently checked
 						slotObj.isChecked = true;
@@ -545,55 +548,38 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						//fdTSDisplay.opts.radioCheckedLast = srcElem.id;
 
 						//set as lastUndo
-						fdTSDisplay.opts.radioCheckedLastUndo = srcElem.id;
+						fdTSDisplay.opts.radioCheckedLastUndo = srcElemId;
 
 						//and add classname (if it doesn't already have it)
-						if (slotObj.ext.className.indexOf(' tsContentResE') === -1) {
-							if (slotObj.ext.className.indexOf(' tcSelectionBGC') === -1) {
-								slotObj.ext.className +=' tcSelectionBGC';
-							}
-						}
+						slotObj.ext.addClass('tcSelectionBGC');
 					}else{
 						//good to see you again
 
 						//make sure this isn't the same as what was last clicked
-						if (srcElem.id != fdTSDisplay.opts.radioCheckedLastUndo) {
+						if (srcElemId != fdTSDisplay.opts.radioCheckedLastUndo) {
 
 							//clear pre-loaded selections
-							var preDef = $$('.tsSelectedSlotPropE');
-							for (var p = 0; p < preDef.length; p++) {
-								preDef[p].innerHTML = '&nbsp;';
-							}
-							var preDef = $$('.tsSelectedSlotPropC');
-							for (var p = 0; p < preDef.length; p++) {
-								preDef[p].innerHTML = '&nbsp;';
-							}
-							preDef = $$('.tsContentSelE');
-							for (var p = 0; p < preDef.length; p++) {
-								preDef[p].className = preDef[p].className.replace('tsContentSelE', '');
-							}
-							preDef = $$('.tsContentSelC');
-							for (var p = 0; p < preDef.length; p++) {
-								preDef[p].className = preDef[p].className.replace('tsContentSelC', '');
-							}
+							$('.tsSelectedSlotPropE').html('&nbsp;');
+							$('.tsSelectedSlotPropC').html('&nbsp;');
+							$('.tsContentSelE').removeClass('tsContentSelE');
+							$('.tsContentSelC').removeClass('tsContentSelC');
 
 							//set as clicked
 							slotObj.isChecked = true;
 							//set as currently checked
-							fdTSDisplay.opts.radioCheckedCur = srcElem.id;
+							fdTSDisplay.opts.radioCheckedCur = srcElemId;
 							//and add classname (if it doesn't already have it)
-							if (slotObj.ext.className.indexOf(' tcSelectionBGC') === -1) {
-								slotObj.ext.className +=' tcSelectionBGC';
-							}
+							$(slotObj.ext).addClass('tcSelectionBGC');
+
 							//is selected not overriding resv? if so, comment this next line
 							//slotObj.ext.className = slotObj.ext.className.replace(' tsContentResE', '');
 
 							//turn cur radio into a day id
-							var tempDayId = fdTSDisplay.convertId(srcElem.id, 'dayId');
+							var tempDayId = fdTSDisplay.convertId(srcElemId, 'dayId');
 							var rowObj = fdTSDisplay.getRowObjByDayId(tempDayId);
 
 							//check that clicked one isn't the same as lastUndo
-							if (srcElem.id !== fdTSDisplay.opts.radioCheckedLastUndo) {
+							if (srcElemId !== fdTSDisplay.opts.radioCheckedLastUndo) {
 								//it's not, clear it now
 								//undo last one
 								var undoSlotId = fdTSDisplay.convertId(fdTSDisplay.opts.radioCheckedLastUndo, 'tsId');
@@ -601,14 +587,15 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 								//make sure it's no longer marked as checked
 								undoSlotObj.isChecked = false;
 								//undo bgcolor class
-								undoSlotObj.ext.className = undoSlotObj.ext.className.replace(' tcSelectionBGC', '');
+								
+								undoSlotObj.ext.removeClass('tcSelectionBGC');
 								
 								//move to lastUndo
 								fdTSDisplay.opts.radioCheckedLastUndo = fdTSDisplay.opts.radioCheckedCur;
 							}
 
 							//mark as the last one clicked
-							fdTSDisplay.opts.radioCheckedLastUndo = srcElem.id;
+							fdTSDisplay.opts.radioCheckedLastUndo = srcElemId;
 
 						}
 
@@ -631,7 +618,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				}
 				
 				//mark newly checked
-				$jq('#'+fdTSDisplay.opts.radioCheckedCur).attr('checked', 'true');
+				$jq(fdTSDisplay.opts.radioCheckedCur).attr('checked', true);
 
 				if (!fdTSDisplay.dayObjs[dayId].isExpanded) {
 					while(!fdTSDisplay.setDayAsExpanded(dayId)){};
@@ -639,15 +626,14 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 			}
 		/* slot-level mouse over, click only */
-			this.tsMouseOverClickOnly = function() {
-				var elemId = arguments[1];
-				var fdTSDisplay = this; //ref to fdTSDisplay
+			this.tsMouseOverClickOnly = function(event) {
+				var elemId = $(this).attr('id');
 				var slotObj = fdTSDisplay.slotObjs[elemId];
 				var dayId = fdTSDisplay.convertId(elemId, 'dayId');
 				
 				//check extend queue
-				this.checkQueue(elemId);
-				if (slotObj) { this.checkQueue(slotObj.radio); }
+				fdTSDisplay.checkQueue(elemId);
+				if (slotObj) { fdTSDisplay.checkQueue(slotObj.radio); }
 
 				//only show colors on non-expanded days, on slots that have radios
 				if (slotObj && slotObj.radioExt) {
@@ -655,27 +641,26 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				}
 
 				//hover on for dp T&C
-				if (this.opts.showDpTc && !this.opts.premDcTpAgreed) {
-					if (this.dayObjs[dayId].showDpTc && this.dayObjs[dayId].isExpanded) {
-						if ($(this.opts.premSlotsDpTcElem)) { $(this.opts.premSlotsDpTcElem).show(); }
+				if (fdTSDisplay.opts.showDpTc && !fdTSDisplay.opts.premDcTpAgreed) {
+					if (fdTSDisplay.dayObjs[dayId].showDpTc && fdTSDisplay.dayObjs[dayId].isExpanded) {
+						if ($(fdTSDisplay.opts.premSlotsDpTcElem)) { $(fdTSDisplay.opts.premSlotsDpTcElem).show(); }
 					}
 				}
 
 			}
 		/* slot-level mouse out, click only */
-			this.tsMouseOutClickOnly = function() {
-				var elemId = arguments[1];
-				var fdTSDisplay = this; //ref to fdTSDisplay
+			this.tsMouseOutClickOnly = function(event) {
+				var elemId = $(this).attr('id');
 				var slotObj = fdTSDisplay.slotObjs[elemId];
 				var dayId = fdTSDisplay.convertId(elemId, 'dayId');
 
 				if (slotObj) {
-					slotObj.ext.className = slotObj.ext.className.replace(' clickOnlyMouseOver', '');
+					slotObj.ext.removeClass('clickOnlyMouseOver');
 				}
 				//hover on for dp T&C
-				if (this.opts.showDpTc) {
-					if (!this.dayObjs[dayId].showDpTc || elemId !== this.opts.premSlotsDpTcElem) {
-						if ($(this.opts.premSlotsDpTcElem)) { $(this.opts.premSlotsDpTcElem).hide(); }
+				if (fdTSDisplay.opts.showDpTc) {
+					if (!fdTSDisplay.dayObjs[dayId].showDpTc || elemId !== fdTSDisplay.opts.premSlotsDpTcElem) {
+						if ($(fdTSDisplay.opts.premSlotsDpTcElem)) { $(fdTSDisplay.opts.premSlotsDpTcElem).hide(); }
 					}
 				}
 
@@ -777,18 +762,18 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				var timeCheck = window.fdTSDisplay.opts.premSlotsCO.getTime() - curTime.getTime();
 				if (timeCheck > 0) {
 					timeDisp = window.fdTSDisplay.formatTimer(timeCheck);
-					$(window.fdTSDisplay.opts.premSlotsTimerElem_msg).innerHTML = 'to place your order';
+					$(window.fdTSDisplay.opts.premSlotsTimerElem_msg).html('to place your order');
 				}
 			}
 
 			//update all timer elems
-			$$('.'+window.fdTSDisplay.opts.premSlotsTimerElemClass).each(function(e, i) {
+			$('.'+window.fdTSDisplay.opts.premSlotsTimerElemClass).each(function(e, i) {
 				var iHtml = timeDisp + ' LEFT';
-				if ($(e).up('div').className === 'premSlotTimerExpanded') {
+				if ($(e).closest('div').className === 'premSlotTimerExpanded') {
 					iHtml += '<div>to place your order</div>';
 				}
 				
-				$(e).innerHTML = iHtml;
+				$(e).html(iHtml);
 			});
 
 
@@ -898,17 +883,17 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						var curSlotObj = this.slotObjs[curSlotId];
 						var curContentId = '';
 						var curContentExt = null;
-						if (curSlotObj.ext.getAttribute('name') != null && curSlotObj.ext.getAttribute('name').indexOf('_') != -1) {
-							curContentId = curSlotObj.ext.getAttribute('name').split('_');
-							var tempId = curContentId[1];
+						if (curSlotObj.ext.attr('name') != null && curSlotObj.ext.attr('name').indexOf('_') != -1) {
+							curContentId = curSlotObj.ext.attr('name').split('_');
+							var tempId = '#'+curContentId[1];
 							if (tempId !== '') {
-								if ($(tempId+'C')) { tempId = tempId+'C'; } //if C/E versions exist, use them
+								if ($(tempId+'C').length) { tempId = tempId+'C'; } //if C/E versions exist, use them
 
 								curContentExt = $(tempId);
 							}
 							if (curContentExt && !day.showPremium) { //for slots.prem, it's NOT the whole day
 								//we have a holiday or cutoffpassed
-								curSlotObj.ext.innerHTML = curContentExt.innerHTML;
+								curSlotObj.ext.html(curContentExt.html());
 								//set in slot so we don't have to seek again
 								curSlotObj.contentId = tempId;
 								/* if we have a special contentId, it's a full day, so we can fill in reorgData and return */
@@ -973,7 +958,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		this.parseSlotTimeInfo = function(slotObj) {
 			if (slotObj == null || !slotObj.hasOwnProperty('id') || !this.slotObjs[slotObj.id] || !$(slotObj.id+'_timeInfo')) { return; }
 
-			var timeString = $(slotObj.id+'_timeInfo').textContent;
+			var timeString = $(slotObj.id+'_timeInfo').text();
 			var timeStringParse = timeString.split('-');
 			slotObj.timeStart = null;
 			slotObj.timeEnd = null;
@@ -1377,26 +1362,26 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				//not one of the main types, try subtypes
 				testId = this.convertId(elemId, 'day');
 				if (testId !== -1 && this.dayObjs[testId]) {
-					if (this.dayObjs[testId].dayPartExt && this.dayObjs[testId].dayPartExt.id === elemId) {
+					if (this.dayObjs[testId].dayPartExt && this.dayObjs[testId].dayPartExt.attr('id') === elemId) {
 						//this is a dayPart id
 						return { typeStr: 'dayPartExt', parentRef: this.dayObjs, childStr: 'dayPartExt' };
 					}
-					if (this.dayObjs[testId].hEext && this.dayObjs[testId].hEext.id === elemId) {
+					if (this.dayObjs[testId].hEext && this.dayObjs[testId].hEext.attr('id') === elemId) {
 						//this is a headerE
 						return { typeStr: 'dayHeaderE', parentRef: this.dayObjs, childStr: 'hEext' };
 					}
-					if (this.dayObjs[testId].fEext && this.dayObjs[testId].fEext.id === elemId) {
+					if (this.dayObjs[testId].fEext && this.dayObjs[testId].fEext.attr('id') === elemId) {
 						//this is a footerE
 						return { typeStr: 'dayFooterE', parentRef: this.dayObjs, childStr: 'fEext' };
 					}
-					if (this.dayObjs[testId].fEext && this.dayObjs[testId].hCext.id === elemId) {
+					if (this.dayObjs[testId].fEext && this.dayObjs[testId].hCext.attr('id') === elemId) {
 						//this is a headerC
 						return { typeStr: 'dayHeaderC', parentRef: this.dayObjs, childStr: 'hCext' };
 					}
 				}
 				testId = this.convertId(elemId, 'slot');
 				if (testId !== -1 && this.slotObjs[testId]) {
-					if (this.slotObjs[testId].radioExt && this.slotObjs[testId].radioExt.id === elemId) {
+					if (this.slotObjs[testId].radioExt && this.slotObjs[testId].radioExt.attr('id') === elemId) {
 						//this is a headerC
 						return { typeStr: 'tsRadio', parentRef: this.slotObjs, childStr: 'radioExt' };
 					}
@@ -1434,23 +1419,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				var refElemExt = $(refElemId);
 				if (refElemExt) {
 					for (var i=0; i < this.opts.cssRefStyleAttributes.length; i++)	{
-						if (refElemExt.getStyle) {
-							if (
-								refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== null && refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== ''
-							) {
-								cssString += this.opts.cssRefStyleAttributes[i];
-								cssString += ':';
-								var tempCSS = refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
-
-								/* Opera 10.x returns 0px width for display: none elements, fallback to getWidth */
-								if (this.opts.cssRefStyleAttributes[i] === 'width' && tempCSS === '0px') {
-									cssString += Element.getWidth(refElemId)+'px';
-								}else{
-									cssString += refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
-								}
-								cssString += ';';
-							}
-						}
+						cssString += this.opts.cssRefStyleAttributes[i]+':'+refElemExt.css(this.opts.cssRefStyleAttributes[i])+';';
 					}
 				}
 
@@ -1599,18 +1568,18 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				var dayObj = this.dayObjs[dayId];
 
 				//check extend queue
-				this.checkQueue(dayObj.ext.id);
+				this.checkQueue(dayObj.ext.attr('id'));
 
 				//ref other days in row
 				var otherDayIds = this.rowObjs[dayObj.parentId].dayIds;
 
-				if (dayObj.ext && dayObj.ext.down('.cutoff') && dayId === otherDayIds[0]) {
+				if (dayObj.ext && dayObj.ext.find('.cutoff').length && dayId === otherDayIds[0]) {
 					//and add left line since it's the first one
-					dayObj.ext.down('.cutoff').style.borderLeft = '1px solid #ccc';
+					dayObj.ext.find('.cutoff').css('borderLeft', '1px solid #ccc');
 				}
-				if (dayObj.ext.down('.cutoff') && dayId === otherDayIds[otherDayIds.length-1]) {
+				if (dayObj.ext.find('.cutoff').length && dayId === otherDayIds[otherDayIds.length-1]) {
 					//and add right line since it's the last one
-					this.dayObjs[otherDayIds[otherDayIds.length-1]].ext.down('.cutoff').style.borderRight = '1px solid #ccc';
+					this.dayObjs[otherDayIds[otherDayIds.length-1]].ext.find('.cutoff').css('borderRight', '1px solid #ccc');
 				}
 			}
 		}
@@ -1625,7 +1594,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 			if (dayObj.isExpanded) {
 				//expanded day
-				dayObj.ext.className = dayObj.ext.className.replace('tsTableC', 'tsTableE');
+				if (dayObj.ext.hasClass('tsTableC')) { dayObj.ext.removeClass('tsTableC').addClass('tsTableE'); }
 
 				//check extend queue
 				this.checkQueue(this.convertId(dayId, 'dayPartId'));
@@ -1633,7 +1602,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				//hide dayPart
 				//check for prem.slots
 				if (!dayObj.showPremium) {
-					dayObj.dayPartExt.up('tr').hide();
+					dayObj.dayPartExt.closest('tr').hide();
 				}
 
 				//see if day is totally empty
@@ -1653,11 +1622,11 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						var curSlotObj = this.slotObjs[curSlotId];
 						var curCutoffObj = this.cutoffObjs[curCutoffId];
 
-						var curCORow = curCutoffObj.ext.up('tr');
-						var curTSRow = curSlotObj.ext.up('tr');
+						var curCORow = curCutoffObj.ext.closest('tr');
+						var curTSRow = curSlotObj.ext.closest('tr');
 
 						//hide all empty cutoffs
-						if (!curCORow.down('.cutoffDispChild')) {
+						if (!curCORow.find('.cutoffDispChild').length) {
 							curCORow.hide();
 						}
 						if (dayObj.COs[t] === '') {
@@ -1680,31 +1649,33 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							if (curContentExt) {
 								//it does, set it and use it
 								curSlotObj.contentId = curContentId;
-								curSlotObj.ext.innerHTML = curContentExt.innerHTML;
+								curSlotObj.ext.html(curContentExt.html());
 							}
 							//replace out className
 							if (curSlotObj.contentId === this.opts.noDeliveryEId) {
-								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGC','tsContainerNoDelBGE');
-								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerNoDelBGE');
-								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerNoDelBGC','tsContainerNoDelBGE');
+								
+								if (curSlotObj.ext.hasClass('tsContainerBGC')) { curSlotObj.ext.removeClass('tsContainerBGC').addClass('tsContainerNoDelBGE'); }
+								if (curSlotObj.ext.hasClass('tsContainerBGE')) { curSlotObj.ext.removeClass('tsContainerBGE').addClass('tsContainerNoDelBGE'); }
+								if (curSlotObj.ext.hasClass('tsContainerNoDelBGC')) { curSlotObj.ext.removeClass('tsContainerNoDelBGC').addClass('tsContainerNoDelBGE'); }
 							}
-							curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGC','tsContainerBGE');
+							
+							if (curSlotObj.ext.hasClass('tsContainerBGC')) { curSlotObj.ext.removeClass('tsContainerBGC').addClass('tsContainerBGE'); }
 
 							if (curSlotObj.contentId && curSlotObj.contentId !== this.opts.noDeliveryEId) {
 								//non-noDelivery prob don't wan't vertical-align top
-								curSlotObj.ext.style.verticalAlign = 'middle';
+								curSlotObj.ext.css('verticalAlign', 'middle');
 							}
 
 							//reset height, positive subtraction of cutoff height since there's no cutoff being used
-							curSlotObj.ext.style.height = this.getCalcdRowHeight(dayObj.TSIds.length, null, false, (-2-this.opts.cutoffHeight));
+							curSlotObj.ext.css('height', this.getCalcdRowHeight(dayObj.TSIds.length, null, false, (-2-this.opts.cutoffHeight)));
 							//and remove it's bottom line
-							curSlotObj.ext.style.borderBottom = '0 solid #ccc';
-						}else{
+							curSlotObj.ext.css('borderBottom', '0 solid #ccc');
+						} else {
 							//no time, hide
 							curTSRow.hide();
 						}
 					}
-				}else{
+				} else {
 					var hiddenRows = 0;
 					var lastVisRow = 0;
 					//day has some timeslots, handle CO and TS at the same time
@@ -1723,17 +1694,17 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						var curSlotObj = this.slotObjs[curSlotId];
 						var curCutoffObj = this.cutoffObjs[curCutoffId];
 
-						var curCORow = curCutoffObj.ext.up('tr');
-						var curTSRow = curSlotObj.ext.up('tr');
+						var curCORow = curCutoffObj.ext.closest('tr');
+						var curTSRow = curSlotObj.ext.closest('tr');
 
 						//hide all empty cutoffs
 						if (dayObj.COs[t] === '' || dayObj.showPremium) {
 							curCORow.hide();
 						}else{
 							curCORow.show(); //tr
-							curCORow.down('.cutoffDispChild').show(); //div
+							curCORow.find('.cutoffDispChild').show(); //div
 							//and add l/r lines
-							curCORow.down('td').className = 'cutoffLR';
+							curCORow.find('td').removeClass('cutoff').addClass('cutoffLR');
 						}
 						
 
@@ -1759,7 +1730,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						if (dayObj.showPremium) {
 							if (t === 0) {
 								//adjust height, expanded
-								curSlotObj.ext.style.height = (parseInt(curSlotObj.ext.style.height) + this.opts.cutoffHeight)+'px';
+								curSlotObj.ext.css('height', (parseInt(curSlotObj.ext.height()) + this.opts.cutoffHeight)+'px');
 							}
 
 							//change content (assuming we have it) change to expanded and proceed like normal
@@ -1769,7 +1740,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							}
 							curContentExt = $(curContentId);
 							if (curContentExt) {
-								curSlotObj.ext.innerHTML = curContentExt.innerHTML;
+								curSlotObj.ext.html(curContentExt.html());
 								//set in slot
 								curSlotObj.contentId = curContentId;
 							}
@@ -1780,14 +1751,14 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					//adjust height of final VISIBLE row
 					if (hiddenRows > 0) { hiddenRows++; } //if we hid rows, include last ts in count
 					curSlotObj = this.slotObjs[dayObj.TSIds[lastVisRow]];
-					curSlotObj.ext.style.height = this.getCalcdRowHeight(hiddenRows, null, false, 0);
+					curSlotObj.ext.css('height', this.getCalcdRowHeight(hiddenRows, null, false, 0));
 					//and remove it's bottom line
-					curSlotObj.ext.style.borderBottom = '0px solid #fff';
+					curSlotObj.ext.css('borderBottom', '0px solid #fff');
 				}
 			}else{
 				//day is contracted
 				var reorgData = dayObj.reorgData;
-				dayObj.ext.className = dayObj.ext.className.replace('tsTableE', 'tsTableC');
+				if (dayObj.ext.hasClass('tsTableE')) { dayObj.ext.removeClass('tsTableE').addClass('tsTableC'); }
 
 				for (var r = 0; r < reorgData.length; r++) {
 					var reorgStart = reorgData[r][0];
@@ -1808,7 +1779,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 						var curSlotObj = this.slotObjs[curSlotId];
 						
-						var curCORow = this.cutoffObjs[curCutoffId].ext.up('tr');
+						var curCORow = this.cutoffObjs[curCutoffId].ext.closest('tr');
 
 						if (t === reorgStart) {
 							//based on name, get contentId if needed
@@ -1817,7 +1788,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							if (curSlotObj.contentId === null) {
 								//we haven't, do so now
 								var curContentId;
-								if (curSlotObj.ext.getAttribute('name') != null && curSlotObj.ext.getAttribute('name').indexOf('_') != -1) {
+								if (curSlotObj.ext.attr('name') != null && curSlotObj.ext.attr('name').indexOf('_') != -1) {
 									curContentId = curSlotObj.ext.getAttribute('name').split('_');
 									var tempId = curContentId[1];
 									if (tempId !== '') {
@@ -1827,7 +1798,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 										if (curContentExt) {
 											//we have a holiday or cutoffpassed
-											curSlotObj.ext.innerHTML = curContentExt.innerHTML;
+											curSlotObj.ext.html(curContentExt.html());
 											//set in slot so we don't have to seek again
 											curSlotObj.contentId = tempId;
 										}
@@ -1838,7 +1809,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 									curContentExt = $(curContentId);
 									if (curContentExt) {
 										//we have no delivery
-										curSlotObj.ext.innerHTML = curContentExt.innerHTML;
+										curSlotObj.ext.html(curContentExt.html());
 										//set in slot so we don't have to seek again
 										curSlotObj.contentId = curContentId;
 									}
@@ -1851,18 +1822,18 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 								}
 								curContentExt = $(curContentId);
 								if (curContentExt) {
-									curSlotObj.ext.innerHTML = curContentExt.innerHTML;
+									curSlotObj.ext.html(curContentExt.html());
 									//set in slot so we don't have to seek again
 									curSlotObj.contentId = curContentId;
 								}
 							}
 							//replace out className
 							if (curSlotObj.contentId === this.opts.noDeliveryCId) {
-								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGC','tsContainerNoDelBGC');
-								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerNoDelBGC');
-								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerNoDelBGE','tsContainerNoDelBGC');
+								if (curSlotObj.ext.hasClass('tsContainerBGC')) { curSlotObj.ext.removeClass('tsContainerBGC').addClass('tsContainerNoDelBGC'); }
+								if (curSlotObj.ext.hasClass('tsContainerBGE')) { curSlotObj.ext.removeClass('tsContainerBGE').addClass('tsContainerNoDelBGC'); }
+								if (curSlotObj.ext.hasClass('tsContainerNoDelBGE')) { curSlotObj.ext.removeClass('tsContainerNoDelBGE').addClass('tsContainerNoDelBGC'); }
 							}
-							curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerBGC');
+							if (curSlotObj.ext.hasClass('tsContainerBGE')) { curSlotObj.ext.removeClass('tsContainerBGE').addClass('tsContainerBGC'); }
 							
 							//check extend queue
 							this.checkQueue(this.convertId(curSlotId, 'dayPartId'));
@@ -1870,23 +1841,23 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							var tempNegSubt = 0;
 							//check if we're hiding the whole day, if so, hide day part, and mod negative subtraction to accommodate
 							if (reorgStart === 0 && reorgEnd === dayObj.TSs.length-1) {
-								dayObj.dayPartExt.up('tr').hide();
+								dayObj.dayPartExt.closest('tr').hide();
 								tempNegSubt = -2;
 							}
 							if (this.opts.IEver !== -1) { tempNegSubt++; }
 
 							//reset height
-							curSlotObj.ext.style.height = this.getCalcdRowHeight(sequenceCount, null, false, tempNegSubt);
+							curSlotObj.ext.css('height', this.getCalcdRowHeight(sequenceCount, null, false, tempNegSubt));
 						}else{
 							//hide the rest of the trs (not the tds)
 							if (!curSlotObj.parentExt) {
-								var curId = this.convertId(curSlotObj.ext.id, 'tsPId');
+								var curId = this.convertId(curSlotObj.ext.attr('id'), 'tsPId');
 								if (curId !== -1) {
 									var curSlotObjParentExt = $(curId);
 									if (curSlotObjParentExt) {
 										curSlotObjParentExt.hide();
 										//add to slot obj for later use
-										curSlotObj.parentId = curSlotObjParentExt.id;
+										curSlotObj.parentId = curSlotObjParentExt.attr('id');
 										curSlotObj.parentExt = curSlotObjParentExt;
 									}
 								}
@@ -1910,7 +1881,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 			this.checkQueue(this.convertId(dayId, 'dayPartId'));
 			
 			//show dayPart
-			this.dayObjs[dayId].dayPartExt.up('tr').show();
+			this.dayObjs[dayId].dayPartExt.closest('tr').show();
 
 			var reorgData = this.dayObjs[dayId].reorgData;
 			if (this.dayObjs[dayId].isExpanded) {
@@ -1936,67 +1907,63 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					var curSlotObj = this.slotObjs[curSlotId];
 					var curCutoffObj = this.cutoffObjs[curCutoffId];
 					
-					var curTSRow = curSlotObj.ext.up('tr');
-					var curCORow = curCutoffObj.ext.up('tr');
+					var curTSRow = $(curSlotObj.ext.closest('tr'));
+					var curCORow = $(curCutoffObj.ext.closest('tr'));
 
 					//reset cutoff lines
-					if (curCORow.down('.cutoffLR')) {
-						curCORow.down('.cutoffLR').className = curCORow.down('.cutoffLR').className.replace('cutoffLR', 'cutoff');
-					}
+					curCORow.find('.cutoffLR').removeClass('cutoffLR').addClass('cutoff');
 					
 					if (this.dayObjs[dayId].isExpanded) {
-						curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerNoDelBGE','tsContainerBGC');
-						curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerBGC');
-						curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerE','tsContainerC');
+						
+						if (curSlotObj.ext.hasClass('tsContainerNoDelBGE')) { curSlotObj.ext.removeClass('tsContainerNoDelBGE').addClass('tsContainerBGC'); }
+						if (curSlotObj.ext.hasClass('tsContainerBGE')) { curSlotObj.ext.removeClass('tsContainerBGE').addClass('tsContainerBGC'); }
+						if (curSlotObj.ext.hasClass('tsContainerE')) { curSlotObj.ext.removeClass('tsContainerE').addClass('tsContainerC'); }
 
 						//make sure it's vis
 						curTSRow.show();
 
 						//reset it's bottom line
-						curSlotObj.ext.style.borderBottom = '1px solid #ccc';
+						curSlotObj.ext.css('borderBottom', '1px solid #ccc');
 
 						//hide co's
 						//hide all non empty cutoffs
-						if (curCORow.down('.cutoffDispChild')) {
+						if (curCORow.find('.cutoffDispChild').length) {
 							curCORow.hide();
 						}
 						//show 0 cutoff if we're coming from an expanded day
 						if (t === reorgStart) {
-							if (curCORow.down('.cutoffDispChild')) {
-								curCORow.down('.cutoffDispChild').hide();
+							if (curCORow.find('.cutoffDispChild').length) {
+								curCORow.find('.cutoffDispChild').hide();
 							}
 							curCORow.show();
-
 						}
 					}
 
 					if (t === reorgStart) {
 						//put back innerHTML, but only if not a normal slot
 						if (curSlotObj.contentId !== null) {
-							curSlotObj.ext.innerHTML = this.getID(null, this.parseDay(curSlotObj.ext.id), this.parseTime(curSlotObj.ext.id), null, this.opts.emptyCellHtml);
+							curSlotObj.ext.html(this.getID(null, this.parseDay(curSlotObj.ext.attr('id')), this.parseTime(curSlotObj.ext.attr('id')), null, this.opts.emptyCellHtml));
 						}
 						//and reset height
-						var sub;
 						//subtract 1 here, so first element is right height
-						curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, 1);
+						curSlotObj.ext.css('height', this.getCalcdRowHeight(1, null, false, 1));
 						//reset classname
 						if (curSlotObj.contentId === this.opts.noDeliveryCId) {
-							curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerBGC');
+							if (curSlotObj.ext.hasClass('tsContainerBGE')) { curSlotObj.ext.removeClass('tsContainerBGE').addClass('tsContainerBGC'); }
 						}
 					}else{
 						//unhide the rest of the trs
 						if (!curSlotObj.parentExt) {
-							var curId = this.convertId(curSlotObj.ext.id, 'tsPId');
+							var curId = this.convertId(curSlotObj.ext.attr('id'), 'tsPId');
 							if (curId !== -1) {
 								var curSlotObjParentExt = $(curId);
 								if (curSlotObjParentExt) {
 									//and reset height
-									var sub;
 									//subtract 1 here, so first element is right height
-									curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, 1);
+									curSlotObj.ext.css('height', this.getCalcdRowHeight(1, null, false, 1));
 									curSlotObjParentExt.show();
 									//add to slot obj for later use
-									if (!curSlotObj.parentId) { curSlotObj.parentId = curSlotObjParentExt.id; }
+									if (!curSlotObj.parentId) { curSlotObj.parentId = curSlotObjParentExt.attr('id'); }
 									if (!curSlotObj.parentId) { curSlotObj.parentExt = curSlotObjParentExt; }
 								}
 							}
@@ -2004,7 +1971,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							//and reset height
 							var sub;
 							//subtract 1 here, so first element is right height
-							curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, 1);
+							curSlotObj.ext.css('height', this.getCalcdRowHeight(1, null, false, 1));
 							curSlotObj.parentExt.show();
 						}
 					}
@@ -2040,39 +2007,76 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 					var beforeStartFunc = function () {
 
+						//console.log('morph', 'expand', fdTSDisplay.dayObjs[dayId].ext, cssString);
+						/* FIX HERE
 						fdTSDisplay.dayObjs[dayId].ext.morph(cssString, { duration: expandDuration });
+						*/
 						fdTSDisplay.dayObjs[dayId].ext.hide();
 						fdTSDisplay.reorganizeDay(dayId);
-						fdTSDisplay.dayObjs[dayId].ext.style.width = fdTSDisplay.opts.beforeExpandWidth;
+						//fdTSDisplay.dayObjs[dayId].ext.css('width', fdTSDisplay.opts.beforeExpandWidth);
 						
+						fdTSDisplay.dayObjs[dayId].hCext.hide(/*'fade', appearDuration/10*/);
+						/* FIX HERE
 						fdTSDisplay.dayObjs[dayId].hCext.fade({duration: appearDuration/10});
 						fdTSDisplay.dayObjs[dayId].hCext.hide();
+						*/
 
-						fdTSDisplay.dayObjs[dayId].hEext.style.width = fdTSDisplay.opts.beforeExpandWidth;
+						//fdTSDisplay.dayObjs[dayId].hEext.css('width', fdTSDisplay.opts.beforeExpandWidth);
+						
+
+						fdTSDisplay.dayObjs[dayId].hEext.show(/*'fade', appearDuration*/);
+						//console.log('morph', 'expand', fdTSDisplay.dayObjs[dayId].hEext, cssString);
+						/* FIX HERE
 						fdTSDisplay.dayObjs[dayId].hEext.appear({duration: appearDuration});
 						fdTSDisplay.dayObjs[dayId].hEext.morph(cssString, { duration: (expandDuration) });
+						*/
 						
-						fdTSDisplay.dayObjs[dayId].fEext.style.width = fdTSDisplay.opts.beforeExpandWidth;
+						//fdTSDisplay.dayObjs[dayId].fEext.css('width', fdTSDisplay.opts.beforeExpandWidth);
+						
+						
+						//console.log('morph', 'expand', fdTSDisplay.dayObjs[dayId].fEext, cssString);
+						/* FIX HERE
 						fdTSDisplay.dayObjs[dayId].fEext.morph(cssString, { duration: (expandDuration) });
 						fdTSDisplay.dayObjs[dayId].fEext.appear({duration: appearDuration});
+						*/
+						fdTSDisplay.dayObjs[dayId].fEext.show(/*'fade', appearDuration*/);
 					}
 					var afterFinishFunc = function () {
-						fdTSDisplay.dayObjs[dayId].hEext.down('.tsHeadE').appear({duration: (appearDuration)});
-						fdTSDisplay.dayObjs[dayId].ext.appear({duration: appearDuration,
-						afterFinish:function(){
-							  if (!$jq('#'+dayId).hasClass('mouse')){
-							$jq('#'+dayId+' input[type="button"]:first').focus();
-							 }
+						fdTSDisplay.dayObjs[dayId].hEext.find('.tsHeadE').show(/*'fade', appearDuration*/);
+						fdTSDisplay.dayObjs[dayId].ext.find('.tsHeadE').show(/*'fade', appearDuration, function() {
+								if (!$(dayId).hasClass('mouse')){
+									$(dayId+' input[type="button"]:first').focus();
+								}
+						}*/);
+						if (!$(dayId).hasClass('mouse')){
+							$(dayId+' input[type="button"]:first').focus();
+						}
+						
+						fdTSDisplay.dayObjs[dayId].ext.show();
+						/* FIX HERE
+						fdTSDisplay.dayObjs[dayId].hEext.find('.tsHeadE').appear({duration: (appearDuration)});
+						fdTSDisplay.dayObjs[dayId].ext.appear({
+							duration: appearDuration,
+							afterFinish: function(){
+								if (!$(dayId).hasClass('mouse')){
+									$(dayId+' input[type="button"]:first').focus();
+								}
 							}
 						});
+						*/
 						//setTimeout(function(){$jq('#'+fdTSDisplay.getID('dayId', dayId, 0)+' input[type="button"]:first').focus();},appearDuration);
 					}
 
-					this.dayObjs[dayId].ext.up(0).morph(cssString, {
+					beforeStartFunc();
+					afterFinishFunc();
+					
+					//console.log('morph', 'expand', this.dayObjs[dayId].ext.parent(), cssString);
+					/* FIX HERE
+					this.dayObjs[dayId].ext.parent().morph(cssString, {
 						duration: (expandDuration),
 						beforeStart: beforeStartFunc,
 						afterFinish: afterFinishFunc
-					});
+					});*/
 				}
 
 				//unset previous as expanded
@@ -2100,11 +2104,10 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					
 					this.dayObjs[dayId].isExpanded = false;
 
-					var fdTSDisplay = this; //ref to fdTSDisplay
-					var rowRefId = this.rowObjs[this.convertId(dayId, 'rowId')];
-					var cssString = this.getCssRefString(rowRefId.cRefId);
-					var contractDuration = this.opts.contractDuration / 1000;
-					var appearDuration = this.opts.appearDuration / 1000;
+					var rowRefId = fdTSDisplay.rowObjs[fdTSDisplay.convertId(dayId, 'rowId')];
+					var cssString = fdTSDisplay.getCssRefString(rowRefId.cRefId);
+					var contractDuration = fdTSDisplay.opts.contractDuration / 1000;
+					var appearDuration = fdTSDisplay.opts.appearDuration / 1000;
 
 
 					var beforeStartFunc = function () {
@@ -2113,20 +2116,24 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						fdTSDisplay.unorganizeDay(dayId);
 						fdTSDisplay.dayObjs[dayId].isExpanded = false;
 						fdTSDisplay.reorganizeDay(dayId);
-                        $jq('#'+dayId).removeClass('mouse');
+						$jq(dayId).removeClass('mouse');
 
 						fdTSDisplay.dayObjs[dayId].hEext.hide();
-						fdTSDisplay.dayObjs[dayId].hCext.style.width = fdTSDisplay.opts.hC_beforeContractWidth;
+						//fdTSDisplay.dayObjs[dayId].hCext.css('width', fdTSDisplay.opts.hC_beforeContractWidth);
 						fdTSDisplay.dayObjs[dayId].hCext.show();
-						//fdTSDisplay.hEext.morph(cssString, { duration: (appearDuration) });
-						fdTSDisplay.dayObjs[dayId].hEext.down('.tsHeadE').hide();
+						fdTSDisplay.dayObjs[dayId].hEext.find('.tsHeadE').hide();
 						fdTSDisplay.dayObjs[dayId].fEext.hide();
+						
+						//console.log('morph', 'contract', fdTSDisplay.dayObjs[dayId].hCext, cssString);
+						//console.log('morph', 'contract', fdTSDisplay.dayObjs[dayId].ext, cssString);
+						/* FIX HERE
 						fdTSDisplay.dayObjs[dayId].hCext.morph(cssString, {
 							duration: (contractDuration)
 						});
 						fdTSDisplay.dayObjs[dayId].ext.morph(cssString, {
 							duration: (contractDuration)
 						});
+						*/
 					}
 
 					var afterFinishFunc = function () {
@@ -2136,12 +2143,16 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 
 					//this is the main contract visual
-					this.dayObjs[dayId].ext.up().morph(cssString, {
+					beforeStartFunc();
+					afterFinishFunc();
+					//console.log('morph', 'contract', fdTSDisplay.dayObjs[dayId].ext, cssString);
+					/* FIX HERE
+					this.dayObjs[dayId].ext.closest().morph(cssString, {
 						duration: (contractDuration),
 						beforeStart: beforeStartFunc,
 						afterFinish: afterFinishFunc
 					});
-					
+					*/
 				}
 
 				return true;
@@ -2152,16 +2163,14 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 			var origClassName = origClassNameArg || '';
 			var elemWithClassName = elemWithClassNameArg || null;
 
-			if (
-				origClassName === '' || !elemWithClassName || 
-				!elemWithClassName.className || elemWithClassName.className.indexOf(origClassName) === -1
-			) { return; }
+			if (origClassName === '' || !elemWithClassName) { return; }
 
-			var tempStr = origClassName.slice(0, -1); 
+			var tempStr = origClassName.slice(0, -1);
+
 			if (origClassName.endsWith('C')) {
-				elemWithClassName.className = elemWithClassName.className.replace(origClassName, tempStr+'E');
-			}else if (origClassName.endsWith('E')) {
-				elemWithClassName.className = elemWithClassName.className.replace(origClassName, tempStr+'C');
+				elemWithClassName.removeClass(origClassName).addClass(tempStr+'E');
+			} else if (origClassName.endsWith('E')) {
+				elemWithClassName.removeClass(origClassName).addClass(tempStr+'C');
 			}
 		}
 
@@ -2182,11 +2191,12 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					var dayObj = fdTSDisplay.dayObjs[dayId];
 
 					if (dayObj.ext) {
-						if (!dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== parseInt(fdTSDisplay.opts.beforeExpandWidth.replace('px', '')) || dayObj.hEext.style.display != 'none' || dayObj.fEext.style.display != 'none')) {
+						if (!dayObj.isExpanded && (dayObj.ext.closest('td').width() !== parseInt(fdTSDisplay.opts.beforeExpandWidth.replace('px', '')) || dayObj.hEext.css('display') !== 'none' || dayObj.fEext.css('display') !== 'none')) {
 							fdTSDisplay.log(dayId, 'con cleaning...');
 							while (!fdTSDisplay.setDayAsContracted(dayId)){}
 						}
-						if (dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== parseInt(fdTSDisplay.opts.hC_beforeContractWidth.replace('px', '')) || dayObj.hCext.style.display != 'none' || dayObj.fEext.style.display === 'none')) {
+					
+						if (dayObj.isExpanded && (dayObj.ext.closest('td').width() !== parseInt(fdTSDisplay.opts.hC_beforeContractWidth.replace('px', '')) || dayObj.hCext.css('display') != 'none' || dayObj.fEext.css('display') === 'none')) {
 							fdTSDisplay.log(dayId, 'exp cleaning...');
 							while (!fdTSDisplay.setDayAsExpanded(dayId)){}
 						}
@@ -2207,24 +2217,24 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 			var curSlotId = this.dayObjs[this.opts.premSlotsDayId].TSIds[0];
 			var curSlotObj =  this.slotObjs[curSlotId];
 			curSlotObj.contentId = 'CPday'+curSlotObj.contentId.slice(curSlotObj.contentId.length-1);
-			curSlotObj.ext.innerHTML = $(curSlotObj.contentId).innerHTML;
+			curSlotObj.ext.html($(curSlotObj.contentId).html());
 			
 			$$('.'+window.fdTSDisplay.opts.premSlotsTimerElemClass).each(function(e, i) {
-				$(e).innerHTML = 'UNAVAILABLE';
+				$(e).html('UNAVAILABLE');
 			});
 
-			$(this.opts.premSlotsTimerElem_msg).innerHTML = 'Choose Another Day'; //expanded
+			$(this.opts.premSlotsTimerElem_msg).html('Choose Another Day'); //expanded
 			//loop through ts's and disable radio button (if they exist)
 			for (var slotIdIndex in this.dayObjs[this.opts.premSlotsDayId].TSIds) {
 				var slotId = this.dayObjs[this.opts.premSlotsDayId].TSIds[slotIdIndex];
 				if (slotId && this.slotObjs[slotId] && this.slotObjs[slotId].hasOwnProperty('radioExt') && this.slotObjs[slotId].radioExt !== null) {
 					//remove selected color
-					this.slotObjs[slotId].ext.className = curSlotObj.ext.className.replace('tcSelectionBGC','');
-					this.slotObjs[slotId].ext.className = curSlotObj.ext.className.replace('tcSelectionBGE','');
+					
+					this.slotObjs[slotId].ext.removeClass('tcSelectionBGC tcSelectionBGE');
 					//remove selection
-					this.slotObjs[slotId].radioExt.checked = false;
+					this.slotObjs[slotId].radioExt.attr('checked', false);
 					//disable it
-					this.slotObjs[slotId].radioExt.disabled = true;
+					this.slotObjs[slotId].radioExt.attr('disabled', true);
 				}
 			}
 		}
@@ -2266,14 +2276,15 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 	}
 
 	/* add plain text method */
+	/*
 	if (!Element.hasOwnProperty('getText')) {
 		Element.addMethods({
 			getText: function(element) {
-				element = $(element);
-				return element.innerHTML.strip().stripTags().replace(/\n/g,' ').replace(/\s+/g,' ');
+				return $(element).html().strip().stripTags().replace(/\n/g,' ').replace(/\s+/g,' ');
 			}
 		});
 	}
+	*/
 
 	/* detect IE version */
 		this.detectIEVersion();
@@ -2426,7 +2437,7 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 
 
 /* initialize the TS display */
-	document.observe('dom:loaded', function() {
+	$jq(function() {
 		if (initializeTS()) {
 
 			if (!window.dayIndex) {
@@ -2438,6 +2449,18 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 			defaultColumnExpandNew(dayIndex, slotIndex);
 		}
 	});
+	/*document.observe('dom:loaded', function() {
+		if (initializeTS()) {
+
+			if (!window.dayIndex) {
+				dayIndex = 0;
+			}
+			if (!window.slotIndex) {
+				slotIndex = 0;
+			}
+			defaultColumnExpandNew(dayIndex, slotIndex);
+		}
+	});*/
 
 	function initializeTS(refIdArg) {
 		var refId = refIdArg || 'fdTSDisplay';
@@ -2485,20 +2508,20 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 			$('timeslots_gridAdvNew').toggle();
 		}
 
-		if($('timeslots_gridAdv').style.display !== 'none') {
-			$('displayAdvanceOrderGrid').innerHTML = "Hide Delivery Timeslots";
+		if($('timeslots_gridAdv').css('display') !== 'none') {
+			$('displayAdvanceOrderGrid').html('Hide Delivery Timeslots');
 		}else{
-			$('displayAdvanceOrderGrid').innerHTML = "Show Delivery Timeslots";
+			$('displayAdvanceOrderGrid').html('Show Delivery Timeslots');
 		}
 	}
 	
 	function checkPremiumSlot(deliveryTimeSlotId, formId){
 		
-		if(deliveryTimeSlotId.indexOf("f_") == 0)
+		if(deliveryTimeSlotId.indexOf('f_') == 0)
 			deliveryTimeSlotId = deliveryTimeSlotId.substr(2, deliveryTimeSlotId.length);
 		if (varminslots.hasOwnProperty(deliveryTimeSlotId)) {
 			var attributeStr = varminslots[deliveryTimeSlotId];
-			var attributes = attributeStr.split(" ");
+			var attributes = attributeStr.split(' ');
 			if(attributes[1] == 'false'){
 				var url = '/overlays/variable_minnotmet_popup.jsp?amt='+attributes[0];
 				$jq(document).ready(function() {
@@ -2516,26 +2539,26 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 	function changeMe(checkboxElem){
 		var $checkboxElem = $jq(checkboxElem);
 		if($checkboxElem.val() === FreshDirect._page_options.rsvType.ONETIME){
-			$jq("#reservationType_field2").val(FreshDirect._page_options.rsvType.RECURRING);
-			$jq("#reservationType_field2").attr('checked', true);
+			$jq('#reservationType_field2').val(FreshDirect._page_options.rsvType.RECURRING);
+			$jq('#reservationType_field2').attr('checked', true);
 		} else if($checkboxElem.val() === FreshDirect._page_options.rsvType.RECURRING || checkboxElem.getValue() === null){
-			$jq("#reservationType_field2").val(FreshDirect._page_options.rsvType.ONETIME);
-			$jq("#reservationType_field2").attr('checked', false);
+			$jq('#reservationType_field2').val(FreshDirect._page_options.rsvType.ONETIME);
+			$jq('#reservationType_field2').attr('checked', false);
 		}
 	}	
 	
 	$jq(document).on('keydown', '.tsWrapper input[type="button"]', function (e) {
-        if (e.keyCode == 13) {
-            $jq(this).click();
-            e.preventDefault();
-            if ($jq('#reserveTimeslot').length) {
-                reserveTimeslot.actionName.value='changeReservation';
-                $jq('#reserveTimeslot').submit();
-            } else {
-                $jq('[fdform="timeslot"]').submit();
-            }
-        }
-    });
+		if (e.keyCode == 13) {
+			$jq(this).click();
+			e.preventDefault();
+			if ($jq('#reserveTimeslot').length) {
+				reserveTimeslot.actionName.value='changeReservation';
+				$jq('#reserveTimeslot').submit();
+			} else {
+				$jq('[fdform="timeslot"]').submit();
+			}
+		}
+	});
 	$jq(document).on("focusin","#tsContainer .tsHeaderE",function(){
 		$jq(this).css({"background":"#4fa157","border-top-right-radius":"6px","border-top-left-radius":"6px"});
 		
