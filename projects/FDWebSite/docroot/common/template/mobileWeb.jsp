@@ -56,13 +56,6 @@
 		FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
 		$jq.fn.messages = function( method ) {};
 	</script>
-	<%
-		//any page that has timeslots needs prototype
-		if (isCheckout || (mobweb_uri.indexOf("/your_account/reserve_timeslot.jsp") != -1) || (mobweb_uri.indexOf("/your_account/delivery_info_avail_slots.jsp") != -1)) {
-			%><jwr:script src="/fdproto.js" useRandomParam="false" /><%
-		}
-	%>
-
     <jwr:script src="/locabarcomp.js" useRandomParam="false" />
 
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />

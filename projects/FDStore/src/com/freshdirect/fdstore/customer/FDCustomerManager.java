@@ -749,10 +749,10 @@ public class FDCustomerManager {
 		lookupeWalletHome();
 		int rows=0;
 		try {
-			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				rows = FDECommerceService.getInstance().insertCustomerLongAccessToken(custEWallet);
 			} else {
+				ErpEWalletSB erpEWalletSB = eWalletHome.create();
 				rows = erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
 			}
 		} catch (RemoteException e) {
@@ -785,11 +785,11 @@ public class FDCustomerManager {
 	public static boolean getEwalletMobileStatusByType(String eWalletType){
 		lookupeWalletHome();
 		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
 			ErpEWalletModel erpEWalletModel = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				erpEWalletModel = FDECommerceService.getInstance().findEWalletByType(eWalletType);
 			} else {
+				ErpEWalletSB erpEWalletSB =  eWalletHome.create();
 				erpEWalletModel = erpEWalletSB.findEWalletByType(eWalletType);
 			}
 			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
@@ -815,10 +815,10 @@ public class FDCustomerManager {
 		lookupeWalletHome();
 		int rows=0;
 		try {
-			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				rows = FDECommerceService.getInstance().updateLongAccessToken(custId, longAccessToken, eWalletType);
 			} else {
+				ErpEWalletSB erpEWalletSB = eWalletHome.create();
 				rows = erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
 			}
 		} catch (RemoteException e) {
@@ -842,10 +842,10 @@ public class FDCustomerManager {
 		lookupeWalletHome();
 		int rows=0;
 		try {
-			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
 			} else {
+				ErpEWalletSB erpEWalletSB = eWalletHome.create();
 				rows = erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
 			}
 		} catch (RemoteException e) {
@@ -862,10 +862,10 @@ public class FDCustomerManager {
 		lookupeWalletHome();
 		ErpCustEWalletModel custEWalletModel = null;
 		try {
-			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
 			} else {
+				ErpEWalletSB erpEWalletSB = eWalletHome.create();
 				custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
 			}
 		} catch (RemoteException e) {
