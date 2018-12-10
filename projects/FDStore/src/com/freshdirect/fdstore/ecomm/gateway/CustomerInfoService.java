@@ -226,6 +226,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
 			RecognizedUserData userData = null;
+
 			try {
 				userData = fdUserToRecognizedUserData(user);
 			} catch (Exception e) {
@@ -909,6 +910,10 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		if (user.getZPServiceType() != null) {
 			fdUserData.setZPServiceType(user.getZPServiceType().getName());
 		}
+		if(user.getRafClickId()!=null)
+			fdUserData.setRafClickId(user.getRafClickId());
+		if(user.getRafPromoCode()!=null)
+			fdUserData.setRafPromoCode(user.getRafPromoCode());
 		data.setAddress(user.getAddress());
 		data.setRecipientList(user.getRecipientList());
 		try {
