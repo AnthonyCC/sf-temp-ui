@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
@@ -29,6 +31,7 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
@@ -52,6 +55,7 @@ public class AvailabilityService {
 	public static final String ATP_CHECKOUT="Checkout";
 
 	private static final AvailabilityService INSTANCE = new AvailabilityService();
+	private final static Category LOGGER = LoggerFactory.getInstance(AvailabilityService.class);
 
 	private AvailabilityService() {
 	}
@@ -67,6 +71,9 @@ public class AvailabilityService {
 			cart = FDCustomerManager.checkAvailability(
 					user.getIdentity(), user.getShoppingCart(),
 					DEFAULT_ATP_RESTRICTION_TIMEOUT,ATP_CHECKOUT);
+			if(null != user && null != user.getIdentity() && null != user.getIdentity().getErpCustomerPK()){
+				LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+user.getIdentity().getErpCustomerPK()+" CheckCartAtpAvailability() ,cart.isFullyAvailable() : "+ cart.isFullyAvailable());
+			}
 		}
 		System.out.println("WOW");
 		performDeliveryPassAvailabilityCheck(user);
