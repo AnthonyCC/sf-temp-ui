@@ -91,6 +91,8 @@
 
 .timeslot-selector .select-time label {
   font-weight: normal;
+  display: inline-block;
+  width: 100%;
 }
 
 .timeslot-selector .selected-timeslot label,
@@ -116,6 +118,7 @@
 
 .timeslot-selector .select-time li span.label {
   display: inline;
+  width: 100%;
 }
 
 .timeslot-selector .select-time li .icons {
