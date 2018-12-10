@@ -33,6 +33,7 @@ import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.checkout.UnavailabilityPopulator;
 import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
+import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData.Line;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
@@ -98,21 +99,45 @@ public class CheckoutService {
 	}
 
 	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
+		String custId = null;
+		boolean restrictionLog= false;
+		if(null != user && null != user.getIdentity() && null != user.getIdentity().getErpCustomerPK()) {
+			custId=user.getIdentity().getErpCustomerPK();
+			restrictionLog = null != custId && FDStoreProperties.isRestrictionsLogEnabled();
+			LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" applyAtpCheck() STARTED ,is log enabled? "+restrictionLog);
+		}
         UnavailabilityData unavailabilityData = null;
         FDCartModel cart = user.getShoppingCart();
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
-            AvailabilityService.defaultService().checkCartAtpAvailability(user);
+			AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
-
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null || !atpFailureData.getPasses().isEmpty()) {
                 unavailabilityData = atpFailureData;
-            }
+           
+            /* Temp logs ,validTill : Feb 2019*/
+				if (restrictionLog && null != unavailabilityData.getDeliveryDate() && null != unavailabilityData.getNonReplaceableLines() && !unavailabilityData.getNonReplaceableLines().isEmpty()) {
+					LOGGER.info("RESTRICTIONS_LOG: cust_ID :" + custId+ " applyAtpCheck() UD :DelivertDate: "
+							+ unavailabilityData.getDeliveryDate() + "  ,TimeSlot: "+ unavailabilityData.getDeliveryTimeSlot());
+					for (Line udLine : unavailabilityData.getNonReplaceableLines()) {
+						LOGGER.info("RESTRICTIONS_LOG: cust_ID :" + custId+ " applyAtpCheck() ,UD.getNonReplaceableLines()->SKU code: "
+								+ udLine.getCartLine().getProduct().getSkuCode() + " " + ",desc: "+ udLine.getDescription() + " ,quantity in cart: " + udLine.getCartLine().getQuantity()
+								+ " ,price: " + udLine.getCartLine().getPrice());
+					}
+				}
+				
+             }
             else {
             	if(FDStoreProperties.getAvalaraTaxEnabled()){
             	getAvalaraTax(cart);
             	}
             }
 		}
+		if(restrictionLog && null == unavailabilityData) {
+			LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" applyAtpCheck()->unavailabilityData returned as NULL<-");
+		}
+		if(null != custId) {
+        	LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" applyAtpCheck() ENDED");
+        }
         return unavailabilityData;
 	}
 

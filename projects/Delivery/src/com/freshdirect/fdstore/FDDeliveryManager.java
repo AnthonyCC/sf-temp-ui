@@ -245,7 +245,7 @@ public class FDDeliveryManager {
 		synchronized(restrictionMonitor) {
 		if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {
 			try {
-				
+				LOGGER.info("RESTRICTIONS_CACHE: Refreshing Restrictions Cache #Started#");
 				List<RestrictionI> l = null;
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 					 l = buildRestriction(FDECommerceService.getInstance().getDlvRestrictions());
@@ -259,7 +259,7 @@ public class FDDeliveryManager {
 				this.dlvRestrictions = new DlvRestrictionsList(l);
 
 				lastRefresh = System.currentTimeMillis();
-
+				LOGGER.info("RESTRICTIONS_CACHE: Refreshing Restrictions Cache #Ended#");
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {

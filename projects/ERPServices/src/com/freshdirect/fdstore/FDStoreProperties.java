@@ -1108,7 +1108,9 @@ public class FDStoreProperties {
     private static final String PROP_JAVASCRIPT_FIRST_ENABLED = "fdstore.javascript.first.enabled";
     private static final String PROP_API_INVALID_SKU_CHECK_ENABLED = "fdstore.api.invalid.sku.check.enabled";
     private static final String PROP_API_INVALID_SKU_CHECK_ORDER_MOD_ENABLED = "fdstore.api.invalid.sku.check.order.mod.enabled";
-
+    /*APPDEV-7702*/
+    private static final String RESTRICTIONS_LOG_ENABLED="fdstore.restrictions.log.enabled";
+    
     private static Map<Long, Integer> METHODS_IN_EJB_SCOPE = new ConcurrentHashMap<Long,Integer>();
 
  	static {
@@ -2139,6 +2141,7 @@ public class FDStoreProperties {
         defaults.put(PROP_API_INVALID_SKU_CHECK_ENABLED,"true");
         defaults.put(PROP_API_INVALID_SKU_CHECK_ORDER_MOD_ENABLED,"true");
         
+        defaults.put(RESTRICTIONS_LOG_ENABLED, "false");
 
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5494,4 +5497,9 @@ public class FDStoreProperties {
     public static boolean isInvalidSkuCheckForModifyLinesAPIEnabled() {
         return (Boolean.valueOf(get(PROP_API_INVALID_SKU_CHECK_ORDER_MOD_ENABLED))).booleanValue();
     }
+
+	public static boolean isRestrictionsLogEnabled() {
+		return (Boolean.valueOf(get(RESTRICTIONS_LOG_ENABLED))).booleanValue();
+	}
+    
 }
