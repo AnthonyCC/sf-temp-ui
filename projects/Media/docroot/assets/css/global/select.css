@@ -154,7 +154,7 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
   width: 100%;
 }
 #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li.selected button .checkbox-helper {
-  background: url('/media_stat/images/quickshop/icon-check-small.png');
+  background: url('/media_stat/images/check_mark.png');
   background-repeat: no-repeat;
   background-size: 100%;
   background-position: center center;
