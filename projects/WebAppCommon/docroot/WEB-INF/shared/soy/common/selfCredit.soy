@@ -144,7 +144,7 @@
             <div class="self-credit-comment-info">
               <div class="{if $comment} hide{/if}">
                 <span class="text14">Have additional thoughts about this order?</span>
-                <button tabindex="3" onclick="FreshDirect.components.selfCreditIssueReportPopup.commentClick(event)">Leave a comment for further review</button>
+                <button onclick="FreshDirect.components.selfCreditIssueReportPopup.commentClick(event)">Leave a comment for further review</button>
               </div>
               <div class="self-credit-comment-container {if not $comment} hide{/if}">
                 <label for="self-credit-comment">Additional Comments</label>
@@ -198,7 +198,7 @@
             {/call}
           </button></div>
           <div class="sc-submit-button">
-            <button tabindex="2" class="cssbutton green credit-request-submit-button" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
+            <button class="cssbutton green credit-request-submit-button" onclick="FreshDirect.components.selfCreditIssueReportPopup.submitRequest()">
               {call .ariaReview}
                 {param title: 'Submit Request' /}
                 {param reviewData: $reviewData /}
