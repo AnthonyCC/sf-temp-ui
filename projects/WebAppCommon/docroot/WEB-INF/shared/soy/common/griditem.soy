@@ -414,11 +414,6 @@
 				</div>
 			{/if}
 		</div>
-		<div class="accessibility_unavailable portrait-item-header">
-			<div class="configDescr">
-				{if $salesUnitDescrPDP}{$salesUnitDescrPDP}{/if}
-			</div>
-		</div>
 	{/if}
 	{if not $moduleData or not $moduleData.hideProductPrice}
 		{if $freeSamplePromoProduct and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel')))}
@@ -541,15 +536,15 @@
 					{param atcItemId:$atcItemId /}
 				{/call}
 		{else}
-			<div class="portrait-item-controls" data-component="product-controls">
-				<div class="portrait-item-controls-content">
-					{if $availabilityMessage and not $mobWeb}
-						<div class="portrait-item-availability-message">
-							{$availabilityMessage}
-						</div>
-					{/if}
+	<div class="portrait-item-controls" data-component="product-controls">
+		<div class="portrait-item-controls-content">
+			{if $availabilityMessage and not $mobWeb}
+				<div class="portrait-item-availability-message">
+					{$availabilityMessage}
 				</div>
-			</div>
+			{/if}
+		</div>
+	</div>
 		{/if}
 		{if $originalLineId}
 			<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
