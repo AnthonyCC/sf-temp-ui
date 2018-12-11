@@ -1329,7 +1329,7 @@ li.cleanli .gen-arrow {
 	.mm-page #quickshop ul.products li.portrait-item{
 		max-width: none;
 	}
-	.mm-page ul.products li.portrait-item form.atc{
+	.mm-page li.portrait-item form.atc{
 		clear: both;
 		height: 33px;
 	}
@@ -3078,3 +3078,11 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
         .assistivetext{
 	          font-size:14px;
         }
+		
+/* fix sizing in mobile */
+#evenBetterPopup.shown {
+    top: auto;
+    left: auto;
+	right: auto;
+	margin-top: 0;
+}

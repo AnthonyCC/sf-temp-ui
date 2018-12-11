@@ -112,17 +112,21 @@ public class DeliveryTimeslots extends CheckoutResponse {
         if(!ts.isEmpty()){
         	int loopnumber = 0;
             boolean foundunavailablets = false;
+        	int first_unavailable_timeslot = 0;
         	Timeslot lastunavailabletsfound = ts.get(loopnumber);
 	        for(;loopnumber<ts.size();loopnumber++){
 	        	if(ts.get(loopnumber).isFull()||ts.get(loopnumber).isUnavailable()){
 	        		if(!foundunavailablets){
 	        			foundunavailablets = true;
+	        			first_unavailable_timeslot = loopnumber;
 	        			lastunavailabletsfound = ts.get(loopnumber);
 	        		}else if(lastunavailabletsfound.getStartDate().getDate()==ts.get(loopnumber).getStartDate().getDate() &&
 	        					lastunavailabletsfound.getEndDate().getDate()==ts.get(loopnumber).getEndDate().getDate()) {
-	        			lastunavailabletsfound.setEnd(ts.get(loopnumber).getEndDate());
+	        			lastunavailabletsfound.setStart(ts.get(first_unavailable_timeslot+1).getStartDate());
+	        			lastunavailabletsfound.setEnd(ts.get(loopnumber-1).getEndDate());
 	        			try {
-							lastunavailabletsfound.setEnd(ts.get(loopnumber).getEnd());
+							lastunavailabletsfound.setStart(ts.get(first_unavailable_timeslot+1).getStart());
+							lastunavailabletsfound.setEnd(ts.get(loopnumber-1).getEnd());
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -130,6 +134,7 @@ public class DeliveryTimeslots extends CheckoutResponse {
 	        		}else{
 	        			ts2.add(lastunavailabletsfound);
 	        			lastunavailabletsfound = ts.get(loopnumber);
+	        			first_unavailable_timeslot = loopnumber;
 	        		}
 	        	}else{
 	        		if(foundunavailablets){
