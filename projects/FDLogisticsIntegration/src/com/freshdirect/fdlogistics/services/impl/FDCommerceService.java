@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.ecommerce.data.cms.CmsCreateFeedParams;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -64,7 +63,7 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	
 	private static final String DLV_MANAGER_RESERVE_TIME = "dlvmanager/reservetime";
 	
-	public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException{
+	public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException{
 		try {
 			//List<PricingZoneData> data = getOrikaMapper().mapAsList(zoneInfoList, PricingZoneData.class);
 			Request<List<ErpZoneMasterInfo>> request = new Request<List<ErpZoneMasterInfo>>();
@@ -83,7 +82,7 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 		
 	}
 	
-	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException, LoaderException{
+	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException{
 		try {
 			List<CountryOfOriginData> data = getOrikaMapper().mapAsList(cooList, CountryOfOriginData.class);
 			Request<List<CountryOfOriginData>> request = new Request<List<CountryOfOriginData>>();

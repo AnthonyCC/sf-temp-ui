@@ -19,7 +19,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.4.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpmime-4.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-domain.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/orika-core-1.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
