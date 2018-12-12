@@ -1789,7 +1789,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 								//we haven't, do so now
 								var curContentId;
 								if (curSlotObj.ext.attr('name') != null && curSlotObj.ext.attr('name').indexOf('_') != -1) {
-									curContentId = curSlotObj.ext.getAttribute('name').split('_');
+									curContentId = curSlotObj.ext.attr('name').split('_');
 									var tempId = curContentId[1];
 									if (tempId !== '') {
 										if ($(tempId+'C')) { tempId = tempId+'C'; } //if C/E versions exist, use them
