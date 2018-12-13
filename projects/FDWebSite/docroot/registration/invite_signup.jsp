@@ -88,6 +88,7 @@
 		<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 		<fd:javascript src="/assets/javascript/swfobject.js" />
 		
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
