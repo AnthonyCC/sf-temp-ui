@@ -2193,7 +2193,6 @@ div.control, div.slotRow, div.time {
 		bottom: 10px;
 		right: 0;
 		display: block;
-		background-color: #fff;
 	}
 	.burst-usq .without-background {
 		background: none;
@@ -3044,8 +3043,6 @@ a.imgButtonWhite:hover,
 	
 	.fdCoupon_cbCont {
 		margin-left: 3px;
-		width: 17px;
-		display: inline-block;
 	}
 	
 	.fdCoupon_cb {
