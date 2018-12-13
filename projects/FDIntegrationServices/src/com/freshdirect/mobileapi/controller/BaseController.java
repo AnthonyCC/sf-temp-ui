@@ -253,7 +253,11 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUserFromSession(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-    	return getUser(request, response);
+        if (null == request.getSession().getAttribute(SessionName.USER)) {
+            throw new NoSessionException("No session");
+        }
+
+        return SessionUser.wrap(request.getSession().getAttribute(SessionName.USER));
     }
 
 
