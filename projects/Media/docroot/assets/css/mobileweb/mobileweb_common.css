@@ -472,7 +472,7 @@ footer .copyright {
 	float: left !important;
 }
 .pull-right {
-	float: right !important;
+	float: right!important;
 }
 .close-x, #messages.open .close-handler, #modifyorderalert .alert-closeHandler {
 	top: 0;
@@ -1388,9 +1388,6 @@ li.cleanli .gen-arrow {
 	.mm-page .portrait-item-controls .addtocart.ATCHasItemsMobile{
 		background-image: url('/media/mobileweb/images/fd-added-32.png');
 		padding-top: 5px;
-	}
-	.portrait-item-price-cartinfo-cont .atc-info { /* hide new indicator */
-		display: none;
 	}
 	.mm-page .portrait-item-controls .addtocart.ATCinProgress,
 	.mm-page .portrait-item-controls .customize.ATCinProgress{
