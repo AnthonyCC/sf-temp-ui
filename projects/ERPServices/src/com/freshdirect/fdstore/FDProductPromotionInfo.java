@@ -1,11 +1,10 @@
 package com.freshdirect.fdstore;
 
-import java.io.Serializable;
-
 import com.freshdirect.framework.core.ModelSupport;
 
 public class FDProductPromotionInfo extends ModelSupport {
 
+	private static final long serialVersionUID = 2008374276221472818L;
 	private int version;
 	private String zoneId;
 	private String skuCode;
