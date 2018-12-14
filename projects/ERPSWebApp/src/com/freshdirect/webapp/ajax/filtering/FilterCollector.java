@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
@@ -13,11 +14,13 @@ import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModelUtil;
 import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.EnumCatalogType;
 import com.freshdirect.storeapi.content.PopulatorUtil;
 import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.storeapi.content.ProductModel;
@@ -80,9 +83,9 @@ public class FilterCollector {
 		Set<ContentKey> parentKeys = ContentNodeModelUtil.getAllParentKeys(product.getContentKey(), true);
 
 		for (ContentKey contentKey : parentKeys) {
-			if ("Department".equals(contentKey.getType().name())) {
+			if (ContentType.Department == contentKey.getType()) {
 				collectDepartmentFilter(navigationModel, contentKey);
-			} else if ("Category".equals(contentKey.getType().name())) {
+			} else if (ContentType.Category == contentKey.getType()) {
 				collectCategoryFilters(navigationModel, contentKey);
 			}
 		}
@@ -94,8 +97,8 @@ public class FilterCollector {
 		}
 	}
 
-	private void collectCategoryFilter(CategoryModel categoryModel, Map<String, CategoryModel> categoriesOfSearchResults) {
-		if (categoryModel.isSearchable()) {
+	private void collectCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Map<String, CategoryModel> categoriesOfSearchResults) {
+		if (categoryModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, categoryModel.getDepartment())) {
 			categoriesOfSearchResults.put(categoryModel.getContentName(), categoryModel);
 		}
 	}
@@ -104,7 +107,7 @@ public class FilterCollector {
 		CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
 		Map<String, CategoryModel> categoriesOfSearchResults = navigationModel.getCategoriesOfSearchResults();
 		if (categoryModel.getParentNode() instanceof DepartmentModel) { // Category
-			collectCategoryFilter(categoryModel, categoriesOfSearchResults);
+			collectCategoryFilter(navigationModel, categoryModel, categoriesOfSearchResults);
 		} else {
 			if (categoryModel.getParentNode() != null && categoryModel.getParentNode().getParentNode() instanceof DepartmentModel) { // Subcategory
 				collectSubCategoryFilter(navigationModel, categoryModel, categoriesOfSearchResults);
@@ -116,7 +119,7 @@ public class FilterCollector {
 
 	private void collectDepartmentFilter(NavigationModel navigationModel, ContentKey contentKey) {
 		DepartmentModel departmentModel = (DepartmentModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
-		if (departmentModel.isSearchable()) {
+		if (departmentModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, departmentModel)) {
 			navigationModel.getDepartmentsOfSearchResults().put(departmentModel.getContentName(), departmentModel);
 		}
 	}
@@ -153,18 +156,23 @@ public class FilterCollector {
 	}
 
 	private void collectSubCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Map<String, CategoryModel> categoriesOfSearchResults) {
-		if (categoryModel.isSearchable()) {
+		if (categoryModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, categoryModel.getDepartment())) {
 			navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
 			categoriesOfSearchResults.put(categoryModel.getParentNode().getContentName(), (CategoryModel) categoryModel.getParentNode());
 		}
 	}
 
 	private void collectSubSubCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Map<String, CategoryModel> categoriesOfSearchResults) {
-		if (categoryModel.isSearchable()) {
+		if (categoryModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, categoryModel.getDepartment())) {
 			navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel) categoryModel.getParentNode());
-			categoriesOfSearchResults.put(categoryModel.getParentNode().getParentNode().getContentName(),
-					(CategoryModel) categoryModel.getParentNode().getParentNode());
+			categoriesOfSearchResults.put(categoryModel.getParentNode().getParentNode().getContentName(), (CategoryModel) categoryModel.getParentNode().getParentNode());
 		}
 	}
+
+    private boolean isCatalogSimilarToServiceType(NavigationModel navigationModel, DepartmentModel departmentModel) {
+        FDUserI user = navigationModel.getUser();
+        EnumCatalogType catalogType = departmentModel.getCatalogType(EnumCatalogType.EMPTY.name());
+        return user.isCorporateUser() && catalogType.isCorporate() || !user.isCorporateUser() && catalogType.isResidental();
+    }
 
 }
