@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
@@ -27,7 +26,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaint;
 import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -82,13 +80,13 @@ public class AutoCreditApprovalCron {
 			strB.append("<table>");
 			double regularCreditAutoApproveAmount = ErpServicesProperties.getCreditAutoApproveAmount();
 			for (String complaintId : regularComplaintIds) {
-				approveComplaint(complaintId, regularCreditAutoApproveAmount, isSF2_0_AndServiceEnabled, sb, errorFlg, strB);
+				errorFlg = approveComplaint(complaintId, regularCreditAutoApproveAmount, isSF2_0_AndServiceEnabled, sb, errorFlg, strB, false);
 			}
 			
 			List<String> selfIssuedComplaintIds = selfIssuedCreditApprovalEnabled ? collectSelfIssuedComplaints(isSF2_0_AndServiceEnabled, sb) : new ArrayList<String>();	
 			double selfIssuedComplaintAutoApproveAmount = ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint();
 			for (String selfIssuedComplaintId : selfIssuedComplaintIds) {
-				approveComplaint(selfIssuedComplaintId, selfIssuedComplaintAutoApproveAmount, isSF2_0_AndServiceEnabled, sb, errorFlg, strB);
+				errorFlg = approveComplaint(selfIssuedComplaintId, selfIssuedComplaintAutoApproveAmount, isSF2_0_AndServiceEnabled, sb, errorFlg, strB, true);
 			}
 			
 			if (errorFlg) {
@@ -166,11 +164,11 @@ public class AutoCreditApprovalCron {
 		return pendingSelfComplaints;
 	}
 
-	private static void approveComplaint(String complaintId, double creditAutoApproveAmount,
-			boolean isSF2_0_AndServiceEnabled, FDCustomerManagerSB sb, boolean errorFlg, StringBuffer strB) {
-		StringWriter sw = null;
+	private static boolean approveComplaint(String complaintId, double creditAutoApproveAmount,
+			boolean isSF2_0_AndServiceEnabled, FDCustomerManagerSB sb, boolean errorFlg, StringBuffer strB, boolean isSelfCredit) {
 		String initiator = EnumTransactionSource.SYSTEM.getName().toUpperCase();
-		LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
+		String approvalStartMessage = collectApprovalStartMessage(isSelfCredit, complaintId);
+		LOGGER.info(approvalStartMessage);
 		try {
 			if (isSF2_0_AndServiceEnabled) {
 				CustomerComplaintService.getInstance().approveComplaint(complaintId, true, initiator, true,
@@ -179,29 +177,46 @@ public class AutoCreditApprovalCron {
 				sb.approveComplaint(complaintId, true, initiator, true,
 						ErpServicesProperties.getCreditAutoApproveAmount());
 			}
-			LOGGER.info("Auto approve FINISHED for complaint ID : " + complaintId);
+			String approvalFinishedMessage = collectApprovalFinishedMessage(isSelfCredit, complaintId);
+			LOGGER.info(approvalFinishedMessage);
 		} catch (ErpComplaintException ex) {
 			errorFlg = true;
-			sw = new StringWriter();
-			ex.printStackTrace(new PrintWriter(sw));
-			populateErrorDetails(strB, complaintId,
-					sw.toString().substring(0, sw.toString().length() > 500 ? 500 : sw.toString().length()));
-			LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId + "::  " + sw.toString());
+			logApprovalError(ex, strB, complaintId, isSelfCredit);
 		} catch (EJBException ex) {
 			errorFlg = true;
-			sw = new StringWriter();
-			ex.printStackTrace(new PrintWriter(sw));
-			populateErrorDetails(strB, complaintId,
-					sw.toString().substring(0, sw.toString().length() > 500 ? 500 : sw.toString().length()));
-			LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId + "::  " + sw.toString());
+			logApprovalError(ex, strB, complaintId, isSelfCredit);
 		} catch (Exception ex) {
 			errorFlg = true;
-			sw = new StringWriter();
-			ex.printStackTrace(new PrintWriter(sw));
-			populateErrorDetails(strB, complaintId,
-					sw.toString().substring(0, sw.toString().length() > 500 ? 500 : sw.toString().length()));
-			LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId + "::  " + sw.toString());
+			logApprovalError(ex, strB, complaintId, isSelfCredit);
 		}
+		return errorFlg;
+	}
+
+	private static String collectApprovalStartMessage(boolean isSelfCredit, String complaintId) {
+		String approvalStartMessage = isSelfCredit ? "Auto approve STARTED for self-issued complaint ID : " : "Auto approve STARTED for complaint ID : "; 
+		return new StringBuffer(approvalStartMessage).append(complaintId).toString();
+	}
+	
+	private static String collectApprovalFinishedMessage(boolean isSelfCredit, String complaintId) {
+		String approvalFinishedMessage = isSelfCredit ? "Auto approve FINISHED for self-issued complaint ID : " : "Auto approve FINISHED for complaint ID : "; 
+		return new StringBuffer(approvalFinishedMessage).append(complaintId).toString();
+	}
+
+	private static void logApprovalError(Exception ex, StringBuffer strB, String complaintId, boolean isSelfCredit) {
+		StringWriter sw = new StringWriter();
+		ex.printStackTrace(new PrintWriter(sw));
+		populateErrorDetails(strB, complaintId, limitErrorMessageLength(sw));
+		String errorMessage =collectApproveFailedMessage(isSelfCredit, complaintId, sw);
+		LOGGER.warn(errorMessage);
+	}
+
+	private static String limitErrorMessageLength(StringWriter sw) {
+		return sw.toString().substring(0, Math.min(500, sw.toString().length()));
+	}
+
+	private static String collectApproveFailedMessage(boolean isSelfCredit, String complaintId, StringWriter sw) {
+		String message = isSelfCredit ? "Auto approve FAILED for self-issued complaint ID : " : "Auto approve FAILED for complaint ID : ";
+		return new StringBuffer(message).append(complaintId).append("::  ").append(sw.toString()).toString();
 	}
 
 	/**
@@ -247,5 +262,4 @@ public class AutoCreditApprovalCron {
 			LOGGER.warn("Error Sending AutoCreditApprovalCron report email: ", e);
 		}
 	}
-
 }
