@@ -1,5 +1,7 @@
 <%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import='java.util.*' %>
+<%@ page import='com.freshdirect.framework.util.NVL' %>
+<%@ page import='org.apache.commons.lang.StringEscapeUtils'%>
 <%
 	boolean inMobWebTemplateOptimized = (request.getAttribute("inMobWebTemplateOptimized") != null && ("true").equalsIgnoreCase(request.getAttribute("inMobWebTemplateOptimized").toString())) ? true : false;
 %>
@@ -143,7 +145,7 @@
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<span class="icon-search"></span>
 						<span class="icon-cancel-circle-after" style="display: none;"></span>
-						<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="searchinput search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
+						<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="searchinput search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" value="<%= StringEscapeUtils.escapeHtml(NVL.apply(request.getParameter("searchParams"), "")) %>" />
 					</form>
 				</div>
 			<% } %>
