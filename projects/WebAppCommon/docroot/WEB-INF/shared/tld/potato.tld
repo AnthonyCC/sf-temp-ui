@@ -336,5 +336,27 @@
 		</attribute>
 	</tag>
 	
+	<tag>
+		<name>help</name>
+		<tagclass>com.freshdirect.webapp.taglib.help.HelpPotatoTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>contactUs</name>
+		<tagclass>com.freshdirect.webapp.taglib.contactus.ContactUsPotatoTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
 	
 </taglib>
