@@ -140,7 +140,11 @@ public class LogisticsDataEncoder {
 		return request;
 	}
 
-	public static Customer encodeCustomer(ContactAddressModel address, String customerId) {
+    public static Customer encodeCustomer(ContactAddressModel address, String customerId) {
+        return encodeCustomer(address, customerId, new CustomerAvgOrderSize(0, 0, 0));
+    }
+
+	public static Customer encodeCustomer(ContactAddressModel address, String customerId, CustomerAvgOrderSize orderSize) {
 		Customer customer = new Customer();
 		customer.setAddress(encodeAddress(address));
 		String custId = (customerId == null)?address.getCustomerId():customerId;
@@ -149,12 +153,6 @@ public class LogisticsDataEncoder {
 		customer.setFirstName(address.getFirstName());
 		customer.setLastName(address.getLastName());
 		customer.setServiceType(address.getServiceType().getName());
-		customer.setOrderSize(new CustomerAvgOrderSize(0,0,0));
-		return customer;
-	}
-	
-	public static Customer encodeCustomer(ContactAddressModel address, String customerId, CustomerAvgOrderSize orderSize) {
-		Customer customer = encodeCustomer(address, customerId);
 		customer.setOrderSize(orderSize);
 		return customer;
 	}
@@ -349,16 +347,15 @@ public class LogisticsDataEncoder {
 		return request;
 	}
 
-	public static ValidateReservationRequest encodeValidateReservation(
-			CustomerAvgOrderSize orderSize, FDReservation reservation,
-			ErpAddressModel address, TimeslotEvent event) {
-		ValidateReservationRequest request = new ValidateReservationRequest();
-		request.setCart(encodeCart(event));
-		request.setReservationId(reservation.getId());
-		request.setAddressDeleted(address == null);
-		request.setCustomer(encodeCustomer(address, null, orderSize));
-		return request;
-	}
+    public static ValidateReservationRequest encodeValidateReservation(CustomerAvgOrderSize orderSize, FDReservation reservation, ErpAddressModel address, TimeslotEvent event) {
+        boolean isAddressDeleted = address == null;
+        ValidateReservationRequest request = new ValidateReservationRequest();
+        request.setCart(encodeCart(event));
+        request.setReservationId(reservation.getId());
+        request.setAddressDeleted(isAddressDeleted);
+        request.setCustomer(encodeCustomer(isAddressDeleted ? reservation.getAddress() : address, null, orderSize));
+        return request;
+    }
 	
 	public static SubscriptionRequest encodeAddSubscriptionRequest(
 			String customerId, String mobileNumber, String textOffers,
