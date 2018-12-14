@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.ajax.filtering;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -93,19 +92,19 @@ public class FilterCollector {
 
 	public void collectBrandFilters(NavigationModel navigationModel, ProductModel product) {
 		for (BrandModel brandModel : product.getBrands()) {
-			navigationModel.getBrandsOfSearchResults().put(brandModel.getContentName(), brandModel);
+			navigationModel.getBrandsOfSearchResults().add(brandModel);
 		}
 	}
 
-	private void collectCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Map<String, CategoryModel> categoriesOfSearchResults) {
+	private void collectCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Set<CategoryModel> categoriesOfSearchResults) {
 		if (categoryModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, categoryModel.getDepartment())) {
-			categoriesOfSearchResults.put(categoryModel.getContentName(), categoryModel);
+			categoriesOfSearchResults.add(categoryModel);
 		}
 	}
 
 	private void collectCategoryFilters(NavigationModel navigationModel, ContentKey contentKey) {
 		CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
-		Map<String, CategoryModel> categoriesOfSearchResults = navigationModel.getCategoriesOfSearchResults();
+		Set<CategoryModel> categoriesOfSearchResults = navigationModel.getCategoriesOfSearchResults();
 		if (categoryModel.getParentNode() instanceof DepartmentModel) { // Category
 			collectCategoryFilter(navigationModel, categoryModel, categoriesOfSearchResults);
 		} else {
@@ -120,7 +119,7 @@ public class FilterCollector {
 	private void collectDepartmentFilter(NavigationModel navigationModel, ContentKey contentKey) {
 		DepartmentModel departmentModel = (DepartmentModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
 		if (departmentModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, departmentModel)) {
-			navigationModel.getDepartmentsOfSearchResults().put(departmentModel.getContentName(), departmentModel);
+			navigationModel.getDepartmentsOfSearchResults().add(departmentModel);
 		}
 	}
 
@@ -155,17 +154,17 @@ public class FilterCollector {
 		}
 	}
 
-	private void collectSubCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Map<String, CategoryModel> categoriesOfSearchResults) {
+	private void collectSubCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Set<CategoryModel> categoriesOfSearchResults) {
 		if (categoryModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, categoryModel.getDepartment())) {
-			navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
-			categoriesOfSearchResults.put(categoryModel.getParentNode().getContentName(), (CategoryModel) categoryModel.getParentNode());
+			navigationModel.getSubCategoriesOfSearchResults().add(categoryModel);
+			categoriesOfSearchResults.add((CategoryModel) categoryModel.getParentNode());
 		}
 	}
 
-	private void collectSubSubCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Map<String, CategoryModel> categoriesOfSearchResults) {
+	private void collectSubSubCategoryFilter(NavigationModel navigationModel, CategoryModel categoryModel, Set<CategoryModel> categoriesOfSearchResults) {
 		if (categoryModel.isSearchable() && isCatalogSimilarToServiceType(navigationModel, categoryModel.getDepartment())) {
-			navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel) categoryModel.getParentNode());
-			categoriesOfSearchResults.put(categoryModel.getParentNode().getParentNode().getContentName(), (CategoryModel) categoryModel.getParentNode().getParentNode());
+			navigationModel.getSubCategoriesOfSearchResults().add((CategoryModel) categoryModel.getParentNode());
+			categoriesOfSearchResults.add((CategoryModel) categoryModel.getParentNode().getParentNode());
 		}
 	}
 
