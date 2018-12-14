@@ -14,6 +14,7 @@ import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.ContextualAttributeFetchScope;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
@@ -26,6 +27,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.CmsLegacy;
 import com.freshdirect.storeapi.ContentNode;
 import com.freshdirect.storeapi.ContentNodeI;
+import com.freshdirect.storeapi.content.EnumCatalogType;
 import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.storeapi.multistore.MultiStoreContext;
 import com.freshdirect.storeapi.multistore.MultiStoreContextUtil;
@@ -40,6 +42,8 @@ public class CmsManager {
     private final static CmsManager INSTANCE = new CmsManager();
 
     private static Map<ContentKey, ContentKey> primaryHomeMap;
+    
+    private static Map<ContentKey, ContentKey> corporateHomeMap;
 
     private ContextualContentProvider contentProviderService = CmsServiceLocator.contentProviderService();
 
@@ -66,6 +70,7 @@ public class CmsManager {
         }
 
         initPrimaryHomeMap();
+        initCorporateHomeMap();
     }
 
     public static CmsManager getInstance() {
@@ -139,6 +144,10 @@ public class CmsManager {
             Map<ContentKey, ContentKey> primaryHomes = contentProviderService.findPrimaryHomes(productKey);
             return primaryHomes.get(storeKey);
         }
+    }
+
+    public ContentKey getCorporateHomeKey(ContentKey productKey) {
+        return corporateHomeMap.get(productKey);
     }
 
     public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate searchPredicate) {
@@ -229,6 +238,24 @@ public class CmsManager {
                 Map<ContentKey, ContentKey> primaryHomes = contentProviderService.findPrimaryHomes(key);
                 if (primaryHomes != null && primaryHomes.containsKey(singleStoreKey)) {
                     primaryHomeMap.put(key, primaryHomes.get(singleStoreKey));
+                }
+            }
+        }
+    }
+    
+    public void initCorporateHomeMap() {
+        corporateHomeMap = new HashMap<ContentKey, ContentKey>();
+        Set<ContentKey> keys = getContentKeysByType(ContentType.Product);
+        for (ContentKey key : keys) {
+            for (List<ContentKey> context : findContextsOf(key)) {
+                for (ContentKey contentKey : context) {
+                    if (ContentType.Department == contentKey.type) {
+                        ContentNodeI contentNode = getContentNode(contentKey);
+                        EnumCatalogType attributeValue = EnumCatalogType.valueOf((String) contentNode.getAttributeValue(ContentTypes.Department.catalog));
+                        if (attributeValue.isCorporate()) {
+                            corporateHomeMap.put(key, context.get(1));
+                        }
+                    }
                 }
             }
         }
