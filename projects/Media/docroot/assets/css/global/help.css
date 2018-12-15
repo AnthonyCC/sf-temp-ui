@@ -303,6 +303,10 @@ input[type="text"].search-input::placeholder {
 	display: none;
 }
 
+.cs-contact-hours div p:nth-child(2) {
+	padding-top: 35px;
+}
+
 .help-contact-form.subheader {
 	color: #333333;
 }
