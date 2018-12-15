@@ -181,13 +181,13 @@ public class AutoCreditApprovalCron {
 			LOGGER.info(approvalFinishedMessage);
 		} catch (ErpComplaintException ex) {
 			errorFlg = true;
-			logApprovalError(ex, strB, complaintId, isSelfCredit);
+			logApprovalError(ex, sb, strB, complaintId, isSelfCredit);
 		} catch (EJBException ex) {
 			errorFlg = true;
-			logApprovalError(ex, strB, complaintId, isSelfCredit);
+			logApprovalError(ex, sb, strB, complaintId, isSelfCredit);
 		} catch (Exception ex) {
 			errorFlg = true;
-			logApprovalError(ex, strB, complaintId, isSelfCredit);
+			logApprovalError(ex, sb, strB, complaintId, isSelfCredit);
 		}
 		return errorFlg;
 	}
@@ -202,12 +202,18 @@ public class AutoCreditApprovalCron {
 		return new StringBuffer(approvalFinishedMessage).append(complaintId).toString();
 	}
 
-	private static void logApprovalError(Exception ex, StringBuffer strB, String complaintId, boolean isSelfCredit) {
+	private static void logApprovalError(Exception ex, FDCustomerManagerSB sb, StringBuffer strB, String complaintId, boolean isSelfCredit) {
 		StringWriter sw = new StringWriter();
 		ex.printStackTrace(new PrintWriter(sw));
 		populateErrorDetails(strB, complaintId, limitErrorMessageLength(sw));
-		String errorMessage =collectApproveFailedMessage(isSelfCredit, complaintId, sw);
+		String errorMessage = collectApproveFailedMessage(isSelfCredit, complaintId, sw);
 		LOGGER.warn(errorMessage);
+		try {
+			sb.logComplaintApprovalErrorActivity(isSelfCredit, complaintId);
+		} catch (Exception e) {
+			String message = new StringBuffer("Could not create activity log with complaint ID: ").append(complaintId).toString();
+			LOGGER.info(message);
+		}
 	}
 
 	private static String limitErrorMessageLength(StringWriter sw) {

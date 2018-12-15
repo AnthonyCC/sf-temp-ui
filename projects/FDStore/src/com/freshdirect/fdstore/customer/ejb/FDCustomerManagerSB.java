@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import javax.ejb.EJBObject;
+import javax.ejb.FinderException;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.StoreContext;
@@ -983,6 +984,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public PendingSelfComplaintResponse getSelfIssuedComplaintsForAutoApproval() throws RemoteException, FDResourceException;
 
     public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws RemoteException, FDResourceException;
+
+	public void logComplaintApprovalErrorActivity(boolean isSelfCredit, String complaintId) throws FinderException, RemoteException;
 
 }
 

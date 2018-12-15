@@ -8936,4 +8936,38 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		}
 	}
+	
+	public void logComplaintApprovalErrorActivity(boolean isSelfCredit, String complaintId) throws FinderException, RemoteException {
+		EnumAccountActivityType accountActivityType = isSelfCredit ? EnumAccountActivityType.SELF_CREDIT_APPR_ERROR : EnumAccountActivityType.REG_CREDIT_APPR_ERROR;
+		String customerId = collectCustomerId(complaintId);
+		if (null != customerId) {
+			String note = new StringBuilder(accountActivityType.getName()).append(", complaintId: ").append(complaintId).toString();
+			ErpActivityRecord erpActivityRecord = new ErpActivityRecord();
+			erpActivityRecord.setCustomerId(customerId);
+			erpActivityRecord.setActivityType(accountActivityType);
+			erpActivityRecord.setDate(new Date());
+			erpActivityRecord.setSource(EnumTransactionSource.SYSTEM);
+			erpActivityRecord.setNote(note);
+			new ErpLogActivityCommand(erpActivityRecord).execute();
+		}
+	}
+	
+	private String collectCustomerId(String complaintId) throws FinderException, RemoteException {
+		String customerId = null;
+		try {
+			customerId = getErpSaleHome().findByComplaintId(complaintId).getCustomerPk().getId();
+		} catch (FinderException e) {
+			logCustomerIdException(complaintId, e);
+			throw new FinderException();
+		} catch (RemoteException e) {
+			logCustomerIdException(complaintId, e);
+			throw new RemoteException();
+		}
+		return customerId;
+	}
+	
+	private static void logCustomerIdException(String complaintId, Exception e) {
+		String message = new StringBuffer(e.getMessage()).append("Could not retrieve customer ID of complaint ID : ").append(complaintId).toString();
+		LOGGER.info(message);
+	}
 }
