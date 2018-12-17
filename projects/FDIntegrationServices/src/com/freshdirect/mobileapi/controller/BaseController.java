@@ -84,8 +84,6 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpContextWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpSessionWrapper;
 import com.freshdirect.mobileapi.service.CMSSectionProductCollectorService;
-import com.freshdirect.mobileapi.service.Oas247Service;
-import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
@@ -130,9 +128,6 @@ public abstract class BaseController extends AbstractController implements Messa
     private static final String TODAYS_PICK_BODY_PAGE_TYPE = "TodaysPickBody";
     private static final String FEED_HEAD_PAGE_TYPE = "FeedHead";
     private static final String FEED_BODY_PAGE_TYPE = "FeedBody";
-
-
-    public static OasService oasService = new Oas247Service();
 
     public enum UserCleanupMode {
         SESSION_ONLY, /* just remove user from session */
