@@ -8948,7 +8948,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			erpActivityRecord.setDate(new Date());
 			erpActivityRecord.setSource(EnumTransactionSource.SYSTEM);
 			erpActivityRecord.setNote(note);
-			new ErpLogActivityCommand(erpActivityRecord).execute();
+			logActivity(erpActivityRecord);
 		}
 	}
 	

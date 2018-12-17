@@ -212,7 +212,7 @@ public class AutoCreditApprovalCron {
 			sb.logComplaintApprovalErrorActivity(isSelfCredit, complaintId);
 		} catch (Exception e) {
 			String message = new StringBuffer("Could not create activity log with complaint ID: ").append(complaintId).toString();
-			LOGGER.info(message);
+			LOGGER.error(message);
 		}
 	}
 
