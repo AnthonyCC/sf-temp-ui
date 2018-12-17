@@ -9,12 +9,18 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Category;
+
+import com.freshdirect.fdstore.warmup.Warmup;
 import com.freshdirect.fdstore.warmup.WarmupService;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.data.RedirectData;
 
 public class WarmupMonitorFilter extends AbstractFilter {
-
+	
+	private static Category LOGGER = LoggerFactory.getInstance(WarmupMonitorFilter.class);
+	
     private static final String AJAX_INDICATOR_REQUEST_HEADER_NAME = "X-Requested-With";
     private static final String AJAX_INDICATOR_REQUEST_HEADER_VALUE = "XMLHttpRequest";
     public static final String WARMUP_PAGE_PATH = "/test/warmup/warmup.jsp";
@@ -36,12 +42,14 @@ public class WarmupMonitorFilter extends AbstractFilter {
 	                String requestHeader = httpServletRequest.getHeader(AJAX_INDICATOR_REQUEST_HEADER_NAME);
 	                if (AJAX_INDICATOR_REQUEST_HEADER_VALUE.equals(requestHeader)) {
 	                    if (!requestURI.endsWith(WARMUP_STATE_MOBILE_API_ENDPOINT)) {
+	                    	LOGGER.error("[WARMUPMONITOR] WarmupMonitor-REDIRECT-AJAX");
 	                        RedirectData redirectData = new RedirectData();
 	                        redirectData.setRedirectUrl(WARMUP_PAGE_PATH);
 	                        redirectData.setMessage(WARMUP_AJAX_WARNING_MESSAGE);
 	                        JsonHelper.writeResponseData((HttpServletResponse) response, redirectData);
 	                    }
 	                } else {
+	                	LOGGER.error("[WARMUPMONITOR] WarmupMonitor-REDIRECT-NORMAL");
 	                    ((HttpServletResponse) response).sendRedirect(WARMUP_PAGE_PATH);
 	                    return;
 	                    //return; //If we dont return it will continue to execute FilterChain which might cause exception
@@ -49,6 +57,7 @@ public class WarmupMonitorFilter extends AbstractFilter {
 	            }
 	        }
         }catch(Exception e) {
+        	LOGGER.error("[WARMUPMONITOR] WarmupMonitor-REDIRECT-EXCEPTION");
         	e.printStackTrace();
         }
         filterChain.doFilter(request, response);
