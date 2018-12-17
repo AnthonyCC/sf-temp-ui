@@ -8758,7 +8758,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final String GET_SUBMITTED_SELF_COMPLAINT_AMOUNTS_QUERY = "select c.amount as complaint_amount, s.customer_id as customer_id"
 			+ " from cust.complaint c left join cust.sale s on s.id = c.sale_id"
-			+ " where c.created_by = ? and c.status in ('APP', 'PEN') and c.create_date >= ?";
+			+ " where c.created_by = ? and c.create_date >= ?";
 
 	private Map<String, Double> collectSubmittedSelfComplaintsByCustomerIdWithinAmountDayRange()
 			throws FDResourceException, RemoteException {
@@ -8805,7 +8805,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final String GET_SUBMITTED_SELF_COMPLAINTS_QUERY = "select c.id as self_complaint_id, s.customer_id as customer_id "
 			+ "from cust.complaint c " + "left join cust.sale s on s.id = c.sale_id "
-			+ "where c.created_by = ? and c.status in ('APP', 'PEN') " + "and c.create_date >= ?";
+			+ "where c.created_by = ? and c.create_date >= ?";
 
 	private Map<String, List<String>> collectSubmittedSelfComplaintsByCustomerIdWithinQuantityDayRange()
 			throws FDResourceException, RemoteException {
