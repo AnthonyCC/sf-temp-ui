@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.customer.*;
 import com.freshdirect.customer.*;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.util.CaptchaUtil;
@@ -74,8 +75,12 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
         
         if (("POST".equalsIgnoreCase(request.getMethod()))) {
             user = (FDUserI) session.getAttribute(SessionName.USER);
-            
+            String paymentMethodType = RequestUtil.getRequestParameter(request,PaymentMethodName.PAYMENT_METHOD_TYPE);
 
+            boolean skipCapcha = false;
+            if(EnumPaymentMethodType.ECHECK.getName().equalsIgnoreCase(paymentMethodType)) {
+            		skipCapcha = true;  /* to by-pass the captcha for E-check in Add/Edit payment from Payment page*/
+            }
 			try {
 				/* verify UUID */
 	            if(actionName.equalsIgnoreCase("addPaymentMethod") || actionName.equalsIgnoreCase("editPaymentMethod")) {
@@ -85,8 +90,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	            	
 	            	if(actionName.equalsIgnoreCase("addPaymentMethod")) {
 	            		paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
-	            	}
-	            	if(actionName.equalsIgnoreCase("editPaymentMethod")) {
+	            	} else if(actionName.equalsIgnoreCase("editPaymentMethod")) {
 	            		paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());
 	            	}
 	            	
@@ -105,7 +109,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	            }
 	            
 	            if(actionName.equalsIgnoreCase("addPaymentMethod")) {
-	            	if (!checkCaptcha(request, actionResult)) {
+	            	if (!skipCapcha && !checkCaptcha(request, actionResult)) {
 	            		return EVAL_BODY_BUFFERED;
 	            	}
 	                ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
@@ -130,7 +134,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	                    }
 	                }
 	            } else if(actionName.equalsIgnoreCase("editPaymentMethod")) {
-	            	if (!checkCaptcha(request, actionResult)) {
+	            	if (!skipCapcha && !checkCaptcha(request, actionResult)) {
 	            		return EVAL_BODY_BUFFERED;
 	            	}
 	            	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());
