@@ -23,6 +23,7 @@ import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.media.domain.Media;
 import com.freshdirect.cms.media.service.MediaService;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.CmsLegacy;
 import com.freshdirect.storeapi.ContentNode;
@@ -251,7 +252,7 @@ public class CmsManager {
                 for (ContentKey contentKey : context) {
                     if (ContentType.Department == contentKey.type) {
                         ContentNodeI contentNode = getContentNode(contentKey);
-                        EnumCatalogType attributeValue = EnumCatalogType.valueOf((String) contentNode.getAttributeValue(ContentTypes.Department.catalog));
+                        EnumCatalogType attributeValue = EnumCatalogType.valueOf(NVL.apply((String) contentNode.getAttributeValue(ContentTypes.Department.catalog),EnumCatalogType.EMPTY.getLabel()));
                         if (attributeValue.isCorporate()) {
                             corporateHomeMap.put(key, context.get(1));
                         }
