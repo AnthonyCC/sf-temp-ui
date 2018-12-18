@@ -8937,8 +8937,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void logComplaintApprovalErrorActivity(boolean isSelfCredit, String complaintId) throws FinderException, RemoteException {
-		EnumAccountActivityType accountActivityType = isSelfCredit ? EnumAccountActivityType.SELF_CREDIT_APPR_ERROR : EnumAccountActivityType.REG_CREDIT_APPR_ERROR;
+	public void logComplaintApprovalErrorActivity(EnumAccountActivityType accountActivityType, String complaintId) throws FinderException, RemoteException {
 		String customerId = collectCustomerId(complaintId);
 		if (null != customerId) {
 			String note = new StringBuilder(accountActivityType.getName()).append(", complaintId: ").append(complaintId).toString();

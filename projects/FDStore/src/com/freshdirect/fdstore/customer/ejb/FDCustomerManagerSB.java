@@ -22,6 +22,7 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
@@ -985,7 +986,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws RemoteException, FDResourceException;
 
-	public void logComplaintApprovalErrorActivity(boolean isSelfCredit, String complaintId) throws FinderException, RemoteException;
+	public void logComplaintApprovalErrorActivity(EnumAccountActivityType accountActivityType, String complaintId) throws FinderException, RemoteException;
 
 }
 
