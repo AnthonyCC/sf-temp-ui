@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBException;
+import javax.ejb.FinderException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -22,14 +23,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpComplaintException;
+import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -239,14 +244,47 @@ public class AutoCreditApprovalCron {
 		email(Calendar.getInstance().getTime(), stringBuilder.toString());
 	}
 	
-	private static void logActivity(String complaintId, EnumAccountActivityType acountActivityType,
+	private static void logActivity(String complaintId, EnumAccountActivityType accountActivityType,
 			FDCustomerManagerSB sb) {
 		try {
-			sb.logComplaintApprovalErrorActivity(acountActivityType, complaintId);
+			String customerId = collectCustomerId(complaintId);
+			if (null != customerId) {
+				String note = new StringBuilder(accountActivityType.getName()).append(", complaintId: ").append(complaintId).toString();
+				ErpActivityRecord erpActivityRecord = new ErpActivityRecord();
+				erpActivityRecord.setCustomerId(customerId);
+				erpActivityRecord.setActivityType(accountActivityType);
+				erpActivityRecord.setDate(new Date());
+				erpActivityRecord.setSource(EnumTransactionSource.SYSTEM);
+				erpActivityRecord.setNote(note);
+				ActivityLog.getInstance().logActivity(erpActivityRecord);
+			}
 		} catch (Exception e) {
 			String message = new StringBuffer("Could not create activity log with complaint ID: ").append(complaintId).toString();
 			LOGGER.error(message);
 		}
+	}
+	
+	private static String collectCustomerId(String complaintId) throws FinderException, RemoteException {
+		String customerId = null;
+		try {
+			customerId = getErpSaleHome().findByComplaintId(complaintId).getCustomerPk().getId();
+		} catch (FinderException e) {
+			logCustomerIdException(complaintId, e);
+			throw new FinderException();
+		} catch (RemoteException e) {
+			logCustomerIdException(complaintId, e);
+			throw new RemoteException();
+		}
+		return customerId;
+	}
+	
+	private static ErpSaleHome getErpSaleHome() {
+		return FDServiceLocator.getInstance().getErpSaleHome();
+	}
+
+	private static void logCustomerIdException(String complaintId, Exception e) {
+		String message = new StringBuffer(e.getMessage()).append("Could not retrieve customer ID of complaint ID : ").append(complaintId).toString();
+		LOGGER.info(message);
 	}
 
 	/**

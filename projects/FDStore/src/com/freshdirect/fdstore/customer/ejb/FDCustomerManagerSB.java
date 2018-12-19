@@ -986,7 +986,5 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws RemoteException, FDResourceException;
 
-	public void logComplaintApprovalErrorActivity(EnumAccountActivityType accountActivityType, String complaintId) throws FinderException, RemoteException;
-
 }
 
