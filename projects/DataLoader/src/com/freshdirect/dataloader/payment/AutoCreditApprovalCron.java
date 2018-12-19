@@ -259,7 +259,7 @@ public class AutoCreditApprovalCron {
 				ActivityLog.getInstance().logActivity(erpActivityRecord);
 			}
 		} catch (Exception e) {
-			String message = new StringBuffer("Could not create activity log with complaint ID: ").append(complaintId).toString();
+			String message = new StringBuilder("Could not create activity log with complaint ID: ").append(complaintId).toString();
 			LOGGER.error(message);
 		}
 	}
@@ -283,7 +283,7 @@ public class AutoCreditApprovalCron {
 	}
 
 	private static void logCustomerIdException(String complaintId, Exception e) {
-		String message = new StringBuffer(e.getMessage()).append("Could not retrieve customer ID of complaint ID : ").append(complaintId).toString();
+		String message = new StringBuilder(e.getMessage()).append("Could not retrieve customer ID of complaint ID : ").append(complaintId).toString();
 		LOGGER.info(message);
 	}
 
@@ -316,20 +316,20 @@ public class AutoCreditApprovalCron {
 			String subject = "AutoCreditApproval Cron :	"
 					+ (processDate != null ? dateFormatter.format(processDate) : " date error");
 
-			StringBuffer buff = new StringBuffer();
+			StringBuilder stringBuilder = new StringBuilder();
 
-			buff.append("<html>").append("<body>");
+			stringBuilder.append("<html>").append("<body>");
 
 			if (exceptionMsg != null) {
-				buff.append("Exception is :").append("\n");
-				buff.append(exceptionMsg);
+				stringBuilder.append("Exception is :").append("\n");
+				stringBuilder.append(exceptionMsg);
 			}
-			buff.append("</body>").append("</html>");
+			stringBuilder.append("</body>").append("</html>");
 
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
 					ErpServicesProperties.getCronFailureMailTo(), ErpServicesProperties.getCronFailureMailCC(), subject,
-					buff.toString(), true, "");
+					stringBuilder.toString(), true, "");
 
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending AutoCreditApprovalCron report email: ", e);
