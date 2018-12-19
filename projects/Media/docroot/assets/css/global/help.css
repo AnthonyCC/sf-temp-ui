@@ -267,7 +267,7 @@ input[type="text"].search-input::placeholder {
 }
 
 .main-content--right .help-contact-form.subheader {
-	margin: 35px 0 38px;
+	margin: 25px 0 28px;
 }
 
 .main-content--right .help-contact-form.subheader p {
@@ -304,7 +304,7 @@ input[type="text"].search-input::placeholder {
 }
 
 .cs-contact-hours div p:nth-child(2) {
-	padding-top: 35px;
+	padding-top: 20px;
 }
 
 .help-contact-form.subheader {
@@ -314,7 +314,7 @@ input[type="text"].search-input::placeholder {
 .help-contact-form.login-link {
 	color: #408244;
 	font-weight: normal;
-	margin: 0 0 50px 0;
+	margin: 0 0 30px 0;
 	text-align: left;
 }
 
@@ -404,10 +404,11 @@ input[type="text"].search-input::placeholder {
 
 .help-contact-form .form-group.customer-name-container {
 	flex-direction: column;
-	margin-bottom: 15px;
+	margin-bottom: 30px;
 }
 
 .help-contact-form .customer-name.customer-name-container {
+	font-weight: normal;
 	text-align: left;
 }
 
@@ -437,6 +438,10 @@ input[type="text"].search-input::placeholder {
 	flex-direction: row;
 	height: 64px;
 	margin-top: 40px;
+}
+
+.help.footer-container #helpfooter * {
+	font-weight: normal;
 }
 
 .help.footer-container .help-aside {
@@ -489,7 +494,7 @@ input[type="text"].search-input::placeholder {
 .help.footer-container .helpline-details div:first-child span:first-child {
 	align-items: center;
 	display: flex;
-	width: 13%;
+	width: 14%;
 }
 
 .help.footer-container .helpline-details div div:nth-child(3) {
@@ -498,7 +503,7 @@ input[type="text"].search-input::placeholder {
 
 .help.footer-container .helpline-details div div:nth-child(3) span:first-child {
 	justify-content: center;
-	width: 70%;
+	width: 73%;
 }
 
 .help.footer-container .helpline-details span:last-child {
@@ -642,7 +647,7 @@ input[type="text"].search-input::placeholder {
 	form#contact_fd_contact {
 		display: block;
 	}
-
+.help-contact-form.login-link
 	.contact_fd-cont .cs-contact-hours.subheader {
 		margin: 35px 0 35px;
 		line-height: 1.44;
@@ -763,11 +768,6 @@ input[type="text"].search-input::placeholder {
 		flex-direction: column;
 	}
 
-	/* .contact_fd-cont .form-group.phone_number.flex div input {
-		display: inline-block;
-		max-width: 100%;
-	}
-	 */
 	.contact_fd-cont .form-group.phone_number div:first-child {
 		width: 73%;
 	}
