@@ -341,7 +341,7 @@ public class TimeslotService {
         DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
         // narrow down restrictions
         LOGGER.debug("All Restrictions (before OTR filter): " + restrictions.size());
-        restrictions.keepRestrictionsForGenericTimeslots();
+        restrictions = restrictions.getRestrictionsForGenericTimeslots();
         LOGGER.debug("All Restrictions: " + restrictions.size());
 
         FDTimeslotUtil tsu; // we want only a single set of time slots (see: multiple sets in case of advance orders)
