@@ -252,7 +252,8 @@ public class CmsManager {
                 for (ContentKey contentKey : context) {
                     if (ContentType.Department == contentKey.type) {
                         ContentNodeI contentNode = getContentNode(contentKey);
-                        EnumCatalogType attributeValue = EnumCatalogType.valueOf(NVL.apply((String) contentNode.getAttributeValue(ContentTypes.Department.catalog),EnumCatalogType.EMPTY.getLabel()));
+                        EnumCatalogType attributeValue = EnumCatalogType
+                                .valueOf(NVL.apply((String) contentNode.getAttributeValue(ContentTypes.Department.catalog), EnumCatalogType.EMPTY.name()));
                         if (attributeValue.isCorporate()) {
                             corporateHomeMap.put(key, context.get(1));
                         }
