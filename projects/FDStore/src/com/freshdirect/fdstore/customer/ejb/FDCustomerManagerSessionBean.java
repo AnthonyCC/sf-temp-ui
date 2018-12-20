@@ -8829,8 +8829,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	private java.sql.Date collectAmountDayLimitDate() {
-		int quantityDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveAmountDayRangeLimit();
-		Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -quantityDayRangeLimit);
+		int amountDayRangeLimit = ErpServicesProperties.getSelfCreditAutoapproveAmountDayRangeLimit();
+		Date dateToQuery = DateUtil.addDays(DateUtil.getCurrentTime(), -amountDayRangeLimit);
 		return new java.sql.Date(dateToQuery.getTime());
 	}
 
