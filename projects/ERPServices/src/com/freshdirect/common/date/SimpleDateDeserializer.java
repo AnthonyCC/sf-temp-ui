@@ -1,9 +1,10 @@
 package com.freshdirect.common.date;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -11,10 +12,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final Logger LOGGER = LoggerFactory.getInstance(SimpleDateDeserializer.class);
 
 	@Override
 	public Date deserialize(JsonParser jp, DeserializationContext context) throws IOException, JsonProcessingException {
@@ -50,6 +53,7 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 		try {
 			return simpleDateFormat.parse(dateTextValue);
 		} catch (Exception e) {
+			LOGGER.warn("Unparseable date: "+dateTextValue, e);
 			return null;
 		}
 
