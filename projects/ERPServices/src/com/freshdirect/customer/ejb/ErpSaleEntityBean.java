@@ -64,7 +64,6 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.EntityBeanSupport;

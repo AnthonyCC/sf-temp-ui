@@ -12,18 +12,26 @@ package com.freshdirect.customer;
  */
 import java.util.*;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.common.date.SimpleDateDeserializer;
+
 public class ErpChargebackModel extends ErpPaymentModel {
 	
 	
+	private static final long serialVersionUID = 5236617128370452805L;
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date batchDate;
 	private String batchNumber;
 	private String cbkControlNumber;
 	private double cbkDiscount;
 	private String cbkReasonCode;
 	private String cbkReferenceNumber;
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date cbkRespondDate;
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date cbkWorkDate;
 	private double originalTxAmount;
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date originalTxDate;
 	private String description;
 	private String merchantReferenceNumber;

@@ -31,8 +31,9 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 			if (timestamp > 0) {
 				return new Date(timestamp);
 			}
+			throw new JsonParseException("Unparseable date: " + date + ", timestamp=" + timestamp + ". Supported formats: yyyy-MM-dd, unix-timestamp", null);
+
 		}
-		throw new JsonParseException("Unparseable date: " + date + ". Supported formats: yyyy-MM-dd, unix-timestamp", null);
 	}
 
 	private JsonNode getJsonNode(JsonParser jp) {
