@@ -28,7 +28,7 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 		} else {
 			// try long value, date could be unix time
 			final long timestamp = getLongValue(jp, node);
-			if (timestamp > 0) {
+			if (timestamp >= 0) {
 				return new Date(timestamp);
 			}
 			throw new JsonParseException("Unparseable date: " + date + ", timestamp=" + timestamp + ". Supported formats: yyyy-MM-dd, unix-timestamp", null);
