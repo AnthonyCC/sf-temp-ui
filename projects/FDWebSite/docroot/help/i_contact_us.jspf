@@ -56,7 +56,7 @@
 		</script>
 		<div class="form-elements-wrapper flex form-header">
 		<h1 class="help-contact-form header font24 verdana-font bold">How Can We Help?</h1>
-						<div class="cs-contact-hours help-contact-form subheader verdana-font">
+						<div class="cs-contact-hours help-contact-form subheader verdana-font font16">
 						<fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" />
                         </div>
                <c:if test="${not empty contactUsPotato.requestFeedbackParams.faqNodes}">
@@ -99,7 +99,7 @@
 			<% }else{ %>
 				<div class="form-group customer-name-container flex">
 					<label class="bold">Customer Name</label>
-					<div class="customer-name customer-name-container font16 verdana-font"> <span>${contactUsPotato.customerData.firstName} ${contactUsPotato.customerData.lastName} </span><span class="customer-email">(${contactUsPotato.customerData.email})</span></div>
+					<div class="customer-name customer-name-container verdana-font"> <span class="font16">${contactUsPotato.customerData.firstName} ${contactUsPotato.customerData.lastName} </span><span class="customer-email font16">(${contactUsPotato.customerData.email})</span></div>
 				</div>
 				<div class="form-group customer-name-container login font16 flex">
 					<label class="login-label">Not ${contactUsPotato.customerData.firstName}? <a class="login-link" href="/login/login.jsp">Sign in</a></label>

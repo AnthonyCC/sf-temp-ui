@@ -131,6 +131,7 @@
 }
 
 .help-center--subheader {
+	font-size: 16px;
 	line-height: 1.44;
 	margin: 15px 0 20px 0;
 }
@@ -250,6 +251,10 @@ input[type="text"].search-input::placeholder {
 	display: block;
 	text-align: left;
 	width: fit-content;
+}
+
+.link-list-container ul li *, .your-account.container ul li * {
+	font-size: 16px;
 }
 
 .main-content--right {
@@ -412,6 +417,15 @@ input[type="text"].search-input::placeholder {
 	text-align: left;
 }
 
+.help-contact-form .customer-name.customer-name-container span {
+	font-size: 16px;
+}
+
+.help-contact-form .login-link, .help-contact-form .login-link a,
+.customer-name-container .login-label {
+	font-size: 14px;
+}
+
 .help-contact-form .customer-name.customer-name-container .customer-email {
 	color: #666666;
 }
@@ -441,6 +455,7 @@ input[type="text"].search-input::placeholder {
 }
 
 .help.footer-container #helpfooter * {
+	font-size: 16px;
 	font-weight: normal;
 }
 
@@ -647,6 +662,11 @@ input[type="text"].search-input::placeholder {
 	form#contact_fd_contact {
 		display: block;
 	}
+
+	.help-contact-form.subheader {
+		padding-bottom: 7px;
+	}
+
 .help-contact-form.login-link
 	.contact_fd-cont .cs-contact-hours.subheader {
 		margin: 35px 0 35px;
