@@ -1,0 +1,72 @@
+/* jQuery UI css overrides */
+	.ui-dialog .ui-widget-header,  .ui-dialog .ui-widget-header .ui-state-hover {
+		background: none;
+		border: 0 none;
+	}
+	.ui-dialog .ui-dialog-titlebar-close {
+		padding: 0px;
+		top:11px;
+		border: none;
+	}
+	.ui-dialog .ui-widget-header .ui-icon {
+		background: transparent url('/media/editorial/site_access/images/round_x.gif') no-repeat;
+		width: 20px;
+		height: 18px;
+	}
+	.ui-dialog .ui-widget-header .ui-state-hover {
+		background: none;
+	}
+	.ui-widget-overlay {
+		background: #fff url('../../../common/jquery-ui_base/images/ui-bg_flat_75_ffffff_40x100.png') 50% 50% repeat-x;
+		filter:Alpha(Opacity=80); 
+		opacity: 0.8;
+	}
+	#uimodal-output {
+	    background: #fff none;
+	}
+	.ui-dialog-titlebar {
+	    min-height: 10px;
+		color: #333;
+	}
+	.ui-widget-content {
+    	background: #fff none;
+	}
+	.ui-dialog.overlay-dialog-new{
+		border: 0;
+		padding: 0;
+		box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
+		border-radius: 0;
+		overflow: visible;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-title{
+		display: none;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar{
+		padding: 0;
+		margin: 0;
+		overflow: visible;
+		height: 0;
+		min-height: 0;
+	}
+	.ui-dialog.overlay-dialog-new #uimodal-output{
+		padding: 0;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close{
+		position: absolute;
+		top: -27px;
+		right: -27px;
+		background: none;
+		font-size: 0;
+	}
+	.ui-dialog.overlay-dialog-new.mm-page-overlay .ui-dialog-titlebar button.ui-dialog-titlebar-close{
+		right: 15px;
+		top: 15px;
+		z-index: 1;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close span.ui-icon-closethick{
+		width: 25px;
+		height: 25px;
+		background: url(/media_stat/images/close.png) no-repeat;
+		background-size: 100%;
+		cursor: pointer;
+	}

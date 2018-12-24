@@ -30,7 +30,9 @@
 	$jq.fn.messages = function( method ) {};
 </script>
 
-<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, user)) { %>
+<% 
+boolean enableChat = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, user);
+if (enableChat) { %>
 <!-- BoldChat Live Chat Button HTML v5.00 (Type=HTML,ChatWindow=iOS v.01 9/10/2015 - Brooklyn,Department=- None -,Website=FreshDirect) -->
 <div id="open_live_chat">
 <script>
@@ -129,7 +131,8 @@ if(user != null) {
     <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
 
 <!-- GLOBALNAV TOP -->
-	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %><%= (inReorder) ? " inReorder" : "" %>">
+	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %><%= (inReorder) ? " inReorder" : "" %><%= (enableChat) ? " enableChat" : "" %>
+	<% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %> enableSO<% } %>">
 		<% if (user != null && user.isFDLabsCustomer()) { %><div class="FDL-beta-search"><a href="/expresssearch.jsp">try our new (beta) search</a></div><% } %>
 		<% if (useFdxGlobalNav) { %>
 
@@ -184,7 +187,7 @@ if(user != null) {
 					*/
 					%>
 					
-					<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, user)) { %>
+					<% if (enableChat) { %>
 						<div class="topnavitem" id="topnavitem_chat">
 					        <a href="javascript:doOverlayDialogNew('/includes/chat_popup.jsp');">Contact Us</a>
 					    </div>

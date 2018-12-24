@@ -138,6 +138,10 @@ body{
 	margin-right: 26px;
 	margin-left:0px;
 }
+.globalnav_top #topnavitem_chat a{
+	margin-right: 26px;
+	margin-left:0px;
+}
 .globalnav_top #topnavitem_dlvType a {
 	margin-right: 26px;
 	margin-left:9px;
