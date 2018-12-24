@@ -1118,25 +1118,27 @@ public class BrowseUtil {
                 productList = filterFiltersInCategory(user, (ProductContainer) contentNode, productList, requestMessage.getFilterByIds());
 
             }
-            products = new ArrayList<String>(productList.size());
-            StringBuilder sb = new StringBuilder();
-            for (ProductModel pm : productList) {
-                sb.append(pm.getFullName()).append(" - ");
-            }
-            // LOG.debug("PRE SORT BY NAME: " + sb.toString());
-            sortProductsBy(user, productList, "NAME");
-            // sb = new StringBuilder();
-            // for(ProductModel pm: productList){
-            // sb.append(pm.getFullName()).append(" - " );
-            // }
-            // LOG.debug("POST SORT BY NAME: " + sb.toString());
-            if (requestMessage.getSortBy() != null && !requestMessage.getSortBy().isEmpty()) {
-                sortProductsBy(user, productList, requestMessage.getSortBy());
-            }
-
-            for (ProductModel pm : productList) {
-                // LOG.debug("ProductName: " + pm.getFullName());
-                products.add(pm.getContentName());
+            if(productList!=null&&!productList.isEmpty()){
+            	products = new ArrayList<String>(productList.size());
+            	StringBuilder sb = new StringBuilder();
+	            for (ProductModel pm : productList) {
+	                sb.append(pm.getFullName()).append(" - ");
+	            }
+	            // LOG.debug("PRE SORT BY NAME: " + sb.toString());
+	            sortProductsBy(user, productList, "NAME");
+	            // sb = new StringBuilder();
+	            // for(ProductModel pm: productList){
+	            // sb.append(pm.getFullName()).append(" - " );
+	            // }
+	            // LOG.debug("POST SORT BY NAME: " + sb.toString());
+	            if (requestMessage.getSortBy() != null && !requestMessage.getSortBy().isEmpty()) {
+	                sortProductsBy(user, productList, requestMessage.getSortBy());
+	            }
+	
+	            for (ProductModel pm : productList) {
+	                // LOG.debug("ProductName: " + pm.getFullName());
+	                products.add(pm.getContentName());
+	            }
             }
             sendBrowseEventToAnalytics(request, user.getFDSessionUser(), contentNode);
         }

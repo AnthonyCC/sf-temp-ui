@@ -107,4 +107,8 @@ public class SuperDepartmentModel extends ContentNodeModelImpl {
     public String getFdxSEOMetaDescription() {
         return getAttribute("SEO_META_DESC_FDX", "");
     }
+
+    public EnumCatalogType getCatalogType(String defaultValue) {
+        return EnumCatalogType.valueOf(getAttribute("catalog", defaultValue));
+    }
 }

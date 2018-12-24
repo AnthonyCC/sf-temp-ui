@@ -894,7 +894,7 @@ var dataLayer = window.dataLayer || [];
         // AN-214 replace 'whats+good' with category id from the url
         if (bc === "what's good") {
           var wgd_id = fd.utils.getParameterByName('id');
-          bc = wgd_id ? wgd_id.replace('_', ' ') : bc;
+          bc = wgd_id ? wgd_id.replace(/_/g, ' ') : bc;
         }
         return bc;
       }).join('_'));

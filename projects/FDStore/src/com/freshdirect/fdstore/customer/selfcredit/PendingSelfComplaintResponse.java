@@ -10,13 +10,13 @@ public class PendingSelfComplaintResponse implements Serializable {
      */
     private static final long serialVersionUID = 173041027391637338L;
 
-    private List<PendingSelfComplaint> pendingSelfComplaints;
+    private List<String> pendingSelfComplaints;
 
-    public List<PendingSelfComplaint> getPendingSelfComplaints() {
+    public List<String> getPendingSelfComplaints() {
         return pendingSelfComplaints;
     }
 
-    public void setPendingSelfComplaints(List<PendingSelfComplaint> pendingSelfComplaints) {
+    public void setPendingSelfComplaints(List<String> pendingSelfComplaints) {
         this.pendingSelfComplaints = pendingSelfComplaints;
     }
 }

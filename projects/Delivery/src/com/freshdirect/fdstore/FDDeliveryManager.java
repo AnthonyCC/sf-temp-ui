@@ -1618,7 +1618,7 @@ public class FDDeliveryManager {
 					.validateReservation(LogisticsDataEncoder
 							.encodeValidateReservation(orderSize, reservation,
 									address, event));
-			LogisticsDataDecoder.decodeValidateReservation(result);
+			reservation = LogisticsDataDecoder.decodeValidateReservation(result);
 
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);

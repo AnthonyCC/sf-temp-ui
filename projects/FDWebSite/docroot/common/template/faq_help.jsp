@@ -58,7 +58,8 @@ String faqSections = FDStoreProperties.getFaqSections();
 			    <TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" 
 		            alt="" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
 			    <TD WIDTH="<%=W_FAQ_HELP_LEFT-15%>" valign=top><br><br>
-				<A HREF="faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>" TARGET="_top"><!-- <img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="Frequently Asked Questions" border="0"></A><BR> -->
+				<A HREF="/help/index.jsp" TARGET="_top">
+				<!-- <img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="Frequently Asked Questions" border="0"></A><BR> -->
 				<span class="Container_Top_help_FAQ">FREQUENTLY ASKED QUESTIONS</span>
 				<font class="space4pix"><br></font>
 

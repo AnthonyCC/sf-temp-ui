@@ -71,8 +71,7 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 			}
 			return sale;
 		} catch (Exception e) {
-			LOGGER.info(e);
-			LOGGER.info("Exception converting {} to ListOfObjects " + id);
+			LOGGER.error("Error occured in getOrder, orderId=" + id, e);
 			throw new RemoteException(e.getMessage(), e);
 
 		}

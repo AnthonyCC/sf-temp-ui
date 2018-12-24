@@ -13,6 +13,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato"%>
 
 <% //expanded page dimensions
 final int W_CONTACT_FD_TOTAL = 970;
@@ -20,6 +21,8 @@ final int W_CONTACT_FD_LEFT_PAD = 300;
 %>
 
 <fd:CheckLoginStatus />
+<potato:help/>
+
 <script language='javascript'>
 <!--
 function limitText(textArea, length) {
@@ -29,79 +32,12 @@ function limitText(textArea, length) {
 }
 -->
 </script>
+
+
 <%
-	DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
 	
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	FDIdentity identity  = user.getIdentity();
-        ErpCustomerInfoModel cm = null;
-        if(identity != null){
-            cm = FDCustomerFactory.getErpCustomerInfo(identity);
-	}
-
-    
-%>		
-
-<%
-int subjectIndex = -1;
-String email = "";
-String firstName = "";
-String lastName = "";
-String homePhone = "";
-String homePhoneExt = "";
-String workPhone = "";
-String workPhoneExt = "";
-String altPhone = "";
-String altPhoneExt = "";
-String body = "";
-
-if (cm != null) {
-	email = cm.getEmail();
-	lastName = cm.getLastName();
-	firstName = cm.getFirstName();
-	homePhone = cm.getHomePhone()==null?"":cm.getHomePhone().getPhone();
-	homePhoneExt = cm.getHomePhone()==null?"":cm.getHomePhone().getExtension();
-	altPhone = cm.getOtherPhone()==null?"":cm.getOtherPhone().getPhone();
-	altPhoneExt = cm.getOtherPhone()==null?"":cm.getOtherPhone().getExtension();
-}
-
-if(request.getParameter("subject")!=null){
-	try {
-		subjectIndex = Integer.parseInt(request.getParameter("subject"));
-	} catch (NumberFormatException Ex){
-		subjectIndex = 0;
-	}
-}
-if(request.getParameter("email")!=null){
-	email=request.getParameter("email");
-}
-if(request.getParameter("first_name")!=null){
-	firstName=request.getParameter("first_name");
-}
-if(request.getParameter("last_name")!=null){
-	lastName=request.getParameter("last_name");
-}
-if(request.getParameter("home_phone")!=null){
-	homePhone=request.getParameter("home_phone");
-}
-if(request.getParameter("home_phone_ext")!=null){
-	homePhoneExt=request.getParameter("home_phone_ext");
-}
-if(request.getParameter("work_phone")!=null){
-	workPhone=request.getParameter("work_phone");
-}
-if(request.getParameter("work_phone_ext")!=null){
-	workPhoneExt=request.getParameter("work_phone_ext");
-}
-if(request.getParameter("alt_phone")!=null){
-	altPhone=request.getParameter("alt_phone");
-}
-if(request.getParameter("alt_phone_ext")!=null){
-	altPhoneExt=request.getParameter("alt_phone_ext");
-}
-if(request.getParameter("message")!=null){
-	body=request.getParameter("message");
-}
 
 String successPage = "/help/contact_fd_thank_you.jsp";
 String overlay = "false";

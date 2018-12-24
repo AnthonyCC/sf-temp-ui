@@ -1,8 +1,8 @@
 package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,11 +78,11 @@ public class NavigationModel {
 	private List<CategorySectionModel> categorySections;
 	private List<FilteringSortingItem<ProductModel>> searchResults = new ArrayList<FilteringSortingItem<ProductModel>>();
 	private List<Recipe> recipeResults = new ArrayList<Recipe>();
-	private Map<String, DepartmentModel> departmentsOfSearchResults = new HashMap<String, DepartmentModel>();
-	private Map<String, CategoryModel> categoriesOfSearchResults = new HashMap<String, CategoryModel>();
-	private Map<String, CategoryModel> subCategoriesOfSearchResults = new HashMap<String, CategoryModel>();
-	private Map<String, BrandModel> brandsOfSearchResults = new HashMap<String, BrandModel>();
-	private Set<String> showMeOnlyOfSearchResults = new HashSet<String>();
+    private Set<DepartmentModel> departmentsOfSearchResults = new LinkedHashSet<DepartmentModel>();
+    private Set<CategoryModel> categoriesOfSearchResults = new LinkedHashSet<CategoryModel>();
+    private Set<CategoryModel> subCategoriesOfSearchResults = new LinkedHashSet<CategoryModel>();
+    private Set<BrandModel> brandsOfSearchResults = new LinkedHashSet<BrandModel>();
+    private Set<String> showMeOnlyOfSearchResults = new LinkedHashSet<String>();
 	private List<DepartmentModel> departmentsOfSuperDepartment;
 	private boolean productListing;
 	private boolean recipeListing;
@@ -192,31 +192,31 @@ public class NavigationModel {
 	public List<FilteringSortingItem<ProductModel>> getSearchResults() {
 		return searchResults;
 	}
-	public Map<String, DepartmentModel> getDepartmentsOfSearchResults() {
+	public void setSearchResults(List<FilteringSortingItem<ProductModel>> searchResults) {
+	    this.searchResults = searchResults;
+	}
+	public Set<DepartmentModel> getDepartmentsOfSearchResults() {
 		return departmentsOfSearchResults;
 	}
-	public void setDepartmentsOfSearchResults(Map<String, DepartmentModel> departmentsOfSearchResults) {
+	public void setDepartmentsOfSearchResults(Set<DepartmentModel> departmentsOfSearchResults) {
 		this.departmentsOfSearchResults = departmentsOfSearchResults;
 	}
-	public Map<String, CategoryModel> getCategoriesOfSearchResults() {
+	public Set<CategoryModel> getCategoriesOfSearchResults() {
 		return categoriesOfSearchResults;
 	}
-	public void setCategoriesOfSearchResults(Map<String, CategoryModel> categoriesOfSearchResults) {
+	public void setCategoriesOfSearchResults(Set<CategoryModel> categoriesOfSearchResults) {
 		this.categoriesOfSearchResults = categoriesOfSearchResults;
 	}
-	public Map<String, CategoryModel> getSubCategoriesOfSearchResults() {
+	public Set<CategoryModel> getSubCategoriesOfSearchResults() {
 		return subCategoriesOfSearchResults;
 	}
-	public void setSubCategoriesOfSearchResults(Map<String, CategoryModel> subCategoriesOfSearchResults) {
+	public void setSubCategoriesOfSearchResults(Set<CategoryModel> subCategoriesOfSearchResults) {
 		this.subCategoriesOfSearchResults = subCategoriesOfSearchResults;
 	}
-	public void setSearchResults(List<FilteringSortingItem<ProductModel>> searchResults) {
-		this.searchResults = searchResults;
-	}
-	public Map<String, BrandModel> getBrandsOfSearchResults() {
+	public Set<BrandModel> getBrandsOfSearchResults() {
 		return brandsOfSearchResults;
 	}
-	public void setBrandsOfSearchResults(Map<String, BrandModel> brandsOfSearchResults) {
+	public void setBrandsOfSearchResults(Set<BrandModel> brandsOfSearchResults) {
 		this.brandsOfSearchResults = brandsOfSearchResults;
 	}
 	public Set<String> getShowMeOnlyOfSearchResults() {

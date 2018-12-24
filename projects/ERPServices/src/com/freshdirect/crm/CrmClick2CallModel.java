@@ -9,7 +9,7 @@ public class CrmClick2CallModel extends ModelSupport {
 	
 	
 	
-	
+	private static final long serialVersionUID = -3519960632166420073L;
 	private PrimaryKey id;
 	private boolean status;	
 	private String eligibleCustomers;

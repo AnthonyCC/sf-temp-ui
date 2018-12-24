@@ -3082,4 +3082,6 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
     left: auto;
 	right: auto;
 	margin-top: 0;
+	position: fixed;
+	bottom: 50%;
 }

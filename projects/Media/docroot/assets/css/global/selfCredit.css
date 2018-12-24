@@ -302,7 +302,7 @@
   #selfCreditIssueReport.overlay-medium .overlay-container,
   #selfCreditIssueReport.overlay-medium .overlay-content {
     height: 100%;
-    margin: 0;
+    margin: 0 auto;
   }
   #selfCreditIssueReport.overlay-medium .overlay-content {
     height: calc(100% - 50px);
@@ -1015,4 +1015,95 @@
 
 .overlay.overlay-fullscreen .overlay-container .overlay-header-helper .fd-logo {
   display: none;
+}
+
+@media only screen 
+  and (min-width: 320px) 
+  and (max-width: 812px) 
+  and (orientation: landscape) { 
+
+    #selfCreditInit.overlay.overlay-small .overlay-container {
+      top: 10%;
+      bottom: 10%;
+    }
+
+    #FDCustomSelect[data-custom-select-light-class].browse-popup.shown {
+      height: 100%;
+    }
+
+    #FDCustomSelect.browse-popup[data-custom-select-light-class] .browse-popup-content ul.customselect {
+      height: calc(100% - 50px);
+    }
+
+    #selfCreditIssueReport.overlay.overlay-medium {
+      overflow: hidden;
+    }
+
+    #selfCreditIssueReport.overlay.overlay-medium .overlay-container {
+      min-height: 0;
+      min-width: 100%;
+      top: 0;
+      bottom: 0;
+    }
+
+    #selfCreditIssueReport.overlay.overlay-medium .overlay-close-icon,
+    #selfCreditRequestError.overlay.overlay-medium .overlay-close-icon,
+    #selfCreditRequestComplete.overlay.overlay-medium .overlay-close-icon {
+      background-position: center;
+      height: 50px;
+      position: relative;
+      top: 0;
+      left: -10px;
+      margin: 0;
+      float: right;
+      filter: brightness(0) invert(1);
+    }
+
+    #selfCreditIssueReport.overlay.overlay-medium .overlay-header-helper {
+      height: 50px;
+      background-color: #444;
+    }
+
+    #selfCreditIssueReport.overlay-medium .review .self-credit-footer {
+      flex: 0 0 60px;
+    }
+
+    #selfCreditIssueReport.overlay-medium .review .self-credit-footer button,
+    #selfCreditIssueReport.overlay-medium .review .self-credit-footer button.credit-request-submit-button {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    #selfCreditRequestError .overlay-helper,
+    #selfCreditRequestComplete .overlay-helper {
+      height: 50px;
+      background-color: #444;
+      right: 0;
+    }
+
+    #selfCreditRequestError.overlay.overlay-medium .overlay-container,
+    #selfCreditRequestComplete.overlay.overlay-medium .overlay-container {
+      width: 100%;
+      height: calc(100% - 50px);
+      position: absolute;
+      top: 50px;
+    }
+
+    #selfCreditRequestError.overlay-medium .overlay-content,
+    #selfCreditRequestComplete.overlay-medium .overlay-content {
+      padding: 20px 40px;
+      box-sizing: border-box;
+      margin: 0;
+      height: 100%;
+    }
+
+    #selfCreditRequestError .status,
+    #selfCreditRequestComplete .status {
+      margin: 0;
+    }
+
+    #selfCreditRequestError.selfcredit-overlay .selfcredit-button,
+    #selfCreditRequestComplete.selfcredit-overlay .selfcredit-button {
+      margin-top: 1em;
+    }
 }

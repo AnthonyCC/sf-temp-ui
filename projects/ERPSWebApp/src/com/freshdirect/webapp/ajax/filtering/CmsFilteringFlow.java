@@ -990,7 +990,7 @@ public class CmsFilteringFlow {
         navigationModel.getShowMeOnlyOfSearchResults().clear();
         navigationModel.getBrandsOfSearchResults().clear();
         if (selectedBrandFilter != null) {
-            navigationModel.getBrandsOfSearchResults().put(selectedBrandFilter.getBrand().getContentName(), selectedBrandFilter.getBrand());
+            navigationModel.getBrandsOfSearchResults().add(selectedBrandFilter.getBrand());
         }
         if (selectedShowMeOnlyFilter != null) {
             navigationModel.getShowMeOnlyOfSearchResults().add(selectedShowMeOnlyFilter.getId());

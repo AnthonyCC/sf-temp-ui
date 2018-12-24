@@ -2099,7 +2099,7 @@ public class FDStoreProperties {
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
 
         defaults.put(PROP_BKOFFICE_SELF_CREDIT_URL, "/FDService/service/V0/issueselfcredit");
-        defaults.put(PROP_BKOFFICE_COMPLAINT_REASONS_URL, "/FDService/service/V0/complaintreasons/true");
+        defaults.put(PROP_BKOFFICE_COMPLAINT_REASONS_URL, "/FDService/service/V0/selfcreditcomplaintreasons");
 
         defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
         defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");

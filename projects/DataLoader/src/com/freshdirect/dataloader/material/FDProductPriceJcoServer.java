@@ -3,8 +3,10 @@ package com.freshdirect.dataloader.material;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -270,10 +272,12 @@ public class FDProductPriceJcoServer extends FdSapServer {
 				}else{
 					batchNumber = sapLoader.createBatch();
 				}
+				Set<String> materialsWithRegularPriceSet = buildSetForMaterialHavingRegularPrice(priceRecordMap);
 				for (final Map.Entry<String, List<MaterialPriceParameter>> priceRecordEntry : priceRecordMap.entrySet()) {
 					List<ErpMaterialPriceModel> priceRows = new ArrayList<ErpMaterialPriceModel>();
 					String materialNo = priceRecordEntry.getKey();
 					boolean regularPriceFound = false;
+					boolean errorsFound = false;
 					try {
 						if (priceRecordEntry.getValue().size() > 0) {
 							for (final MaterialPriceParameter priceRecord : priceRecordEntry.getValue()) {
@@ -290,8 +294,22 @@ public class FDProductPriceJcoServer extends FdSapServer {
 											"No base product found for the material");
 									break;
 								}
-								if(priceRecord.getScaleQuanity() <=0){
-									regularPriceFound = true;
+								regularPriceFound=checkIfRegularPriceRowExists(materialNo,priceRecord,materialsWithRegularPriceSet);
+								if(!regularPriceFound){
+									StringBuilder salesAreaKeyBuilder = new StringBuilder();
+									String salesAreaKey = salesAreaKeyBuilder
+											.append(priceRecordEntry.getKey())
+											.append("_")
+											.append(priceRecord.getSalesOrganizationId())
+											.append("_")
+											.append(priceRecord.getDistributionChannelId())
+											.append("_")
+											.append(priceRecord.getZoneId())
+											.toString();
+									LOG.error("Regular price is missing for material: " + salesAreaKey );
+									populateResponseRecord(result, priceRecord, materialPriceErrorTable, "Regular price is missing for SalesOrg : " + priceRecord.getSalesOrganizationId()+" , Zone:"+priceRecord.getZoneId());
+									errorsFound = true;
+									break;
 								}
 								// 2. check if master pricing zone exists
 
@@ -300,12 +318,14 @@ public class FDProductPriceJcoServer extends FdSapServer {
 									populateResponseRecord(result, priceRecord, materialPriceErrorTable, String.format(
 											"Regular price cannot be zero", priceRecordEntry.getKey(),
 											priceRecord.getZoneId()));
+									errorsFound = true;
 									break;
 								}
 								if(null==priceRecord.getSapId()||"".equalsIgnoreCase(priceRecord.getSapId())){
 									populateResponseRecord(result, priceRecord, materialPriceErrorTable, String.format(
 											"Condition record number is empty", priceRecordEntry.getKey(),
 											priceRecord.getZoneId()));
+									errorsFound = true;
 									break;
 								}
 
@@ -334,14 +354,7 @@ public class FDProductPriceJcoServer extends FdSapServer {
 								}
 							}
 						}
-						if(!regularPriceFound){
-							LOG.error("Regular price is missing for material: " + priceRecordEntry.getKey());
-							for (final MaterialPriceParameter priceRecord : priceRecordEntry.getValue()) {
-								populateResponseRecord(result, priceRecord, materialPriceErrorTable, "Regular price is missing.");
-								break;
-							}
-						} 
-						else if (priceRows.size() > 0) {
+						    if (!errorsFound && priceRows.size() > 0) {
 							// check for default price row per salesarea
 							checkIfDefaultPriceRowExists(priceRows);
 							if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
@@ -381,6 +394,55 @@ public class FDProductPriceJcoServer extends FdSapServer {
 					LOG.warn("Error closing naming context", ne);
 				}
 			}
+		}
+		
+		private Set<String> buildSetForMaterialHavingRegularPrice(
+				final Map<String, List<MaterialPriceParameter>> priceRecordMap) {
+			Set<String> materialHavingRegularPriceSet = new HashSet<String>();
+
+			for (final Map.Entry<String, List<MaterialPriceParameter>> priceRecordEntry : priceRecordMap
+					.entrySet()) {
+				String materialNo = priceRecordEntry.getKey();
+				if (priceRecordEntry.getValue().size() > 0) {
+					for (final MaterialPriceParameter priceRecord : priceRecordEntry
+							.getValue()) {
+						if (priceRecord.getScaleQuanity() <= 0) {
+							StringBuilder salesAreaKeyBuilder = new StringBuilder();
+							String salesAreaKey = salesAreaKeyBuilder
+									.append(materialNo)
+									.append("_")
+									.append(priceRecord.getSalesOrganizationId())
+									.append("_")
+									.append(priceRecord.getDistributionChannelId())											
+									.append("_")
+									.append(priceRecord.getZoneId())
+									
+									.toString();
+							materialHavingRegularPriceSet.add(salesAreaKey);
+						}
+					}
+				}
+			}
+			return materialHavingRegularPriceSet;
+		}
+
+		private boolean checkIfRegularPriceRowExists(String materialNumber,
+				MaterialPriceParameter priceRecord,
+				Set<String> materialHavingRegularPriceSet) {
+			boolean regularPriceFound = false;
+			StringBuilder salesAreaKeyBuilder = new StringBuilder();
+			String salesAreaKey = salesAreaKeyBuilder.append(materialNumber)
+					.append("_")
+					.append(priceRecord.getSalesOrganizationId())
+					.append("_")					
+					.append(priceRecord.getDistributionChannelId())
+					.append("_")
+					.append(priceRecord.getZoneId()).toString();
+			if (materialHavingRegularPriceSet.contains(salesAreaKey)) {
+				regularPriceFound = true;
+			}
+			return regularPriceFound;
+
 		}
 
 		/**

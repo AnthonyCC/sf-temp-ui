@@ -111,16 +111,22 @@ class FDAvailabilityMapper {
 						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" Filtered DELIVERY+ALCOHOL RestrictionsApplied :"+filteredList.toString());
 					}
 				}
-
+				
+				if(restrictionLog) {
+					LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" , PURCHASE originalDayKept :"+originalDayKept+", cartline is FDModifyCartLineI:"+(cartline instanceof FDModifyCartLineI));
+				}
 				if (!originalDayKept || !(cartline instanceof FDModifyCartLineI)) {
 					// apply purchase-time restrictions
+					if(restrictionLog && applicableRestrictions.contains(EnumDlvRestrictionReason.PLATTER)) {
+						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" ,allRestrictions :"+allRestrictions);
+					}
 					r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.PURCHASE, applicableRestrictions);
 					if (!r.isEmpty()) {
-						inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), nextDay, new DateRange(now, now));
-						if(restrictionLog) {
-							LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" PURCHASE RestrictionsApplied :"+r.toString());
-						}
+						inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), nextDay, new DateRange(now, now));						
 					}
+				}
+				if(restrictionLog) {
+					LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" , PURCHASE RestrictionsApplied :"+r.toString());
 				}
 
 				// apply cutoff-time restrictions
@@ -129,12 +135,11 @@ class FDAvailabilityMapper {
 					FDReservation rsv = cart.getDeliveryReservation();
 					DateRange cutoff = new DateRange(rsv.getCutoffTime(), rsv.getCutoffTime());
 					DateRange delivery = new DateRange(rsv.getStartTime(), rsv.getEndTime());
-					inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), delivery, cutoff);
+					inv = new FDSpecialRestrictedAvailability(inv, new DlvRestrictionsList(r), delivery, cutoff);	
 					if(restrictionLog) {
-						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+"  CUTOFF RestrictionsApplied :"+r.toString());
+						LOGGER.info("RESTRICTIONS_LOG: cust_ID :"+custId+" for sku:"+ cartline.getSkuCode()+" , CUTOFF RestrictionsApplied :"+r.toString());
 					}
 				}
-
 			}
 
 

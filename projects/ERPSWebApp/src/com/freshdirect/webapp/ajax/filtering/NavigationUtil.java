@@ -284,8 +284,8 @@ public class NavigationUtil {
     }
 
     public static void setupAllAndActiveFiltersForSearch(CmsFilteringNavigator nav, NavigationModel navigationModel) {
-        navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav));
-        navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
+        navigationModel.setAllFilters(createSearchFilterGroups(navigationModel, nav));
+        navigationModel.setActiveFilters(selectActiveFilters(navigationModel.getAllFilters(), nav));
     }
 
     public static List<ProductFilterGroup> createBrowseFilterGroups(NavigationModel navigationModel, CmsFilteringNavigator navigator) {
@@ -294,7 +294,7 @@ public class NavigationUtil {
         List<String> excludeFilterGroupNames = NO_EXCLUDE_FILTER_GROUP_NAMES;
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
             excludeFilterGroupNames = EXCLUDE_FILTER_GROUP_NAMES;
-            ProductFilterGroup brandFilter = createBrandFilter(navigationModel.getBrandsOfSearchResults().values());
+            ProductFilterGroup brandFilter = createBrandFilter(navigationModel.getBrandsOfSearchResults());
             brandFilter.setDisplayOnCategoryListingPage(true);
             productFilterGroups.add(brandFilter);
         }
@@ -349,7 +349,7 @@ public class NavigationUtil {
 		List<ProductFilterGroup> results = new ArrayList<ProductFilterGroup>();
 		List<ProductItemFilterI> productFilters = new ArrayList<ProductItemFilterI>();
 
-		for (DepartmentModel departmentModel : navigationModel.getDepartmentsOfSearchResults().values()) {
+		for (DepartmentModel departmentModel : navigationModel.getDepartmentsOfSearchResults()) {
 
 			productFilters.add(new ContentNodeFilter(departmentModel, DEPARTMENT_FILTER_GROUP_ID));
 		}
@@ -368,7 +368,7 @@ public class NavigationUtil {
 
 			productFilters = new ArrayList<ProductItemFilterI>();
 
-			for (CategoryModel categoryModel : navigationModel.getCategoriesOfSearchResults().values()) {
+			for (CategoryModel categoryModel : navigationModel.getCategoriesOfSearchResults()) {
 				if (navigator.getRequestFilterParams().get(departmentFilterGroup.getId()).contains(categoryModel.getDepartment().getContentName())) {
 					productFilters.add(new ContentNodeFilter(categoryModel, CATEGORY_FILTER_GROUP_ID));
 				}
@@ -391,7 +391,7 @@ public class NavigationUtil {
 
 				productFilters = new ArrayList<ProductItemFilterI>();
 
-				for (CategoryModel subCategoryModel : navigationModel.getSubCategoriesOfSearchResults().values()) {
+				for (CategoryModel subCategoryModel : navigationModel.getSubCategoriesOfSearchResults()) {
 					if (navigator.getRequestFilterParams().get(categoryFilterGroup.getId()).contains(subCategoryModel.getParentNode().getContentName()) && navigator.getRequestFilterParams().get(departmentFilterGroup.getId()).contains(subCategoryModel.getDepartment().getContentName())) {
 						productFilters.add(new ContentNodeFilter(subCategoryModel, SUBCATEGORY_FILTER_GROUP_ID));
 					}
@@ -410,11 +410,11 @@ public class NavigationUtil {
 				}
 			}
 		}
-            results.add(createBrandFilter(navigationModel.getBrandsOfSearchResults().values()));
+            results.add(createBrandFilter(navigationModel.getBrandsOfSearchResults()));
 
         if (FilteringFlowType.SEARCH == navigator.getPageType() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
             FDUserI user = navigationModel.getUser();
-            Collection<CategoryModel> categories = navigationModel.getCategoriesOfSearchResults().values();
+            Collection<CategoryModel> categories = navigationModel.getCategoriesOfSearchResults();
             results.addAll(createAggregatedFilterGroups(categories, user));
             results.addAll(createAggregatedFilterMultiGroups(categories, navigator, user));
             Collections.sort(results, SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME);
