@@ -360,6 +360,7 @@
 	
 	<tag>
 		<name>help</name>
+		<body-content>empty</body-content>
 		<tagclass>com.freshdirect.webapp.taglib.help.HelpPotatoTag</tagclass>
 		<info></info>
 		<attribute>
