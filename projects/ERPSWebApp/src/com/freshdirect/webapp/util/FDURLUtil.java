@@ -104,13 +104,17 @@ public class FDURLUtil {
 	 * @param productNode
 	 * @return
 	 */
-	public static String getNewProductURI(ProductModel productNode) {
+    public static String getNewProductURI(ProductModel product) {
+        return getNewProductURI(product.getContentKey(), product.getCategory().getContentKey());
+    }
+
+	public static String getNewProductURI(ContentKey productKey, ContentKey categoryKey) {
 		StringBuilder buf = new StringBuilder(ProductDisplayUtil.NEW_PRODUCT_PAGE_BASE);
 
 		buf.append("?");
-		buf.append("productId=").append(productNode.getContentKey().getId());
+		buf.append("productId=").append(productKey.getId());
 		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
-		buf.append("catId=").append(productNode.getCategory().getContentKey().getId());
+		buf.append("catId=").append(categoryKey.getId());
 
 		return buf.toString();
 	}

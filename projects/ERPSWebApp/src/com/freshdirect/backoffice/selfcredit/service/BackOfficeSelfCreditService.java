@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -16,6 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditRequest;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemRequestData;
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -41,10 +46,10 @@ public class BackOfficeSelfCreditService {
     	final boolean isSelfCreditRequestValid = validateSelfCreditRequest(issueSelfCreditRequest, user);
 		
         if (!isSelfCreditRequestValid) {
-        	LOGGER.error("Unable to issue self-complaint for order " + orderId + ".");
 			IssueSelfCreditResponse issueSelfCreditResponse = new IssueSelfCreditResponse();
 			issueSelfCreditResponse.setMessage("ERROR");
 			issueSelfCreditResponse.setSuccess(false);
+			logActivityError(user, orderId, issueSelfCreditResponse);
 			return issueSelfCreditResponse;
 		}
     	
@@ -95,6 +100,12 @@ public class BackOfficeSelfCreditService {
 		} catch (IOException e) {
 			LOGGER.error("Exception while mapping issue self-complaint response.", e);
 		}
+		
+		if (!issueSelfCreditResponse.isSuccess()) {
+			logActivityError(user, orderId, issueSelfCreditResponse);
+		} else {
+			LOGGER.debug(issueSelfCreditResponse.getMessage());
+		}
         return issueSelfCreditResponse;
     }
 
@@ -128,4 +139,21 @@ public class BackOfficeSelfCreditService {
 		return true;
 	}
 
+	private void logActivityError(FDUserI user, String orderId, IssueSelfCreditResponse issueSelfCreditResponse) {
+		LOGGER.error("Unable to issue self-complaint for order " + orderId + ".");
+    	LOGGER.error(issueSelfCreditResponse.getMessage());
+
+		String customerId = user.getIdentity().getErpCustomerPK();
+		EnumTransactionSource transactionSource = user.getApplication();
+		String note = new StringBuilder(EnumAccountActivityType.SELF_CREDIT_ERROR.getName()).append(", orderId: ").append(orderId).toString();
+		
+		ErpActivityRecord erpActivityRecord = new ErpActivityRecord();
+		erpActivityRecord.setCustomerId(customerId);
+		erpActivityRecord.setActivityType(EnumAccountActivityType.SELF_CREDIT_ERROR);
+		erpActivityRecord.setDate(new Date());
+		erpActivityRecord.setSource(transactionSource);
+		erpActivityRecord.setNote(note);
+		new ErpLogActivityCommand(erpActivityRecord).execute();
+	}
+	
 }

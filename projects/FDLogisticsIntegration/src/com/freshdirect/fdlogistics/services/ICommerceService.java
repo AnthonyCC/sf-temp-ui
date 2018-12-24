@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -20,7 +19,7 @@ import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 
 public interface ICommerceService {
 
-	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException, LoaderException;
+	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException;
 	
 //	public void getCountryOfOriginData() throws RemoteException, LoaderException;
 
@@ -32,7 +31,7 @@ public interface ICommerceService {
 	public String getErpIDForUserID(String userID) throws RemoteException;
 	public Collection<String> getSkuCodes() throws RemoteException;
 	public BatchModel getBatch(int versionID) throws FDResourceException;
-	public void loadData(List<ErpZoneMasterInfo> zoneInfos)throws RemoteException, LoaderException;
+	public void loadData(List<ErpZoneMasterInfo> zoneInfos)throws RemoteException;
 	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
 	public String getCmsFeed(String storeID) throws FDResourceException;
 	

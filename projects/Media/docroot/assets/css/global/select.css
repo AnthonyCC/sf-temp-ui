@@ -154,13 +154,13 @@ select.selected + .fdselect > .selectButton[data-custom-select-light-class] {
   width: 100%;
 }
 #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li.selected button .checkbox-helper {
-  background: url('/media_stat/images/check_mark.png');
+  background: url('/media_stat/images/check_mark.svg');
   background-repeat: no-repeat;
   background-size: 100%;
   background-position: center center;
   height: 20px;
   margin-right: 10px;
-  width: 14px;
+  width: 20px;
 }
 #FDCustomSelect.browse-popup[data-custom-select-light-class] .popupcontent .customselect li button b {
   font-family: "Verdana", Geneva, Tahoma, sans-serif;

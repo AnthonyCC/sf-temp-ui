@@ -289,7 +289,7 @@ EnumServiceType serviceTypeGC = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 	</TD>
 </TR>
 <%}%>
-
+<%@ include file="/includes/ckt_acct/i_creditcard_captcha.jspf" %>
 </TABLE>
 <!-- </TABLE> -->
 <br><br>

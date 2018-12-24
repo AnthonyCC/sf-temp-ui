@@ -275,4 +275,8 @@ public class DepartmentModel extends ProductContainer {
 		return new ArrayList<ImageBanner>(heroCarousel);
 	}
 
+    public EnumCatalogType getCatalogType(String defaultValue) {
+        return EnumCatalogType.valueOf(getAttribute("catalog", defaultValue));
+    }
+
 }

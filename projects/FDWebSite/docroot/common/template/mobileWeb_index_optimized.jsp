@@ -41,12 +41,16 @@
 
 	request.setAttribute("inMobWebTemplate", true);
 	request.setAttribute("inMobWebTemplateOptimized", true); //used in menu includes
+
+	boolean isChat = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, user);
 %>
+
 <html lang="en-US" xml:lang="en-US">
   <head>
   <% if (isModifyOrder) { %>
   		<jwr:style src="/global.css" media="all" />
   <% } %>
+  
 <%--   	<title><tmpl:get name="title"/></title> --%>
   	
 	<style>
@@ -55,6 +59,12 @@
 			All CSS should be inline, no bundle or external files 
 			Include them directly, otherwise it affects performance
 		--%>
+		<% if (isChat) { %>
+			<%@ include file="/assets/css/dialog-base.css" %>
+			<%@ include file="/assets/css/common/cssbuttons.css" %>
+			<%@ include file="/assets/css/global/ui-dialog.css" %>
+			<%@ include file="/assets/css/common/jquery-ui_base/jquery-ui.css" %>
+	  	<% } %>
 		<%@ include file="/assets/css/mobileweb_index_optimized/mobileweb_index_optimized.css" %>
 	</style>
     <jwr:style src="/accessibility.css" media="all" />
@@ -223,6 +233,30 @@
 				<a href="#" class="handler close-handler" onclick="event.preventDefault();" id="locabar-messages-close"><span class="offscreen">close</span></a>
 				<br class="NOMOBWEB" />
 			</div>
+			
+			<% if (isChat) { %>
+				<!-- BoldChat Live Chat Button HTML v5.00 (Type=HTML,ChatWindow=iOS v.01 9/10/2015 - Brooklyn,Department=- None -,Website=FreshDirect) -->
+				<div id="open_live_chat">
+				<script>
+				  var bccbId = Math.random(); document.write(unescape('%3Cdiv id=' + bccbId + '%3E%3C/div%3E'));
+				  window._bcvma = window._bcvma || [];
+				  _bcvma.push(["setAccountID", "447701025416363034"]);
+				  _bcvma.push(["setParameter", "WebsiteID", "2853440196463415121"]);
+				  _bcvma.push(["addText", {type: "chat", window: "781368249134851385", available: "", unavailable: "", id: bccbId}]);
+				  var bcLoad = function(){
+				    if(window.bcLoaded) return; window.bcLoaded = true;
+				    var vms = document.createElement("script"); vms.type = "text/javascript"; vms.async = true;
+				    vms.src = ('https:'==document.location.protocol?'https://':'http://') + "vmss.boldchat.com/aid/447701025416363034/bc.vms4/vms.js";
+				    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(vms, s);
+				  };
+				  if(window.pageViewer && pageViewer.load) pageViewer.load();
+				  else if(document.readyState=="complete") bcLoad();
+				  else if(window.addEventListener) window.addEventListener('load', bcLoad, false);
+				  else window.attachEvent('onload', bcLoad);
+				</script>
+				</div>
+				<!-- /BoldChat Live Chat Button HTML v5.00 -->
+			<% } %>
 
 		  	<% if (FDStoreProperties.isAdServerEnabled()) {
 				%><div id="oas_SystemMessage">

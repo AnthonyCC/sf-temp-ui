@@ -61,7 +61,7 @@ public class SelfCreditOrderDetailsService {
         
         FDOrderAdapter orderDetailsToDisplay = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), orderId);
         
-        Map<String, List<ComplaintReason>> complaintReasonMap = collectAllComplaintReasons();
+        Map<String, List<SelfCreditComplaintReason>> complaintReasonMap = collectAllComplaintReasons();
         Map<String, Double> creditedQuantities = collectApprovedComplaintQuantity(orderDetailsToDisplay.getComplaints());
 
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
@@ -114,7 +114,7 @@ public class SelfCreditOrderDetailsService {
 		Map<String, Double> creditedQuantitiesByOrderLineId = new HashMap<String, Double>();
 
 		for (ErpComplaintModel complaint : complaints) {
-			if (complaint.getStatus().equals(EnumComplaintStatus.APPROVED)) {
+			if (EnumComplaintStatus.APPROVED.equals(complaint.getStatus())) {
 				List<ErpComplaintLineModel> complaintLines = null != complaint.getComplaintLines() 
 						? complaint.getComplaintLines()
 								: new ArrayList<ErpComplaintLineModel>();
@@ -153,29 +153,13 @@ public class SelfCreditOrderDetailsService {
 	}
 
 	private List<SelfCreditComplaintReason> collectComplaintReasons(
-			Map<String, List<ComplaintReason>> complaintReasonMap, String department) {
-		List<ComplaintReason> complaintReasons = complaintReasonMap.get(ComplaintUtil.standardizeDepartment(department));
-		List<SelfCreditComplaintReason> selfCreditComplaintReasons = new ArrayList<SelfCreditComplaintReason>();
-		
-		for (ComplaintReason complaintReason : complaintReasons) {
-			if (complaintReason.isShowCustomer()) {
-				SelfCreditComplaintReason selfCreditComplaintReason = new SelfCreditComplaintReason();
-				selfCreditComplaintReason.setId(complaintReason.getId());
-                selfCreditComplaintReason.setReason(collectComplaintReasonName(complaintReason));
-				selfCreditComplaintReasons.add(selfCreditComplaintReason);
-			}
-		}
-		
-		return selfCreditComplaintReasons;
+			Map<String, List<SelfCreditComplaintReason>> complaintReasonMap, String department) {
+		List<SelfCreditComplaintReason> complaintReasons = complaintReasonMap.get(ComplaintUtil.standardizeDepartment(department));
+		return complaintReasons;
 	}
 
-    private String collectComplaintReasonName(ComplaintReason complaintReason) {
-        final boolean hasCustomerDisplayName = !StringUtils.isEmpty(complaintReason.getCustomerDisplayName());
-        return hasCustomerDisplayName ? complaintReason.getCustomerDisplayName() : complaintReason.getReason();
-    }
-
-    private Map<String, List<ComplaintReason>> collectAllComplaintReasons() throws JsonParseException, JsonMappingException, IOException {
-        Map<String, List<ComplaintReason>> complaintReasonMap = new HashMap<String, List<ComplaintReason>>();
+    private Map<String, List<SelfCreditComplaintReason>> collectAllComplaintReasons() throws JsonParseException, JsonMappingException, IOException {
+        Map<String, List<SelfCreditComplaintReason>> complaintReasonMap = new HashMap<String, List<SelfCreditComplaintReason>>();
 
         StringBuilder content = new StringBuilder();
         BufferedReader input = null;
@@ -183,7 +167,6 @@ public class SelfCreditOrderDetailsService {
         URL url = new URL(backofficeUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         connection.setRequestProperty("Accept", "application/json");
 
         input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -198,7 +181,7 @@ public class SelfCreditOrderDetailsService {
 
         String creditReasons = content.toString();
         ObjectMapper objectMapper = new ObjectMapper();
-        complaintReasonMap = objectMapper.readValue(creditReasons, new TypeReference<Map<String, List<ComplaintReason>>>() {
+        complaintReasonMap = objectMapper.readValue(creditReasons, new TypeReference<Map<String, List<SelfCreditComplaintReason>>>() {
         });
 
         return complaintReasonMap;
@@ -206,7 +189,7 @@ public class SelfCreditOrderDetailsService {
 
     private boolean isItemMealBundle(ProductModel product) {
     	final boolean mealBundle = CartDataService.defaultService().isMealBundle(product);
-    	final boolean componentGroupMeal = null == product.getSpecialLayout() ? false : product.getSpecialLayout().equals(EnumProductLayout.COMPONENTGROUP_MEAL);
+    	final boolean componentGroupMeal = null == product.getSpecialLayout() ? false : EnumProductLayout.COMPONENTGROUP_MEAL.equals(product.getSpecialLayout());
         return  mealBundle || componentGroupMeal;
     }
 

@@ -20,7 +20,7 @@ if(request.getParameter("overlay")!=null){
 }
 
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-String pageTemplate = "/common/template/dnav.jsp";
+String pageTemplate = "/common/template/browse_noleftnav_template.jsp";
 if (mobWeb) {
 	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
 	String oasSitePage = (request.getAttribute("sitePage") != null) ? request.getAttribute("sitePage").toString() : "www.freshdirect.com/help/contact_fd_thank_you.jsp";
@@ -48,38 +48,20 @@ if ("true".equalsIgnoreCase(overlay)) {
    	</tmpl:put>
    	
     <tmpl:put name='content' direct='true'>
-	<br>
-	<table role="presentation" border="0" cellspacing="0" cellpadding="2" style="width: <%= (mobWeb) ? "100%" : "675px" %>">
+	<table id="contactFDThankYou" role="presentation" border="0" cellspacing="0" cellpadding="2" style="width: <%= (mobWeb) ? "100%" : "675px" %>">
 	    <tr valign="TOP">
 			<td style="width: <%= (mobWeb) ? "100%" : "675px" %>" align="center" class="text13">
-			<div class="highcontrast" style="font-size: 28px; font-face:Arial,Verdana,Helvetica; color: #FF9933; margin-bottom: 6px;"><b>THANK YOU!</b></div>
-			<span class="text15"><b>We've received your message.</b></span>
-			<br><font class="space8pix"><br></font>
-			  <fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><br/><br/>
-			 		 As a reminder, we are here:<br><br>
-			 
-			  <div align="center">
-                            <table role="presentation">							
-							<% for (int i=0; i<csHours.size(); i++ ) {
-									FDCSContactHours csHour = (FDCSContactHours) csHours.get(i);
-							%>
-								<tr><td>
-								<%=csHour.getDaysDisplay()%> : <%=csHour.getHoursDisplay()%>
-								</td></tr>
-							<% } %>							
-                            </table>
-                        </div>
+				<img src="/media_stat/images/common/check-radio-selected.svg" width="100" height="100" alt="Thank You For Contacting Us">
+				<div class="highcontrast header font24 verdana-font bold">Thank You</div>
+				<div class="subheader verdana-font">
+				<span>We've received your message. </span>
+				<div class="help-home-hours">
+				<fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" />
+				</div>
+				</div>
+				<a class="cssbutton green ok-button" href="/help/index.jsp" type="button">Ok</a>    
 			</td>
 		</tr>
-		<tr>
-			<td>
-			</td>
-		</tr>
-		<tr class="NOMOBWEB">
-		    <td style="width: <%= (mobWeb) ? "100%" : "675px" %>" align="center">
-				<br><a href="/index.jsp"<%= (("true".equalsIgnoreCase(overlay)) ? " onclick=\"FreshDirect.components.ifrPopup.close()\"" : "") %> onmouseover="swapImage('home_img','/media_stat/images/template/help/help_home_r.gif')" onmouseout="swapImage('home_img','/media_stat/images/template/help/help_home.gif')"><img src="/media_stat/images/template/help/help_home.gif" name="home_img" width="71" height="26" alt="return to home page" border="0"></a>
-			</td>		
-		</tr>
-	</table><br><br>
+	</table>
 </tmpl:put>
 </tmpl:insert>

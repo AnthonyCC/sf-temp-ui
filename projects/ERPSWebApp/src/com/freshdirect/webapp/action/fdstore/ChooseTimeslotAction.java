@@ -128,6 +128,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					}
 					previousZone = cart.getZoneInfo();
 					cart.setZoneInfo(zoneInfo);
+					if(erpAddress.getPK()!=null)
 					addressId = erpAddress.getPK().getId();
 				} else {
 					addressId = ((ErpDepotAddressModel) erpAddress).getLocationId();

@@ -165,14 +165,6 @@ public class CrmManager {
 		}*/
 		return agentListCache.get();
 	}
-
-	public Map<CrmAgentRole, List<String>> getAllAgentsFromLDAP(boolean useCache) throws FDResourceException {
-		if (useCache){
-			return CrmLdapAccessor.getLdapGroupMembersMap();
-		}
-		CrmLdapAccessor.init();
-		return CrmLdapAccessor.getLdapGroupMembersMap();
-	}
 	
 	public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException {
 		try {

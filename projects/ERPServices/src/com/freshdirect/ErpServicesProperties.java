@@ -312,6 +312,8 @@ public class ErpServicesProperties {
     private final static String PROP_SELF_CREDIT_AUTOAPPROVE_MAX_AMOUNT_PER_DAY_RANGE = "selfcredit.autoApprove.max.amount.per.day.range";
     private final static String PROP_SELF_CREDIT_ALLOW_CASHBACK = "selfcredit.allow.cashback";
     private final static String PROP_SELF_CREDIT_AGENT = "selfcredit.agent";
+    private final static String PROP_SELF_CREDIT_AUTOAPPROVE_MAX_SUBMITTED_AMOUNT_PER_DAY = "selfcredit.autoApprove.max.submitted.amount.per.day";
+    private final static String PROP_SELF_CREDIT_AUTOAPPROVE_MAX_SUBMITTED_QUANTITY_PER_DAY = "selfcredit.autoApprove.max.submitted.quantity.per.day";
 
 	static {
 		Properties defaults = new Properties();
@@ -562,6 +564,8 @@ public class ErpServicesProperties {
         defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_AMOUNT_PER_DAY_RANGE, "150.0");
         defaults.put(PROP_SELF_CREDIT_ALLOW_CASHBACK, "false");
         defaults.put(PROP_SELF_CREDIT_AGENT, "self");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_SUBMITTED_AMOUNT_PER_DAY, "75.0");
+        defaults.put(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_SUBMITTED_QUANTITY_PER_DAY, "3");
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -1390,4 +1394,12 @@ public class ErpServicesProperties {
     public static String getSelfCreditAgent() {
         return config.getProperty(PROP_SELF_CREDIT_AGENT);
     }
+    
+    public static Double getSelfCreditAutoapproveMaxSubmittedAmountPerDay() {
+		return Double.parseDouble(config.getProperty(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_SUBMITTED_AMOUNT_PER_DAY));
+	}
+
+	public static int getSelfCreditAutoapproveMaxSubmittedQuantityPerDay() {
+		return Integer.parseInt(config.getProperty(PROP_SELF_CREDIT_AUTOAPPROVE_MAX_SUBMITTED_QUANTITY_PER_DAY));
+	}
 }

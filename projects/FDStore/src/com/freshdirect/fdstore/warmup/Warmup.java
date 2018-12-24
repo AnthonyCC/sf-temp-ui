@@ -96,6 +96,10 @@ public class Warmup {
         LOGGER.info("[WARMUP] Initializing CmsManager primary home map");
         CmsManager.getInstance().initPrimaryHomeMap();
         LOGGER.info("[WARMUP] CmsManager primary home map initialized");
+        
+        LOGGER.info("[WARMUP] Initializing CmsManager corporate home map");
+        CmsManager.getInstance().initCorporateHomeMap();
+        LOGGER.info("[WARMUP] CmsManager corporate home map initialized");
 
         LOGGER.info("[WARMUP] Store warmup in " + (System.currentTimeMillis() - time) + " ms");
         Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);

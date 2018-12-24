@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
@@ -70,9 +71,11 @@ import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ComponentGroupModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -606,8 +609,9 @@ public class ProductDetailPopulator {
             data.setProductImagePackage(domains + product.getPackageImage().getPathWithPublishId());
         }
 
-        data.setProductPageUrl(FDURLUtil.getNewProductURI(product));
-        data.setProductPagePrimaryHomeUrl(FDURLUtil.getNewProductURI(product.getPrimaryProductModel()));
+        data.setProductPageUrl(FDURLUtil.getNewProductURI(product.getContentKey(), getCategoryKey(user, product)));
+        ProductModel primaryProductModel = product.getPrimaryProductModel();
+        data.setProductPagePrimaryHomeUrl(FDURLUtil.getNewProductURI(primaryProductModel.getContentKey(), getCategoryKey(user, primaryProductModel)));
 
         data.setQuantityText(product.getQuantityText());
         data.setPackageDescription(product.getPackageDescription());
@@ -634,6 +638,10 @@ public class ProductDetailPopulator {
         return data;
     }
 
+    private static ContentKey getCategoryKey(FDUserI user, ProductModel product) {
+        return user.isCorporateUser() ? NVL.apply(CmsManager.getInstance().getCorporateHomeKey(product.getContentKey()), product.getCategory().getContentKey()) : product.getCategory().getContentKey();
+    }
+    
     /**
      * Set the following attributes on product potato
      *

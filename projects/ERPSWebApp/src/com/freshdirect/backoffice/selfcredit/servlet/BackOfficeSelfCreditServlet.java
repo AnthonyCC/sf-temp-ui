@@ -23,13 +23,6 @@ public class BackOfficeSelfCreditServlet extends BaseJsonServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
         IssueSelfCreditRequest issueSelfCreditRequest = parseRequestData(request, IssueSelfCreditRequest.class);
         IssueSelfCreditResponse selfCreditResponse = BackOfficeSelfCreditService.defaultService().postSelfCreditRequest(issueSelfCreditRequest, user);
-        
-        if (!selfCreditResponse.isSuccess()) {
-			LOGGER.error(selfCreditResponse.getMessage());
-		} else {
-			LOGGER.debug(selfCreditResponse.getMessage());
-		}
-        
         Map<String, Object> responseData = new HashMap<String, Object>();
         responseData.put("selfcreditresponse", selfCreditResponse);
         writeResponseData(response, responseData);

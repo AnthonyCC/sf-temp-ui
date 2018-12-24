@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -94,7 +95,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 
     private static final long serialVersionUID = 270497771665382812L;
 
-    private static Category LOGGER = LoggerFactory.getInstance(FDProductFeedSessionBean.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(FDProductFeedSessionBean.class);
 
     private static final String RATING = "RATING";
     private static final String SUSTAINABILITY_RATING = "SUSTAINABILITY_RATING";
@@ -441,21 +442,32 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     }
     // End:: Add Brand info for Hook logic
     
-    private final static HashMap<EnumClaimValue,String> feedClaimTypes = new HashMap<EnumClaimValue,String>();
-   	static {
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_DAIR"),"dairy free");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_FAT"),"fat free");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_GLUT"),"gluten free");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("GRASS_FED"),"grass fed");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("KOS_PAS"),"kosher for passover");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_LACT"),"lactose free");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_CALR"),"low calorie");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_FAT"),"low fat");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SALT"),"low salt");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SODM"),"low sodium");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("VE_GAN"),"vegan");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("VEGGY"),"vegetarian");
-   	}
+    private static final Map<EnumClaimValue, String> feedClaimTypes = new HashMap<EnumClaimValue, String>();
+    static {
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_DAIR"), "dairy free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_FAT"), "fat free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_GLUT"), "gluten free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("GRASS_FED"), "grass fed");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("KOS_PAS"), "kosher for passover");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_LACT"), "lactose free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_CALR"), "low calorie");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_FAT"), "low fat");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SALT"), "low salt");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SODM"), "low sodium");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("VE_GAN"), "vegan");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("VEGGY"), "vegetarian");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("ATKINS"), "atkins");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_CARB"), "low carb");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_CAFF"), "caffeine free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_CHOL"), "low cholesterol");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_SUGR"), "sugar free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_WHET"), "wheat free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("4MM_HIGHFIBER"), "high fiber");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("4MM_WHOLEGRAINS"), "whole grains");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_GMO"), "non gmo");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("SOY"), "soy free");
+        feedClaimTypes.put(EnumClaimValue.getValueForCode("PA"), "paleo");
+    }
 
     //Start:: populating claims of every product for search results sent to UNBXD APPDEV-6412
 	private void populateClaims(FDProduct fdProduct, Product product) {

@@ -236,6 +236,7 @@ protected <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> typ
 	    public IdleConnectionMonitorThread(HttpClientConnectionManager connMgr) {
 	        super();
 	        this.connMgr = connMgr;
+	        this.setDaemon(true);
 	    }
 	
 	    @Override

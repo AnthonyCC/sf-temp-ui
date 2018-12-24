@@ -133,6 +133,11 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		DEFAULT_PM_ND  	           		= new EnumAccountActivityType( "Dflt PM ND", "Default Payment Method not entered" );
 	public final static EnumAccountActivityType		DEFAULT_PM_DELETED  	           	= new EnumAccountActivityType( "Dflt PM DLTD", "Default Payment Method deleted" );
 	public final static EnumAccountActivityType		DP_FREE_TRIAL_OPT_IN  	           	= new EnumAccountActivityType( "Free DPass Optin", "Opted-in for Free trial dlv pass" );
+	
+	// Self-Credit
+    public final static EnumAccountActivityType SELF_CREDIT_ERROR = new EnumAccountActivityType("SC Error", "Self-submitted credit error");
+    public final static EnumAccountActivityType SELF_CREDIT_APPR_ERROR = new EnumAccountActivityType("SC Appr Error", "Approval error for self-submitted credit");
+    public final static EnumAccountActivityType REG_CREDIT_APPR_ERROR = new EnumAccountActivityType("RegC Appr Error", "Approval error for credit");
 
 	private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;
