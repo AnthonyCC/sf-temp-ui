@@ -371,6 +371,7 @@
 	
 	<tag>
 		<name>contactUs</name>
+		<body-content>empty</body-content>
 		<tagclass>com.freshdirect.webapp.taglib.contactus.ContactUsPotatoTag</tagclass>
 		<info></info>
 		<attribute>
