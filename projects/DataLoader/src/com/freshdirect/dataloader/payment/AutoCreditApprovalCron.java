@@ -50,7 +50,7 @@ public class AutoCreditApprovalCron {
 	public static void main(String[] args) throws Exception {
 		boolean regularCreditApprovalEnabled = true;
 		boolean selfIssuedCreditApprovalEnabled = true;
-		if (null != args) {
+		if (null != args && args.length > 0) {
 			if (args.length > 1) {
 				exitCronWithUsageError("Invalid parameters: can not accept more than 1 parameter.");
 			}
