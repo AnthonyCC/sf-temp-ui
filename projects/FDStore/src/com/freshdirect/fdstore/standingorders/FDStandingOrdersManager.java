@@ -877,9 +877,8 @@ public class FDStandingOrdersManager {
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
 		Collection<FDStandingOrder> fdStandingOrders=new ArrayList<FDStandingOrder>();
 		for (FDStandingOrder so : sos) {
-			for (ErpSaleInfo i : h.getErpSaleInfos()) {
-				if (so.getId().equalsIgnoreCase(i.getStandingOrderId()) && ! i.getStatus().isCanceled()
-						&& i.getDeliveryCutoffTime().after(new Date()) && isModifiable(i)) {
+			for (ErpSaleInfo i : h.getErpRegSOFutureSaleInfos()) {
+				if (so.getId().equalsIgnoreCase(i.getStandingOrderId()) && isModifiable(i)) {
 					FDOrderInfoAdapter x = new FDOrderInfoAdapter(i);
 					so.setUpcomingDelivery(x);
 					fdStandingOrders.add(so);

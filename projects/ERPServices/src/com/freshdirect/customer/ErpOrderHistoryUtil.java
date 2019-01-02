@@ -345,4 +345,18 @@ public class ErpOrderHistoryUtil {
 		}
 		return hasSettledOrder;
 	}
+
+	public static Collection<ErpSaleInfo> filterSOActiveFutureInstances(Collection<ErpSaleInfo> erpRegSO_future_SaleInfos) {
+		Date date= new Date();
+		List<ErpSaleInfo> filteredSOInstances = new ArrayList<ErpSaleInfo>();
+		if(erpRegSO_future_SaleInfos!=null) {
+            for (ErpSaleInfo saleInfo : erpRegSO_future_SaleInfos) {
+				if(!saleInfo.getStatus().isCanceled() && null !=saleInfo.getStandingOrderId() && saleInfo.getRequestedDate().after(date)) {
+					filteredSOInstances.add(saleInfo);
+				}
+			}
+		}
+		
+		return filteredSOInstances;
+	}
 }

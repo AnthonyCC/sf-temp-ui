@@ -357,13 +357,13 @@ public class TimeslotService {
 
             event.setLogged(isEventLogged);
 
-            // Fetch time slots
+         // Fetch time slots
             try {
-                deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(ranges, event, TimeslotLogic.encodeCustomer(address, user),
-                        TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE), timeSlotContext,
-                        so.getUser().isNewSO3Enabled());
-            } catch (FDAuthenticationException e) {
-                LOGGER.error(e);
+            	deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(ranges, event, TimeslotLogic.encodeCustomer(address, user),
+            			TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE), timeSlotContext,
+            			user.isNewSO3Enabled());
+            }catch (Exception e){
+            	LOGGER.error(e);
             }
 
             FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
