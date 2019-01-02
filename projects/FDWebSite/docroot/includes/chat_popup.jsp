@@ -60,11 +60,19 @@
         color: #458d4e;
     }
 </style>
-
+<script>
+	function openChat(){
+		$jq("#uimodal-output").dialog("close");
+		if($jq("[data-ismobweb='true']").length > 0){
+			API.close();
+		}
+		$jq('#open_live_chat a').click();
+	}
+</script>
 <div class="chat-popup">
     <div class="chat-cont">
         <div class="chat-header">Chat With Our Service Team</div>
-        <button class="chat-button cssbutton cssbutton-flat green nontransparent" onclick="$jq('#open_live_chat a').click();">
+        <button class="chat-button cssbutton cssbutton-flat green nontransparent" onclick="openChat()">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="17" viewBox="0 0 18 17">
                 <defs>
                     <path id="b" d="M13.24 4C15.314 4 17 5.719 17 7.833v4.334C17 14.28 15.314 16 13.24 16H9.9l-3.934 3.77a.869.869 0 0 1-.572.23.819.819 0 0 1-.316-.063.84.84 0 0 1-.501-.77V16H3.76C1.686 16 0 14.281 0 12.167V7.833C0 5.72 1.686 4 3.76 4h9.48zm2.125 8.167V7.833c0-1.198-.95-2.166-2.125-2.166H3.76c-1.175 0-2.125.968-2.125 2.166v4.334c0 1.198.95 2.166 2.125 2.166h2.452v2.98l3.034-2.98h3.994c1.175 0 2.125-.968 2.125-2.166z"/>

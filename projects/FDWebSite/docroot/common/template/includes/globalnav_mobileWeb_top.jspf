@@ -267,7 +267,7 @@
 			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
 		</li>
 		<li class="hide-on-subopen no-divider">
-			<span><a href="javascript:doOverlayDialogNew('/includes/chat_popup.jsp');">Contact Us</a></span>
+			<span><a id="open-chat-popup">Contact Us</a></span>
 		</li>
 		<li class="hide-on-subopen no-divider">
 			<span><a href="/help/index.jsp">Help</a></span>
