@@ -251,9 +251,10 @@ input[type="text"].search-input::placeholder {
 	display: block;
 	text-align: left;
 	width: fit-content;
+	font-size: 16px;
 }
 
-.link-list-container ul li *, .your-account.container ul li * {
+.your-account.container ul li a {
 	font-size: 16px;
 }
 
@@ -524,7 +525,6 @@ input[type="text"].search-input::placeholder {
 .help.footer-container .helpline-details span:last-child {
 	display: none;
 }
-
 
 [fdform] textarea {
 	font-size: 16px;

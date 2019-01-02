@@ -129,10 +129,18 @@ if(user != null) {
 	<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
 
     <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
+	<% 
+		boolean enableSO;
+		if(user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()){
+			enableSO = true;
+		} else {
+			enableSO = false;
+		}
+	%>
 
 <!-- GLOBALNAV TOP -->
 	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %><%= (inReorder) ? " inReorder" : "" %><%= (enableChat) ? " enableChat" : "" %>
-	<% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %> enableSO<% } %>">
+	<% if (enableSO) {  %> enableSO<% } %><% if (user != null && user.getLevel() == FDUserI.GUEST) { %> guest<% } %>">
 		<% if (user != null && user.isFDLabsCustomer()) { %><div class="FDL-beta-search"><a href="/expresssearch.jsp">try our new (beta) search</a></div><% } %>
 		<% if (useFdxGlobalNav) { %>
 
@@ -205,7 +213,7 @@ if(user != null) {
 						</div>
 			        <% } %>
 
-			        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
+			        <% if (enableSO) {  %>
 						<div class="topnavitem" id="topnavitem_standingorders">
 			            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
 			        	</div>
