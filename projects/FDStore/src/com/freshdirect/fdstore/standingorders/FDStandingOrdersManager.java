@@ -858,8 +858,8 @@ public class FDStandingOrdersManager {
         FDOrderHistory h = (FDOrderHistory)user.getOrderHistory();
         List<FDOrderInfoI> result = new ArrayList<FDOrderInfoI>();
                   
-        for ( ErpSaleInfo i : h.getErpSaleInfos() ) {
-                if ( so.getId().equalsIgnoreCase( i.getStandingOrderId() ) && i.getStatus().isPending() && i.getDeliveryCutoffTime().after(new Date()) ) {
+        for ( ErpSaleInfo i : h.getErpRegSOFutureSaleInfos() ) {
+                if ( so.getId().equalsIgnoreCase(i.getStandingOrderId()) && i.getStatus().isPending() ) {
                         FDOrderInfoAdapter x = new FDOrderInfoAdapter( i );
                         result.add( x );
                 }
