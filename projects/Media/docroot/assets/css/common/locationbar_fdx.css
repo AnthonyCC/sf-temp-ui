@@ -2098,10 +2098,11 @@ option.address-icon {
 #topnavitem_dlvType > a {
 	min-width: 110px;
 }
-.enableChat #topnavitem_dlvType > a {
+.enableChat.guest #topnavitem_dlvType > a {
 	min-width: 16px;
 }
-.enableChat.enableSO #topnavitem_dlvType > a {
+.enableChat.enableSO #topnavitem_dlvType > a,
+.enableChat #topnavitem_dlvType > a{
 	min-width: 8px;
 }
 .modify .gnav-footer [data-sffooter="gift_card"] {
