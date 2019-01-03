@@ -17,15 +17,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditRequest;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemRequestData;
+import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class BackOfficeSelfCreditService {
@@ -153,7 +152,11 @@ public class BackOfficeSelfCreditService {
 		erpActivityRecord.setDate(new Date());
 		erpActivityRecord.setSource(transactionSource);
 		erpActivityRecord.setNote(note);
-		new ErpLogActivityCommand(erpActivityRecord).execute();
+		try {
+			ActivityLog.getInstance().logActivity(erpActivityRecord);
+		} catch (FDResourceException e) {
+			LOGGER.error("Could not create activity log with order ID: " + orderId);
+		}
 	}
 	
 }
