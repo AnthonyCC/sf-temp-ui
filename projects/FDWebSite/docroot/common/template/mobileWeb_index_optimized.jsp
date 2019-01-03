@@ -54,12 +54,16 @@
 <%--   	<title><tmpl:get name="title"/></title> --%>
   	
 	<style>
-		@charset "UTF-8"; 
+		@charset "UTF-8";/* isChat:<%= isChat%> */
 		<%--
 			All CSS should be inline, no bundle or external files 
 			Include them directly, otherwise it affects performance
 		--%>
 		<% if (isChat) { %>
+			#bc-chat-container {
+				left: auto !important;
+				top: auto !important;
+			}
 			<%@ include file="/assets/css/dialog-base.css" %>
 			<%@ include file="/assets/css/common/cssbuttons.css" %>
 			<%@ include file="/assets/css/global/ui-dialog.css" %>
