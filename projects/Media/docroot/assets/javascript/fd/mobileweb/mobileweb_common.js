@@ -317,5 +317,10 @@ var API;
 		$('#search span.icon-cancel-circle-after').on('click', function(e) {
 			$('#topSearchField').val('').trigger('change');
 		});
+		
+		$('#open-chat-popup').on('click', function(e) {
+			API.close();
+			doOverlayDialogNew('/includes/chat_popup.jsp');
+		});
 	});
 }(jQuery));

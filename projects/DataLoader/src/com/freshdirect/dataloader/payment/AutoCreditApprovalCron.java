@@ -270,10 +270,10 @@ public class AutoCreditApprovalCron {
 			customerId = getErpSaleHome().findByComplaintId(complaintId).getCustomerPk().getId();
 		} catch (FinderException e) {
 			logCustomerIdException(complaintId, e);
-			throw new FinderException();
+			throw e;
 		} catch (RemoteException e) {
 			logCustomerIdException(complaintId, e);
-			throw new RemoteException();
+			throw e;
 		}
 		return customerId;
 	}
@@ -284,7 +284,7 @@ public class AutoCreditApprovalCron {
 
 	private static void logCustomerIdException(String complaintId, Exception e) {
 		String message = new StringBuilder(e.getMessage()).append("Could not retrieve customer ID of complaint ID : ").append(complaintId).toString();
-		LOGGER.info(message);
+		LOGGER.error(message);
 	}
 
 	/**
