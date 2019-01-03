@@ -3506,7 +3506,7 @@
 </target>
 
 	
-	<target name="all_ui" depends="clean,prereq_ui,copy_shared_dirs_ui,build_ui,media-stat" description="Build UI, no checkout, no tests">
+	<target name="all_ui" depends="clean,prereq_ui,copy_shared_dirs_ui,build_ui,media-stat,fdclient" description="Build UI, no checkout, no tests">
 	</target>
 		
 	<target name="make_dirs_ui"
@@ -3808,6 +3808,7 @@
 	</copy>
 	
 	<copy file="${work.dir}/ERPSWebApp.jar" todir="${work.dir}/FDIntegrationServices/WEB-INF/lib"/>
+	
 
 
 	<!-- create .war file -->
@@ -3825,4 +3826,8 @@
 	</jar>
 
 </target>
+	<target name="fdclient" description="Copy FDClient.jar">
+	<copy file="${thirdparty.home}/FDClient.jar" todir="${release.dir}/applications"/>
+	</target>
+
 </project>
