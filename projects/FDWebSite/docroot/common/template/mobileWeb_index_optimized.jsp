@@ -54,7 +54,7 @@
 <%--   	<title><tmpl:get name="title"/></title> --%>
   	
 	<style>
-		@charset "UTF-8";/* isChat:<%= isChat%> */
+		@charset "UTF-8";
 		<%--
 			All CSS should be inline, no bundle or external files 
 			Include them directly, otherwise it affects performance
