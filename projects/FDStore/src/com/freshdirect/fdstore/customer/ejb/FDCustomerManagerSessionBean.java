@@ -8705,18 +8705,24 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				Double submittedComplaintAmountDailyLimit = ErpServicesProperties.getSelfCreditAutoapproveMaxSubmittedAmountPerDay();
 				Double customersTodaysSubmittedAmount = todaysSubmittedSelfComplaints.get(customerId).getAmountSum();
 				final boolean complaintOverDailyAmountLimit = Double.compare((customersTodaysSubmittedAmount + complaintAmount), submittedComplaintAmountDailyLimit) == 1 ;
-				
-				int submittedComplaintQuantityDailyLimit = ErpServicesProperties.getSelfCreditAutoapproveMaxSubmittedQuantityPerDay();
-				int customersTodaysSubmittedQuantity = todaysSubmittedSelfComplaints.get(customerId).getQuantitySum();
-				final boolean complaintOverDailyQuantityLimit = customersTodaysSubmittedQuantity >= submittedComplaintQuantityDailyLimit;
-				
-				if (complaintOverDailyAmountLimit || complaintOverDailyQuantityLimit) {
+				if (complaintOverDailyAmountLimit) {
 					isEligibleForAutoApproval = false;
 					LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
-							+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId
-							+ " has " + customersTodaysSubmittedQuantity + " submitted self-issued complaints today. With the new complaint this would exceed the limit of "
-							+ submittedComplaintQuantityDailyLimit + ". The previus sum amount submitted today was " + customersTodaysSubmittedAmount 
-							+ "$. With the new amount of " + complaintAmount + "$ this would exceed the limit of " + submittedComplaintAmountDailyLimit	+ "$."); 
+							+ " is not eligible for auto-approval. The complaint amount previusly submitted by customer of ID: " + customerId + " today was " + customersTodaysSubmittedAmount 
+							+ "$. With the new amount of " + complaintAmount + "$ this would exceed the limit of " + submittedComplaintAmountDailyLimit	+ "$.");
+				}
+				
+				if (isEligibleForAutoApproval) {
+					int submittedComplaintQuantityDailyLimit = ErpServicesProperties.getSelfCreditAutoapproveMaxSubmittedQuantityPerDay();
+					int customersTodaysSubmittedQuantity = todaysSubmittedSelfComplaints.get(customerId).getQuantitySum();
+					final boolean complaintOverDailyQuantityLimit = customersTodaysSubmittedQuantity >= submittedComplaintQuantityDailyLimit;
+					if (complaintOverDailyQuantityLimit) {
+						isEligibleForAutoApproval = false;
+						LOGGER.info("Self-issued complaint of ID : " + selfComplaintId
+								+ " is not eligible for auto-approval. " + "Customer of ID: " + customerId
+								+ " has " + customersTodaysSubmittedQuantity + " submitted self-issued complaints today. With the new complaint this would exceed the limit of "
+								+ submittedComplaintQuantityDailyLimit + ".");
+					}
 				}
 			}
 
