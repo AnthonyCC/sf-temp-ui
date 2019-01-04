@@ -29,6 +29,8 @@
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 
 	request.setAttribute("inMobWebTemplate", true);
+	
+	boolean isChat = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, user);
 %>
 <%
 	if (isReorder) {
@@ -138,7 +140,31 @@
 	
 			   	<!-- messages s -->
 			   	<jsp:include page="/shared/messages/messages_fdx.jsp" />
-	
+			   	
+				<% if (isChat) { %>
+					<!-- BoldChat Live Chat Button HTML v5.00 (Type=HTML,ChatWindow=iOS v.01 9/10/2015 - Brooklyn,Department=- None -,Website=FreshDirect) -->
+					<div id="open_live_chat">
+					<script>
+					  var bccbId = Math.random(); document.write(unescape('%3Cdiv id=' + bccbId + '%3E%3C/div%3E'));
+					  window._bcvma = window._bcvma || [];
+					  _bcvma.push(["setAccountID", "447701025416363034"]);
+					  _bcvma.push(["setParameter", "WebsiteID", "2853440196463415121"]);
+					  _bcvma.push(["addText", {type: "chat", window: "781368249134851385", available: "", unavailable: "", id: bccbId}]);
+					  var bcLoad = function(){
+					    if(window.bcLoaded) return; window.bcLoaded = true;
+					    var vms = document.createElement("script"); vms.type = "text/javascript"; vms.async = true;
+					    vms.src = ('https:'==document.location.protocol?'https://':'http://') + "vmss.boldchat.com/aid/447701025416363034/bc.vms4/vms.js";
+					    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(vms, s);
+					  };
+					  if(window.pageViewer && pageViewer.load) pageViewer.load();
+					  else if(document.readyState=="complete") bcLoad();
+					  else if(window.addEventListener) window.addEventListener('load', bcLoad, false);
+					  else window.attachEvent('onload', bcLoad);
+					</script>
+					</div>
+					<!-- /BoldChat Live Chat Button HTML v5.00 -->
+				<% } %>
+				
 			  	<% if (FDStoreProperties.isAdServerEnabled()) {
 					%><div id="oas_SystemMessage">
 	  					<script type="text/javascript">OAS_AD('SystemMessage');</script>
