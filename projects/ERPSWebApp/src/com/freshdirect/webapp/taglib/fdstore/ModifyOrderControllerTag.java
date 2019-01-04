@@ -445,7 +445,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
         } catch (ErpTransactionException ex) {
             results.addError(new ActionError(ex.getMessage()));
             LOGGER.error("Current sale status incompatible with requested action", ex);
-            errorPage = "/your_account/order_details.jsp?orderId=" + orderId;
+            errorPage = "/your_account/order_details.jsp?hasTransException="+true+"&orderId=" + orderId;
         }
 	}
 
@@ -493,7 +493,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 					throws FDResourceException, FDInvalidConfigurationException, ErpTransactionException{
 
 	    FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
-
+	    if(order.isMakeGood()){
+	    	LOGGER.warn("Customers may not maodify Make Good Order. OrderID: "+orderId+" ,Customer_ID: "+order.getCustomerId());
+	    	throw new ErpTransactionException("Customers may not modify orders in this state: Make Good. Please contact Customer Service to continue.");
+	    }
         order.getSale().assertStatusModifySale();
 	    
 		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel) {
