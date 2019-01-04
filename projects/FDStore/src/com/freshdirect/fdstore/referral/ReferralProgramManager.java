@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.referral;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
@@ -14,8 +13,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-import weblogic.auddi.util.Logger;
-
 public class ReferralProgramManager {		 	
 		 			
 	private List internalProgIdList=new ArrayList();
@@ -26,7 +23,7 @@ public class ReferralProgramManager {
 	private ExpiringReference refPrgHolder = new ExpiringReference(10 * 60 * 1000) {
 		protected Object load() {
 			try {
-				Logger.info("load all referral programs");
+				LOGGER.info("load all referral programs");
 				return loadAllReferralPrograms();
 			} catch (FDResourceException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);				

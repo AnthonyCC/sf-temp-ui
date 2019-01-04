@@ -27,9 +27,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 
-import weblogic.auddi.util.Logger;
-
-
 public class ExternalAccountControllerTagWrapper extends NonStandardControllerTagWrapper implements RequestParamName, SessionParamName, MessageCodes{
 	
 	public static final String EXTERNAL_PROVIDERS = "EXTERNAL_PROVIDERS";
@@ -184,7 +181,7 @@ public class ExternalAccountControllerTagWrapper extends NonStandardControllerTa
 			try{
 				userIdentity = FDCustomerManager.login(requestMessage.getEmail(),requestMessage.getPassword());
 			} catch(Exception ex){
-				Logger.error(ex.getMessage());
+				LOGGER.error(ex.getMessage());
 			}		
 			
 			if(userIdentity == null){
