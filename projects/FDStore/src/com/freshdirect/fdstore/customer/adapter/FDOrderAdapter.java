@@ -184,6 +184,9 @@ public class FDOrderAdapter implements FDOrderI {
 			deliveryReservation = FDDeliveryManager.getInstance().getReservation(delInfo.getDeliveryReservationId(), sale.getId());
 			
 			if (deliveryReservation == null) {
+				if(!"1".equalsIgnoreCase(delInfo.getDeliveryReservationId())){
+					LOGGER.info("RESERVATIONISSUE: RSV IS NULL " + delInfo.getDeliveryReservationId());
+				}
 				//!!! this is just a temporary fix until pre-reserve slots is completely implemented
 				FDTimeslot t = new FDTimeslot();
 				ErpDeliveryInfoModel info = getDeliveryInfo();
