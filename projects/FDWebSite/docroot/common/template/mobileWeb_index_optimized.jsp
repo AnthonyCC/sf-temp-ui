@@ -386,6 +386,8 @@
    	// --%>
    	<% if (FDStoreProperties.isDfpEnabled()) { /* only load if needed */ %>
 		<jwr:script src="/mobileweb_index_optimized_footer.js" useRandomParam="false" defer="true" async="true" />
+		<jwr:script src="/fdlibs.js" useRandomParam="false" />
+		<jwr:script src="/fdgtm.js" useRandomParam="false" />
 	<% } %>
 	<% if (isModifyOrder) { %>
 		<%--
@@ -393,8 +395,9 @@
 			so this shouldn't cause any performance issue as these files have been cached by the browser.
 		--%>
 
-		<jwr:script src="/fdlibs.js" useRandomParam="false" />
 		<soy:import packageName="common"/>
+		<jwr:script src="/fdlibs.js" useRandomParam="false" />
+		<jwr:script src="/fdgtm.js" useRandomParam="false" />
 		<jwr:script src="/modifyorderdeps.js" useRandomParam="false" />
 		<jwr:script src="/modifyorder.js" useRandomParam="false" async="true" defer="true" />
 	<% } %>
