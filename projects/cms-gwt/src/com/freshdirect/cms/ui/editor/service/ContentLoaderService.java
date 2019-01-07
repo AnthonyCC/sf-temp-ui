@@ -878,5 +878,14 @@ public class ContentLoaderService {
         populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByVirtualCategory, virtualAttributeRepository.queryConsumedByVirtualCategory(contentKey),
                 gwtNode);
         populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByStoreCarousel, virtualAttributeRepository.queryConsumedByStoreCarousel(contentKey), gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedBySection, virtualAttributeRepository.queryConsumedBySection(contentKey),
+                gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByImageBanner, virtualAttributeRepository.queryConsumedByImageBanner(contentKey),
+                gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByTabletFeaturedCategories, virtualAttributeRepository.queryConsumedByTabletFeaturedCategories(contentKey),
+                gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByModule, virtualAttributeRepository.queryConsumedByModule(contentKey),
+                gwtNode);
+        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByBanner, virtualAttributeRepository.queryConsumedByBanner(contentKey), gwtNode);
     }
 }

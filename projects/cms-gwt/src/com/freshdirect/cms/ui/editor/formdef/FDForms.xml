@@ -441,6 +441,11 @@
 							<CmsField><attribute>consumedByDepartmentCarousel</attribute></CmsField>
 							<CmsField><attribute>consumedByCategoryCarousel</attribute></CmsField>
 							<CmsField><attribute>consumedByStoreCarousel</attribute></CmsField>
+							<CmsField><attribute>consumedBySection</attribute></CmsField>
+							<CmsField><attribute>consumedByImageBanner</attribute></CmsField>
+							<CmsField><attribute>consumedByModule</attribute></CmsField>
+							<CmsField><attribute>consumedByTabletFeaturedCategories</attribute></CmsField>
+							<CmsField><attribute>consumedByBanner</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
