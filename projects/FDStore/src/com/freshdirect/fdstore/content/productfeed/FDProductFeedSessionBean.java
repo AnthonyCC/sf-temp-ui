@@ -684,18 +684,20 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         Prices prices = new Prices();
         product.setPrices(prices);
         ZonePriceModel zpModel = fdProduct.getPricing().getZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO);
-        MaterialPrice[] materialPrices = zpModel.getMaterialPrices();
-        for (MaterialPrice materialPrice : materialPrices) {
-            Price price = new Price();
-            prices.getPrice().add(price);
-            price.setZoneCode(ZonePriceListing.MASTER_DEFAULT_ZONE);
-            price.setUnitPrice(BigDecimal.valueOf(materialPrice.getPrice()));
-            price.setUnitDescription(materialPrice.getPricingUnit());
-            price.setUnitWeight(materialPrice.getPricingUnit());
-            if (materialPrice.getPromoPrice() > 0.0) {
-                price.setSalePrice(BigDecimal.valueOf(materialPrice.getPromoPrice()));
+        if (zpModel != null) {
+            MaterialPrice[] materialPrices = zpModel.getMaterialPrices();
+            for (MaterialPrice materialPrice : materialPrices) {
+                Price price = new Price();
+                prices.getPrice().add(price);
+                price.setZoneCode(ZonePriceListing.MASTER_DEFAULT_ZONE);
+                price.setUnitPrice(BigDecimal.valueOf(materialPrice.getPrice()));
+                price.setUnitDescription(materialPrice.getPricingUnit());
+                price.setUnitWeight(materialPrice.getPricingUnit());
+                if (materialPrice.getPromoPrice() > 0.0) {
+                    price.setSalePrice(BigDecimal.valueOf(materialPrice.getPromoPrice()));
+                }
+                price.setScaleQuantity("" + materialPrice.getScaleLowerBound());
             }
-            price.setScaleQuantity("" + materialPrice.getScaleLowerBound());
         }
     }
 
