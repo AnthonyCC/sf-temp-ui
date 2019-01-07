@@ -142,6 +142,12 @@
 			   	<jsp:include page="/shared/messages/messages_fdx.jsp" />
 			   	
 				<% if (isChat) { %>
+					<style>
+						#bc-chat-container {
+							left: auto !important;
+							top: auto !important;
+						}
+					</style>
 					<!-- BoldChat Live Chat Button HTML v5.00 (Type=HTML,ChatWindow=iOS v.01 9/10/2015 - Brooklyn,Department=- None -,Website=FreshDirect) -->
 					<div id="open_live_chat">
 					<script>

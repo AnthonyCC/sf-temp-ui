@@ -542,16 +542,20 @@ public class TimeslotLogic {
 	
 	public static boolean isAddressChange(ErpAddressModel originalAddress, ErpAddressModel addressModel, String timeslotAddressId, String dlvAddressId){
 		
+		boolean addressChange = false;
 		if(FDStoreProperties.isAddressMismatchEnabled() && originalAddress!=null && addressModel!=null 
 	         		&& originalAddress.getAddressInfo()!=null && addressModel.getAddressInfo()!=null
 	         		&& originalAddress.getAddressInfo().getScrubbedStreet()!=null && addressModel.getAddressInfo().getScrubbedStreet()!=null
 	         		&& originalAddress.getZipCode() !=null && addressModel.getZipCode()!=null){
-			return !(originalAddress.getAddressInfo().getScrubbedStreet().equalsIgnoreCase(addressModel.getAddressInfo().getScrubbedStreet()) &&
+			addressChange = !(originalAddress.getAddressInfo().getScrubbedStreet().equalsIgnoreCase(addressModel.getAddressInfo().getScrubbedStreet()) &&
        			 originalAddress.getZipCode().equalsIgnoreCase(addressModel.getZipCode()));
 		}else 
-			return timeslotAddressId != null && dlvAddressId != null && !(timeslotAddressId.equals(dlvAddressId));
+			addressChange = (timeslotAddressId != null && dlvAddressId != null && !(timeslotAddressId.equals(dlvAddressId)));
 		
-
+		if(addressChange){
+			LOGGER.info("RESERVATIONISSUE: " +"originalAddress = " + originalAddress+ " addressModel =" +addressModel+ "timeslotAddressId = "+timeslotAddressId+"dlvAddressId = "+dlvAddressId);
+		}
+		return addressChange;
 	}
 	
 	public static OrderContext getOrderContext(FDUserI user) {
