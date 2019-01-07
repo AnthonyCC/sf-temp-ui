@@ -35,26 +35,31 @@ public class VirtualAttributeRepository {
     private static final String QUERY_CONSUMED_BY_SECTION = "select distinct(parent_contentnode_id) as contentKey "
             + "from cms.relationship "
             + "where def_name in ('category', 'linkTarget') "
+            + "and parent_contentnode_id like 'Section:%' "
             + "and child_contentnode_id=?";
 
     private static final String QUERY_CONSUMED_BY_IMAGEBANNER = "select distinct(parent_contentnode_id) as contentKey "
             + "from cms.relationship "
-            + "where def_name in ('category', 'linkTarget') "
+            + "where def_name in ('Target', 'linkOneTarget', 'linkTwoTarget') "
+            + "and parent_contentnode_id like 'ImageBanner:%' "
             + "and child_contentnode_id=?";
 
     private static final String QUERY_CONSUMED_BY_MODULE = "select distinct(parent_contentnode_id) as contentKey "
             + "from cms.relationship "
-            + "where def_name in ('category', 'linkTarget') "
+            + "where def_name='sourceNode' "
+            + "and parent_contentnode_id like 'Module:%' "
             + "and child_contentnode_id=?";
 
     private static final String QUERY_CONSUMED_BY_BANNER = "select distinct(parent_contentnode_id) as contentKey "
             + "from cms.relationship "
-            + "where def_name in ('category', 'linkTarget') "
+            + "where def_name='link' "
+            + "and parent_contentnode_id like 'Banner:%' "
             + "and child_contentnode_id=?";
 
     public static final String QUERY_CONSUMED_BY_TABLET_FEATURE_CATEGORIES = "select distinct(parent_contentnode_id) as contentKey "
             + "from cms.relationship "
-            + "where def_name in ('category', 'linkTarget') "
+            + "where def_name='tabletFeaturedCategories' "
+            + "and parent_contentnode_id like 'Store:%' "
             + "and child_contentnode_id=?";
 
     @Autowired
