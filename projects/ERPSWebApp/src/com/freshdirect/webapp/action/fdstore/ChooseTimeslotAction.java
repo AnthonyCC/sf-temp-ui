@@ -190,6 +190,9 @@ public class ChooseTimeslotAction extends WebActionSupport {
 									// reserve the new slot
 									LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
 									
+									if((cart instanceof FDModifyCartModel) && dlvRsv == null){
+										LOGGER.info("RESERVATIONISSUE: dlvRsv IS NULL, user = "+ user.getUserId()+ "addressId = " +addressId+ " customerId = "+ ((erpAddress!=null)?erpAddress.getCustomerId():null));
+									}
 									//ADDED below code for modify address issue order in wrong zone
 									if ((cart instanceof FDModifyCartModel) && TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()) && (deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()))) {
 										LOGGER.warn("ORDWRNGRT: During order modification, address changed but timeslot is same, for order: "+((FDModifyCartModel)cart).getOriginalOrder().getErpSalesId());
