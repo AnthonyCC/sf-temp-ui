@@ -12,7 +12,6 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -43,7 +42,6 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
@@ -70,6 +68,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
@@ -83,17 +82,14 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.cart.ModifyOrderHelper;
-import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.OrderPermissionsI;
 import com.freshdirect.webapp.util.OrderPermissionsImpl;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
-import com.google.common.collect.Lists;
 /**
  *
  * @version $Revision$
@@ -979,7 +975,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		        	ErpAddressModel address= FDCustomerManager.getLastOrderAddress(user.getIdentity());
 					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
 					if (arSKU != null){
-						this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext(),false);
+						this.orderId = DeliveryPassUtil.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext(),false);
 					}else{
 						throw new DeliveryPassException("Customer has no valid auto_renew DP. ",currentUser.getIdentity().getErpCustomerPK());
 					

@@ -7,7 +7,6 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DataLoader"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jawr-core-3.8.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/soy-excluding-deps-2012-12-21.jar" sourcepath="/SOY_SRC"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
@@ -29,5 +28,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/javax.inject.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-assistedinject-3.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-multibindings-3.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/FDStore"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

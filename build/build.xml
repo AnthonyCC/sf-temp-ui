@@ -1742,7 +1742,6 @@
 			project="CMS"
 			classpathref="cms.classpath"/>
 	</target> -->
-
 	<target name="fdstore" description="Build FDStore" depends="buildver-compile-time">
 		<path id="fdstore.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -1891,7 +1890,6 @@
 			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco3.jar"/>
-			<pathelement location="${thirdparty.home}/microba-0.4.4.2.jar"/>
 			<pathelement location="${thirdparty.home}/roadnetservices.jar"/>
 			<pathelement location="${weblogic.home}/server/lib/webservices.jar"/>
 			<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
@@ -2177,7 +2175,7 @@
 
 		<!-- place WAR in build artifacts -->
 		<mkdir dir="${release.dir}/applications" />
-		<copy file="${work.dir}/cms-gwt.war" todir="${release.dir}/applications" />
+		<copy file="${work.dir}/cms-gwt.war" todir="${release.dir}/applicatiosfui20ns" />
 	</target>
 
 	<target name="rulesadmin" description="Build RulesAdmin .war file" depends="storeApi">

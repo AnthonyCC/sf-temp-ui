@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.common.IConstants;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -21,7 +22,6 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.autoorder.create.util.DateUtil;
-import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.dataloader.autoorder.create.util.ResourceUtil;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
