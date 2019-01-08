@@ -367,19 +367,7 @@
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
-    <session>
-      <ejb-name>OfflineRecommender</ejb-name>
-      <home>com.freshdirect.smartstore.ejb.OfflineRecommenderHome</home>
-      <remote>com.freshdirect.smartstore.ejb.OfflineRecommenderSB</remote>
-      <ejb-class>com.freshdirect.smartstore.ejb.OfflineRecommenderSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
+    
     <session>
       <ejb-name>FDSurvey</ejb-name>
       <home>com.freshdirect.fdstore.survey.ejb.FDSurveyHome</home>
@@ -421,52 +409,7 @@
         <remote>com.freshdirect.erp.ejb.ErpGrpInfoSB</remote>
       </ejb-ref>
     </session>
-    <session>
-      <ejb-name>CreateEmail</ejb-name>
-      <home>com.freshdirect.fdstore.mail.CreateEmailHome</home>
-      <remote>com.freshdirect.fdstore.mail.CreateEmailSB</remote>
-      <ejb-class>com.freshdirect.fdstore.mail.CreateEmailSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <ejb-ref>
-        <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-        <home>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
-        <remote>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB</remote>
-      </ejb-ref>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
-    <session>
-      <ejb-name>OAuthProvider</ejb-name>
-      <home>com.freshdirect.fdstore.oauth.provider.ejb.OAuthProviderHome</home>
-      <remote>com.freshdirect.fdstore.oauth.provider.ejb.OAuthProviderSB</remote>
-      <ejb-class>com.freshdirect.fdstore.oauth.provider.ejb.OAuthProviderSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
-    <!-- Deprecated : BazaarvoiceUfService -->
-    <session>
-      <ejb-name>BazaarvoiceUfService</ejb-name>
-      <home>com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceHome</home>
-      <remote>com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceSB</remote>
-      <ejb-class>com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
+   
     <session>
       <ejb-name>ProductFeed</ejb-name>
       <home>

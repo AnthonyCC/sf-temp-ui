@@ -121,22 +121,6 @@
 		<servlet-class>com.freshdirect.webapp.util.ClientCodeReportServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>AccessTokenServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.oauth.provider.AccessTokenServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>AuthorizationServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.oauth.provider.AuthorizationServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>RequestTokenServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.oauth.provider.RequestTokenServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>UserDataServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.oauth.provider.UserDataServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>referralregistration</servlet-name>
 		<jsp-file>/registration/referee_signup.jsp</jsp-file>
 	</servlet>
@@ -734,22 +718,6 @@
 		<url-pattern>/api/clientCodeReport.jsp</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AccessTokenServlet</servlet-name>
-		<url-pattern>/oauth/access_token</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>AuthorizationServlet</servlet-name>
-		<url-pattern>/oauth/authorize</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>RequestTokenServlet</servlet-name>
-		<url-pattern>/oauth/request_token</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>UserDataServlet</servlet-name>
-		<url-pattern>/oauth/user_data</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
 		<servlet-name>referralregistration</servlet-name>
 		<url-pattern>/invite/*</url-pattern>
 	</servlet-mapping>
@@ -790,7 +758,7 @@
 		<url-pattern>/api/warmup</url-pattern>
 	</servlet-mapping>
 	<session-config>
-		<session-timeout>15</session-timeout>
+		<session-timeout>60</session-timeout>
 	</session-config>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>

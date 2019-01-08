@@ -417,22 +417,7 @@
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.smartstore.SessionImpressionLog</jndi-name>
   </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>OfflineRecommender</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>10</max-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.smartstore.OfflineRecommender</jndi-name>
-  </weblogic-enterprise-bean>
+  
   <weblogic-enterprise-bean>
     <ejb-name>FDZoneInfoManager</ejb-name>
     <stateless-session-descriptor>
@@ -488,61 +473,6 @@
     </resource-description>
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.fdstore.FDSurvey</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>CreateEmail</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>1</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <ejb-reference-description>
-      <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
-      <jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
-    </ejb-reference-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.CreateEmail</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>OAuthProvider</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.oauth.OAuthProvider</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>BazaarvoiceUfService</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>1</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.BazaarvoiceUfService</jndi-name>
   </weblogic-enterprise-bean>
   
  <weblogic-enterprise-bean>
