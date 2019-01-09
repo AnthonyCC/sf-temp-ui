@@ -26,6 +26,7 @@ import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -57,14 +58,14 @@ public class SelfCreditOrderDetailsService {
 
     public SelfCreditOrderDetailsData collectOrderDetails(FDUserI user, String orderId) throws FDResourceException, JsonParseException, JsonMappingException, IOException, FDSkuNotFoundException, HttpErrorResponse {
 
-        List<SelfCreditOrderItemData> orderLines = new ArrayList<SelfCreditOrderItemData>();
-        
         FDOrderAdapter orderDetailsToDisplay = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), orderId);
+        validateOrderStore(user, orderDetailsToDisplay);
         
         Map<String, List<SelfCreditComplaintReason>> complaintReasonMap = collectAllComplaintReasons();
         Map<String, Double> creditedQuantities = collectApprovedComplaintQuantity(orderDetailsToDisplay.getComplaints());
 
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
+        List<SelfCreditOrderItemData> orderLines = new ArrayList<SelfCreditOrderItemData>();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
         	final boolean isDeliverPass = fdCartLine.lookupFDProduct().isDeliveryPass();
         	
@@ -98,6 +99,14 @@ public class SelfCreditOrderDetailsService {
         selfCreditOrderDetailsData.setOrderLines(orderLines);
         return selfCreditOrderDetailsData;
     }
+
+	private void validateOrderStore(FDUserI user, FDOrderAdapter orderDetailsToDisplay) throws FDResourceException {
+		EnumEStoreId currentStore = user.getUserContext().getStoreContext().getEStoreId();
+        final boolean orderIsFromStore = currentStore == orderDetailsToDisplay.getEStoreId();
+        if (!orderIsFromStore) {
+			throw new FDResourceException("Order of ID: " + orderDetailsToDisplay.getErpSalesId() + " is not " + currentStore + " order." );
+		}
+	}
 
 	private double collectQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
