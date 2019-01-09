@@ -1944,7 +1944,6 @@
 			<pathelement location="${work.dir}/cmseue.jar"/>
 			<pathelement location="${work.dir}/StoreAPI.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/StandingOrdersService.jar"/>

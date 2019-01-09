@@ -10,7 +10,6 @@
 <%@ page import='com.freshdirect.framework.util.*''%> 
 <%@ page import='com.freshdirect.fdstore.customer.*''%> 
 <%@ page import='com.freshdirect.fdstore.ecoupon.*''%>
-<%@ page import='com.freshdirect.dataloader.ecoupon.*''%>
 <%@ page import="java.util.*" %>
 
 <%@ taglib uri='freshdirect' prefix='fd'%>
