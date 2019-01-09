@@ -66,12 +66,13 @@ public class SelfCreditOrderHistoryService {
       final boolean isRecentOrder = isRecentOrder(fdOrderInfo.getCreateRequestedDate(), currentDate);
       final boolean makeGoodOrder = fdOrderInfo.isMakeGood();
       final boolean orderIsFromStore = store == fdOrderInfo.getEStoreId();
-      final boolean giftCardOrder = EnumSaleType.GIFTCARD == fdOrderInfo.getSaleType();
+        final boolean giftCardOrder = EnumSaleType.GIFTCARD.equals(fdOrderInfo.getSaleType());
       return orderStatusEligible && isRecentOrder && !makeGoodOrder && orderIsFromStore && !giftCardOrder;
 	}
 
 	private boolean isOrderStatusEligibleForSelfCredit(EnumSaleStatus orderStatus) {
-		return EnumSaleStatus.SETTLED == orderStatus ||EnumSaleStatus.PAYMENT_PENDING == orderStatus ||EnumSaleStatus.ENROUTE == orderStatus || EnumSaleStatus.CAPTURE_PENDING == orderStatus;
+        return EnumSaleStatus.SETTLED.equals(orderStatus) || EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus) || EnumSaleStatus.ENROUTE.equals(orderStatus)
+                || EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus);
 	}
 
     private boolean isRecentOrder(Date createRequestedDate, Date currentDate) {
