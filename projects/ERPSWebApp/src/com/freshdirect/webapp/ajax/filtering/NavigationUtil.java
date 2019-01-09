@@ -651,7 +651,7 @@ public class NavigationUtil {
 
 	public static boolean isCategoryDisplayableCached(FDUserI user, CategoryModel cat){
 		String contentName = cat.getContentName();
-		if(null !=user && null !=user.getUserContext()){
+		if(null !=user && null !=user.getUserContext() && null !=user.getUserContext().getFulfillmentContext()){
 			String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
 			if (CmsManager.getInstance().isReadOnlyContent()){
 	            Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId);
