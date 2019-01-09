@@ -368,7 +368,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				OASQueryResult result = getOasQueryInfo(conn, emailInfo, fdCustomer, customerPrimaryKey, serviceType);
 
 				inputHashmap.put(TEmailConstants.OAS_QUERY, result != null ? result.getOasQuery() : "");
-				inputHashmap.put(TEmailConstants.COHORT_ID, result != null ? result.getCohortId() : "");
+				if(null !=result && null !=result.getCohortId()){
+					inputHashmap.put(TEmailConstants.COHORT_ID, result.getCohortId());
+				}
 
 			} // isAdServerEnabled()
 			else {
@@ -2344,6 +2346,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
+
 
 	/**
 	 * remove a ship to address for the customer
