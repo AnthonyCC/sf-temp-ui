@@ -42,16 +42,16 @@ public class SelfCreditOrderHistoryService {
         
         List<SelfCreditOrderData> ordersToDisplay = new ArrayList<SelfCreditOrderData>();
         for (FDOrderInfoI fdOrderInfo : orders) {
-        	final boolean eligibleForSelfCredit = isEligibleForSelfCredit(fdOrderInfo, currentDate, store);
-        	if(eligibleForSelfCredit) {
+            final boolean eligibleForSelfCredit = isEligibleForSelfCredit(fdOrderInfo, currentDate, store);
+            if (eligibleForSelfCredit) {
                 SelfCreditOrderData order = new SelfCreditOrderData();
                 order.setSaleId(fdOrderInfo.getErpSalesId());
                 order.setRequestedDate(fdOrderInfo.getRequestedDate());
                 order.setDeliveryStart(fdOrderInfo.getDeliveryStartTime());
                 order.setDeliveryEnd(fdOrderInfo.getDeliveryEndTime());
-                order.setStandingOrderName((null == fdOrderInfo.getStandingOrderId()) ?"" :collectOrderName(fdOrderInfo.getStandingOrderId()));
+                order.setStandingOrderName((null == fdOrderInfo.getStandingOrderId()) ? "" : collectOrderName(fdOrderInfo.getStandingOrderId()));
                 ordersToDisplay.add(order);
-			}
+            }
         }
         
         SelfCreditOrderHistoryData orderHistory = new SelfCreditOrderHistoryData();
@@ -65,18 +65,18 @@ public class SelfCreditOrderHistoryService {
       final boolean orderStatusEligible= isOrderStatusEligibleForSelfCredit(fdOrderInfo.getOrderStatus());
       final boolean isRecentOrder = isRecentOrder(fdOrderInfo.getCreateRequestedDate(), currentDate);
       final boolean makeGoodOrder = fdOrderInfo.isMakeGood();
-      final boolean orderIsFromStore = store.equals(fdOrderInfo.getEStoreId());
-      final boolean giftCardOrder = EnumSaleType.GIFTCARD.equals(fdOrderInfo.getSaleType());
+      final boolean orderIsFromStore = store == fdOrderInfo.getEStoreId();
+      final boolean giftCardOrder = EnumSaleType.GIFTCARD == fdOrderInfo.getSaleType();
       return orderStatusEligible && isRecentOrder && !makeGoodOrder && orderIsFromStore && !giftCardOrder;
 	}
 
 	private boolean isOrderStatusEligibleForSelfCredit(EnumSaleStatus orderStatus) {
-		return EnumSaleStatus.SETTLED.equals(orderStatus) ||EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus) ||EnumSaleStatus.ENROUTE.equals(orderStatus) || EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus);
+		return EnumSaleStatus.SETTLED == orderStatus ||EnumSaleStatus.PAYMENT_PENDING == orderStatus ||EnumSaleStatus.ENROUTE == orderStatus || EnumSaleStatus.CAPTURE_PENDING == orderStatus;
 	}
 
     private boolean isRecentOrder(Date createRequestedDate, Date currentDate) {
         int monthsBetween = DateUtil.monthsBetween(currentDate, createRequestedDate);
-        return monthsBetween < 150;//FDStoreProperties.getOrderHistoryFromInMonths();
+        return monthsBetween < FDStoreProperties.getOrderHistoryFromInMonths();
     }
 
 	private String collectOrderName(String standingOrderId) throws FDResourceException {
