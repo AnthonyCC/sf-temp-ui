@@ -333,6 +333,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     private String multiSearchList;
 
     private List<UnbxdAutosuggestResults> unbxdAustoSuggestions;
+    
+	private HashMap<String, FDOrderI> upcomingSOinstances = new HashMap<String, FDOrderI>();
 
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
@@ -4287,4 +4289,13 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return isHavingEnoughValidOrders;
     }
+
+	public HashMap<String, FDOrderI> getUpcomingSOinstances() {
+		return upcomingSOinstances;
+	}
+
+	public void setUpcomingSOinstances(HashMap<String, FDOrderI> upcomingSOinstances) {
+		this.upcomingSOinstances = upcomingSOinstances;
+	}
+
 }

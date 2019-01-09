@@ -371,6 +371,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				*/
 			}
 
+			if(null != origOrder.getStandingOrderId() && null != user.getUpcomingSOinstances() && !user.getUpcomingSOinstances().isEmpty()) {
+				user.getUpcomingSOinstances().remove(origOrder.getErpSalesId());
+			}
 			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, orderId, sendEmail, currentDPExtendDays, true);
 			if(restoredRsv != null){
 				user.setReservation(restoredRsv);
@@ -587,7 +590,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			// resolve timeslot id based on delivery reservation id
 			ModifyOrderHelper.handleReservation(order, cart);
 		}
-		
 		
 		// resolve the redemption promotions
 		ModifyOrderHelper.handleRedemptionPromotions(currentUser, order);

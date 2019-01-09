@@ -195,6 +195,8 @@ public class CheckoutService {
 		}
 
         if (user.isCorporateUser()) {
+        	// clearing the futureSO instances cahce
+        	user.getUpcomingSOinstances().clear();
             // billing reference is optional
             if (StringUtils.isNotBlank(billingReference)) {
                 // validate billing reference

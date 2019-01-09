@@ -690,13 +690,19 @@ public class StandingOrderHelper {
 			setUpcomingStandingOrder(so, user);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
 		
-		String upComingOrderId = so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null;
-        map.put("upComingOrderId", upComingOrderId);
-		if(upComingOrderId!=null && !"".equals(upComingOrderId.trim())){
-			FDOrderI  upComingOrder = FDCustomerManager.getOrder(upComingOrderId);
+		String upComingOrderID = so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null;
+        map.put("upComingOrderId", upComingOrderID);
+		if(upComingOrderID!=null && !"".equals(upComingOrderID.trim())){
+			FDOrderI upComingOrder= user.getUpcomingSOinstances().containsKey(upComingOrderID)?user.getUpcomingSOinstances().get(upComingOrderID): null;
+			if(null== upComingOrder) {
+				upComingOrder= FDCustomerManager.getOrder(upComingOrderID);
+				user.getUpcomingSOinstances().put(upComingOrderID, upComingOrder);
+			}
+			if(upComingOrder.isModifiedOrder()) {
 				map.put("addressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo, upComingOrder));
 				map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo, user, upComingOrder)); 
 				map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so, upComingOrder));
+			}
 		}
 		return map;
 	}
@@ -888,12 +894,18 @@ public class StandingOrderHelper {
 	private static void populateCurrentDeliveryDate(FDUserI user,
 			Collection<Map<String, Object>> soData) throws FDResourceException {
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
+		Collection<ErpSaleInfo> saleInfos = h.getErpRegSOFutureSaleInfos();
+		int count =0;
 		for(Map<String,Object> soDataMap:soData){
+			if(saleInfos.size()== count) {
+				break;
+			}
 			a:for (ErpSaleInfo i : h.getErpRegSOFutureSaleInfos()) {
 				if (soDataMap.get("id").toString().equalsIgnoreCase(i.getStandingOrderId())) {
 						soDataMap.put("currentDeliveryDate", DateUtil.formatMonthAndDate(i.getRequestedDate()));
 						soDataMap.put("currentDeliveryTime", DateUtil.formatHourAMPMRange(i.getDeliveryStartTime(), i.getDeliveryEndTime()));
 						soDataMap.put("currentDayOfWeek", DateUtil.formatFullDayOfWk(i.getRequestedDate()));
+						count ++;
 						break a;
 				}
 			}
