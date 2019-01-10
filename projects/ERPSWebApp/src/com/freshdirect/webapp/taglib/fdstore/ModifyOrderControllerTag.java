@@ -372,7 +372,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			}
 
 			if(null != origOrder.getStandingOrderId() && null != user.getUpcomingSOinstances() && !user.getUpcomingSOinstances().isEmpty()) {
-				user.getUpcomingSOinstances().remove(origOrder.getErpSalesId());
+				user.getUpcomingSOinstances().remove(origOrder.getStandingOrderId());
 			}
 			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, orderId, sendEmail, currentDPExtendDays, true);
 			if(restoredRsv != null){

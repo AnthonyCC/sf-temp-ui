@@ -693,12 +693,13 @@ public class StandingOrderHelper {
 		String upComingOrderID = so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null;
         map.put("upComingOrderId", upComingOrderID);
 		if(upComingOrderID!=null && !"".equals(upComingOrderID.trim())){
-			FDOrderI upComingOrder= user.getUpcomingSOinstances().containsKey(upComingOrderID)?user.getUpcomingSOinstances().get(upComingOrderID): null;
+			String soID = so.getId();
+			FDOrderI upComingOrder= user.getUpcomingSOinstances().containsKey(soID)?user.getUpcomingSOinstances().get(soID): null;
 			if(null== upComingOrder) {
 				upComingOrder= FDCustomerManager.getOrder(upComingOrderID);
-				user.getUpcomingSOinstances().put(upComingOrderID, upComingOrder);
+				user.getUpcomingSOinstances().put(soID, upComingOrder);
 			}
-			if(upComingOrder.isModifiedOrder()) {
+			if(upComingOrder.isModifiedOrder() || isModifiedInfo ) {
 				map.put("addressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo, upComingOrder));
 				map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo, user, upComingOrder)); 
 				map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so, upComingOrder));
