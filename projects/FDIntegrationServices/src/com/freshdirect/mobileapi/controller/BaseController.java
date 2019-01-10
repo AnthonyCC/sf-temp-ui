@@ -667,10 +667,25 @@ public abstract class BaseController extends AbstractController implements Messa
 																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 		configuration.setLiveChatEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat,
 																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
+
+        configuration.setSelfCreditEnabled(isSelfCreditEnabled(user));
 		return configuration;
 	}
 
-	protected LoggedIn formatLoginMessage(SessionUser user) throws FDException  {
+    private boolean isSelfCreditEnabled(SessionUser user) {
+        final boolean selfCreditFeatureEnabled = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.backOfficeSelfCredit,
+                user != null && user.getFDSessionUser() != null ? user.getFDSessionUser().getUser() : null);
+        
+        boolean userCreditAbuser = true;
+        try {
+            userCreditAbuser = user != null && user.getFDSessionUser() != null ? user.getFDSessionUser().isCreditRestricted() : true;
+        } catch (FDResourceException e) {
+            LOGGER.error("Could not retrieve Credit Alert Info of customer ID : " + user.getFDSessionUser().getUserId());
+        }
+        return selfCreditFeatureEnabled && !userCreditAbuser;
+    }
+
+    protected LoggedIn formatLoginMessage(SessionUser user) throws FDException {
 	    LoggedIn responseMessage = new LoggedIn();
 
         OrderHistory history = user.getOrderHistory();
