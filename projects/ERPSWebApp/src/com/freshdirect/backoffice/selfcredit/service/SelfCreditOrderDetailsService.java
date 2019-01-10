@@ -11,14 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freshdirect.backoffice.selfcredit.data.ComplaintReason;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditComplaintReason;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderDetailsData;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData;
@@ -66,14 +64,15 @@ public class SelfCreditOrderDetailsService {
 
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
-        	final boolean isDeliverPass = fdCartLine.lookupFDProduct().isDeliveryPass();
+            final boolean isDeliveryPass = fdCartLine.lookupFDProduct().isDeliveryPass();
+            final boolean hasSubstitute = null != fdCartLine.getInvoiceLine() && null != fdCartLine.getInvoiceLine().getSubstituteProductName();
         	
         	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
         	ProductModel product = fdCartLine.lookupProduct();
         	
     		double deliveredQuantity = collectQuantity(fdCartLine, creditedQuantities);
-        	
-        	if (!isDeliverPass && Double.compare(deliveredQuantity, 0d) > 0) {
+
+            if (!isDeliveryPass && Double.compare(deliveredQuantity, 0d) > 0) {
             	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == product) ?"" : product.getPrimaryBrandName());
@@ -89,6 +88,7 @@ public class SelfCreditOrderDetailsService {
                 item.setMealBundle(null == product ? false : isItemMealBundle(product));
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
                 item.setFinalPrice(collectFinalPrice(deliveredQuantity, fdCartLine));
+                item.setSubstituted(hasSubstitute);
                 orderLines.add(item);
 			}
         }
