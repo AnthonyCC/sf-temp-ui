@@ -8,7 +8,7 @@ package com.freshdirect.fdstore;
 public class FDResourceException extends FDException {
     
 	private static final long	serialVersionUID	= -3926618449641623809L;
-	private boolean warningOnly=false;
+    private boolean warningOnly = false;
 
 	/**
      * Default constructor.
@@ -53,6 +53,8 @@ public class FDResourceException extends FDException {
      *            the wrapped exception
      * @param message
      *            a custom message
+     * @param warningOnly
+     *            decides whether exception is handled as a warning during checkout
      */
     public FDResourceException(Exception ex, String message, boolean warningOnly) {
         super(ex, message);
@@ -72,7 +74,7 @@ public class FDResourceException extends FDException {
     }
 
     /**
-     * Sets the warningOnlyFlag on which the ajax response changes from code 500 to code 200 when an HTTP error is generated from this exception.
+     * Gets whether the warningOnlyFlag is set.
      */
    public boolean isWarningOnly() {
         return warningOnly;
