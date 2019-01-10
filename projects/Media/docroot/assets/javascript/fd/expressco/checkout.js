@@ -152,9 +152,25 @@ var FreshDirect = FreshDirect || {};
         FORMS.releaseLockFormResubmit(FORMS.getEl(id));
       }
     }
-    
-    
   });
+
+  // re-enable checkout on general warnings
+  var warningHandler = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: ['warning', 'warnings']
+    },
+    callback: {
+      value: function () {
+        var coForm = FORMS.get("checkout");
+
+        if (coForm) {
+          coForm.releaseLockWhenNotRedirecting("checkout");
+        }
+      }
+    }
+  });
+  warningHandler.listen();
+
   var timeslotDrawerDeferred = jQuery.Deferred();
   var timeslotDrawerDependencyLoaded = function () {
 	  timeslotDrawerDeferred.resolve();
