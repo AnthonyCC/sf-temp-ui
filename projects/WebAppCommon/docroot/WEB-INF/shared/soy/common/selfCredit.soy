@@ -226,6 +226,7 @@
     </div>
     <div class="order-line-col order-line-product">
       <div>
+        {if $orderline.substituted}<div class="substitute-product">substitute</div>{/if}
         {if $orderline.brand}<span class="text14bold">{$orderline.brand}</span>{/if}
         <div class="product-desc">{$orderline.productName}</div>
         <small class="sale-unit">{$orderline.configurationDescription} {if $orderline.configurationDescription.length > 0}<span>|<span>{/if} ${$orderline.basePrice}{if $orderline.basePriceUnit}/{$orderline.basePriceUnit}{/if}</small>
