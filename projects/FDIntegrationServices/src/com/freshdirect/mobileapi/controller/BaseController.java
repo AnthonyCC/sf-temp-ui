@@ -641,10 +641,11 @@ public abstract class BaseController extends AbstractController implements Messa
 	protected com.freshdirect.mobileapi.controller.data.response.Configuration getConfiguration(
 			SessionUser user) {
 
+        FDUser fdUser = null != user && null != user.getFDSessionUser() ? user.getFDSessionUser().getUser() : null;
+
 		com.freshdirect.mobileapi.controller.data.response.Configuration configuration = new com.freshdirect.mobileapi.controller.data.response.Configuration();
 		configuration.setAkamaiImageConvertorEnabled(FeatureRolloutArbiter
-				.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor,
-										user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
+                .isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor, fdUser));
 		configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
         XmlContentMetadataService metadataService = CmsServiceLocator.xmlContentMetadataService();
         String storeVersion = null;
@@ -663,24 +664,21 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(MobileApiProperties.isMasterpassEnabled());
 		configuration.setPayPalEnabled(MobileApiProperties.isPayPalEnabled());
-		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch,
-																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
-		configuration.setLiveChatEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat,
-																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
+        configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser));
+        configuration.setLiveChatEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, fdUser));
 
-        configuration.setSelfCreditEnabled(isSelfCreditEnabled(user));
+        configuration.setSelfCreditEnabled(isSelfCreditEnabled(fdUser));
 		return configuration;
 	}
 
-    private boolean isSelfCreditEnabled(SessionUser user) {
-        final boolean selfCreditFeatureEnabled = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.backOfficeSelfCredit,
-                user != null && user.getFDSessionUser() != null ? user.getFDSessionUser().getUser() : null);
+    private boolean isSelfCreditEnabled(FDUser fdUser) {
+        final boolean selfCreditFeatureEnabled = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.backOfficeSelfCredit, fdUser);
         
         boolean userCreditAbuser = true;
         try {
-            userCreditAbuser = user != null && user.getFDSessionUser() != null ? user.getFDSessionUser().isCreditRestricted() : true;
+            userCreditAbuser = null != fdUser && fdUser.isCreditRestricted();
         } catch (FDResourceException e) {
-            LOGGER.error("Could not retrieve Credit Alert Info of customer ID : " + user.getFDSessionUser().getUserId());
+            LOGGER.error("Could not retrieve Credit Alert Info of customer ID : " + fdUser.getUserId());
         }
         return selfCreditFeatureEnabled && !userCreditAbuser;
     }
