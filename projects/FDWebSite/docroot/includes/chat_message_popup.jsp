@@ -40,19 +40,6 @@
 	int orderMaxQuantity = FDStoreProperties.getOrderComplaintDropdownLimit();
 %>
 
-<script>
-
-/* 
-	$jq.ajax({
-	    url: '/includes/chat_message_popup.jsp',
-	    type: 'POST',
-	    data: { email:  }
-	}); 
-*/
-
-
-</script>
-
 <style>
     .chat-message-popup{
         width: 400px;
@@ -149,6 +136,10 @@
         text-shadow: 1px 1px 0 #3f8045;
         width: 340px;
         height: 48px;
+        margin: 0;
+    }
+    .chat-message-popup .buttons-container button[name="sendMessage"]{
+    	display: none;
     }
     .chat-message-popup-text{
         font-size: 14px;
@@ -178,7 +169,7 @@
     <div class="chat-message-popup-header">Send Us a Message</div>
 	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter fdform-disabled-if-missing-required><fieldset id="help_fieldset"><legend class="offscreen">Contact FreshDirect</legend>
 
-		<script type="text/javascript">
+		<script>
 			$jq('#prodReqContent').ready(function() { $jq('#prodReqContent').hide(); });
 			$jq(document).ready(function() {
 				$jq('#contact_subject').change(function() {
@@ -186,17 +177,38 @@
 					if ( selectedOpt.text() == 'Product Request' ) {
                         $jq('#prodReqContent').show();
                         $jq('#prodReqNonContent').hide();
-                        $jq('#test1').attr('disabled', 'disabled').addClass('disabled');
+                        $jq('#send-message').attr('disabled', 'disabled').addClass('disabled');
                     } else {
                         $jq('#prodReqContent').hide();
                         $jq('#prodReqNonContent').show();
-                        $jq('#test1').attr('disabled', null).removeClass('disabled');
+                        $jq('#send-message').attr('disabled', null).removeClass('disabled');
                     }
 				});
 				$jq('#contact_subject').change();
 			});
-
+			function sendNewMessage(){
+				$jq.ajax({
+				    url: '/includes/chat_message_popup.jsp',
+				    type: 'POST',
+				    data: { email: $jq('#email').text(),
+				    		first_name: $jq("#first_name").text().split(" ")[0],
+				    		last_name: $jq("#first_name").text().split(" ")[1],
+				    		home_phone: $jq("#home_phone").text(),
+				    		home_phone_ext: $jq("#home_phone_ex").text(),
+				    		message: $jq("#message").val(),
+				    		subject: $jq("#subject").prop('selectedIndex'),
+				    		sendMessage: 'true'
+						  },
+					success: function(){
+								doOverlayDialogNew("/includes/chat_message_success_popup.jsp");
+					        },
+					error: function(){
+					        	doOverlayDialogNew("/includes/error_message_popup.jsp");
+					        }
+				});
+			}
 		</script>
+		
 		
 		<% if (identity == null) { %>
 			<div class="form-elements-wrapper main-content flex">
@@ -216,7 +228,7 @@
 				<div class="form-group phone_number flex">
 					<div class="flex chat-message-popup-phone-labels">
 						<label for="home_phone" class="bold inline chat-message-popup-phone-main">Phone Number</label>
-						<label for="home_phone_ext" class="bold inline chat-message-popup-phone-ext">Ext.<span class="offscreen">extension for phone number</span></label>	
+						<label for="home_phone_ext" class="bold inline chat-message-popup-phone-ext">Ext.<span class="offscreen">extension for phone number</span></label>
 					</div>
 					<div class="flex chat-message-popup-phone-inputs">
 						<input type="tel" name="home_phone" id="home_phone" class="font16" placeholder="555-555-5555" size="21" min="0" value="${contactUsPotato.customerData.homePhone}" maxlength="15" />
@@ -227,7 +239,7 @@
 		<% }else{ %>
 				<div class="form-group customer-name-container flex">
 					<label class="bold">Customer Name</label>
-					<div class="customer-name customer-name-container font16 verdana-font"> <span>${contactUsPotato.customerData.firstName} ${contactUsPotato.customerData.lastName} </span><span class="customer-email">(${contactUsPotato.customerData.email})</span></div>
+					<div class="customer-name customer-name-container font16 verdana-font"> <span id="first_name">${contactUsPotato.customerData.firstName} ${contactUsPotato.customerData.lastName}</span><span class="customer-email">(<span id="email">${contactUsPotato.customerData.email}</span>)</span></div>
 				</div>
 				<div class="form-group customer-name-container login font16 flex">
 					<label class="login-label">Not ${contactUsPotato.customerData.firstName}? <a class="login-link" href="/login/login.jsp">Sign in</a></label>
@@ -286,6 +298,7 @@
 		<div class="separator buttons-container center flex">
 			<!-- <button type="reset" class="cssbutton green transparent">Clear</button>  -->
 			<button type="submit" id="test1" name="sendMessage" class="cssbutton green ">Send Message</button>
+			<button id="send-message" class="cssbutton cssbutton-flat green" type="button" onclick="sendNewMessage()">Send Message</button>
 		</div>
 	</fieldset>
 	</form>

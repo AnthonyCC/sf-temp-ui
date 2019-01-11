@@ -266,9 +266,11 @@
 		<li class="hide-on-subopen no-divider">
 			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
 		</li>
-		<li class="hide-on-subopen no-divider">
-			<span><a id="open-chat-popup">Contact Us</a></span>
-		</li>
+		<% if (isChat) { %>
+			<li class="hide-on-subopen no-divider">
+				<span><a id="open-chat-popup">Contact Us</a></span>
+			</li>
+		<% } %>
 		<li class="hide-on-subopen no-divider">
 			<span><a href="/help/index.jsp">Help</a></span>
 		</li>
