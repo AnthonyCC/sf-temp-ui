@@ -15,7 +15,6 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.FDAjaxWarning;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.DrawerData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
@@ -28,7 +27,6 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFac
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.checkout.RedirectToPage;
-import com.freshdirect.webapp.util.AjaxWarningService;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutServlet extends BaseJsonServlet {
@@ -66,12 +64,7 @@ public class SinglePageCheckoutServlet extends BaseJsonServlet {
 			FormDataResponse responseData = CheckoutService.defaultService().submitOrder(user, placeOrderData, request.getSession(), request, response);
 			writeResponseData(response, responseData);
         } catch (FDResourceException exception) {
-            if (exception.isWarningOnly()) {
-                FDAjaxWarning warning = AjaxWarningService.defaultService().generateAjaxWarning(exception, user);
-                writeResponseData(response, warning);
-            } else {
-                returnHttpErrorWithMessage(500, exception.getMessage(), exception);
-            }
+            returnHttpErrorWithMessage(500, exception.getMessage(), exception);
 		} catch (FDInvalidConfigurationException e) {
 			returnHttpError(500, "Failed to post single page checkout info.", e);
 		} catch (JspException e) {

@@ -8,7 +8,6 @@ package com.freshdirect.fdstore;
 public class FDResourceException extends FDException {
     
 	private static final long	serialVersionUID	= -3926618449641623809L;
-    private boolean warningOnly = false;
 
 	/**
      * Default constructor.
@@ -47,38 +46,12 @@ public class FDResourceException extends FDException {
 
     
     /**
-     * Creates an exception with a custom message and a wrapped exception with a warningOnly flag
-     *
-     * @param ex
-     *            the wrapped exception
-     * @param message
-     *            a custom message
-     * @param warningOnly
-     *            decides whether exception is handled as a warning during checkout
-     */
-    public FDResourceException(Exception ex, String message, boolean warningOnly) {
-        super(ex, message);
-        this.warningOnly = warningOnly;
-    }
-
-    /**
      * Creates an exception with a custom message and a wrapped exception.
      *
-     * @param ex
-     *            the wrapped exception
-     * @param message
-     *            a custom message
+     * @param ex the wrapped exception
+     * @param message a custom message
      */    
     public FDResourceException(String message, Exception ex) {
         super(ex, message);
     }
-
-    /**
-     * Gets whether the warningOnlyFlag is set.
-     */
-   public boolean isWarningOnly() {
-        return warningOnly;
-    }
-
-
 }

@@ -871,7 +871,7 @@ public class SubmitOrderAction extends WebActionSupport {
                     if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
                         response.sendRedirect(this.ccdProblemPage + "?duplicateCheck=skip");
                     } else {
-                        throw new FDResourceException(ae, errorMessage, true);
+                        throw new FDResourceException(ae, errorMessage);
                     }
 				}
 				
@@ -895,7 +895,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				this.addError("address_verification_failed", message);
 				user.setAddressVerficationMsg(message);
                 if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
-                    throw new FDResourceException(ae, message, true);
+                    throw new FDResourceException(ae, message);
                 } else {
                     response.sendRedirect(this.ccdProblemPage);
                 }
