@@ -165,6 +165,10 @@ var FreshDirect = FreshDirect || {};
 
         if (coForm) {
           coForm.releaseLockWhenNotRedirecting("checkout");
+          $.get('/api/expresscheckout/timeslot?action=getCurrentSelected')
+            .done( function (d) {
+              FreshDirect.common.dispatcher.signal('timeslot', d);
+            });
         }
       }
     }
