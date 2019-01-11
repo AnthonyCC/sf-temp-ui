@@ -67,6 +67,14 @@ public class NavigationUtil {
 	public static final List<String> NO_EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList();
 	public static final List<String> EXCLUDE_FILTER_GROUP_NAMES = Arrays.asList("Brand");
 
+    private static final Comparator<ProductContainer> PRODUCT_CONTAINER_ORDER_BY_NAME = new Comparator<ProductContainer>() {
+
+        @Override
+        public int compare(ProductContainer o1, ProductContainer o2) {
+            return o1.getContentName().compareToIgnoreCase(o2.getContentName());
+        }
+    };
+
     private static final Comparator<ProductFilterGroup> SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME = new Comparator<ProductFilterGroup>() {
 
         private PriorityComparator<String> searchFilterMenuPrefixComparator = new PriorityComparator<String>("department", "category", "subcategory", "brand", "popular", "show me only", "nutrition");
@@ -414,9 +422,11 @@ public class NavigationUtil {
 
         if (FilteringFlowType.SEARCH == navigator.getPageType() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.aggregatedfilterimprovement2018, navigationModel.getUser())) {
             FDUserI user = navigationModel.getUser();
-            Collection<CategoryModel> categories = navigationModel.getCategoriesOfSearchResults();
-            results.addAll(createAggregatedFilterGroups(categories, user));
-            results.addAll(createAggregatedFilterMultiGroups(categories, navigator, user));
+            List<ProductContainer> aggregationSourceModels = new ArrayList<ProductContainer>();
+            aggregationSourceModels.addAll(navigationModel.getCategoriesOfSearchResults());
+            Collections.sort(aggregationSourceModels, PRODUCT_CONTAINER_ORDER_BY_NAME);
+            results.addAll(createAggregatedFilterGroups(aggregationSourceModels, user));
+            results.addAll(createAggregatedFilterMultiGroups(aggregationSourceModels, navigator, user));
             Collections.sort(results, SEARCH_PRODUCT_FILTER_GROUP_ORDER_BY_NAME);
         } else {
             productFilters = new ArrayList<ProductItemFilterI>();
