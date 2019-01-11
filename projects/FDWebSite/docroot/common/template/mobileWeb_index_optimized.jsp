@@ -379,6 +379,8 @@
 			});
 		})($jq);
 	</script>
+  <jwr:script src="/fdlibs.js" useRandomParam="false" />
+  <jwr:script src="/fdgtm.js" useRandomParam="false" />
    	<%-- //
    		we can't bundle dfp.js because it needs the global DFP_query (set in ad_server.jsp) before it's loaded
    		it also needs to be after all the ad positions, since it fires on parse and selects all spots
@@ -386,18 +388,13 @@
    	// --%>
    	<% if (FDStoreProperties.isDfpEnabled()) { /* only load if needed */ %>
 		<jwr:script src="/mobileweb_index_optimized_footer.js" useRandomParam="false" defer="true" async="true" />
-		<jwr:script src="/fdlibs.js" useRandomParam="false" />
-		<jwr:script src="/fdgtm.js" useRandomParam="false" />
 	<% } %>
 	<% if (isModifyOrder) { %>
 		<%--
 			Load soy.common and fd libs. When the users is in modify order mode, they must have landed in the view cart page already
 			so this shouldn't cause any performance issue as these files have been cached by the browser.
 		--%>
-
-		<soy:import packageName="common"/>
-		<jwr:script src="/fdlibs.js" useRandomParam="false" />
-		<jwr:script src="/fdgtm.js" useRandomParam="false" />
+    <soy:import packageName="common"/>
 		<jwr:script src="/modifyorderdeps.js" useRandomParam="false" />
 		<jwr:script src="/modifyorder.js" useRandomParam="false" async="true" defer="true" />
 	<% } %>

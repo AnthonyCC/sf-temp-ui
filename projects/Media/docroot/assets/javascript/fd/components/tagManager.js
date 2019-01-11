@@ -6,6 +6,11 @@ var GTMAUTH = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect
 var GTMPREVIEW = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.preview;
 var dataLayer = window.dataLayer || [];
 
+// make it fault tolerant, should work w/o fd.common package
+FreshDirect.modules = FreshDirect.modules || {};
+FreshDirect.modules.common = FreshDirect.modules.common || {};
+FreshDirect.modules.common.productSerialize = FreshDirect.modules.common.productSerialize || function () { return {}; };
+
 // data processors to transform incoming data and put it into the dataLayer
 (function(fd) {
   var $=fd.libs.$;
@@ -1116,94 +1121,97 @@ var dataLayer = window.dataLayer || [];
 
 // listen for gtm related data
 (function(fd) {
-  // general gtm data update
-  var gtmUpdate = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'googleAnalyticsData'
-    },
-    callback: {
-      value: function (data) {
-        if (data.googleAnalyticsData) {
-          fd.gtm.updateDataLayer(data.googleAnalyticsData);
+  // make it 'lightweight' if signalTarget is not present
+  if (fd.common && fd.common.signalTarget) {
+    // general gtm data update
+    var gtmUpdate = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'googleAnalyticsData'
+      },
+      callback: {
+        value: function (data) {
+          if (data.googleAnalyticsData) {
+            fd.gtm.updateDataLayer(data.googleAnalyticsData);
+          }
         }
       }
-    }
-  });
+    });
 
-  gtmUpdate.listen();
+    gtmUpdate.listen();
 
-  // product impression update (via DOM element list)
-  var productImpressions = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'productImpressions'
-    },
-    callback: {
-      value: function (data) {
-        setTimeout(function () {
-          if (data.el) {
-            fd.gtm.reportImpressionsEl(data.el, data.type, data.listData);
-          } else if (data.products) {
-            fd.gtm.reportImpressions(data.products, data.type);
-          }
-        }, 10);
+    // product impression update (via DOM element list)
+    var productImpressions = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'productImpressions'
+      },
+      callback: {
+        value: function (data) {
+          setTimeout(function () {
+            if (data.el) {
+              fd.gtm.reportImpressionsEl(data.el, data.type, data.listData);
+            } else if (data.products) {
+              fd.gtm.reportImpressions(data.products, data.type);
+            }
+          }, 10);
+        }
       }
-    }
-  });
+    });
 
-  productImpressions.listen();
+    productImpressions.listen();
 
-  // product list update (browse)
-  var sectionsUpdate = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'sections'
-    },
-    callback: {
-      value: function (data) {
-        setTimeout(function () {
-          fd.gtm.updateDataLayer({sections: data});
-        }, 10);
+    // product list update (browse)
+    var sectionsUpdate = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'sections'
+      },
+      callback: {
+        value: function (data) {
+          setTimeout(function () {
+            fd.gtm.updateDataLayer({sections: data});
+          }, 10);
+        }
       }
-    }
-  });
+    });
 
-  sectionsUpdate.listen();
+    sectionsUpdate.listen();
 
-  // product list update (reorder)
-  var reorderUpdate = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'items'
-    },
-    callback: {
-      value: function (data) {
-        setTimeout(function () {
-          fd.gtm.updateDataLayer({items: data.data});
-        }, 10);
+    // product list update (reorder)
+    var reorderUpdate = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'items'
+      },
+      callback: {
+        value: function (data) {
+          setTimeout(function () {
+            fd.gtm.updateDataLayer({items: data.data});
+          }, 10);
+        }
       }
-    }
-  });
+    });
 
-  reorderUpdate.listen();
+    reorderUpdate.listen();
 
-  // ATC result
-  var atcSuccess = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'atcResult'
-    },
-    callback: {
-      value: function (data) {
-        data.forEach(function (atcItemInfo) {
-          if (atcItemInfo.status === 'SUCCESS' &&
-              atcItemInfo.googleAnalyticsData &&
-              atcItemInfo.googleAnalyticsData.googleAnalyticsData) {
+    // ATC result
+    var atcSuccess = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'atcResult'
+      },
+      callback: {
+        value: function (data) {
+          data.forEach(function (atcItemInfo) {
+            if (atcItemInfo.status === 'SUCCESS' &&
+                atcItemInfo.googleAnalyticsData &&
+                atcItemInfo.googleAnalyticsData.googleAnalyticsData) {
 
-            fd.gtm.updateDataLayer(atcItemInfo.googleAnalyticsData.googleAnalyticsData);
-          }
-        });
+              fd.gtm.updateDataLayer(atcItemInfo.googleAnalyticsData.googleAnalyticsData);
+            }
+          });
+        }
       }
-    }
-  });
+    });
 
-  atcSuccess.listen();
+    atcSuccess.listen();
+  }
 
   var coStepUpdate = function (step, data) {
     var coStepData = {
@@ -1286,103 +1294,104 @@ var dataLayer = window.dataLayer || [];
     }
   };
 
-  // Checkout - user interaction - drawer open - report unavailable_timeslot_present
-  var coDrawerClick = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'ec-drawer-click'
-    },
-    callback: {
-      value: function (data) {
-        if (data.target && data.target === 'timeslot') {
-          fd.gtm.updateDataLayer({
-            timeslotOpened: true
-          });
-        }
-      }
-    }
-  });
-
-  coDrawerClick.listen();
-
-  // Checkout - user interaction - drawer reset
-  var coDrawerReset = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'ec-drawer-reset'
-    },
-    callback: {
-      value: function (data) {
-        if (data.active) {
-          fd.gtm._coUserInteraction = true;
-        }
-      }
-    }
-  });
-
-  coDrawerReset.listen();
-
-  // Checkout - user interaction - drawer cancel
-  var coDrawerCancel = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: 'ec-drawer-cancel'
-    },
-    callback: {
-      value: function (data) {
-        if (data.active) {
-          var step;
-
-          if (data.active === "address") {
-            step = 1;
-          } else if (data.active === "timeslot") {
-            step = 2;
-          } else if (data.active === "payment") {
-            step = 3;
+  if (fd.common && fd.common.signalTarget) {
+    // Checkout - user interaction - drawer open - report unavailable_timeslot_present
+    var coDrawerClick = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'ec-drawer-click'
+      },
+      callback: {
+        value: function (data) {
+          if (data.target && data.target === 'timeslot') {
+            fd.gtm.updateDataLayer({
+              timeslotOpened: true
+            });
           }
-
-          // send 'checkoutStep' event
-          fd.gtm.updateDataLayer({
-            coStep: {
-              step: step
-            }
-          }, {
-            event: 'checkoutStep'
-          });
         }
       }
-    }
-  });
+    });
 
-  coDrawerCancel.listen();
+    coDrawerClick.listen();
 
-  // Checkout - address/payment/timeslot selection
-  var coStep = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: ['address','payment','timeslot']
-    },
-    callback: {
-      value: function (data, signal) {
-        coStepUpdate(signal, data);
+    // Checkout - user interaction - drawer reset
+    var coDrawerReset = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'ec-drawer-reset'
+      },
+      callback: {
+        value: function (data) {
+          if (data.active) {
+            fd.gtm._coUserInteraction = true;
+          }
+        }
       }
-    }
-  });
+    });
 
-  coStep.listen();
+    coDrawerReset.listen();
 
-  // Zip check popup
-  var zipCheck = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: ['zipCheckSuccess','zipCheckClosed']
-    },
-    callback: {
-      value: function (data, signal) {
-        var gtmData = {};
-        gtmData[signal] = data;
-        fd.gtm.updateDataLayer(gtmData);
+    // Checkout - user interaction - drawer cancel
+    var coDrawerCancel = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: 'ec-drawer-cancel'
+      },
+      callback: {
+        value: function (data) {
+          if (data.active) {
+            var step;
+
+            if (data.active === "address") {
+              step = 1;
+            } else if (data.active === "timeslot") {
+              step = 2;
+            } else if (data.active === "payment") {
+              step = 3;
+            }
+
+            // send 'checkoutStep' event
+            fd.gtm.updateDataLayer({
+              coStep: {
+                step: step
+              }
+            }, {
+              event: 'checkoutStep'
+            });
+          }
+        }
       }
-    }
-  });
+    });
 
-  zipCheck.listen();
+    coDrawerCancel.listen();
 
+    // Checkout - address/payment/timeslot selection
+    var coStep = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: ['address','payment','timeslot']
+      },
+      callback: {
+        value: function (data, signal) {
+          coStepUpdate(signal, data);
+        }
+      }
+    });
+
+    coStep.listen();
+
+    // Zip check popup
+    var zipCheck = Object.create(fd.common.signalTarget, {
+      signal: {
+        value: ['zipCheckSuccess','zipCheckClosed']
+      },
+      callback: {
+        value: function (data, signal) {
+          var gtmData = {};
+          gtmData[signal] = data;
+          fd.gtm.updateDataLayer(gtmData);
+        }
+      }
+    });
+
+    zipCheck.listen();
+  }
 }(FreshDirect));
 
 // load google tag manager only in non-masquerade context

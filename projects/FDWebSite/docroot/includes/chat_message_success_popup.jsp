@@ -18,7 +18,6 @@
     .contact-fd-success-text{
 		font-size: 16px;
 		font-weight: normal;
-		text-align: center;
 		padding: 16px 0 24px;
 		color: #1b1a21;
     }
