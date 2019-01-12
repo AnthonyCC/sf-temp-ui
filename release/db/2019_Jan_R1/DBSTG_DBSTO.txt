@@ -1,0 +1,29 @@
+ALTER TABLE cust.complaint_code ADD CUSTOMER_PRIORITY NUMBER(2,0);
+alter table transp.mot_event add estimated_dlv_time DATE;
+
+UPDATE cust.complaint_code SET customer_priority = 1 where code = 'MISITM';
+UPDATE cust.complaint_code SET customer_priority = 2 where code = 'WRMISPK';
+UPDATE cust.complaint_code SET customer_priority = 3 where code = 'WRNSIZ';
+UPDATE cust.complaint_code SET customer_priority = 4 where code = 'PRDDAM';
+UPDATE cust.complaint_code SET customer_priority = 5 where code = 'WARM';
+UPDATE cust.complaint_code SET customer_priority = 6 where code = 'QUALDIS';
+UPDATE cust.complaint_code SET customer_priority = 7 where code = 'SPOILED';
+UPDATE cust.complaint_code SET customer_priority = 8 where code = 'URIPE';
+UPDATE cust.complaint_code SET customer_priority = 9 where code = 'ORIPE';
+UPDATE cust.complaint_code SET customer_priority = 10 where code = 'PRDXCL';
+UPDATE cust.complaint_code SET customer_priority = 11 where code = 'PRDEXP';
+UPDATE cust.complaint_code SET customer_priority = 12 where code = 'OTHER';
+UPDATE cust.complaint_code SET customer_priority = 13 where code = 'RECALL';
+
+update cust.complaint_code set customer_display_name = 'Close to expiration	' where code = 'PRDXCL';
+update cust.complaint_code set customer_display_name = 'Past expiration	' where code = 'PRDEXP';
+
+BEGIN
+  FOR complaint_code IN (SELECT code FROM cust.complaint_code where show_customer = 'X')
+  LOOP
+    FOR department_code IN (select code from cust.complaint_dept cd where cd.code not in (select cdc.comp_dept from cust.complaint_dept_code cdc where cdc.comp_code = complaint_code.code))
+    LOOP
+        insert into cust.complaint_dept_code (comp_code, comp_dept, priority, id) values (complaint_code.code, department_code.code, 0, SYSTEM_SEQ.nextval);
+    END LOOP;
+  END LOOP;
+END;
