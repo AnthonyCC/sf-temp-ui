@@ -2174,7 +2174,7 @@
 
 		<!-- place WAR in build artifacts -->
 		<mkdir dir="${release.dir}/applications" />
-		<copy file="${work.dir}/cms-gwt.war" todir="${release.dir}/applicatiosfui20ns" />
+		<copy file="${work.dir}/cms-gwt.war" todir="${release.dir}/applications" />
 	</target>
 
 	<target name="rulesadmin" description="Build RulesAdmin .war file" depends="storeApi">
