@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.CategoryModel;
@@ -1500,6 +1501,10 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
     @Override
     public String getEarliestAvailabilityMessage() {
         return productModel.getEarliestAvailabilityMessage();
+    }
 
+    @Override
+    public boolean isAlcoholProduct() throws FDResourceException, FDSkuNotFoundException {
+        return productModel.isAlcoholProduct();
     }
 }

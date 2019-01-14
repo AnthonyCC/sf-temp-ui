@@ -703,4 +703,5 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public String getFdxSEOMetaDescription(){
 	    return getAttribute("SEO_META_DESC_FDX", "FoodKick has just what you need for today and tomorrow. Order now for same-day delivery!");
 	}
+	
 }

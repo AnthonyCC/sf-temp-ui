@@ -19,7 +19,7 @@ public class GlobalNavigationModel extends ContentNodeModelImpl {
 	}
 
     public List<ContentNodeModel> getItems() {
-        ContentNodeModelUtil.refreshModels(this, "items", items, false, false);
+        ContentNodeModelUtil.refreshModels(this, "items", items, false);
         return new ArrayList<ContentNodeModel>(items);
     }
 

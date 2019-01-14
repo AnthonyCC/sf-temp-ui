@@ -19,6 +19,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
+import com.freshdirect.fdstore.content.browse.filter.DomainValueContentNodeFilter;
 import com.freshdirect.fdstore.content.browse.filter.KosherFilter;
 import com.freshdirect.fdstore.content.browse.filter.NewProductFilter;
 import com.freshdirect.fdstore.content.browse.filter.OnSaleFilter;
@@ -341,7 +342,7 @@ public class NavigationUtil {
 		}
 		for (String domainValueContentName : domainValues.keySet()) {
 			DomainValue domainValue = domainValues.get(domainValueContentName);
-			productFilters.add(new ContentNodeFilter(domainValue, RECIPE_CATEGORY_FILTER_GROUP));
+			productFilters.add(new DomainValueContentNodeFilter(domainValue, RECIPE_CATEGORY_FILTER_GROUP));
 		}
 		ProductFilterGroup recipeCategoryFilterGroup = new ProductFilterGroup();
 		recipeCategoryFilterGroup.setProductFilters(productFilters);

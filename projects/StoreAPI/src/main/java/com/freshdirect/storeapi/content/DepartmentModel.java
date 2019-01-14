@@ -148,11 +148,13 @@ public class DepartmentModel extends ProductContainer {
 		}
 	};
 
+    @Override
     public Set<ContentKey> getAllChildProductKeys() {
-    	Set<ContentKey> keys = new HashSet<ContentKey>();
-    	for (CategoryModel c : getCategories())
-    		keys.addAll(c.getAllChildProductKeys());
-    	return keys;
+        Set<ContentKey> keys = new HashSet<ContentKey>();
+        for (CategoryModel c : getCategories()) {
+            keys.addAll(c.getAllChildProductKeys());
+        }
+        return keys;
     }
 
 	public String getTemplatePath() {
