@@ -1816,7 +1816,7 @@ public class FDStoreProperties {
         // Product Family
         defaults.put(PROP_PRODUCTFAMILY, "true");
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
-        defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080");
+        defaults.put(PROP_FDCOMMERCE_API_URL, "http://esl.ecomdev01.nj01");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_MASTERPASSS_API_URL, "http://logisticsdev1.nj01/paypal");
 
