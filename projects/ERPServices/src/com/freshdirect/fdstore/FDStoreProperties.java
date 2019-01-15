@@ -1682,7 +1682,7 @@ public class FDStoreProperties {
         defaults.put(PROP_USQ_LEGAL_WARNING, "true");
         defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
         defaults.put(PRODUCT_RATING_RELOAD, "true");
-        defaults.put(PROP_ALCOHOLFILTERING_ENABLED, "true");
+        defaults.put(PROP_ALCOHOLFILTERING_ENABLED, "false");
 
         defaults.put(PROP_SOY_DEBUG, false);
 

@@ -39,6 +39,7 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassException;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -676,7 +677,7 @@ public class StandingOrderUtil {
 			}
 			
 			int fdcOrderCount = (FDStoreProperties.isFdcFirstOrderEmailMsgEnabled()) ? customerUser.getOrderHistory().getValidOrderCount("1400") : -1;
-			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null , false, fdcOrderCount);
+			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, EnumDlvPassStatus.NONE , false, fdcOrderCount);
 			
 			try {
 				FDStandingOrdersManager.getInstance().assignStandingOrderToSale(orderId, so);

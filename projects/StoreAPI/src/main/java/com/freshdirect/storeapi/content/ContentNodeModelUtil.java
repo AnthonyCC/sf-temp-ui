@@ -12,6 +12,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.springframework.util.Assert;
 
@@ -142,6 +143,7 @@ public class ContentNodeModelUtil {
             if (c == null || !CmsManager.getInstance().containsContentKey(key)) {
                 return null;
             }
+
             Constructor<?> constructor = c.getConstructor(new Class[] { ContentKey.class });
             ContentNodeModel model = (ContentNodeModel) constructor.newInstance(new Object[] { key });
 
@@ -189,19 +191,13 @@ public class ContentNodeModelUtil {
         return false;
     }
 
-    public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List<? extends ContentNodeModel> childModels, boolean setParent) {
-        return refreshModels(refModel, refNodeAttr, childModels, setParent, false);
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List<? extends ContentNodeModel> childModels, boolean setParent,
-            boolean inheritedAttrs) {
-        Collection<? extends ContentNodeModel> updatedChildModels = new ArrayList<ContentNodeModel>();
+    public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List<? extends ContentNodeModel> childModels, boolean setParent) {
+        List<ContentKey> recentKeys = refModel.getAttribute(refNodeAttr, Collections.<ContentKey> emptyList());
 
-        List<ContentKey> recentKeys = grabFreshChildKeys(refModel.getContentKey(), refNodeAttr, refModel.getParentKey());
-
-        final boolean updateChildModels = !CmsManager.getInstance().isReadOnlyContent() || !compareKeys(recentKeys, childModels);
+        final boolean updateChildModels = !compareKeys(recentKeys, childModels);
         if (updateChildModels) {
+            Collection<? extends ContentNodeModel> updatedChildModels = new ArrayList<ContentNodeModel>();
             for (int i = 0; i < recentKeys.size(); i++) {
                 ContentKey key = recentKeys.get(i);
                 ContentNodeModel newModel = buildChildContentNode(refModel, key, setParent, i);
@@ -218,29 +214,6 @@ public class ContentNodeModelUtil {
         }
 
         return updateChildModels;
-    }
-
-    @SuppressWarnings({ "unchecked", "deprecation" })
-    private static List<ContentKey> grabFreshChildKeys(ContentKey contentKey, String attributeName, ContentKey parentKey) {
-        ContentNodeI cmsNode = CmsManager.getInstance().getContentNode(contentKey);
-        Attribute attributeDefinition = cmsNode.getAttribute(attributeName);
-
-        List<ContentKey> recentKeys = null;
-        if (attributeDefinition != null) {
-            recentKeys = attributeDefinition.getFlags().isInheritable() ? getInheritedChildKeys(contentKey, attributeDefinition, parentKey)
-                    : (List<ContentKey>) cmsNode.getAttributeValue(attributeDefinition);
-        }
-        return recentKeys != null ? recentKeys : Collections.<ContentKey> emptyList();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<ContentKey> getInheritedChildKeys(ContentKey contentKey, Attribute attribute, ContentKey parentKey) {
-        List<ContentKey> childKeys = null;
-
-        Map<Attribute, Object> values = CmsManager.getInstance().getInheritedValuesOf(contentKey, parentKey);
-        childKeys = (List<ContentKey>) values.get(attribute);
-
-        return childKeys != null ? childKeys : Collections.<ContentKey> emptyList();
     }
 
     private static ContentNodeModelImpl buildChildContentNode(ContentNodeModelImpl ownerModel, ContentKey childKey, boolean setParent, int ordinal) {

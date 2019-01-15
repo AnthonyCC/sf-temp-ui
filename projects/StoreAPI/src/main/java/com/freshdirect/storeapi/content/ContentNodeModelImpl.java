@@ -143,6 +143,12 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
         return (value != null) ? ((Double) value).doubleValue() : defaultValue;
     }
 
+    @SuppressWarnings("unchecked")
+    protected <T> T getAttribute(String key, T defaultValue) {
+        Object value = this.getCmsAttributeValue(key);
+        return (value != null) ? (T) value : defaultValue;
+    }
+
     //
     // contextual information
     //
