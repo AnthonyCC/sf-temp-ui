@@ -1,5 +1,5 @@
 #selfCreditIssueReport.overlay-medium {
-  font-family: "Verdana", sans-serif;
+  font-family: Verdana, sans-serif;
   letter-spacing: 0.3px;
 }
 #selfCreditIssueReport.overlay-medium .overlay-content {
@@ -90,8 +90,26 @@
 #selfCreditIssueReport.overlay-medium
   .self-credit-body
   .review-grid-container
-  tfoot {
+  tfoot .total-credits {
     text-transform: uppercase;
+    letter-spacing: 1px;
+}
+#selfCreditIssueReport.overlay-medium
+  .self-credit-body
+  .review-grid-container
+  tfoot .total-value {
+    display: inline-block;
+    min-width: 50px;
+  }
+#selfCreditIssueReport.overlay-medium
+  .self-credit-body
+  .review-grid-container
+  tfoot .total-tax,
+  #selfCreditIssueReport.overlay-medium
+  .self-credit-body
+  .review-grid-container
+  tfoot .total-promo {
+    color: #777777;
     letter-spacing: 1px;
 }
 #selfCreditIssueReport.overlay-medium
@@ -511,7 +529,7 @@
   font-size: 24px;
   font-weight: bold;
   letter-spacing: 0.5px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: Verdana, sans-serif;
   margin-bottom: 30px;
 }
 
@@ -647,7 +665,7 @@
   top: 10px;
   text-transform: none;
   color: white;
-  font-family: "Verdana", sans-serif;
+  font-family: Verdana, sans-serif;
   margin: auto;
 }
 
@@ -913,7 +931,7 @@
   background-color: #eaeaea;
   border-radius: 3px;
   display: flex;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: Verdana, sans-serif;
   font-size: 10px;
   height: 20px;
   justify-content: center;
@@ -962,7 +980,7 @@
   background-color: #f4f4f4;
   border-radius: 6px;
   color: #666666;
-  font-family: "Verdana", sans-serif;
+  font-family: Verdana, sans-serif;
   font-size: 16px;
   height: 34px;
   letter-spacing: 0.4px;
