@@ -4862,6 +4862,7 @@ public class FDCustomerManager {
 		lookupManagerHome();
 		boolean status=true;
 		try {
+			LOGGER.info("updateRAFClickIDPromoCode: rafclickid= "  + rafclickid + ", rafpromocode=" + rafpromocode);
 			FDCustomerManagerSB sb = managerHome.create();
 			status =sb.setRAFClickIDPromoCode(identity, rafclickid, rafpromocode, eStoreId);
 
@@ -4906,6 +4907,7 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
+			LOGGER.info("reSendInvoiceEmail: OrderId= "  + OrderId);
 			FDCustomerManagerSB sb = managerHome.create();
 			 return sb.reSendInvoiceEmail(OrderId);
 
