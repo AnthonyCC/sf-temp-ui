@@ -1121,4 +1121,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public int getTimeToComplete();
 
 	public String getEarliestAvailabilityMessage();
+	
+	boolean isAlcoholProduct() throws FDResourceException, FDSkuNotFoundException;
 }

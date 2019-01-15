@@ -30,8 +30,6 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
-import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
-import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
@@ -40,7 +38,6 @@ import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.ProductModelPromotionAdapter;
-import com.freshdirect.storeapi.content.AbstractProductItemFilter;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -801,11 +798,6 @@ public class CmsFilteringFlow {
 			browseDataContext.setNavigationModel(navigationModel);
 			return;
 		}
-        // refresh context sensitive filters
-        if (navigationModel.getActiveFilters().size() > 0 && searchPageType == SearchPageType.PRODUCT && browseDataContext.getSectionContexts().size() > 0) {
-            refreshResultDependantFilters(nav.getPageType(), navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
-            NavigationUtil.setupAllAndActiveFiltersForSearch(nav, navigationModel);
-        }
 
         browseDataContext.setNavigationModel(navigationModel);
         MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), searchPageType);
@@ -974,29 +966,6 @@ public class CmsFilteringFlow {
         }
     }
 
-    /** Collecting search results, filtering info and sort options for search results */
-    private void processActiveFilters(NavigationModel navigationModel) {
-        BrandFilter selectedBrandFilter = null;
-        AbstractProductItemFilter selectedShowMeOnlyFilter = null;
-
-        for (ProductItemFilterI productFilter : navigationModel.getActiveFilters()) {
-            if (productFilter instanceof BrandFilter) {
-                selectedBrandFilter = (BrandFilter) productFilter;
-            }
-            if (!(productFilter instanceof BrandFilter) && !(productFilter instanceof ContentNodeFilter)) { // aka showMeOnlyFilter
-                selectedShowMeOnlyFilter = (AbstractProductItemFilter) productFilter; // TODO what more than one show me only filter is selected?
-            }
-        }
-        navigationModel.getShowMeOnlyOfSearchResults().clear();
-        navigationModel.getBrandsOfSearchResults().clear();
-        if (selectedBrandFilter != null) {
-            navigationModel.getBrandsOfSearchResults().add(selectedBrandFilter.getBrand());
-        }
-        if (selectedShowMeOnlyFilter != null) {
-            navigationModel.getShowMeOnlyOfSearchResults().add(selectedShowMeOnlyFilter.getId());
-        }
-    }
-
     /** based on ProductsFilterImpl.createComparator() and FilteringComparatorUtil.createProductComparator() */
     private void collectSearchRelevancyScores(SearchResults searchResults, Cookie[] cookies, FDUserI user) {
         String suggestedTerm = NVL.apply(searchResults.getSuggestedTerm(), searchResults.getSearchTerm());
@@ -1033,23 +1002,6 @@ public class CmsFilteringFlow {
                 iterator.remove();
             }
             FilterCollector.defaultFilterCollector().collectDepartmentAndCategoryFilters(navigationModel, product);
-        }
-    }
-
-    private void refreshResultDependantFilters(FilteringFlowType pageType, NavigationModel navigationModel, List<FilteringProductItem> results) {
-        processActiveFilters(navigationModel);
-
-        Iterator<FilteringProductItem> iterator = results.iterator();
-        while (iterator.hasNext()) {
-            ProductModel product = iterator.next().getProductModel();
-
-            try {
-                FilterCollector.defaultFilterCollector().collectBrandFilters(navigationModel, product);
-                FilterCollector.defaultFilterCollector().collectShowMeOnlyFilters(navigationModel, product, pageType);
-            } catch (FDException e) {
-                LOG.error("Filtering setup failed: " + e.getMessage());
-                iterator.remove();
-            }
         }
     }
 

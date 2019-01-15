@@ -913,7 +913,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 */
 	@Override
     public List<ContentNodeModel> getYmals() {
-		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false, true);
+		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false);
 		return Collections.unmodifiableList(ymals);
 	}
 
@@ -1056,7 +1056,7 @@ inner:
 	 */
 	@Override
     public List<ContentNodeModel> getRecommendedAlternatives() {
-		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false, true);
+		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false);
 		return Collections.unmodifiableList(recommendedAlternatives);
 	}
 
@@ -1231,7 +1231,7 @@ inner:
 
 	@Override
     public List<Recipe> getRelatedRecipes() {
-		ContentNodeModelUtil.refreshModels(this, "RELATED_RECIPES", relatedRecipes, false, true);
+		ContentNodeModelUtil.refreshModels(this, "RELATED_RECIPES", relatedRecipes, false);
 		return Collections.unmodifiableList(relatedRecipes);
 	}
 
@@ -2194,5 +2194,23 @@ inner:
     			}
     	return msg;
 
+    }
+	
+    @Override
+    public boolean isAlcoholProduct() throws FDResourceException, FDSkuNotFoundException {
+        // Either CMS Flag or SAP Flag is enabled for alcohol indicator
+        boolean result = false;
+        CategoryModel cat = (CategoryModel) this.getParentNode();
+        if (cat != null) {
+            result = cat.isHavingBeer();
+        }
+        SkuModel sku = getDefaultSku();
+        if (!result && sku != null) {
+            FDProduct fdProduct = sku.getProduct();
+            if (fdProduct != null) {
+                result = fdProduct.isAlcohol();
+            }
+        }
+        return result;
     }
 }

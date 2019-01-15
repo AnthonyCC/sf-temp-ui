@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.storeapi.attributes.FDAttributeFactory;
@@ -53,6 +54,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public abstract List<ProductModel> getStaticProducts();
 
 	public abstract Image getPhoto();
+	
+	public abstract Set<ContentKey> getAllChildProductKeys();
 
 	public ProductContainer(ContentKey key) {
 		super(key);
@@ -85,8 +88,7 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	}
 
 	public List<Domain> getRating() {
-		ContentNodeModelUtil.refreshModels(this, "RATING", rating, false, true);
-
+		ContentNodeModelUtil.refreshModels(this, "RATING", rating, false);
 		return new ArrayList<Domain>(rating);
 	}
 
@@ -314,12 +316,12 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	}
 
     public List<ContentNodeModel> getProductFilterGroups() {
-        ContentNodeModelUtil.refreshModels(this, "productFilterGroups", productFilterGroups, false, true);
+        ContentNodeModelUtil.refreshModels(this, "productFilterGroups", productFilterGroups, false);
         return new ArrayList<ContentNodeModel>(productFilterGroups);
     }
 
     public List<SortOptionModel> getSortOptions() {
-        ContentNodeModelUtil.refreshModels(this, "sortOptions", sortOptions, false, true);
+        ContentNodeModelUtil.refreshModels(this, "sortOptions", sortOptions, false);
         return new ArrayList<SortOptionModel>(sortOptions);
     }
 
@@ -336,7 +338,7 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	}
 
     public List<TagModel> getProductTags() {
-        ContentNodeModelUtil.refreshModels(this, "productTags", productTags, false, true);
+        ContentNodeModelUtil.refreshModels(this, "productTags", productTags, false);
         return new ArrayList<TagModel>(productTags);
     }
 

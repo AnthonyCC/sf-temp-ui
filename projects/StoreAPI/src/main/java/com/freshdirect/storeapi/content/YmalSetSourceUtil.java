@@ -53,7 +53,7 @@ public class YmalSetSourceUtil {
 	
 	 
 	protected static List<YmalSet> getYmalSets( ContentNodeModel thisPointer, List<YmalSet> ymalSets ) {
-		ContentNodeModelUtil.refreshModels((ContentNodeModelImpl)thisPointer, "ymalSets", ymalSets, false, true);
+		ContentNodeModelUtil.refreshModels((ContentNodeModelImpl)thisPointer, "ymalSets", ymalSets, false);
 		return Collections.unmodifiableList(ymalSets);
 	}
 	

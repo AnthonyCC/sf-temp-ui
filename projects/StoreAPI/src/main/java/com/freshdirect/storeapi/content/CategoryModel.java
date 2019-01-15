@@ -480,12 +480,12 @@ public class CategoryModel extends ProductContainer {
 	}
 
 	public List getWineSortCriteria() {
-		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false,true);
+		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false);
 		return new ArrayList(wineSortCriteriaList);
 	}
 
 	public List getWineFilterCriteria() {
-		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false,true);
+		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false);
 		return new ArrayList(wineFilterCriteriaList);
 	}
 
@@ -976,24 +976,31 @@ public class CategoryModel extends ProductContainer {
         return FDAttributeFactory.constructHtml(this, "CAT_STORAGE_GUIDE_MEDIA");
     }
 
+    @Override
     public Set<ContentKey> getAllChildProductKeys() {
-    	Set<ContentKey> keys = new HashSet<ContentKey>();
-    	for (ProductModel p : getPrivateProducts())
-    		keys.add(p.getContentKey());
-    	for (CategoryModel c : getSubcategories())
-    		for (ProductModel p : c.getPrivateProducts())
-    			keys.add(p.getContentKey());
-    	return keys;
+        Set<ContentKey> keys = new HashSet<ContentKey>();
+        for (ProductModel p : getPrivateProducts()) {
+            keys.add(p.getContentKey());
+        }
+        for (CategoryModel c : getSubcategories()) {
+            for (ProductModel p : c.getPrivateProducts()) {
+                keys.add(p.getContentKey());
+            }
+        }
+        return keys;
     }
 
     public Set<ProductModel> getAllChildProducts() {
-    	Set<ProductModel> products = new HashSet<ProductModel>();
-    	for (ProductModel p : getProducts())
-    		products.add(p);
-    	for (CategoryModel c : getSubcategories())
-    		for (ProductModel p : c.getProducts())
-    			products.add(p);
-    	return products;
+        Set<ProductModel> products = new HashSet<ProductModel>();
+        for (ProductModel p : getProducts()) {
+            products.add(p);
+        }
+        for (CategoryModel c : getSubcategories()) {
+            for (ProductModel p : c.getProducts()) {
+                products.add(p);
+            }
+        }
+        return products;
     }
 
     // Another version of the above method, this time returning a list.
@@ -1006,15 +1013,17 @@ public class CategoryModel extends ProductContainer {
     // inheritable properties/relationships.
     // Using a simple HashSet will not resolve that they are the same products after all ...
     public List<ProductModel> getAllChildProductsAsList() {
-    	List<ProductModel> products = new ArrayList<ProductModel>();
-    	for (ProductModel p : getProducts())
-    		products.add(p);
-    	for (CategoryModel c : getSubcategories())
-    		for (ProductModel p : c.getProducts())
-    			products.add(p);
-    	return products;
+        List<ProductModel> products = new ArrayList<ProductModel>();
+        for (ProductModel p : getProducts()) {
+            products.add(p);
+        }
+        for (CategoryModel c : getSubcategories()) {
+            for (ProductModel p : c.getProducts()) {
+                products.add(p);
+            }
+        }
+        return products;
     }
-
 
 	public boolean isHideWineRatingPricing() {
 		return getAttribute("HIDE_WINE_RATING", false);
@@ -1138,7 +1147,7 @@ public class CategoryModel extends ProductContainer {
 	}
 
 	public List<ProductModel> getCatMerchantRecommenderProducts() {
-		ContentNodeModelUtil.refreshModels(this, "catMerchantRecommenderProducts", catMerchantRecommenderProducts, false, true);
+		ContentNodeModelUtil.refreshModels(this, "catMerchantRecommenderProducts", catMerchantRecommenderProducts, false);
 		return new ArrayList<ProductModel>(catMerchantRecommenderProducts);
 	}
 
