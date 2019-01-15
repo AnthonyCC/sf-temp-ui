@@ -1750,7 +1750,6 @@
 			<pathelement location="${work.dir}/StoreAPI.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
-			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
@@ -1887,7 +1886,6 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/MarketingAdmin.war"/>
-			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco3.jar"/>
 			<pathelement location="${thirdparty.home}/roadnetservices.jar"/>
@@ -1921,7 +1919,6 @@
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
@@ -3328,7 +3325,6 @@
 			<include name="gson-1.7.1.jar"/>
 			<include name="jstl-api-1.2.jar"/>
 			<include name="jstl-impl-1.2.jar"/>
-			<include name="poi-3.5-FINAL-20090928.jar"/>
 
 			<include name="lucene-core-${lucene.version}.jar"/>
 			<include name="lucene-queries-${lucene.version}.jar"/>
@@ -3470,7 +3466,6 @@
 		<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 
 		<pathelement location="${thirdparty.home}/slide/jakarta-slide-webdavlib-2.1.jar"/>
-		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		<pathelement location="${thirdparty.home}/commons-lang3-3.4.jar" />
 		<pathelement location="${cmseue.classpath}" />
 	</path>
