@@ -98,7 +98,7 @@ public class SelfCreditOrderDetailsService {
                 double taxDepositSumPerItem = collectTaxAndDepositPerItem(fdCartLine, finalPricePerItem, deliveredQuantity);
                 item.setFinalPrice(finalPricePerItem + taxDepositSumPerItem);
                 item.setTaxDepositSum(taxDepositSumPerItem);
-                item.setSavedAmount(fdCartLine.getSaveAmount());
+                item.setSavedAmount(fdCartLine.getSaveAmount() / deliveredQuantity);
 
                 orderLines.add(item);
 			}
