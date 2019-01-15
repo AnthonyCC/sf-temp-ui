@@ -1300,7 +1300,7 @@ private static String convert(Date time) {
 	
 	public static FDUserI setCartOverlayFirstTime(FDUserI user){
 		try{
-			if(user!=null && user.isNewSO3Enabled() && user.isCustomerHasStandingOrders() && user.isRefreshSoCartOverlay()){
+			if(user!=null && user.isNewSO3Enabled() && user.isRefreshSoCartOverlay() && user.isCustomerHasStandingOrders()){
 			ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
 			if(cusotmerInfoModel!=null){
 				user.setSoCartOverlayFirstTime(cusotmerInfoModel.getSoCartOverlayFirstTime()!=null?
@@ -1309,7 +1309,7 @@ private static String convert(Date time) {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.info("while setting the Cart Overlay FirstTime "+ e);
+			LOGGER.info("while setting the Cart Overlay FirstTime for the user: "+user.getIdentity(), e);
 			}
 		return user;
 	}
