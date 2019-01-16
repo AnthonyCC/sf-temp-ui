@@ -38,7 +38,6 @@ public class FDEcommProperties {
     public final static String SapGrpInfoLoaderSB = "sap.ejb.SapGrpInfoLoaderSB";
     public final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
     public final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
-    public final static String ActivityLogSB = "customer.ejb.ActivityLogSB";
     public final static String FDBrandProductsAdManagerSB = "fdstore.brandads.FDBrandProductsAdManagerSB";
     public final static String BINInfoManagerSB = "payment.ejb.BINInfoManagerSB";
     public final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
@@ -133,7 +132,6 @@ public class FDEcommProperties {
         defaults.put(SapGrpInfoLoaderSB,FALSE);
         defaults.put(ErpInventoryManagerSB ,FALSE);
         defaults.put(DlvManagerSB ,FALSE);
-        defaults.put(ActivityLogSB ,FALSE);
         defaults.put(FDBrandProductsAdManagerSB ,FALSE);
         defaults.put(BINInfoManagerSB,FALSE);
         defaults.put(GCGatewaySB,FALSE);

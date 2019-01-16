@@ -4233,18 +4233,12 @@ public class FDCustomerManager {
 		}
 
 	public static void logMassCancelActivity(ErpActivityRecord record) {
-		
+
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
-				FDECommerceService.getInstance().logActivity(record);
-			}else{
-				ActivityLogHome home = getActivityLogHome();
-				ActivityLogSB logSB = home.create();
-				logSB.logActivity(record);
-			}
+
+			FDECommerceService.getInstance().logActivity(record);
+
 		} catch (RemoteException e) {
-			throw new EJBException(e);
-		} catch (CreateException e) {
 			throw new EJBException(e);
 		}
 	}
@@ -4528,16 +4522,14 @@ public class FDCustomerManager {
 	}
 
 	private static void logActivity(ErpActivityRecord record) {
-		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)) {
-			try {
-				FDECommerceService.getInstance().logActivity(record);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else {
-		new ErpLogActivityCommand(FDServiceLocator.getInstance(), record).execute();
+
+		try {
+			FDECommerceService.getInstance().logActivity(record);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 
 

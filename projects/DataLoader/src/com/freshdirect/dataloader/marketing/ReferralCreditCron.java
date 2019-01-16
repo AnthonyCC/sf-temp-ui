@@ -39,8 +39,6 @@ import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ejb.ActivityLogHome;
-import com.freshdirect.customer.ejb.ActivityLogSB;
-import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -49,12 +47,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.ecomm.converter.ReferralConverter;
 import com.freshdirect.fdstore.ecomm.gateway.CallCenterManagerService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
@@ -62,7 +58,6 @@ import com.freshdirect.fdstore.ecomm.gateway.CustomerOrderService;
 import com.freshdirect.fdstore.ecomm.gateway.FDReferralManagerService;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDReferAFriendCreditEmail;
-import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralPromotionModel;
 import com.freshdirect.fdstore.referral.ejb.FDReferralManagerHome;
 import com.freshdirect.fdstore.referral.ejb.FDReferralManagerSB;
@@ -112,7 +107,6 @@ public class ReferralCreditCron {
 		FDCustomerManagerSB fdsb = null;
 		ActivityLogHome aHome = (ActivityLogHome) ctx
 				.lookup("freshdirect.customer.ActivityLog");
-		ActivityLogSB logSB = aHome.create();
 		if(FDStoreProperties.isExtoleRafEnabled()){
 			
 			
@@ -299,12 +293,8 @@ public class ReferralCreditCron {
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", "
 								+ model.getCustomerId());
-						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
-							FDECommerceService.getInstance().logActivity(rec);
-						}
-						else{
-							logSB.logActivity(rec);
-						}
+						FDECommerceService.getInstance().logActivity(rec);
+						
 						models.add(model);
 					}
 					
@@ -511,12 +501,9 @@ public class ReferralCreditCron {
 						rec.setCustomerId(referral_customer_id);
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", " + model.getCustomerId());
-						if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
-							FDECommerceService.getInstance().logActivity(rec);
-						}
-						else{
-							logSB.logActivity(rec);
-						}
+						
+						FDECommerceService.getInstance().logActivity(rec);
+						
 					}
 					//Ignore the exceptions and proceed with the next record.
 				} catch (FDResourceException e) {
