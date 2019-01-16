@@ -80,6 +80,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	private static final String PROCESS_SETTLEMENT_PENDING_ORDER = "reconsiliation/proSettlePenOrder";
 	private static final String SEND_SETTLEMENT_RECON_SAP = "reconsiliation/sendSettleToReconSap";
 	private static final String UPLOAD_SAP_FILE = "reconsiliation/uploadSapFile";
+	private static final String UPLOAD_SAP_FILE_TO_BAPI = "reconsiliation/uploadSapFileToBapi";
 		
 	
 	
@@ -502,32 +503,27 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 		return response.getData();
 	}
 
+
+
 	@Override
-	public void sendSettlementReconToSap(String fileName, String sapUploadFolder)
+	public void sendSettlementReconToSap(InputStream is , String fileName, String workingFolder)
 			throws SapException, RemoteException {
 		Response<String> response = null;
-		try {
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.put("fileName", fileName);
-			rootNode.put("sapUploadFolder", sapUploadFolder);
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
-			
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SEND_SETTLEMENT_RECON_SAP),
-						new TypeReference<Response<Response<String>>>() {
-						});
+System.out.println("asdf");
+		MultiValueMap<String, Object> body  = new LinkedMultiValueMap<String, Object>();
+			body.add("file", new FileSystemResource(new File(workingFolder+fileName))); 
+			body.add("fileName", fileName); 
+		try{	
+			response = this.postMFormDataTypeMap(body, getFdCommerceEndPoint(UPLOAD_SAP_FILE_TO_BAPI),
+					new TypeReference<String>() {
+					});
 
-			
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in processSettlementPendingOrders: data=" + inputJson);
+				LOGGER.error("Error in Uploading Sap File to Ecom Env: data=" + body);
 				throw new FDResourceException(response.getMessage());
 			}
 
-		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in ReconciliationService: ", e);
-			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e) {
+		} catch (FDResourceException e) {
 			LOGGER.error("Error in ReconciliationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}

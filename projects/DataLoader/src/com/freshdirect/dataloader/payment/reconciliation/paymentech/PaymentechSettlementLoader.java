@@ -90,6 +90,7 @@ public class PaymentechSettlementLoader {
 		File tmpFileTwo = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_tmp_2_" + timestamp + ".dfr"); 
 		
 		
+
 		if(getFileFromProcessor) {
 			this.downloadFile(finFile, pdeFile, tmpFileOne, tmpFileTwo);
 		}
@@ -216,6 +217,7 @@ public class PaymentechSettlementLoader {
 		builder.setBuildOldSapFileFormat(buildOldSapFileFormat);
 		String fileName = DataLoaderProperties.getSapFileNamePrefix() + "_Paymentech_" + SF.format(new Date()) + ".txt";
 		File f = new File(DataLoaderProperties.getWorkingDir() + fileName);
+		
 		InputStream isFin = null;
 		InputStream isPde = null;
 		try{
@@ -249,9 +251,10 @@ public class PaymentechSettlementLoader {
 			if(isFin != null) isFin.close();
 			if(isPde != null) isPde.close();
 			builder.writeTo(f);
-			InputStream  is = new FileInputStream(f);
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+				InputStream  is = new FileInputStream(f);
 				ReconciliationService.getInstance().sendFile(is, fileName);
+				is.close();
 			}
 			
 		}

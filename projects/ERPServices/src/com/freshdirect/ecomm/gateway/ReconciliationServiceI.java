@@ -54,9 +54,9 @@ public interface ReconciliationServiceI {
 
 	public List processSettlementPendingOrders()throws RemoteException;
 
-	public void sendSettlementReconToSap(String fileName, String sapUploadFolder)throws SapException, RemoteException;
-
 	public void sendFile(InputStream is, String fileName) throws  RemoteException;
+
+	void sendSettlementReconToSap(InputStream is, String fileName,String sapUploadFolder) throws SapException, RemoteException;
 
 
 }
