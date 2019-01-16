@@ -727,13 +727,13 @@ public class ContentFactory {
         LOGGER.info("WINE INDEX: collecting all wine products...");
         CategoryModel byRegion = (CategoryModel) getContentNodeByKey(ContentKeyFactory.get(ContentType.Category, winePrefix + "_region"));
         if (byRegion != null)
-            newIndex.all.addAll(byRegion.getAllChildProductKeys());
+            newIndex.all.addAll(byRegion.getAllChildFromTwoLevelProductKeys());
         CategoryModel byType = (CategoryModel) getContentNodeByKey(ContentKeyFactory.get(ContentType.Category, winePrefix + "_type"));
         if (byType != null)
-            newIndex.all.addAll(byType.getAllChildProductKeys());
+            newIndex.all.addAll(byType.getAllChildFromTwoLevelProductKeys());
         CategoryModel more = (CategoryModel) getContentNodeByKey(ContentKeyFactory.get(ContentType.Category, winePrefix + "_more"));
         if (more != null)
-            newIndex.all.addAll(more.getAllChildProductKeys());
+            newIndex.all.addAll(more.getAllChildFromTwoLevelProductKeys());
         LOGGER.info("WINE INDEX: collected all " + newIndex.all.size() + " wine products");
 
         Set<DomainValue> regions = new HashSet<DomainValue>(1000);
@@ -769,7 +769,7 @@ public class ContentFactory {
             for (CategoryModel c : byRegion.getSubcategories()) {
                 Set<DomainValue> subDomains = new HashSet<DomainValue>();
                 Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
-                for (ContentKey key : c.getAllChildProductKeys()) {
+                for (ContentKey key : c.getAllChildFromTwoLevelProductKeys()) {
                     ProductModel p = (ProductModel) getContentNodeByKey(key);
                     DomainValue country = p.getWineCountry();
                     if (!counters.containsKey(country))
@@ -807,7 +807,7 @@ public class ContentFactory {
             for (CategoryModel c : byType.getSubcategories()) {
                 Set<DomainValue> subDomains = new HashSet<DomainValue>();
                 Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
-                for (ContentKey key : c.getAllChildProductKeys()) {
+                for (ContentKey key : c.getAllChildFromTwoLevelProductKeys()) {
                     ProductModel p = (ProductModel) getContentNodeByKey(key);
                     List<DomainValue> types = p.getNewWineType();
                     for (DomainValue type : types) {
@@ -858,7 +858,7 @@ public class ContentFactory {
             newIndex.categoryDomains.put(more.getContentKey(), domainValues);
             for (CategoryModel c : more.getSubcategories()) {
                 Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
-                for (ContentKey key : c.getAllChildProductKeys()) {
+                for (ContentKey key : c.getAllChildFromTwoLevelProductKeys()) {
                     ProductModel p = (ProductModel) getContentNodeByKey(key);
                     List<DomainValue> types = p.getNewWineType();
                     for (DomainValue type : types) {
