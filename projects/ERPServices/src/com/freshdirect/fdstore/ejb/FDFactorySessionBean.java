@@ -22,7 +22,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoSB;
@@ -77,36 +76,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	    return ERPServiceLocator.getInstance().getErpInfoSessionBean();
 	}
 
-	/**
-	 * Get current product information object for sku.
-	 *
-	 * @param sku SKU code
-	 *
-	 * @return FDProductInfo object
-	 *
- 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
-	 */
-	public FDProductInfo getProductInfo(final String sku) throws FDSkuNotFoundException, FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			// find ErpProductInfo by SKU, and latest version
-			ErpProductInfoModel productInfo;
-			try {
-				productInfo = infoSB.findProductBySku(sku);
-			} catch (ObjectNotFoundException ex) {
-				throw new FDSkuNotFoundException(ex, "SKU "+sku+" not found");
-			}
-
-			// create FDProductInfo
-			return this.productHelper.getFDProductInfoNew(productInfo);//::FDX::
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-
 	public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException{
 		if (this.grpHome==null) {
 			this.lookupGrpInfoHome();
@@ -123,39 +92,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
-
-
-    /**
-	 * Get current product information object for a specific version of a sku.
-	 *
-	 * @param sku SKU code
-     * @param version requested version
-	 *
-	 * @return FDProductInfo object
-	 *
- 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
-	 * @throws FDResourceException if an error occured using remote resources
-	 */
-	public FDProductInfo getProductInfo(final String sku, final int version) throws FDSkuNotFoundException, FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			// find ErpProductInfo by SKU, and latest version
-			ErpProductInfoModel productInfo;
-			try {
-				productInfo = infoSB.findProductBySku(sku, version);
-			} catch (ObjectNotFoundException ex) {
-				throw new FDSkuNotFoundException(ex, "SKU "+sku+", version " +version+" not found");
-			}
-
-			// create FDProductInfo
-			return this.productHelper.getFDProductInfoNew(productInfo);//::FDX::
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	/**
 	 * Get current product information object for multiple SKUs.
 	 *
@@ -243,62 +179,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
     }
 
-    public Collection getNewSkuCodes(int days) throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.findNewSkuCodes(days);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-
-	public Collection getSkuCodes(String sapId) throws FDResourceException{
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.findSkusBySapId(sapId);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-
-
-    public Map<String, Integer> getSkusOldness() throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.getSkusOldness();
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-    public Collection getReintroducedSkuCodes(int days) throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.findReintroducedSkuCodes(days);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Collection getOutOfStockSkuCodes() throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.findOutOfStockSkuCodes();
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
+  
 
 	/**
 	 * Get product with specified version.
@@ -559,94 +440,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	@Override
     public void ejbRemove() {
 		// nothing required
-	}
-
-	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-
-	public List findPeakProduceSKUsByDepartment(List skuPrefixes)throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-			return infoSB.findPeakProduceSKUsByDepartment(skuPrefixes);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Map<String, Map<String,Date>> getNewSkus(/*String salesOrg, String distributionChannel*/) throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.getNewSkus(/*salesOrg,distributionChannel*/);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Map<String, Map<String,Date>> getBackInStockSkus() throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.getBackInStockSkus();
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Map<String, Map<String,Date>> getOverriddenNewSkus() throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.getOverriddenNewSkus();
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.getOverriddenBackInStockSkus();
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.getSkuAvailabilityHistory(skuCode);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public void refreshNewAndBackViews() throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			infoSB.refreshNewAndBackViews();
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
 	}
 
 	public FDGroup  getLatestActiveGroup(String groupId) throws FDGroupNotFoundException, FDResourceException {

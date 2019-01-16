@@ -51,7 +51,6 @@ public class FDEcommProperties {
     public final static String ErpZoneInfoSB = "erp.ejb.ErpZoneInfoSB";
     public final static String RecommendationEventLoggerSB = "event.ejb.RecommendationEventLoggerSB";
     public final static String EventLoggerSB = "event.ejb.EventLoggerSB";
-    public final static String FDFactorySB = "fdstore.ejb.FDFactorySB";
     public final static String FDCouponActivityLogSB = "fdstore.ecoupon.FDCouponActivityLogSB";
     public final static String EwalletActivityLogSB = "ewallet.ejb.EwalletActivityLogSB";
     public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
@@ -64,7 +63,6 @@ public class FDEcommProperties {
     public final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
     public final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
     public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
-    public final static String ErpInfoSB = "erp.ejb.ErpInfoSB";
     public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
     public final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
     public final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
@@ -113,7 +111,6 @@ public class FDEcommProperties {
 	public static final String FDCustomerFactory = "com.freshdirect.fdstore.customer.FDCustomerFactory";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
-	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_TIMEOUT = "ecom.service.conn.timeout";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_POOL = "ecom.service.conn.pool";
@@ -150,7 +147,6 @@ public class FDEcommProperties {
         defaults.put(ErpZoneInfoSB,FALSE);
         defaults.put(RecommendationEventLoggerSB ,FALSE);
         defaults.put(EventLoggerSB ,FALSE);
-        defaults.put(FDFactorySB ,FALSE);
         defaults.put(FDFactorySB_WarmUp ,FALSE);
         defaults.put(FDCouponActivityLogSB,FALSE);
         defaults.put(EwalletActivityLogSB ,FALSE);
@@ -163,7 +159,6 @@ public class FDEcommProperties {
         defaults.put(DyfModelSB,FALSE);
         defaults.put(SessionImpressionLogSB ,FALSE);
         defaults.put(RulesManagerSB ,FALSE);
-        defaults.put(ErpInfoSB ,FALSE);
         defaults.put(ErpRoutingGatewaySB ,FALSE);
         defaults.put(FDXOrderPickEligibleSB, FALSE);
         defaults.put(SAPLoaderSB, FALSE);
@@ -187,7 +182,6 @@ public class FDEcommProperties {
         defaults.put(FDStandingOrderSB, FALSE);
         defaults.put(StandingOrder3CronSB, FALSE);
         defaults.put(FDCustomerManagerSB, FALSE);
-        defaults.put(ErpInfoSB_WarmUp, FALSE);
         defaults.put(StandingOrdersServiceSB, FALSE);
         
         
