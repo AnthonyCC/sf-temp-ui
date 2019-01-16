@@ -982,6 +982,24 @@ public class CategoryModel extends ProductContainer {
         for (ProductModel p : getPrivateProducts()) {
             keys.add(p.getContentKey());
         }
+        for (CategoryModel subCategory : getSubcategories()) {
+            for (ProductModel p : subCategory.getPrivateProducts()) {
+                keys.add(p.getContentKey());
+            }
+            for (CategoryModel subSubCategory : subCategory.getSubcategories()) {
+                for (ProductModel p : subSubCategory.getPrivateProducts()) {
+                    keys.add(p.getContentKey());
+                }
+            }
+        }
+        return keys;
+    }
+
+    public Set<ContentKey> getAllChildFromTwoLevelProductKeys() {
+        Set<ContentKey> keys = new HashSet<ContentKey>();
+        for (ProductModel p : getPrivateProducts()) {
+            keys.add(p.getContentKey());
+        }
         for (CategoryModel c : getSubcategories()) {
             for (ProductModel p : c.getPrivateProducts()) {
                 keys.add(p.getContentKey());
@@ -990,7 +1008,7 @@ public class CategoryModel extends ProductContainer {
         return keys;
     }
 
-    public Set<ProductModel> getAllChildProducts() {
+    public Set<ProductModel> getAllChildFromTwoLevelProducts() {
         Set<ProductModel> products = new HashSet<ProductModel>();
         for (ProductModel p : getProducts()) {
             products.add(p);
@@ -1012,7 +1030,7 @@ public class CategoryModel extends ProductContainer {
     // and so they will be different objects, with possibly different values for
     // inheritable properties/relationships.
     // Using a simple HashSet will not resolve that they are the same products after all ...
-    public List<ProductModel> getAllChildProductsAsList() {
+    public List<ProductModel> getAllChildFromTwoLevelProductsAsList() {
         List<ProductModel> products = new ArrayList<ProductModel>();
         for (ProductModel p : getProducts()) {
             products.add(p);

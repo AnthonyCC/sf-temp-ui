@@ -379,7 +379,7 @@ public class ContentSearch {
     private void extractCategoryProducts(List<CategoryModel> categories, List<ProductModel> products, Set<ProductModel> alreadyAddedProducts) {
         if (products.isEmpty() && !categories.isEmpty()) {
             for (CategoryModel category : categories) {
-                for (ProductModel product : category.getAllChildProducts())
+                for (ProductModel product : category.getAllChildFromTwoLevelProducts())
                     if (ContentSearchUtil.isDisplayable(product) && !alreadyAddedProducts.contains(product)) {
                         alreadyAddedProducts.add(product);
                         products.add(product);

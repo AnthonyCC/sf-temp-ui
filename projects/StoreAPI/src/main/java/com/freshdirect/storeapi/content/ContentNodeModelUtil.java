@@ -463,7 +463,7 @@ public class ContentNodeModelUtil {
                 // list.
                 if (loopEnabled) {
                     // getChildren
-                    Set<ContentKey> childKeys = cm.getAllChildProductKeys();
+                    Set<ContentKey> childKeys = cm.getAllChildFromTwoLevelProductKeys();
                     findVirtualCategories(childKeys, true);
                 }
             }

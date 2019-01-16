@@ -202,7 +202,7 @@ public class ProductRecommenderUtil {
 	}
 
     private static List<ProductModel> fetchProductsFromCategory(FDUserI user, CategoryModel category, boolean isProductRandomize) {
-        List<ProductModel> products = category.getAllChildProductsAsList();
+        List<ProductModel> products = category.getAllChildFromTwoLevelProductsAsList();
         cleanUpProducts(products, isProductRandomize, MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
         return sortProducts(user, products, getSortStrategy(category), false);
     }
@@ -462,7 +462,7 @@ public class ProductRecommenderUtil {
 			//append list with products under the category's parent category
 			ContentNodeModel grandpaNode = parentCategory.getParentNode();
 			if (replacementProducts.size() < MAX_UNAVAILABLE_REPLACEMENTS_COUNT && grandpaNode instanceof CategoryModel){
-				List<ProductModel> productsUnderGrandpa = ((CategoryModel) grandpaNode).getAllChildProductsAsList();
+				List<ProductModel> productsUnderGrandpa = ((CategoryModel) grandpaNode).getAllChildFromTwoLevelProductsAsList();
 				productsUnderGrandpa.removeAll(replacementProducts);
 				removeProductsByKeys(productsUnderGrandpa, excludedProductKeys);
 
