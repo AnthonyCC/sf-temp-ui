@@ -1943,7 +1943,6 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
-			<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
