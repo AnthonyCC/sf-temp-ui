@@ -217,26 +217,10 @@ public class FDFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDResourceException  {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling FDZoneInfoSB equivalent service in  2.0
-		   	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
-		   		return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
-		   	}else{
-				FDFactorySB sb = factoryHome.create();
+			return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
 
-		   		return sb.getZoneInfo(zoneId);
-		   	}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			LOGGER.error("RemoteException", ce);
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			factoryHome=null;
 			LOGGER.error("RemoteException", re);
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
