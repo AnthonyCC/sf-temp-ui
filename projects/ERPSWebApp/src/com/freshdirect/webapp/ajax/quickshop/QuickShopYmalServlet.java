@@ -357,7 +357,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 						CategoryModel meatDeals = (CategoryModel)ContentFactory.getInstance().getContentNode( ContentType.Category, "wgd_butchers" );
 						if ( meatDeals != null ) {
 
-							return convertToQuickshopItems( user, maxItems, meatDeals.getAllChildProductsAsList() );
+							return convertToQuickshopItems( user, maxItems, meatDeals.getAllChildFromTwoLevelProductsAsList() );
 						}
 					}
 

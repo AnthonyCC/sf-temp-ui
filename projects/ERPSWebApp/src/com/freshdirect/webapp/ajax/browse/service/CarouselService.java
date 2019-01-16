@@ -99,7 +99,7 @@ public class CarouselService {
 
         List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
         if (newProductsCategory != null) {
-            filteredProducts = filterAvailableProducts(newProductsCategory.getAllChildProductsAsList());
+            filteredProducts = filterAvailableProducts(newProductsCategory.getAllChildFromTwoLevelProductsAsList());
         }
 
         int maximumItemsCountInCarousel = FDStoreProperties.getMaximumItemsCountInNewProductCarousel();
