@@ -84,9 +84,7 @@ public class FDStandingOrder extends ModelSupport {
 	
 	Date deleteDate; 		
 
-	String oldAddressId;
-	
-	private FDUserI fdUser;
+	String oldAddressId;	
 	
 	public FDStandingOrder() {
 		super();
@@ -432,11 +430,8 @@ public class FDStandingOrder extends ModelSupport {
 	
 	@ExcludeFromXmlSerializer
 	public FDUserI getUser() throws FDResourceException, FDAuthenticationException {
-		if(null == fdUser) {
-			fdUser =  FDCustomerManager.recognize( getCustomerIdentity() );
-		}
-		return fdUser;
-	}
+		return FDCustomerManager.recognize( getCustomerIdentity() );	
+	}	
 	
 	@ExcludeFromXmlSerializer
 	public FDCustomerInfo getUserInfo() throws FDResourceException {

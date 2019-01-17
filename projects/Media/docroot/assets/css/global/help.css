@@ -121,11 +121,6 @@
 .help-center--container {
 	text-align: left;
 	width: 50%;
-  flex-grow: 1;
-}
-
-.help-center--container-centered {
-  text-align: center;
 }
 
 .help-center--header {
@@ -144,10 +139,6 @@
 .help-center--container form#contact_fd_faq {
 	align-items: center;
 	padding: 0;
-}
-
-.help-center--container-centered form#contact_fd_faq {
-  justify-content: center;
 }
 
 input[type="text"].search-input {

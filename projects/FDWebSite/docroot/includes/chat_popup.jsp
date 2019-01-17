@@ -94,7 +94,7 @@
         <svg width="22" height="13" >
             <path fill="#458D4E" fill-rule="evenodd" d="M10.265 0L0 12.295 13.232 13l.59-3.378L22 8.04l-6.982-4.696-.711.28.125-.795L10.265 0zm.142 1.74l2.957 1.868-.066.472L4.42 8.908l5.986-7.168zm3.559 3.601l.977-.385 3.345 2.253-14.091 3.099 9.769-4.967zm-7.075 5.89l5.896-1.396-.254 1.56-5.642-.164z"/>
         </svg>
-        Send Us a Message
+        Send a Message
     </button>
     <a class="chat-phone-button cssbutton cssbutton-flat green transparent" href="tel:+<%= user.getCustomerServiceContact() %>">
         <svg width="16" height="15">

@@ -46,7 +46,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.CaptchaUtil;
-import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PaymentMethodManipulator extends CheckoutManipulator {
@@ -303,7 +302,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		if ( identity == null ) {
 		    result.addError( new ActionError( "unexpected_error", "User Identity cannot be Null" ) );
 		}
-		if (!isEcheckPaymentMethod() && !checkCaptcha()) {
+		if (!checkCaptcha()) {
     		return Action.ERROR;
     	}
 		
@@ -349,10 +348,13 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 	}
 	public String performAddPaymentMethod() throws FDResourceException {
-		if (!isEcheckPaymentMethod() && !checkCaptcha()) {
+		if (!checkCaptcha()) {
     		return Action.ERROR;
     	}
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
+		
+		
+		
 		if ( result.isSuccess() ) {
 			performAddPaymentMethod(paymentMethod, result, request, getUser());
 		}
@@ -406,14 +408,16 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 
     public String performEditPaymentMethod() throws FDResourceException {
-    	
-    	if (!isEcheckPaymentMethod() && !checkCaptcha()) {
+    	if (!checkCaptcha()) {
     		return Action.ERROR;
     	}
+    	
         ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());
+        
         if(result.isSuccess()){
             performEditPaymentMethod(request, paymentMethod, result, getUser());
         }
+        
         if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
 				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
 			checkPaymentAttempt();
@@ -552,14 +556,4 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	public void setDlvPassCart(boolean dlvPassCart) {
 		this.dlvPassCart = dlvPassCart;
 	}
-	
-	private boolean isEcheckPaymentMethod() {				/* FOOD-803 */
-		String  paymentMethodType = RequestUtil.getRequestParameter(request,PaymentMethodName.PAYMENT_METHOD_TYPE);
-        boolean skipCapcha = false;
-        if(EnumPaymentMethodType.ECHECK.getName().equalsIgnoreCase(paymentMethodType)) {
-        		skipCapcha = true;  
-        }
-		return skipCapcha;
-	}
-	
 }

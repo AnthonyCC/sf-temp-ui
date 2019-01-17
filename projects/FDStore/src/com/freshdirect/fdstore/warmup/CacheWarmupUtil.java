@@ -29,6 +29,7 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.content.WineFilterPriceIndex;
 import com.freshdirect.fdstore.content.WineFilterRatingIndex;
 import com.freshdirect.fdstore.grp.FDGrpInfoManager;
+import com.freshdirect.fdstore.oauth.provider.OAuthProvider;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
@@ -39,6 +40,8 @@ import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
+
+import net.oauth.OAuthException;
 
 public class CacheWarmupUtil {
 
@@ -212,6 +215,14 @@ public class CacheWarmupUtil {
             LOGGER.info("Loading Group Materials Data");
             FDCachedFactory.loadMaterialGroupCache();
             LOGGER.info("Loaded Group Materials Data");
+        }
+    }
+
+    public static void warmupOAuthProvider() {
+        try {
+            OAuthProvider.deleteOldAccessors();
+        } catch (OAuthException e) {
+            LOGGER.error("OAuth warmup error", e);
         }
     }
 

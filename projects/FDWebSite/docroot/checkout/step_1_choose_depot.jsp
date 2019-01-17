@@ -9,7 +9,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import='com.freshdirect.fdstore.deliverypass.DeliveryPassUtil' %>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

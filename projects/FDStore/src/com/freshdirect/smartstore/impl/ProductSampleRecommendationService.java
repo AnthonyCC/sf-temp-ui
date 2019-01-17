@@ -19,7 +19,6 @@ public class ProductSampleRecommendationService extends AbstractRecommendationSe
     @Override
     protected List<ContentNodeModel> doRecommendNodes(SessionInput input) {
         List<ContentNodeModel> nodes = new ArrayList<ContentNodeModel>();
-        if(null !=input && null !=input.getProductSamples())
         for (ProductReference sample : input.getProductSamples()) {
             nodes.add(sample.lookupProductModel());
         }

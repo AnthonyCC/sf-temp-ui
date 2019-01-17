@@ -60,11 +60,7 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 	public ErpSaleModel getOrder(String id) throws RemoteException {
 		
 		try {
-			LOGGER.info("OrderServiceApiClient.GetOrder Begin -- SaleId  : "+id);
-
 			String response = httpGetData(getFdCommerceEndPoint(GET_ORDER_API), String.class, new Object[] { id });
-			
-			LOGGER.info("OrderServiceApiClient.GetOrder Response Received for Saleid: "+id+ "   : "+response!=null? "Yes " : " Response is null");
 			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
 			});
 			ErpSaleModel sale = parseResponse(info);

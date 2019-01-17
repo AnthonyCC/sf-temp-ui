@@ -6,7 +6,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL = 970;

@@ -60,7 +60,6 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%  String orderId = request.getParameter("orderId");
-	 boolean transException =Boolean.valueOf(request.getParameter("hasTransException"));
 if(orderId==null){
 	orderId = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 }
@@ -137,9 +136,6 @@ if (orderId == null){
 	%>
 	<% } else if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {
 	        errorMsg= PaymentMethodUtil.getAuthFailErrorMessage(cart.getAuthFailDescription());
-	%>
-	<% } if (cart.isMakeGood() && transException) {
-	        errorMsg=SystemMessageList.MSG_CANNOT_MODIFY_MAKE_GOOD_ORDER;
 	%>
 		<%@ include file="/includes/i_error_messages.jspf" %>
 	<% } %>

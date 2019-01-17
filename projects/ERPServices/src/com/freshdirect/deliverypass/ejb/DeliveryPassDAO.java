@@ -455,7 +455,7 @@ public class DeliveryPassDAO {
 			 "          (select sku_code from cust.dlv_pass_type where is_autorenew_dp='Y' and e_stores =?) "+
 			 "        )"+
 			 " and not exists ( select 1 from cust.delivery_pass dp where dp.customer_id=ci.customer_id "+
-			 "                  and (status IN ('RTU','PEN') OR (status IN ('ACT') and trunc(exp_date)>trunc(sysdate-1))) and dp.TYPE IN "+
+			 "                  and status IN ('ACT','RTU','PEN') and trunc(exp_date)>trunc(sysdate-1) and dp.TYPE IN "+
 			 "          (select sku_code from cust.dlv_pass_type where e_stores =?) "+
 			 "                 ) "+
 			 " and not exists ( select 1 from cust.case where customer_id=ci.customer_id and case_subject=? and case_state<>'CLSD')";

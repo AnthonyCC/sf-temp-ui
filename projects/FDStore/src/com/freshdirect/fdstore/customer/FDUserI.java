@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -807,8 +806,4 @@ public interface FDUserI extends java.io.Serializable {
 	public String getDlvPassSegmentValue() throws FDResourceException;
 
 	public boolean isHavingEnoughValidOrders();
-	
-	public HashMap<String, FDOrderI> getUpcomingSOinstances();
-	
-	public void setUpcomingSOinstances(HashMap<String, FDOrderI> soOrders);
 }

@@ -137,7 +137,10 @@
         width: 340px;
         height: 48px;
         margin: 0;
-    }    
+    }
+    .chat-message-popup .buttons-container button[name="sendMessage"]{
+    	display: none;
+    }
     .chat-message-popup-text{
         font-size: 14px;
         text-align: center;
@@ -155,7 +158,7 @@
 
 	<fd:ErrorHandler result='<%=result%>' field='<%=checkContactForm_i_contact_us%>'>
 		<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
-		<%@ include file="/includes/i_error_messages.jspf" %>
+		<%@ include file="/includes/i_error_messages.jspf" %>	
 	</fd:ErrorHandler>
 
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
@@ -164,7 +167,7 @@
 </div>
 <div class="chat-message-popup">
     <div class="chat-message-popup-header">Send Us a Message</div>
-	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter fdform-disabled-if-missing-required fdform-v-required fdform-submit="sendNewMessage"><fieldset id="help_fieldset"><legend class="offscreen">Contact FreshDirect</legend>
+	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter fdform-disabled-if-missing-required><fieldset id="help_fieldset"><legend class="offscreen">Contact FreshDirect</legend>
 
 		<script>
 			$jq('#prodReqContent').ready(function() { $jq('#prodReqContent').hide(); });
@@ -174,11 +177,11 @@
 					if ( selectedOpt.text() == 'Product Request' ) {
                         $jq('#prodReqContent').show();
                         $jq('#prodReqNonContent').hide();
-                        $jq('#test1').attr('disabled', 'disabled').addClass('disabled');
+                        $jq('#send-message').attr('disabled', 'disabled').addClass('disabled');
                     } else {
                         $jq('#prodReqContent').hide();
                         $jq('#prodReqNonContent').show();
-                        $jq('#test1').attr('disabled', null).removeClass('disabled');
+                        $jq('#send-message').attr('disabled', null).removeClass('disabled');
                     }
 				});
 				$jq('#contact_subject').change();
@@ -188,12 +191,12 @@
 				    url: '/includes/chat_message_popup.jsp',
 				    type: 'POST',
 				    data: { email: $jq('#email').text(),
-				    		first_name: $jq("#first_name").text(),
+				    		first_name: $jq("#first_name").text().split(" ")[0],
+				    		last_name: $jq("#first_name").text().split(" ")[1],
 				    		home_phone: $jq("#home_phone").text(),
 				    		home_phone_ext: $jq("#home_phone_ex").text(),
-				    		salePK: $jq("#order-field").val(),
 				    		message: $jq("#message").val(),
-				    		subject: $jq("#subject").prop('selectedIndex')-1,
+				    		subject: $jq("#subject").prop('selectedIndex'),
 				    		sendMessage: 'true'
 						  },
 					success: function(){
@@ -241,8 +244,6 @@
 				<div class="form-group customer-name-container login font16 flex">
 					<label class="login-label">Not ${contactUsPotato.customerData.firstName}? <a class="login-link" href="/login/login.jsp">Sign in</a></label>
 				</div>
-				<input type="hidden" name="home_phone" id="home_phone" class="font16" placeholder="555-555-5555" size="21" min="0" value="${contactUsPotato.customerData.homePhone}" maxlength="15" />
-				<input type="hidden" placeholder="1234" name="home_phone_ext" id="home_phone_ex" class="font16" size="4" min="0" value="${contactUsPotato.customerData.homePhoneExt}" maxlength="6" />
 		<% } %>
 		<div class="form-group subject-message-container flex">
 			<div class="form-group subject-container flex">
@@ -295,7 +296,9 @@
 
 
 		<div class="separator buttons-container center flex">
-			<button type="submit" id="test1" name="sendMessage" class="cssbutton green" >Send Message</button>
+			<!-- <button type="reset" class="cssbutton green transparent">Clear</button>  -->
+			<button type="submit" id="test1" name="sendMessage" class="cssbutton green ">Send Message</button>
+			<button id="send-message" class="cssbutton cssbutton-flat green" type="button" onclick="sendNewMessage()">Send Message</button>
 		</div>
 	</fieldset>
 	</form>

@@ -57,7 +57,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDRecipientList;
@@ -190,8 +189,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private Map<String, Set<Long>> recentCartlineIdsMap = new HashMap<String, Set<Long>>();
 
 	private List<UnbxdAutosuggestResults> unbxdAustoSuggestions;
-	
-	private HashMap<String,FDOrderI> upcomingSOinstances = new HashMap<String, FDOrderI>();
 
 	/* map setter/getter */
 	public Map<String, Set<Long>> getRecentCartlineIdsMap() {
@@ -2607,11 +2604,4 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public boolean isHavingEnoughValidOrders() {
         return this.user.isHavingEnoughValidOrders();
     }
-	public HashMap<String, FDOrderI> getUpcomingSOinstances() {
-		return upcomingSOinstances;
-	}
-	public void setUpcomingSOinstances(HashMap<String, FDOrderI> upcomingSOinstances) {
-		this.upcomingSOinstances = upcomingSOinstances;
-	}
-
 }

@@ -152,29 +152,9 @@ var FreshDirect = FreshDirect || {};
         FORMS.releaseLockFormResubmit(FORMS.getEl(id));
       }
     }
+    
+    
   });
-
-  // re-enable checkout on general warnings
-  var warningHandler = Object.create(fd.common.signalTarget, {
-    signal: {
-      value: ['warning', 'warnings']
-    },
-    callback: {
-      value: function () {
-        var coForm = FORMS.get("checkout");
-
-        if (coForm) {
-          coForm.releaseLockWhenNotRedirecting("checkout");
-          $.get('/api/expresscheckout/timeslot?action=getCurrentSelected')
-            .done( function (d) {
-              FreshDirect.common.dispatcher.signal('timeslot', d);
-            });
-        }
-      }
-    }
-  });
-  warningHandler.listen();
-
   var timeslotDrawerDeferred = jQuery.Deferred();
   var timeslotDrawerDependencyLoaded = function () {
 	  timeslotDrawerDeferred.resolve();

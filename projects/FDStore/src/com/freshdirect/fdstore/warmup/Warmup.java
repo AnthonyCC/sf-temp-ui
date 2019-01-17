@@ -29,6 +29,7 @@ public class Warmup {
      */
     public void warmup() {
         LOGGER.info("[WARMUP] Warmup started");
+        //CacheWarmupUtil.warmupOAuthProvider();
 
         long time = System.currentTimeMillis();
         ContentFactory.getInstance().getStore();

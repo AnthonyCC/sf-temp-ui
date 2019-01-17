@@ -7,7 +7,7 @@
 <%@ page import='java.text.MessageFormat' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import="java.util.Locale"%>  
 <%@ taglib uri='template' prefix='tmpl' %>

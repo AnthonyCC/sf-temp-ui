@@ -1,13 +1,12 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.Date;
+
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.core.PrimaryKey;
 
 public class PromotionDlvTimeSlot extends ModelSupport {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5927462795205739498L;
 	private Integer dayId;
 	private String dlvTimeStart;
 	private String dlvTimeEnd;
@@ -28,6 +27,7 @@ public class PromotionDlvTimeSlot extends ModelSupport {
 	
 	public PromotionDlvTimeSlot() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public Integer getDayId() {

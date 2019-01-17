@@ -31,11 +31,5 @@ public class StoreContext implements Serializable {
 	public void setEStoreId(EnumEStoreId eStoreId) {
 		this.eStoreId = eStoreId;
 	}
-
-	@Override
-	public String toString() {
-		return "StoreContext [eStoreId=" + eStoreId + "]";
-	}
-	
 	
 }

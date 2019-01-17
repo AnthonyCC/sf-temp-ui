@@ -272,9 +272,6 @@
 			</li>
 		<% } %>
 		<li class="hide-on-subopen no-divider">
-			<span><a id="open-chat-popup">Contact Us</a></span>
-		</li>
-		<li class="hide-on-subopen no-divider">
 			<span><a href="/help/index.jsp">Help</a></span>
 		</li>
 		<li class="hide-on-subopen no-divider">

@@ -26,7 +26,6 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryMenuOption;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -214,13 +213,7 @@ public class ExternalInterfaceController extends BaseController {
         						}
         					}
         				}
-        				Result	result=fDDeliveryManager.captureDeliveryEventNotification(carrier, sb.toString().trim());
-        				if(result.getStatus()!=null && result.getStatus().equals("FAILED")) {
-	    					responseMessage=Message.createFailureMessage(result.getErrors()!=null?result.getErrors().toString():"Error Occurred");
-	    					responseMessage.setStatus("FAILED");
-	    					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-	    				}
-	    				else
+        				fDDeliveryManager.captureDeliveryEventNotification(carrier, sb.toString().trim());
         				responseMessage = Message.createSuccessMessage("T005 Successful.");
         				
     				}else{
@@ -239,8 +232,7 @@ public class ExternalInterfaceController extends BaseController {
 	       			  			 estDeliveryTime=temp[3]; 
 	       			  		 }
 	       			  	FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-	    				Result result= fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
-	    				
+	    				fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
 	    				responseMessage = Message.createSuccessMessage("T005 Successful.");
 	    				}
 	       			  	 

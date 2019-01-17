@@ -18,7 +18,6 @@ public class SelfCreditOrderItemData {
     private boolean mealBundle;
     private List<String> cartonNumbers;
     private double finalPrice;
-    private boolean substituted;
     
 	public String getOrderLineId() {
 		return orderLineId;
@@ -131,13 +130,5 @@ public class SelfCreditOrderItemData {
 	public void setFinalPrice(double finalPrice) {
 		this.finalPrice = finalPrice;
 	}
-
-    public boolean isSubstituted() {
-        return substituted;
-    }
-
-    public void setSubstituted(boolean substituted) {
-        this.substituted = substituted;
-    }
 
 }

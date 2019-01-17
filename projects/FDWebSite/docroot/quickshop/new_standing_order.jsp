@@ -50,25 +50,22 @@ user.setSoTemplateCart(new FDCartModel());
 	</tmpl:put>
 
 	<tmpl:put name="globalnav">
-	  	<%-- MASQUERADE HEADER STARTS HERE --%>
-	  	<% if (masqueradeContext != null) {
-	  		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
-	  	%>
-		<div id="topwarningbar">
-			You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user.getUserId()%> (Store: <%= user.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user.getUserContext().getFulfillmentContext().getPlantId() %>)
-			<%if (makeGoodFromOrderId!=null) {%>
-				<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
-				(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
-				<a class="imgButtonRed" href="/cancelmakegood.jsp">Cancel MakeGood</a>
-			<%}%>
-		</div>
-	  	<% } %>
-	  	<%-- MASQUERADE HEADER ENDS HERE --%>
-	    <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" />
-	    
-		<!-- Changes for Skip to Content Fix -->
-		<div tabindex="-1" id="skip_to_content"></div>
-  	</tmpl:put>
+  	<%-- MASQUERADE HEADER STARTS HERE --%>
+  	<% if (masqueradeContext != null) {
+  		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
+  	%>
+	<div id="topwarningbar">
+		You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user.getUserId()%> (Store: <%= user.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user.getUserContext().getFulfillmentContext().getPlantId() %>)
+		<%if (makeGoodFromOrderId!=null) {%>
+			<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
+			(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
+			<a class="imgButtonRed" href="/cancelmakegood.jsp">Cancel MakeGood</a>
+		<%}%>
+	</div>
+  	<% } %>
+  	<%-- MASQUERADE HEADER ENDS HERE --%>
+    <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" />
+  </tmpl:put>
 	<tmpl:put name="soytemplates">
 		<soy:import packageName="expressco" />
 	</tmpl:put>

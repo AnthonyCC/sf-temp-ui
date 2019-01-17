@@ -47,6 +47,9 @@ var FreshDirect = window.FreshDirect || {};
         this.overlayEl = $('#'+this.overlayId);
         this.overlayEl.attr('aria-describedby', 'creditRequestCompleteHeader creditRequestCompleteDetails');
         this.OKButton = $('.cssbutton.selfcredit-button.ok-button');
+        setTimeout(function() {
+          this.OKButton.focus();
+        }.bind(this), 200);
         // set close callback
         this.overlayEl.attr('data-close-cb', 'FreshDirect.components.selfCreditRequestCompletePopup.closeCB');
       }

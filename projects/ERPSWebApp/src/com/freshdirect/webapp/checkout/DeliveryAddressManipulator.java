@@ -175,7 +175,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		try {
-			boolean foundFraud = FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session, user), !user.isDepotUser(), erpAddress);
+			boolean foundFraud = FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);
 			if (foundFraud) {
 //				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 //					SystemMessageList.MSG_NOT_UNIQUE_INFO,
