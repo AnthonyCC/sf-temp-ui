@@ -62,7 +62,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.info("Info in CustomerAddressService.assumeDeliveryAddress: inputJson=" + inputJson
+				LOGGER.warn("Error in CustomerAddressService.assumeDeliveryAddress: inputJson=" + inputJson
 						+ ", response=" + response);
 				throw new FDResourceException(response.getMessage());
 			}

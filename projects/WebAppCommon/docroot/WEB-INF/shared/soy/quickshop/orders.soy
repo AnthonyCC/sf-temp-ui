@@ -39,13 +39,11 @@
 {template .ordersQS22}
    
   {let $limit: 20 /}
-  <ul class="checkboxlist orders-list">
-    {foreach $item in $firstMenuItems}
-      {call quickshop.orderMenuItem}
-        {param item: $item /}
-      {/call}
-    {/foreach}
-  </ul>
+  {foreach $item in $firstMenuItems}
+    {call quickshop.orderMenuItem}
+      {param item: $item /}
+    {/call}
+  {/foreach}
 
   {if $pastOrdersGroupedByYear and length($pastOrdersGroupedByYear)}
     <button class="seemore" aria-haspopup="true" data-alignpopup="tr-tl" data-alignpopupfunction="moreordersalign"><span>See More Orders</span></button>

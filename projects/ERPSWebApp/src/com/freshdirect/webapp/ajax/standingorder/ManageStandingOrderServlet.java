@@ -77,7 +77,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(
 						new PrimaryKey(soId));
 				FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(true,so,false, u);
+				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(true,so,false);
 
 				if (u != null) {
 					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);
@@ -161,7 +161,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 								if (!CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate))
 									FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so,deleteDate);
 								else if(CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate)){
-									cancelNextDelivery(so, u);
+									cancelNextDelivery(so);
 								}
 							} else {
 								FDStandingOrdersManager.getInstance().delete(info, so);
@@ -447,9 +447,9 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		}
 	}
 	
-	public static void cancelNextDelivery(FDStandingOrder so, FDUserI u)  {
+	public static void cancelNextDelivery(FDStandingOrder so)  {
 		try {
-			StandingOrderHelper.setUpcomingStandingOrder(so, u);
+			StandingOrderHelper.setUpcomingStandingOrder(so);
 			FDActionInfo info = new FDActionInfo(
 					EnumTransactionSource.WEBSITE,
 					so.getCustomerIdentity(), INITIATOR_NAME,

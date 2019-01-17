@@ -17,7 +17,6 @@ public class Configuration implements Serializable {
 	private boolean payPalEnabled;
 	private boolean DCSEnabled;
 	private boolean liveChatEnabled;
-    private boolean selfCreditEnabled;
 	
 
 	public boolean isAkamaiImageConvertorEnabled() {
@@ -98,14 +97,6 @@ public class Configuration implements Serializable {
 	public void setLiveChatEnabled(boolean liveChatEnabled) {
 		this.liveChatEnabled = liveChatEnabled;
 	}
-
-    public boolean isSelfCreditEnabled() {
-        return selfCreditEnabled;
-    }
-
-    public void setSelfCreditEnabled(boolean selfCreditEnabled) {
-        this.selfCreditEnabled = selfCreditEnabled;
-    }
 	
 	
 }

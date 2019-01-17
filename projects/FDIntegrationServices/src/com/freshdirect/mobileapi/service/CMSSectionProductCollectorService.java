@@ -2,8 +2,7 @@ package com.freshdirect.mobileapi.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,17 +19,13 @@ import com.freshdirect.storeapi.content.CMSWebPageModel;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SortOptionModel;
-import com.freshdirect.storeapi.content.SortStrategyType;
 import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.filtering.BrowseDataBuilderFactory;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 /**
- *
+ * 
  * Collects the products for the sections
  *
  */
@@ -69,7 +64,7 @@ public class CMSSectionProductCollectorService {
         }
     }
 
-    private List<ProductPotatoData> makeProductPotatos(SessionUser user, Collection<ProductModel> products, boolean enableProductIncomplete) {
+    private List<ProductPotatoData> collectProductPotatos(SessionUser user, Set<ProductModel> products, boolean enableProductIncomplete) {
         final List<ProductPotatoData> potatoes = new ArrayList<ProductPotatoData>();
         if (products != null) {
             for (final ProductModel product : products) {
@@ -125,7 +120,6 @@ public class CMSSectionProductCollectorService {
     }
 
     private List<ProductPotatoData> collectProductPotatosFromCategories(SessionUser user, CMSSectionModel sectionModel, boolean enableProductIncomplete) {
-        final FDSessionUser fdUser = user.getFDSessionUser();
         List<ProductPotatoData> productsFromCategories = new ArrayList<ProductPotatoData>();
         List<CategoryModel> categories = new ArrayList<CategoryModel>();
         if (sectionModel.getCategoryList() != null && !sectionModel.getCategoryList().isEmpty()) {
@@ -137,25 +131,11 @@ public class CMSSectionProductCollectorService {
                     LOGGER.debug("Try to load category for section but it was not found. Category key: " + categoryKey);
                 }
             }
-
+            Set<ProductModel> products = new LinkedHashSet<ProductModel>();
             for (CategoryModel category : categories) {
-                // collect products first from the given category
-                Set<ProductModel> grabbedProducts = new HashSet<ProductModel>();
-                BrowseDataBuilderFactory.getInstance().collectAllProducts(category, NavDepth.getMaxLevel(), fdUser, grabbedProducts);
-
-                // figure out sorting strategy, pick first or use default
-                List<SortOptionModel> sortOptions = category.getSortOptions();
-                SortStrategyType sortStrategy = !sortOptions.isEmpty()
-                        ? sortOptions.get(0).getSortStrategyType()
-                        : null;
-
-                // sort products
-                List<ProductModel> productsToSort = new ArrayList<ProductModel>(grabbedProducts);
-                List<ProductModel> sortedProducts = ProductRecommenderUtil.sortProducts(fdUser, productsToSort, sortStrategy, false);
-
-                // append sorted set to the whole result set keeping sort order
-                productsFromCategories.addAll(makeProductPotatos(user, sortedProducts, enableProductIncomplete));
+                BrowseDataBuilderFactory.getInstance().collectAllProducts(category, NavDepth.getMaxLevel(), user.getFDSessionUser(), products);
             }
+            productsFromCategories = collectProductPotatos(user, products, enableProductIncomplete);
         }
         return productsFromCategories;
     }

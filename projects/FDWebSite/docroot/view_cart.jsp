@@ -7,7 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
 <%@ page import="com.freshdirect.fdstore.EnumCheckoutMode"%>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="com.freshdirect.customer.EnumChargeType" %>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>

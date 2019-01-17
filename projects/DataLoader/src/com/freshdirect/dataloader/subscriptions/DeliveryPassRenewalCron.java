@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -25,46 +26,73 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.configuration.RootConfiguration;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.ecomm.gateway.DlvPassManagerService;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
-import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.configuration.StoreAPIConfig;
 import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.smartstore.fdstore.CohortSelector;
 
 public class DeliveryPassRenewalCron {
 
@@ -142,7 +170,41 @@ public class DeliveryPassRenewalCron {
 			}
 		}
 	}
-	
+
+	public static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx,boolean sendEmail) {
+		String orderID = null;
+		FDCartModel cart=null;
+		try {
+			cart = getCart(arSKU,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK(),userCtx);
+			if(FDStoreProperties.getAvalaraTaxEnabled()){
+			AvalaraContext context = new AvalaraContext(cart);
+			context.setCommit(false);
+			cart.getAvalaraTaxValue(context);
+			actionInfo.setTaxationType(EnumNotificationType.AVALARA);
+			}
+			orderID = FDCustomerManager.placeSubscriptionOrder(actionInfo, cart, null, sendEmail, cra, null);
+		}  catch (FDResourceException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		} catch (ErpFraudException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		} catch (DeliveryPassException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		} catch (FDPaymentInadequateException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		}catch (InvalidCardException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		}catch (ErpTransactionException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		}
+		return orderID;
+	}
+
 	private static ErpPaymentMethodI getMatchedPaymentMethod(ErpPaymentMethodI pymtMethod, Collection<ErpPaymentMethodI> pymtMethods) {
 		if(pymtMethods==null ||pymtMethods.isEmpty())
 			return null;
@@ -242,8 +304,7 @@ public class DeliveryPassRenewalCron {
 						cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 						
 						boolean sendEmail = (EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStore.getContentId()));
-						orderID = DeliveryPassUtil.placeOrder(actionInfo, cra, arSKU, pymtMethod,
-								lastOrder.getDeliveryAddress(), user.getUserContext(), sendEmail);
+						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,lastOrder.getDeliveryAddress(),user.getUserContext(),sendEmail);
 
 					}
 					catch(FDResourceException fe) {
@@ -269,9 +330,70 @@ public class DeliveryPassRenewalCron {
 
 
 
-	
+	public static FDCartModel getCart(String skuCode,ErpPaymentMethodI paymentMethod,ErpAddressModel deliveryAddress, String erpCustomerID,UserContext userCtx) {
 
-	
+		FDCartModel cart=null;
+		try {
+			cart=new FDCartModel();
+			cart.addOrderLine(getCartLine(skuCode, userCtx));
+			cart.setPaymentMethod(paymentMethod);
+			cart.setDeliveryAddress(deliveryAddress);
+			cart.recalculateTaxAndBottleDeposit(cart.getDeliveryAddress().getZipCode());
+			cart.handleDeliveryPass();
+			FDReservation reservation=getFDReservation(erpCustomerID,deliveryAddress.getId());
+			cart.setDeliveryReservation(reservation);
+			cart.setZoneInfo(getZoneInfo(cart.getDeliveryAddress()));
+
+	        cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(userCtx));
+	        cart.setEStoreId(userCtx.getStoreContext().getEStoreId());
+		} catch (FDSkuNotFoundException e) {
+			LOGGER.warn("Unable to create shopping cart for customer :"+erpCustomerID);
+			LOGGER.warn(e);
+			cart=null;
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));	
+			email(erpCustomerID,sw.toString());
+		} catch (FDResourceException e) {
+			LOGGER.warn("Unable to create shopping cart for customer :"+erpCustomerID);
+			LOGGER.warn(e);
+			cart=null;
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));	
+			email(erpCustomerID,sw.toString());
+		} catch (FDInvalidAddressException e) {
+			LOGGER.warn("Unable to create shopping cart for customer :"+erpCustomerID);
+			LOGGER.warn(e);
+			cart=null;
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));	
+			email(erpCustomerID,sw.toString());
+		}
+		return cart;
+	}
+
+	private static FDCartLineI getCartLine(String skuCode,UserContext userCtx) throws FDSkuNotFoundException, FDResourceException  {
+
+		ProductModel prodNode = null;
+		FDProduct product=null;
+		FDSalesUnit salesUnit = null;
+		HashMap<String, String> varMap = new HashMap<String, String>();
+		double quantity = 1.0D;
+
+		prodNode = ContentFactory.getInstance().getProduct(skuCode);
+		product=FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
+		salesUnit=product.getSalesUnits()[0];
+		//TODO Need to pre-select pricing zone based on last order delivery type and zipcode.
+		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prodNode
+				, new FDConfiguration(quantity, salesUnit
+				.getName(), varMap), null,  userCtx);
+
+		try {
+			cartLine.refreshConfiguration();
+		} catch (FDInvalidConfigurationException e) {
+			throw new FDResourceException(e);
+		}
+		return cartLine;
+	}
 
 	private static FDActionInfo getFDActionInfo(FDIdentity identity) {
 		return new FDActionInfo(EnumTransactionSource.SYSTEM,identity,CLASS_NAME,"",null ,null);
@@ -291,12 +413,25 @@ public class DeliveryPassRenewalCron {
 	}
 
 
-	
+	private static FDReservation getFDReservation(String customerID, String addressID) {
+		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
+		FDTimeslot timeSlot=getFDTimeSlot();
+		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, 
+				customerID, addressID,false, null,20,null,false,null,null);
+		return reservation;
+
+	}
+
 	private static FDTimeslot getFDTimeSlot() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+	private static FDDeliveryZoneInfo getZoneInfo(ErpAddressModel address) throws FDResourceException, FDInvalidAddressException {
+
+		FDDeliveryZoneInfo zInfo =new FDDeliveryZoneInfo("1","1","1",EnumZipCheckResponses.DELIVER);
+		return zInfo;
+	}
+
 	
 	
 	

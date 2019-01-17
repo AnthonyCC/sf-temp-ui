@@ -74,14 +74,4 @@ public class UserContext implements Serializable {
 	public void setCustSapId(String custSapId) {
 		this.custSapId = custSapId;
 	}
-
-	@Override
-	public String toString() {
-		return "UserContext [pricingContext=" + pricingContext
-				+ ", fdIdentity=" + fdIdentity + ", custSapId=" + custSapId
-				+ ", storeContext=" + storeContext + ", fulfillmentContext="
-				+ fulfillmentContext + "]";
-	}
-	
-	
 }

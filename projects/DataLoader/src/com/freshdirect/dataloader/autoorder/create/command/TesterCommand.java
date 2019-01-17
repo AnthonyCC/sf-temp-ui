@@ -8,8 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.freshdirect.common.IConstants;
 import com.freshdirect.dataloader.autoorder.create.util.DataUtil;
+import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.dataloader.autoorder.create.util.ResourceUtil;
 
 public class TesterCommand implements ITesterCommand,IAccept {

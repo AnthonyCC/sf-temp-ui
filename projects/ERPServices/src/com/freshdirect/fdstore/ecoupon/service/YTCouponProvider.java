@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.sap.conn.jco.util.Codecs.Base64;
+import com.certicom.security.cert.internal.x509.Base64;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;

@@ -2664,6 +2664,19 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>NutritionUpload</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.NutritionUploadTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.content.NutritionUploadTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
 		<name>ReserveTimeslotController</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.ReserveTimeslotControllerTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.ReserveTimeslotControllerTag$TagEI</teiclass>

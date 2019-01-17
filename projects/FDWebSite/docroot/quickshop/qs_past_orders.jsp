@@ -77,7 +77,7 @@
       <div id="orders" class="open ${isQS20 ? "" : "qs-menu-margin"}">
         <div class="orders ${isQS20 ? "" : "rounded-box"}">
           <div class="orders-header qs-menu-header" data-listsize="">${isQS20 ? "Previous Orders" : "Past Orders"} <span class="counter"></span></div>
-         <fieldset><legend class="offscreen">filter products by past orders</legend> <div class="orders-list-cont"></div> </fieldset>
+         <fieldset><legend class="offscreen">filter products by past orders</legend> <ul class="checkboxlist orders-list"></ul> </fieldset>
           <c:if test="${isQS20}">
             <button class="qs-menu-toggle">show</button>
           </c:if>

@@ -452,11 +452,6 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByDepartmentCarousel), "Consumed by Department Carousel");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByCategoryCarousel), "Consumed by Category Carousel");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByStoreCarousel), "Consumed by Store Carousel");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedBySection), "Consumed by Section");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByImageBanner), "Consumed by Image Banner");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByTabletFeaturedCategories), "Consumed by Tablet Featured Catgories");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByModule), "Consumed by Module");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByBanner), "Consumed by Banner");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.FULL_NAME), "Full Name");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.GLANCE_NAME), "Glance Name");

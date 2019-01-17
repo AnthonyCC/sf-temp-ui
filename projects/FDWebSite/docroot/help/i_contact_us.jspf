@@ -70,48 +70,18 @@
 			<p class="help-contact-form login-link green font16 verdana-font">Have an account? <a href="/login/login.jsp">Sign in</a></p>
 			<div class="form-group email flex">	
 				<label for="email" class="bold inline">E-mail Address</label>
-				<input 
-					type="email" 
-					name="email" 
-					id="email" 
-					required 
-					class="font16" 
-					placeholder="name@website.com" 
-					<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span id="emailid_error" class="bold error">aria-describedby="emailid_error" </fd:ErrorHandler>
-					size="45" 
-					value="${contactUsPotato.customerData.email}" 
-				/>
+				<input type="email" name="email" id="email" required class="font16" placeholder="name@website.com" aria-describedby="emailid_error" size="45" value="${contactUsPotato.customerData.email}" />
 				<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span id="emailid_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 			</div>
 			<div class="form-group-name-container flex">
 				<div class="form-group first_name flex">
 					<label for="first_name" class="bold inline">First Name</label>
-					<input 
-						type="text" 
-						name="first_name" 
-						id="first_name" 
-						required 
-						class="font16" 
-						placeholder="Jane" 
-						<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'>aria-describedby="firstname_error" </fd:ErrorHandler>
-						size="45" 
-						value="${contactUsPotato.customerData.firstName}" 
-					/>
+					<input type="text" name="first_name" id="first_name" required class="font16" placeholder="Jane" aria-describedby="firstname_error" size="45" value="${contactUsPotato.customerData.firstName}" />
 					<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span id="firstname_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 				</div>
 				<div class="form-group last_name flex">
 					<label for="last_name" class="bold inline">Last Name</label>
-					<input 
-						type="text" 
-						name="last_name" 
-						id="last_name" 
-						required 
-						class="font16" 
-						placeholder="Dough" 
-						<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'>aria-describedby="lastname_error" </fd:ErrorHandler>
-						size="45" 
-						value="${contactUsPotato.customerData.lastName}" 
-					/>
+					<input type="text" name="last_name" id="last_name" required class="font16" placeholder="Dough" aria-describedby="lastname_error" size="45" value="${contactUsPotato.customerData.lastName}" />
 					<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span id="lastname_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 				</div>
 			</div>
@@ -122,7 +92,7 @@
 				</div>
 				<div class="flex">
 					<label for="home_phone_ext" class="bold inline">Ext.<span class="offscreen">extension for phone number</span></label>
-					<input type="number" placeholder="1234" name="home_phone_ext" id="home_phone_ext" class="font16" size="45" min="0" value="${contactUsPotato.customerData.homePhoneExt}" maxlength="6" />
+					<input type="number" placeholder="1234" name="home_phone_ext" id="home_phone_ex" class="font16" size="45" min="0" value="${contactUsPotato.customerData.homePhoneExt}" maxlength="6" />
 				</div>
 			</div>
 		</div>
@@ -138,14 +108,7 @@
 		<div class="form-group subject-message-container flex">
 			<div class="form-group subject-container flex">
 				<label for="subject" class="bold inline text-right">Subject</label>
-				<select 
-					class="customsimpleselect" 
-					<fd:ErrorHandler result='<%=result%>' name='subject' id='errorMsg'>aria-describedby="subject_error" </fd:ErrorHandler>
-					name="subject" 
-					id="subject" 
-					required 
-					onchange=""
-				>
+				<select class="customsimpleselect" aria-describedby="subject_error" name="subject" id="subject" required onchange="">
 					<option value="">Select Subject</option>
 					<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
 						<option value="<%= idx %>" <%= idx.intValue() == (Integer)((Map<String, Object>)((Map<String, Object>)pageContext.getAttribute("contactUsPotato")).get("customerData")).get("subjectIndex") ? "selected" : "" %>><%= subject.getDescription() %></option>
@@ -161,16 +124,7 @@
 
 			<div class="form-group message flex">
 				<label for="message" id="msg-textarea-label" class="bold inline">Enter Your Message Here</label>
-				<textarea 
-					id="message" 
-					required 
-					class="font16" 
-					placeholder="Please be specific" 
-					cols="45" 
-					<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>aria-describedby="message_error" </fd:ErrorHandler>
-					rows="5" 
-					name="message" 
-				>${contactUsPotato.customerData.body}</textarea>
+				<textarea id="message" required class="font16" placeholder="Please be specific" cols="45" aria-describedby="message_error" rows="5" name="message" >${contactUsPotato.customerData.body}</textarea>
 				<div id="message_error" class="bold error">
 					<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
 						<%=errorMsg%>

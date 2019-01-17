@@ -20,7 +20,6 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.IConstants;
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.CustomerRatingI;
@@ -31,6 +30,7 @@ import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;

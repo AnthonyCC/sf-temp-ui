@@ -15,10 +15,10 @@
 			<div id="location-modify-order-message" class="modify-order-bar">
 				<div class="modify-order-container">
 					<strong>Modifying Order: </strong>
-					<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEE").format(modifyingOrder_i_modify_order.getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= modifyingOrder_i_modify_order.getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
+					<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEE").format(modifyingOrder_i_modify_order.getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= modifyingOrder_i_modify_order.getDeliveryReservation().getTimeslot().getDisplayString().replaceAll(" ", "").replaceAll("-", " - ") %></span></span>
 					<span class="location-modify-order-btn-cont position-absolute">
 						<span>
-							<a class="cssbutton orange cancel-changes-link" href="javascript:void(0);" role="alertdialog" 
+							<a class="cssbutton whiteborder transparent small cancel-changes-link" href="javascript:void(0);" role="alertdialog" 
 							data-alignpopupfunction="modifyOrderAlign" 
 							data-confirm-data="{&quot;buttons&quot;:[{&quot;id&quot;:&quot;accept&quot;,&quot;class&quot;:&quot;large cssbutton orange&quot;,&quot;name&quot;:&quot;Exit Modifying Order&quot;},{&quot;id&quot;:&quot;deny&quot;,&quot;class&quot;:&quot;large cssbutton green transparent&quot;,&quot;name&quot;:&quot;Nevermind&quot;}]}" 
 							data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" 
@@ -32,9 +32,6 @@
 							</a>
 						</span><span>
 							<a class="cssbutton orange transparent small save-changes-btn" href="/expressco/checkout.jsp">Save Changes</a>
-						</span>
-						<span>
-							<a class="cssbutton orange transparent save-changes-btn" href="/expressco/checkout.jsp">Save Changes</a>
 						</span>
 					</span>
 				</div>

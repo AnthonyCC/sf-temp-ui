@@ -112,7 +112,7 @@ var FreshDirect = window.FreshDirect || {};
             this.data.orderlines = result.orderLines;
             this.data.oderlines = transformCartonNumbersArray(this.data.orderlines);
             this.data.customerServiceContact = result.customerServiceContact;
-            this.data.mealBundles = filterSpecialItems(this.data.orderlines, 'mealBundle');  
+            this.data.mealBundles = filterMealBundles(this.data.orderlines);  
             this.extendedRefresh(this.data);
           } else if (signalSource === "selfcreditresponse") {
             this.close({ currentTarget: this.overlayEl });
@@ -291,14 +291,14 @@ var FreshDirect = window.FreshDirect || {};
     return hasValid;
   }
 
-  function filterSpecialItems(orderlines, key) {
-    var specialItems = [];
+  function filterMealBundles(orderlines) {
+    var mealBundles = [];
     for (var i = 0; i < orderlines.length; i++) {
-      if(orderlines[i][key]) {
-        specialItems.push(orderlines[i]);
+      if(orderlines[i].mealBundle) {
+        mealBundles.push(orderlines[i]);
       }
     }
-    return specialItems;
+    return mealBundles;
   }
 
   function transformCartonNumbersArray(orderlines) {

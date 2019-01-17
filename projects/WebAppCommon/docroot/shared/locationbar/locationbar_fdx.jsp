@@ -691,7 +691,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 <%-- SO ALERTS --%>
 
 	<%	  
-	  if( !isStandingOrders  &&  StandingOrderHelper.isEligibleForSo3_0(user_locationbar_fdx) ) {
+	  if(user_locationbar_fdx.isNewSO3Enabled() && !isStandingOrders) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
 		HashMap<String,Object> soData = StandingOrderHelper.getAllSoData(user_locationbar_fdx, false, false) ;
 		errorSOAlert.put("soData", soData);

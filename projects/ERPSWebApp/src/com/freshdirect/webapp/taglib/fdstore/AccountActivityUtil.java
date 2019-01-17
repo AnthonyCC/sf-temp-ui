@@ -7,7 +7,6 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
@@ -19,14 +18,6 @@ public class AccountActivityUtil implements SessionName {
 		return getActionInfo(session, "");
 	}
 
-	public static FDActionInfo getActionInfo(HttpSession session, FDUserI user) {
-		FDActionInfo info = getActionInfo(session, "");
-		if (info.getIdentity() == null && user != null && user.getIdentity() != null) {
-			info.setIdentity(user.getIdentity());
-		}
-		return info;
-	}
-	
 	public static FDActionInfo getActionInfo(HttpSession session, String note) {
 		EnumTransactionSource src;
 		String initiator="SYSTEM";//default
