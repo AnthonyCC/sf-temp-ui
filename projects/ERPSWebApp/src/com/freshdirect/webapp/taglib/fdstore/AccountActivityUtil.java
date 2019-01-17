@@ -2,6 +2,8 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -11,9 +13,13 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 
+
 public class AccountActivityUtil implements SessionName {
+
+	private static final Category LOGGER = LoggerFactory.getInstance(AccountActivityUtil.class);
 
 	public static FDActionInfo getActionInfo(HttpSession session) {
 		return getActionInfo(session, "");
@@ -23,6 +29,7 @@ public class AccountActivityUtil implements SessionName {
 		FDActionInfo info = getActionInfo(session, "");
 		if (info.getIdentity() == null && user != null && user.getIdentity() != null) {
 			info.setIdentity(user.getIdentity());
+			LOGGER.info("fdActionInfo identity" + info.getIdentity() + ", fdUserId=" + info.getFdUserId());
 		}
 		return info;
 	}
