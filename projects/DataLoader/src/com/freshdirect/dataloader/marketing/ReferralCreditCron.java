@@ -59,8 +59,6 @@ import com.freshdirect.fdstore.ecomm.gateway.FDReferralManagerService;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDReferAFriendCreditEmail;
 import com.freshdirect.fdstore.referral.ReferralPromotionModel;
-import com.freshdirect.fdstore.referral.ejb.FDReferralManagerHome;
-import com.freshdirect.fdstore.referral.ejb.FDReferralManagerSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.mail.EmailAddress;
@@ -103,7 +101,6 @@ public class ReferralCreditCron {
 			CallCenterManagerSB csb = csManagerHome.create();
 			complaintReasons = csb.getComplaintReasons(false);
 		}
-		FDReferralManagerSB sb = null;
 		FDCustomerManagerSB fdsb = null;
 		ActivityLogHome aHome = (ActivityLogHome) ctx
 				.lookup("freshdirect.customer.ActivityLog");
@@ -120,16 +117,8 @@ public class ReferralCreditCron {
 	
 			// List<ReferralPromotionModel> sales = sb.getSettledSales();
 			List<ReferralPromotionModel> sales = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-				sales = FDReferralManagerService.getInstance().getSettledTransaction();
-			} else {
-				if (sb == null) {
-					FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-							.lookup(FDStoreProperties.getFDReferralManagerHome());
-					sb = managerHome.create();
-				}
-				sales = sb.getSettledTransaction();
-			}
+			sales = FDReferralManagerService.getInstance().getSettledTransaction();
+			
 			LOGGER.info(" Sales list of the Advocates :" + sales);
 	
 			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
@@ -143,17 +132,9 @@ public class ReferralCreditCron {
 							.next();
 					String referral_customer_id = model.getRefCustomerId();
 					String referral_max_sale_id =   null;
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-						referral_max_sale_id = FDReferralManagerService.getInstance()
+					referral_max_sale_id = FDReferralManagerService.getInstance()
 								.getLatestSTLSale(referral_customer_id);
-					} else {
-						if (sb == null) {
-							FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-									.lookup(FDStoreProperties.getFDReferralManagerHome());
-							sb = managerHome.create();
-						}
-						referral_max_sale_id = sb.getLatestSTLSale(referral_customer_id);
-					}
+					
 					LOGGER.info(" Advocate Customer ID : " + referral_customer_id);
 				LOGGER.info(" Advocate Settled Sale ID : " + referral_max_sale_id);
 				// System.out.println("cust_sale_id:" + model.getSaleId());
@@ -321,16 +302,8 @@ public class ReferralCreditCron {
 			}
 			// Update the Reward Transaction status
 			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-					FDReferralManagerService.getInstance().updateSetteledRewardTransaction(models);
-				} else {
-					if (sb == null) {
-						FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-								.lookup(FDStoreProperties.getFDReferralManagerHome());
-						sb = managerHome.create();
-					}
-					sb.updateSetteledRewardTransaction(models);
-				}
+				FDReferralManagerService.getInstance().updateSetteledRewardTransaction(models);
+				
 			} catch (NumberFormatException e) {
 				StringWriter sw = new StringWriter();
 				e.printStackTrace(new PrintWriter(sw));
@@ -347,12 +320,8 @@ public class ReferralCreditCron {
 	        ErpCustomerInfoHome ecInfoHome = (ErpCustomerInfoHome) ctx.lookup( FDStoreProperties.getErpCustomerInfoHome() );
 	        LOGGER.info("Starting up now");
 			List<ReferralPromotionModel> sales  = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-				 sales = FDReferralManagerService.getInstance().getSettledSales();
-			}
-			else{
-				sales = sb.getSettledSales();
-			}
+			sales = FDReferralManagerService.getInstance().getSettledSales();
+			
 			LOGGER.info("Got sales list:" + sales);
 			
 			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
@@ -362,7 +331,9 @@ public class ReferralCreditCron {
 				try {
 					ReferralPromotionModel model = (ReferralPromotionModel) salesIter.next();
 					String referral_customer_id = model.getRefCustomerId();
-					String referral_max_sale_id = sb.getLatestSTLSale(referral_customer_id);
+					
+					String referral_max_sale_id = FDReferralManagerService.getInstance()
+							.getLatestSTLSale(referral_customer_id);
 					System.out.println("referral_customer_id:" + referral_customer_id);
 					System.out.println("referral_max_sale_id:" + referral_max_sale_id);
 					System.out.println("cust_sale_id:" + model.getSaleId());
@@ -436,19 +407,9 @@ public class ReferralCreditCron {
 									Double.parseDouble(model.getReferral_fee() + ""));
 						}
 						// save the credit in customer invites
-					    if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-					    	FDReferralManagerService.getInstance().saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
+					    FDReferralManagerService.getInstance().saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
 							 
-					    }
-						else {
-							if (sb == null) {
-								FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-										.lookup(FDStoreProperties.getFDReferralManagerHome());
-								sb = managerHome.create();
-							}
-							sb.saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(),
-									model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
-						}
+					    
 					    //send email to referral
 					    String subject = model.getReferralCreditEmailSubject();
 					    String message = model.getReferralCreditEmailText();
