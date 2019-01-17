@@ -1304,7 +1304,7 @@ private static String convert(Date time) {
 	
 	public static FDUserI setCartOverlayFirstTime(FDUserI user){
 		try{
-			if(user!=null && user.isNewSO3Enabled() && user.isRefreshSoCartOverlay() && user.isCustomerHasStandingOrders()){
+			if(user!=null && null !=user.getIdentity() && user.isNewSO3Enabled() && user.isRefreshSoCartOverlay() && user.isCustomerHasStandingOrders()){
 			ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
 			if(cusotmerInfoModel!=null){
 				user.setSoCartOverlayFirstTime(cusotmerInfoModel.getSoCartOverlayFirstTime()!=null?
