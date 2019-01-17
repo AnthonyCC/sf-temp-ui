@@ -89,17 +89,11 @@ public class SelfCreditOrderDetailsService {
                 item.setBasePriceUnit(productInfo.getDefaultPriceUnit());
                 item.setConfigurationDescription(fdCartLine.getConfigurationDesc());
                 item.setSample(fdCartLine.isSample());
-                item.setFree((null != fdCartLine.getDiscount()) && EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
-                item.setMealBundle(null != product && isItemMealBundle(product));
+                item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
+                item.setMealBundle(null == product ? false : isItemMealBundle(product));
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
+                item.setFinalPrice(collectFinalPrice(deliveredQuantity, fdCartLine));
                 item.setSubstituted(hasSubstitute);
-                
-                double finalPricePerItem = collectFinalPrice(deliveredQuantity, fdCartLine);
-                double taxDepositSumPerItem = collectTaxAndDepositPerItem(fdCartLine, finalPricePerItem, deliveredQuantity);
-                item.setFinalPrice(finalPricePerItem + taxDepositSumPerItem);
-                item.setTaxDepositSum(taxDepositSumPerItem);
-                item.setSavedAmount(fdCartLine.getSaveAmount());
-
                 orderLines.add(item);
 			}
 
@@ -111,7 +105,7 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-    private double collectQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
+	private double collectQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
     	double deliveredQuantity = Double.parseDouble(quantity);
     	
@@ -156,15 +150,6 @@ public class SelfCreditOrderDetailsService {
 		return Double.compare(deliveredQuantity, 0d) == 0 ? 0d : finalPrice/deliveredQuantity;
 	}
 
-    private double collectTaxAndDepositPerItem(FDCartLineI fdCartLine, double finalPricePerItem, double deliveredQuantity) {
-        final double taxRate = fdCartLine.getTaxRate();
-        final double taxValuePerItem = finalPricePerItem * taxRate;
-
-        final double depositValuePerItem = fdCartLine.getDepositValue() / deliveredQuantity;
-
-        return taxValuePerItem + depositValuePerItem;
-    }
-
 	private List<SelfCreditComplaintReason> collectComplaintReasons(
 			Map<String, List<SelfCreditComplaintReason>> complaintReasonMap, String department) {
 		List<SelfCreditComplaintReason> complaintReasons = complaintReasonMap.get(ComplaintUtil.standardizeDepartment(department));
@@ -202,7 +187,7 @@ public class SelfCreditOrderDetailsService {
 
     private boolean isItemMealBundle(ProductModel product) {
     	final boolean mealBundle = CartDataService.defaultService().isMealBundle(product);
-        final boolean componentGroupMeal = null != product.getSpecialLayout() && EnumProductLayout.COMPONENTGROUP_MEAL == product.getSpecialLayout();
+    	final boolean componentGroupMeal = null == product.getSpecialLayout() ? false : EnumProductLayout.COMPONENTGROUP_MEAL.equals(product.getSpecialLayout());
         return  mealBundle || componentGroupMeal;
     }
 
