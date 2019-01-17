@@ -498,7 +498,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			}
 		} catch (FDRuntimeException e){
 			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
+			throw new RemoteException(e.getMessage()+" for "+identity);
 		}
 		return  (FDCustomerShoppingList) ListConverter.buildFDCustomerList(response.getData());
 	}
