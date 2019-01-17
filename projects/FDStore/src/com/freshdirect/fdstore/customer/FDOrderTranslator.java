@@ -106,6 +106,14 @@ public class FDOrderTranslator {
 			if(deliveryReservation!=null)
 				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
 			
+			if(null != cart && null != cart.getOrderLines()){
+				for ( FDCartLineI line : cart.getOrderLines() ) {
+					if(null == line.getPlantId()){
+						LOGGER.warn("PickingPlantId is missing for customer: "+order.getCustomerId()+" and eStore :"+cart.getEStoreId()+", line item:"+line.getOrderLineNumber());
+						line.setPlantId(deliveryInfo.getDeliveryPlantInfo().getPlantId());
+					}
+				}
+			}
 			
 		if (cart.getDeliveryAddress() != null) {
 			deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
