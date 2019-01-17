@@ -181,18 +181,8 @@
                 {/foreach}
               </tbody>
               <tfoot>
-                {if $reviewData.totalTax > 0}
-                  <tr>
-                    <td class="total-tax" colspan="3">Tax: <span class="total-value">${$reviewData.totalTax}</span></td>
-                  </tr>
-                {/if}
-                {if $reviewData.totalPromo > 0}
-                  <tr>
-                    <td class="total-promo" colspan="3">Promo: <span class="total-value">${$reviewData.totalPromo}</span></td>
-                  </tr>
-                {/if}
                 <tr>
-                  <td class="total-credits" colspan="3">Total Store Credit: <span class="total-value">${$reviewData.totalCredit}</span></td>
+                  <td colspan="3">Total Store Credit: ${$reviewData.totalCredit}</td>
                 </tr>
               </tfoot>
             </table>

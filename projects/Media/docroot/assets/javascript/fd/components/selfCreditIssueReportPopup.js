@@ -254,31 +254,18 @@ var FreshDirect = window.FreshDirect || {};
   function getReviewData(data) {
     if (!data || !data.orderlines) return {};
     var totalCredit = 0;
-    var totalTax = 0;
-    var totalPromo = 0;
     var complaintLines = $.grep(data.orderlines, function(line, i) {
       if (line.complaint) {
         line.complaint.price = line.finalPrice * Number(line.complaint.qty);
         totalCredit += line.complaint.price;
         line.complaint.price = parseFloat(line.complaint.price).toFixed(2);
-
-        line.complaint.promo = line.savedAmount * Number(line.complaint.qty);
-        totalPromo += line.complaint.promo;
-        line.complaint.promo = parseFloat(line.complaint.promo).toFixed(2);
-
-        line.complaint.tax = line.taxDepositSum * Number(line.complaint.qty);
-        totalTax += line.complaint.tax;
-        line.complaint.tax = parseFloat(line.complaint.tax).toFixed(2);
-
       }
       return !!line.complaint;
     });
 
     return {
       complaintLines: complaintLines,
-      totalCredit: parseFloat(totalCredit).toFixed(2),
-      totalTax: parseFloat(totalTax).toFixed(2),
-      totalPromo: parseFloat(totalPromo).toFixed(2)
+      totalCredit: parseFloat(totalCredit).toFixed(2)
     };
   }
 
