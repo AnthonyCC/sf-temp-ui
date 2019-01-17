@@ -15,6 +15,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+//import com.bea.common.security.xacml.context.Status;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -718,6 +719,15 @@ public class CheckoutController extends BaseController {
         if(checkResult){
 	        callAvalaraForTax(user);
 	        FDCartModel cartModel = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
+	        
+	        responseMessage = checkDPAvailability(user, request, dlvPassCart,
+					responseMessage);
+            	
+        	if(responseMessage.getStatus()==Message.STATUS_FAILED){
+        		setResponseMessage(model, responseMessage, user);
+                return model;
+        	}
+            
 	        ResultBundle resultBundle = checkout.submitOrder(dlvPassCart);
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
@@ -763,6 +773,41 @@ public class CheckoutController extends BaseController {
         return model;
     }
 
+	private Message checkDPAvailability(SessionUser user,
+			HttpServletRequest request, boolean dlvPassCart,
+			Message responseMessage) throws FDException {
+		responseMessage = new Message();
+		ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession(), dlvPassCart);
+		if (!availabliltyResult.isSuccess()) {
+			if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MAX_PASSES) ||
+			   availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_PASS_EXISTS))
+			{
+				responseMessage.addErrorMessage("Your account already has Delivery Pass enabled, please remove to continue");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_TOO_MANY_PASSES))
+			{
+				responseMessage.addErrorMessage("Too many Delivery Passes added, please choose one and continue");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_NOT_ELIGIBLE))
+			{
+				responseMessage.addErrorMessage("You are not currently eligible for Delivery Passes. Please contact Customer Service");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_PROMOTIONAL_PASS))
+			{
+				responseMessage.addErrorMessage("You are not currently eligible for Delivery Passes. Please contact Customer Service");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MULTIPLE_AUTORENEW_PASSES))
+			{
+				responseMessage.addErrorMessage("You already have a Delivery Pass scheduled to automatically renew. Please remove and continue");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+		}
+		return responseMessage;
+	}
 
     /**
      * @param model
@@ -778,6 +823,15 @@ public class CheckoutController extends BaseController {
 
 	        callAvalaraForTax(user);
 	        FDCartModel cartModel = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
+	        
+	        responseMessage = checkDPAvailability(user, request, dlvPassCart,
+					responseMessage);
+            	
+        	if(responseMessage.getStatus()==Message.STATUS_FAILED){
+        		setResponseMessage(model, responseMessage, user);
+                return model;
+        	}
+        	
 	        ResultBundle resultBundle = checkout.submitOrder(dlvPassCart);
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);

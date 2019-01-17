@@ -10,14 +10,21 @@ public class ErpOrderHistory implements OrderHistoryI {
 
 	private Collection<ErpSaleInfo> erpSaleInfos;
 	private Collection<ErpSaleInfo> erpRegSaleInfos;
+	private Collection<ErpSaleInfo> erpRegSoFutureSaleInfos;
+
 
 	public ErpOrderHistory(Collection<ErpSaleInfo> erpsaleInfos) {
 		this.erpSaleInfos = erpsaleInfos;
 		erpRegSaleInfos=ErpOrderHistoryUtil.filterOrders(this.erpSaleInfos,EnumSaleType.REGULAR);
+		erpRegSoFutureSaleInfos = ErpOrderHistoryUtil.filterSOActiveFutureInstances(this.erpRegSaleInfos);;
 	}
 
 	public Collection<ErpSaleInfo> getErpSaleInfos() {
 		return this.erpSaleInfos;
+	}
+	
+	public Collection<ErpSaleInfo> getErpRegSOFutureSaleInfos() {
+		return this.erpRegSoFutureSaleInfos;
 	}
 	
 	@Override

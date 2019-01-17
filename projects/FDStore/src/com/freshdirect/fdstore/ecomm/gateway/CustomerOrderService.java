@@ -68,10 +68,12 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 
 	@Override
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException {
+		LOGGER.info("GetOrder Begin -- Identity : "+identity.getErpCustomerPK()+"--- SaleId : "+saleId);
 		FDOrderI order = getOrder(saleId);
 		if (!order.getCustomerId().equals(identity.getErpCustomerPK())) {
 			throw new FDResourceException("Sale doesn't belong to customer");
 		}
+		LOGGER.info("GetOrder End -- Order : "+order!=null?order.getSapOrderId():"No Order Found");
 
 		return order;
 	}

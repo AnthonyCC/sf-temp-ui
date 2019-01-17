@@ -7,7 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.deliverypass.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
+<%@ page import="com.freshdirect.framework.util.DateUtil" %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_1_ENTER_TOTAL = 970;

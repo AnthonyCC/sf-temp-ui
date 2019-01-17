@@ -66,7 +66,6 @@ public class FDEcommProperties {
     public final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
     public final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
     public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
-    public final static String TestSupportSB = "test.ejb.TestSupportSB";
     public final static String ErpInfoSB = "erp.ejb.ErpInfoSB";
     public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
     public final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
@@ -168,7 +167,6 @@ public class FDEcommProperties {
         defaults.put(DyfModelSB,FALSE);
         defaults.put(SessionImpressionLogSB ,FALSE);
         defaults.put(RulesManagerSB ,FALSE);
-        defaults.put(TestSupportSB,FALSE);
         defaults.put(ErpInfoSB ,FALSE);
         defaults.put(ErpRoutingGatewaySB ,FALSE);
         defaults.put(FDXOrderPickEligibleSB, FALSE);

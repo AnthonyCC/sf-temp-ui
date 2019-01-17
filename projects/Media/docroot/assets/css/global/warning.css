@@ -1,0 +1,9 @@
+#warningOverlay .overlay-header {
+  background: #f68139;
+  color: black;
+  padding: .2em;
+}
+
+#warningOverlay .overlay-content {
+  font-size: 16px;
+}

@@ -54,7 +54,6 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 		try {
 			return simpleDateFormat.parse(dateTextValue);
 		} catch (Exception e) {
-			LOGGER.warn("Unparseable date: "+dateTextValue, e);
 			return null;
 		}
 

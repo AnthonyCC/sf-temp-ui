@@ -246,6 +246,7 @@ public interface SystemMessageList {
     public final static String MSG_EMAIL_PREFERENCE_LEVEL_LENGTH = "Please enter an email preference level that is one character long.";
     public final static String MSG_EMAIL_PREFERENCE_LEVEL_NUMBER = "Please enter an email preference level that contains only numeric characters.";
 
+    public final static String MSG_CANNOT_MODIFY_MAKE_GOOD_ORDER = "Customers may not modify orders in this state: Make Good. Please contact Customer Service.";
 /*	//APPDEV-5516 Cart Carousel - Grand Giving Donation Technology
 	public final static String MSG_CONTAINS_DONATION_PRODUCTS_ONLY = "We're sorry, you need to have one or more deliverable item(s) in the cart to make a charity donation.";*/
 }

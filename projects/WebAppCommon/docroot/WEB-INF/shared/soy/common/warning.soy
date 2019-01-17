@@ -1,0 +1,19 @@
+{namespace common}
+
+/**
+ * @param data
+ */
+{template .warning autoescape="false"}
+<div id="warningMessage" tabindex="1">
+  {if $data.primaryMessage}
+  <div class="warning-primary">
+    <b>{$data.primaryMessage}</b>
+  </div>
+  {/if}
+  {if $data.secondaryMessage}
+  <div class="warning-secondary">
+    {$data.secondaryMessage}
+  </div>
+  {/if}
+</div>
+{/template}
