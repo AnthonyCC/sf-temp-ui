@@ -115,7 +115,7 @@
 			<div id="help-page">
 				<div id="helpcenter">
 				<div class="help help--top-bar flex">
-					<div class="help help-center--container">
+          <div class="help help-center--container ${selfcredit && !creditRestricted ? '' : 'help-center--container-centered'}">
 						<h1 class="help-center--header bold">Help Center</h1>
 						<% if(user.isChefsTable()) {%>
 							<p class="help-center--subheader font16">Dedicated Chef's Table specialists are standing by to help.</p>

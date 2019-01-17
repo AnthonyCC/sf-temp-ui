@@ -10,12 +10,10 @@
 	{if $type=='simpleToggle'}
 		<input type="checkbox" aria-label="{$item.productName}" data-component="productToggle" checked="checked" />
 	{/if}
-	{if $type=='simpleBRD'}<div class="itemlist-item-productimage_wrapper-cont">{/if}
-		<div class="itemlist-item-productimage_wrapper">
-			<div class="itemlist-item-burst_wrapper">
-				<a href="{$item.productPageUrl}"><img src="{if $item.productDetailImage}{$item.productDetailImage}{else}{$item.productImage}{/if}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-			</div>
+	<div class="itemlist-item-productimage_wrapper">
+		<div class="itemlist-item-burst_wrapper">
+			<a href="{$item.productPageUrl}"><img src="{if $item.productDetailImage}{$item.productDetailImage}{else}{$item.productImage}{/if}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
+			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
 		</div>
 	{if $type=='simpleBRD'}</div>{/if}
 	<div class="itemlist-item-header">

@@ -195,6 +195,8 @@ public class CheckoutService {
 		}
 
         if (user.isCorporateUser()) {
+        	// clearing the futureSO instances cahce
+        	user.getUpcomingSOinstances().clear();
             // billing reference is optional
             if (StringUtils.isNotBlank(billingReference)) {
                 // validate billing reference
@@ -225,6 +227,8 @@ public class CheckoutService {
 					}*/
                     outcome = CheckoutControllerTag.performSubmitOrder(user, actionName, actionResult, session, request, response, CheckoutControllerTag.AUTHORIZATION_CUTOFF_PAGE,
                             null, null, null, dlvPassCart);
+                    LOGGER.info("place order for customer " + (user != null? user.getUserId() : "") + " outcome=" + outcome);
+					
                     // makegood phase
     				MasqueradeContext masqueradeContext = user.getMasqueradeContext();
     				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
@@ -264,7 +268,10 @@ public class CheckoutService {
 					((FDSessionUser) user).saveCart(true);
 				}
 				if (Action.SUCCESS.equalsIgnoreCase(outcome)) {
+					
 					String orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+					LOGGER.info("place order success for customer " + (user != null? user.getUserId() : "") + ", orderId=" + orderId);
+					
                     responseData.getSubmitForm().getResult().put(SinglePageCheckoutFacade.REDIRECT_URL_JSON_KEY, "/expressco/success.jsp?orderId=" + orderId);
 					responseData.getSubmitForm().setSuccess(true);
 

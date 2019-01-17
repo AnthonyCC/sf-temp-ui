@@ -1,15 +1,22 @@
 package com.freshdirect.cms.ui.editor.domain;
 
+import static com.freshdirect.cms.core.domain.ContentType.Banner;
+import static com.freshdirect.cms.core.domain.ContentType.Category;
+import static com.freshdirect.cms.core.domain.ContentType.Department;
 import static com.freshdirect.cms.core.domain.ContentType.ErpCharacteristic;
+import static com.freshdirect.cms.core.domain.ContentType.ErpCharacteristicValue;
 import static com.freshdirect.cms.core.domain.ContentType.ErpClass;
 import static com.freshdirect.cms.core.domain.ContentType.ErpSalesUnit;
+import static com.freshdirect.cms.core.domain.ContentType.ImageBanner;
+import static com.freshdirect.cms.core.domain.ContentType.Module;
+import static com.freshdirect.cms.core.domain.ContentType.Section;
+import static com.freshdirect.cms.core.domain.ContentType.Store;
 import static com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport.booleanAttribute;
 import static com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport.doubleAttribute;
 import static com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport.integerAttribute;
 import static com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport.linkManyOf;
 import static com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport.stringAttribute;
 
-import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.Scalar;
 
@@ -88,7 +95,7 @@ public final class VirtualAttributes {
             .readOnly()
             .build();
 
-        public static final Relationship values = (Relationship) linkManyOf(ContentType.ErpCharacteristicValue).toName("values")
+        public static final Relationship values = (Relationship) linkManyOf(ErpCharacteristicValue).toName("values")
             .readOnly()
             .build();
     }
@@ -105,10 +112,33 @@ public final class VirtualAttributes {
 
     public static final class Category {
 
-        public static final Relationship consumedByVirtualCategory = (Relationship) linkManyOf(ContentType.Category).toName("consumedByVirtualCategory").readOnly().build();
-        public static final Relationship consumedByDepartmentCarousel = (Relationship) linkManyOf(ContentType.Department).toName("consumedByDepartmentCarousel").readOnly()
+        public static final Relationship consumedByVirtualCategory = (Relationship) linkManyOf(Category).toName("consumedByVirtualCategory")
+                .readOnly()
                 .build();
-        public static final Relationship consumedByCategoryCarousel = (Relationship) linkManyOf(ContentType.Category).toName("consumedByCategoryCarousel").readOnly().build();
-        public static final Relationship consumedByStoreCarousel = (Relationship) linkManyOf(ContentType.Store).toName("consumedByStoreCarousel").readOnly().build();
+        public static final Relationship consumedByDepartmentCarousel = (Relationship) linkManyOf(Department).toName("consumedByDepartmentCarousel")
+                .readOnly()
+                .build();
+        public static final Relationship consumedByCategoryCarousel = (Relationship) linkManyOf(Category).toName("consumedByCategoryCarousel")
+                .readOnly()
+                .build();
+        public static final Relationship consumedByStoreCarousel = (Relationship) linkManyOf(Store).toName("consumedByStoreCarousel")
+                .readOnly()
+                .build();
+
+        public static final Relationship consumedBySection = (Relationship) linkManyOf(Section).toName("consumedBySection")
+                .readOnly()
+                .build();
+        public static final Relationship consumedByImageBanner = (Relationship) linkManyOf(ImageBanner).toName("consumedByImageBanner")
+                .readOnly()
+                .build();
+        public static final Relationship consumedByTabletFeaturedCategories = (Relationship) linkManyOf(Category).toName("consumedByTabletFeaturedCategories")
+                .readOnly()
+                .build();
+        public static final Relationship consumedByModule = (Relationship) linkManyOf(Module).toName("consumedByModule")
+                .readOnly()
+                .build();
+        public static final Relationship consumedByBanner = (Relationship) linkManyOf(Banner).toName("consumedByBanner")
+                .readOnly()
+                .build();
     }
 }

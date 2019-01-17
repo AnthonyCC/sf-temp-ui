@@ -23,7 +23,7 @@ var FreshDirect = FreshDirect || {};
 			value: quickshop.ordersQS22
 		},
 		placeholder:{
-			value:'#orders .orders-list'
+			value:'#orders .orders-list-cont'
 		},
 		serialize:{
 			value:function(element){

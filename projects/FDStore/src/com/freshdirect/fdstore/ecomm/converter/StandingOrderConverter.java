@@ -200,6 +200,9 @@ public class StandingOrderConverter {
 		if(standingOrder.getStartTime() != null)
 		standingOrderData.setStartTime(standingOrder.getStartTime().getTime());
 		standingOrderData.setTipAmount(standingOrder.getTipAmount());
+		standingOrderData.setTimeSlotId(standingOrder.getTimeSlotId());
+		standingOrderData.setReservedDayOfweek(standingOrder.getReservedDayOfweek());
+		standingOrderData.setZone(standingOrder.getZone());
 		return standingOrderData;
 		}
 		return null ; 

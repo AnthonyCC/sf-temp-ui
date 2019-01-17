@@ -16,8 +16,6 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import weblogic.wsee.util.StringUtil;
-
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.ejb.CrmManagerHome;
 import com.freshdirect.crm.ejb.CrmManagerSB;
@@ -36,6 +34,7 @@ import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.ExpiringReference;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 

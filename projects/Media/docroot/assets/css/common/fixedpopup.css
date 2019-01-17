@@ -53,7 +53,7 @@
 }
 
 .fixedpopup .qs-popup-content {
-	padding: 15px 30px;
+	padding:0 20px 15px 15px;
 	overflow:auto;
 	display:inline-block;
 	overflow-y:auto;
@@ -286,7 +286,7 @@
   left:0;
   right: 0;
   margin: 0 auto;
-  max-height: 100%;
+  max-height:100%;
 }
 
 [data-ismobweb="true"] .qs-popup-close-icon, [data-ismobweb="true"] .close-icon {

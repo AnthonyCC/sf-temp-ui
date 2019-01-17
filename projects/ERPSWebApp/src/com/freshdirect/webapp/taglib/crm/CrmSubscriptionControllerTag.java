@@ -23,7 +23,6 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -34,6 +33,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -165,7 +165,7 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
 					if (arSKU != null){
 						//this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address);
-						FDCartModel cart=DeliveryPassRenewalCron.getCart(arSKU, paymentMethod, address, user.getIdentity().getErpCustomerPK(),user.getUserContext());
+						FDCartModel cart=DeliveryPassUtil.getCart(arSKU, paymentMethod, address, user.getIdentity().getErpCustomerPK(),user.getUserContext());
 						session.setAttribute("SUBSCRIPTION_CART", cart);
 						
 					}else{
