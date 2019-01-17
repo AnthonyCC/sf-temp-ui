@@ -494,7 +494,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GENEARATE_ITEM_EVER_ORDERED+identity.getErpCustomerPK()),  new TypeReference<Response<FDCustomerListData>>(){});
 			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
+				throw new FDResourceException(response.getMessage()+" for "+identity);
 			}
 		} catch (FDRuntimeException e){
 			LOGGER.error(e.getMessage());
