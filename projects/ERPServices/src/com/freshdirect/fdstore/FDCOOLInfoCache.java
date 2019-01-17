@@ -10,6 +10,7 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ecomm.gateway.CountryOfOriginService;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.framework.util.DateUtil;
@@ -36,7 +37,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		Map<ErpCOOLKey, ErpCOOLInfo> data = new HashMap<ErpCOOLKey, ErpCOOLInfo>();
 		try {
 
-			data = FDECommerceService.getInstance().getCountryOfOriginData(since);
+			data = CountryOfOriginService.getInstance().getCountryOfOriginData(since);
 
 			LOGGER.info("FDCOOLInfoCache REFRESHED: " + data.size());
 			return data;

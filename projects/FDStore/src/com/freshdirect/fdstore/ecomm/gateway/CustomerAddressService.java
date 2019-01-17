@@ -22,7 +22,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerAddressService extends AbstractEcommService implements CustomerAddressServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(CustomerAddressService.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(CustomerAddressService.class);
 
 	private static final String ASSUME_DELIVERY_ADDRESS = "customerAddress/assumeDeliveryAddress";
 	private static final String GET_PARENT_ORDER_ADDRESS_ID = "customerAddress/parentOrderAddressId";

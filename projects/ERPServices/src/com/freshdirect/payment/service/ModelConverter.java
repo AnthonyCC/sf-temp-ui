@@ -122,7 +122,6 @@ import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
-import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
@@ -190,8 +189,6 @@ import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.erp.EnumProductApprovalStatus;
-import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
@@ -412,58 +409,6 @@ public class ModelConverter {
 		return l;
 	}
 
-	public static Map<ErpCOOLKey, ErpCOOLInfo> buildCoolModel(
-			List<CountryOfOriginData> list) {
-		Map<ErpCOOLKey, ErpCOOLInfo> erpCOOLInfo=new HashMap<ErpCOOLKey, ErpCOOLInfo>();
-		ErpCOOLInfo info=null;
-		ErpCOOLKey key=null;
-		for(CountryOfOriginData data: list) {
-			if(erpCOOLInfo==null)
-				erpCOOLInfo=new HashMap<ErpCOOLKey, ErpCOOLInfo>();
-			info=new ErpCOOLInfo(data.getSapID(),data.getSapDesc(),getCountryInfo(data.getCountry1(),data.getCountry2(),data.getCountry3(),data.getCountry4(),data.getCountry5()),data.getLastModifiedDate(),data.getPlantId());
-			key= new ErpCOOLKey(info.getSapID(),info.getPlantId());
-			erpCOOLInfo.put(key, info);
-		}
-		return erpCOOLInfo;
-	}
-	private static List<String> getCountryInfo(String country1, String country2, String country3, String country4, String country5) {
-		List<String> countryInfo=new ArrayList<String>(3);
-		if(!StringUtil.isEmpty(country1))
-			countryInfo.add(country1);
-		if(!StringUtil.isEmpty(country2))
-			countryInfo.add(country2);
-		if(!StringUtil.isEmpty(country3))
-			countryInfo.add(country3);
-		if(!StringUtil.isEmpty(country4))
-			countryInfo.add(country4);
-		if(!StringUtil.isEmpty(country5))
-			countryInfo.add(country5);
-		return countryInfo;
-	}
-
-	public static List<CountryOfOriginData> buildCoolModelData(
-			List<ErpCOOLInfo> erpCOOLInfoList) {
-		List<CountryOfOriginData> data = new ArrayList();
-		for(ErpCOOLInfo erpCOOLInfo: erpCOOLInfoList){
-			int size = erpCOOLInfo.getCountryInfo().size();
-			CountryOfOriginData cooData = new CountryOfOriginData(
-					erpCOOLInfo.getSapID(),
-					erpCOOLInfo.getSapID(),
-					erpCOOLInfo.getSapDesc(),
-					erpCOOLInfo.getPlantId(),
-					erpCOOLInfo.getCountryInfo().get(0).toString(),
-					erpCOOLInfo.getCountryInfo().get(1).toString(),
-					erpCOOLInfo.getCountryInfo().get(2).toString(),
-					erpCOOLInfo.getCountryInfo().get(3).toString(),
-					erpCOOLInfo.getCountryInfo().get(4).toString(),
-					erpCOOLInfo.getCountryInfo(),
-					erpCOOLInfo.getLastModifiedDate());
-			data.add(cooData);
-			}			
-
-		return data;
-	}
-	
 	public static Request<SmsOrderData> buildSmsOrderDataRequest(String customerId,
 			String mobileNumber, String orderId, String eStoreId) {
 		Request<SmsOrderData> request = new Request<SmsOrderData>();
