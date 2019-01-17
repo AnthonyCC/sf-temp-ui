@@ -69,19 +69,20 @@ public class SelfCreditOrderDetailsService {
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
             final boolean isDeliveryPass = fdCartLine.lookupFDProduct().isDeliveryPass();
-            final double displayQuantity = collectDisplayQuantity(fdCartLine, creditedQuantities);
+            final boolean hasSubstitute = null != fdCartLine.getInvoiceLine() && null != fdCartLine.getInvoiceLine().getSubstituteProductName();
+        	
+        	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
+            ProductModel product = hasSubstitute ? PopulatorUtil.getProduct(fdCartLine.getInvoiceLine().getSubstitutedSkuCode()) : fdCartLine.lookupProduct();
+            BasicProductData productData = null != product ? ProductDetailPopulator.populateProductAndBrandName(new ProductData(), product) : null;
+        	
+    		double deliveredQuantity = collectQuantity(fdCartLine, creditedQuantities);
 
-            if (!isDeliveryPass && Double.compare(displayQuantity, 0d) > 0) {
-                final boolean hasSubstitute = null != fdCartLine.getInvoiceLine() && null != fdCartLine.getInvoiceLine().getSubstituteProductName();
-                FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
-                ProductModel product = hasSubstitute ? PopulatorUtil.getProduct(fdCartLine.getInvoiceLine().getSubstitutedSkuCode()) : fdCartLine.lookupProduct();
-                BasicProductData productData = null != product ? ProductDetailPopulator.populateProductAndBrandName(new ProductData(), product) : null;
-
-                SelfCreditOrderItemData item = new SelfCreditOrderItemData();
+            if (!isDeliveryPass && Double.compare(deliveredQuantity, 0d) > 0) {
+            	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == productData) ? "" : productData.getBrandName());
                 item.setProductName(null == productData ? "" : productData.getProductNameNoBrand());
-                item.setQuantity(displayQuantity);
+                item.setQuantity(deliveredQuantity);
                 item.setProductImage((null == product) ? "" : product.getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
@@ -93,7 +94,6 @@ public class SelfCreditOrderDetailsService {
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
                 item.setSubstituted(hasSubstitute);
                 
-                double deliveredQuantity = collectDeliveredQuantity(fdCartLine);
                 double finalPricePerItem = collectFinalPrice(deliveredQuantity, fdCartLine);
                 double taxDepositSumPerItem = collectTaxAndDepositPerItem(fdCartLine, finalPricePerItem, deliveredQuantity);
                 item.setFinalPrice(finalPricePerItem + taxDepositSumPerItem);
@@ -111,13 +111,7 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-    private double collectDeliveredQuantity(FDCartLineI fdCartLine) {
-        String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
-        double deliveredQuantity = Double.parseDouble(quantity);
-        return roundSelfCreditItemQuantity(deliveredQuantity);
-    }
-
-    private double collectDisplayQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
+    private double collectQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
     	double deliveredQuantity = Double.parseDouble(quantity);
     	
@@ -125,12 +119,8 @@ public class SelfCreditOrderDetailsService {
     	double creditedQuantity = creditedQuantities.containsKey(orderLineId) ? creditedQuantities.get(orderLineId) : 0d;
     	
     	double displayQuantity = deliveredQuantity - creditedQuantity;
-        return roundSelfCreditItemQuantity(displayQuantity);
+    	return  Double.compare(displayQuantity, 0d) == 0 ? 0d : (Double.compare(Math.floor(displayQuantity), 0d) == 0 ? 1d : Math.floor(displayQuantity));
 	}
-
-    private double roundSelfCreditItemQuantity(double quantity) {
-        return Double.compare(quantity, 0d) == 0 ? 0d : (Double.compare(Math.floor(quantity), 0d) == 0 ? 1d : Math.floor(quantity));
-    }
 
 	private Map<String, Double> collectApprovedComplaintQuantity(Collection<ErpComplaintModel> complaints) {
 		Map<String, Double> creditedQuantitiesByOrderLineId = new HashMap<String, Double>();
