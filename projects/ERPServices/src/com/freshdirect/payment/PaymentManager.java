@@ -100,16 +100,8 @@ public class PaymentManager {
 	public void captureAuthorization(String saleId) throws ErpTransactionException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
 				PaymentsService.getInstance().captureAuthorization(saleId);
-			}
-			else{
-				if (paymentHome == null) {
-					getPaymentHome();
-				}
-				PaymentSB paymentSB = paymentHome.create();
-				paymentSB.captureAuthorization(saleId);
-			}
+			
 			
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());
@@ -147,17 +139,10 @@ public class PaymentManager {
 	}
 
 	public void voidCaptures(String saleId) throws ErpTransactionException {
-		
+
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)) {
-				PaymentsService.getInstance().voidCaptures(saleId);
-			} else {
-				if (paymentHome == null) {
-					getPaymentHome();
-				}
-				PaymentSB paymentSB = paymentHome.create();
-				paymentSB.voidCaptures(saleId);
-			}
+			PaymentsService.getInstance().voidCaptures(saleId);
+
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());
 		}
