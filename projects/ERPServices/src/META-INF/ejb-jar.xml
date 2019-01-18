@@ -319,27 +319,6 @@ version="3.0">
       </resource-env-ref>
     </session>
     <session>
-      <ejb-name>GatewayActivityLog</ejb-name>
-      <home>
-      com.freshdirect.payment.ejb.GatewayActivityLogHome</home>
-      <remote>
-      com.freshdirect.payment.ejb.GatewayActivityLogSB</remote>
-      <ejb-class>
-      com.freshdirect.payment.ejb.GatewayActivityLogSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jms/QueueFactory</res-ref-name>
-        <res-type>javax.jms.QueueConnectionFactory</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-      <resource-env-ref>
-        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
-        <resource-env-ref-type>
-        javax.jms.Queue</resource-env-ref-type>
-      </resource-env-ref>
-    </session>
-    <session>
       <ejb-name>ErpInfo</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpInfoHome</home>
       <remote>com.freshdirect.erp.ejb.ErpInfoSB</remote>
@@ -1623,11 +1602,6 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>logActivityNewTX</method-name>
       </method>
-       <method>
-                <ejb-name>GatewayActivityLog</ejb-name>
-                <method-intf>Remote</method-intf>
-                <method-name>logActivity</method-name>
-       </method>
       <trans-attribute>RequiresNew</trans-attribute>
     </container-transaction>
     <!--
