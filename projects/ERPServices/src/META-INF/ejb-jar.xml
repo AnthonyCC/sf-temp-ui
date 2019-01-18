@@ -21,23 +21,6 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
-  
-  
-  
-    <session>
-      <ejb-name>BINInfoManager</ejb-name>
-      <home>com.freshdirect.payment.ejb.BINInfoManagerHome</home>
-      <remote>com.freshdirect.payment.ejb.BINInfoManagerSB</remote>
-      <ejb-class>
-      com.freshdirect.payment.ejb.BINInfoManagerSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
     <session>
       <ejb-name>FDFactory</ejb-name>
       <home>com.freshdirect.fdstore.ejb.FDFactoryHome</home>

@@ -24,22 +24,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     </weblogic-enterprise-bean>
     
     <weblogic-enterprise-bean>
-      <ejb-name>BINInfoManager</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>1</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.payment.BINInfoManager</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
       <ejb-name>CMSManager</ejb-name>
       <stateless-session-descriptor>
         <pool>
@@ -1630,14 +1614,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <isolation-level>TransactionReadCommitted</isolation-level>
       <method>
         <ejb-name>CouponActivityLog</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-    </transaction-isolation>
-    <transaction-isolation>
-      <isolation-level>TransactionReadCommitted</isolation-level>
-      <method>
-        <ejb-name>BINInfoManager</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>

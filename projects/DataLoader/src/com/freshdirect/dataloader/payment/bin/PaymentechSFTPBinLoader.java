@@ -2,26 +2,18 @@ package com.freshdirect.dataloader.payment.bin;
 //com.freshdirect.dataloader.payment.bin.PaymentechSFTPBinLoader
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -39,14 +31,10 @@ import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.FileContext;
 import com.freshdirect.dataloader.payment.PaymentFileType;
 import com.freshdirect.dataloader.payment.SFTPFileProcessor;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
-import com.freshdirect.payment.ejb.BINInfoManagerHome;
-import com.freshdirect.payment.ejb.BINInfoManagerSB;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -225,12 +213,8 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		binInfos.add(mcBINInfo);
 		
 		
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.BINInfoManagerSB)){
-			FDECommerceService.getInstance().saveBINInfo(binInfos);
-		}else {
-		BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();
-		binInfoManagerSB.saveBINInfo(binInfos);
-		}
+		FDECommerceService.getInstance().saveBINInfo(binInfos);
+		
 	}
 	
 	private static FileContext getFileContext(String[] args) {
@@ -293,24 +277,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 			_tmpFileTwo.renameTo(mcBinFile);
 	}
 	
-	
-	
-	public static BINInfoManagerHome lookupBINInfoManagerHome() throws EJBException {
-		Context ctx = null;
-		try {
-			ctx = getInitialContext();
-			return (BINInfoManagerHome) ctx.lookup("freshdirect.payment.BINInfoManager");
-		} catch (NamingException ex) {
-			throw new EJBException(ex);
-		} finally {
-			try {
-				if (ctx != null)
-					ctx.close();
-			} catch (NamingException ne) {
-				LOGGER.debug(ne);
-			}
-		}
-	}
+
 	static public Context getInitialContext() throws NamingException {
 		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
