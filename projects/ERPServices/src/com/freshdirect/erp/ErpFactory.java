@@ -33,8 +33,6 @@ import com.freshdirect.erp.ejb.BatchManagerHome;
 import com.freshdirect.erp.ejb.BatchManagerSB;
 import com.freshdirect.erp.ejb.ErpClassEB;
 import com.freshdirect.erp.ejb.ErpClassHome;
-import com.freshdirect.erp.ejb.ErpGrpInfoHome;
-import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.ejb.ErpProductEB;
@@ -676,45 +674,15 @@ public class ErpFactory {
 		}
 	}
 	
-	private ErpGrpInfoHome erpGrpInfoHome = null;
-
+	
 	public Collection<FDGroup> findGrpsForMaterial(String matId) throws FDResourceException {
-		if (erpGrpInfoHome == null) {
-			lookupGrpInfoHome();
-		}
+		
 		try {
-			ErpGrpInfoSB remote = erpGrpInfoHome.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpGrpInfoSB")){
-
+			
 				return FDECommerceService.getInstance().findGrpsForMaterial(matId);
-			}else{
-				return remote.findGrpsForMaterial(matId);
-			}
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
+			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
-		}
-	}
-	
-	private void lookupGrpInfoHome() throws FDResourceException {
-		if (erpGrpInfoHome != null) {
-			return;
-		}
-		Context ctx = null;
-		try {
-			ctx = ErpServicesProperties.getInitialContext();
-			erpGrpInfoHome = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				ne.printStackTrace();
-			}
 		}
 	}
 	

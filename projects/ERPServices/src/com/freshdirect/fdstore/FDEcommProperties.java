@@ -33,7 +33,6 @@ public class FDEcommProperties {
     private final static String FALSE="false";
     public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
     public final static String GatewayActivityLog ="payment.ejb.GatewayActivityLogSB";
-    public final static String ErpGrpInfoSB = "erp.ejb.ErpGrpInfoSB";
     public static final String EnumManagerSB = "enums.ejb.EnumManagerSB";
     public final static String SapGrpInfoLoaderSB = "sap.ejb.SapGrpInfoLoaderSB";
     public final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
@@ -56,7 +55,6 @@ public class FDEcommProperties {
     public final static String FDSurveySB = "survey.ejb.FDSurveySB";
     public final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
-    public final static String FDGrpInfoSB = "grp.ejb.FDGrpInfoSB";
     public final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
     public final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
     public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
@@ -124,7 +122,6 @@ public class FDEcommProperties {
         defaults.put(ProductFeedSB,FALSE);
         defaults.put(SaleCronSB,FALSE);
         defaults.put(GatewayActivityLog,FALSE);
-        defaults.put(ErpGrpInfoSB,FALSE);
         defaults.put(EnumManagerSB,FALSE);
         defaults.put(SapGrpInfoLoaderSB,FALSE);
         defaults.put(ErpInventoryManagerSB ,FALSE);
@@ -147,7 +144,6 @@ public class FDEcommProperties {
         defaults.put(ErpEWalletSB ,FALSE);
         defaults.put(FDSurveySB ,FALSE);
         defaults.put(ExternalAccountManagerSB ,FALSE);
-        defaults.put(FDGrpInfoSB ,FALSE);
         defaults.put(DyfModelSB,FALSE);
         defaults.put(SessionImpressionLogSB ,FALSE);
         defaults.put(RulesManagerSB ,FALSE);

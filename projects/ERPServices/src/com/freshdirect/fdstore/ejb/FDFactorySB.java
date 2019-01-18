@@ -2,7 +2,7 @@
  * $Workfile$
  *
  * $Date$
- *
+ * 
  * Copyright (c) 2001 FreshDirect, Inc.
  *
  */
@@ -71,31 +71,12 @@ public interface FDFactorySB extends EJBObject {
 	@Deprecated public ErpZoneMasterInfo getZoneInfo(String zoneId) throws RemoteException, FDResourceException;
 
 	@Deprecated public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
-
-
 	
-	
-	@Deprecated public GroupScalePricing getGrpInfo(FDGroup group) throws RemoteException, FDGroupNotFoundException, FDResourceException;
-
 	@Deprecated public ErpProductFamilyModel getFamilyInfo(String familyId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
 
-	@Deprecated public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException;
-
-	@Deprecated public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws RemoteException, FDResourceException;
-
 	
-	@Deprecated public FDGroup getLatestActiveGroup(String groupId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
 	@Deprecated public ErpProductFamilyModel getSkuFamilyInfo(String materialId)throws RemoteException, FDGroupNotFoundException, FDResourceException;
 
-	@Deprecated public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws RemoteException, FDResourceException;
-	/**
-	 * Method to get all groups modified after lastModified time
-	 * @param lastModified
-	 * @return
-	 * @throws FDResourceException
-	 * @throws RemoteException
-	 */
-	@Deprecated public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException, RemoteException;
 	@Deprecated
 	public Set<String> getModifiedSkus(long lastModified) throws FDResourceException, RemoteException;
 }

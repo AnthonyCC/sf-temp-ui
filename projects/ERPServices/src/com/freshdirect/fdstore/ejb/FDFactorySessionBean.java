@@ -4,9 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.CreateException;
@@ -22,8 +20,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.erp.ejb.ErpGrpInfoHome;
-import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
@@ -34,14 +30,12 @@ import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -62,7 +56,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 
 	private transient ErpProductHome productHome = null;
 	private transient ErpZoneInfoHome zoneHome = null;
-	private transient ErpGrpInfoHome grpHome = null;
 
 	private transient ErpMaterialHome materialHome = null;
 
@@ -76,22 +69,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	    return ERPServiceLocator.getInstance().getErpInfoSessionBean();
 	}
 
-	public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException{
-		if (this.grpHome==null) {
-			this.lookupGrpInfoHome();
-		}
-		try {
-			// find ErpProduct by sku & version
-			ErpGrpInfoSB infoSB = grpHome.create();
-		    return infoSB.getFilteredSkus(skuList);
-
-		} catch (CreateException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			this.productHome=null;
-			throw new FDResourceException(re);
-		}
-	}
 	/**
 	 * Get current product information object for multiple SKUs.
 	 *
@@ -244,34 +221,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 
 
 
-	/**
-	 * Get product with specified version.
-	 *
-	 * @param sku SKU code
-	 * @param version requested version
-	 *
-	 * @return FDProduct object
-	 *
-	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
-	 */
-	public GroupScalePricing getGrpInfo(FDGroup group) throws FDGroupNotFoundException, FDResourceException {
-		if (this.grpHome==null) {
-			this.lookupGrpInfoHome();
-		}
-		try {
-			// find ErpProduct by sku & version
-
-			ErpGrpInfoSB infoSB = grpHome.create();
-			return infoSB.findGrpInfoMaster(group);
-
-		} catch (CreateException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			this.productHome=null;
-			throw new FDResourceException(re);
-		}
-    }
-
+	
 	public ErpProductFamilyModel getFamilyInfo(String familyId) throws FDGroupNotFoundException, FDResourceException {
 		if (this.familyHome==null) {
 			this.lookupFamilyInfoHome();
@@ -308,33 +258,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
     }
 
-	/**
-	 * Get product with specified version.
-	 *
-	 * @param sku SKU code
-	 * @param version requested version
-	 *
-	 * @return FDProduct object
-	 *
-	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
-	 */
-	public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws FDResourceException {
-		if (this.grpHome==null) {
-			this.lookupGrpInfoHome();
-		}
-		try {
-			// find ErpProduct by sku & version
-			ErpGrpInfoSB infoSB = grpHome.create();
-		    return infoSB.findGrpInfoMaster(grpIds);
-
-		} catch (CreateException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			this.productHome=null;
-			throw new FDResourceException(re);
-		}
-    }
-
+	
 
 	private void lookupProductHome() throws FDResourceException {
 		Context ctx = null;
@@ -360,28 +284,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		try {
 			ctx = FDStoreProperties.getInitialContext();
 			zoneHome = (ErpZoneInfoHome) ctx.lookup("freshdirect.erp.ZoneInfoManager");
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				ne.printStackTrace();
-			}
-		}
-	}
-
-
-    private  void lookupGrpInfoHome() throws FDResourceException {
-		if (grpHome != null) {
-			return;
-		}
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			grpHome = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {
@@ -442,63 +344,12 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		// nothing required
 	}
 
-	public FDGroup  getLatestActiveGroup(String groupId) throws FDGroupNotFoundException, FDResourceException {
-		if (this.grpHome==null) {
-			this.lookupGrpInfoHome();
-		}
-		try {
-			// find ErpProduct by sku & version
-
-			ErpGrpInfoSB infoSB = grpHome.create();
-			return infoSB.getLatestActiveGroup(groupId);
-
-		} catch (CreateException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			this.productHome=null;
-			throw new FDResourceException(re);
-		}
-    }
-
 	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws FDResourceException {
 		// create FDProductInfo
 		return this.productHelper.getFDProductInfoNew(erpProdInfo);//::FDX::
 	}
 
-	public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws FDResourceException {
-		if (this.grpHome==null) {
-			this.lookupGrpInfoHome();
-		}
-
-		try {
-			ErpGrpInfoSB infoSB = grpHome.create();
-			return infoSB.getGroupIdentityForMaterial(matId);
-
-		} catch (CreateException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			this.productHome=null;
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException{
-		if (this.grpHome==null) {
-			this.lookupGrpInfoHome();
-		}
-
-		try {
-			ErpGrpInfoSB infoSB = grpHome.create();
-			return infoSB.getModifiedOnlyGroups(lastModified);
-
-		} catch (CreateException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			this.productHome=null;
-			throw new FDResourceException(re);
-		}
-	}
-
+	
 	public Set<String> getModifiedSkus(long lastModified) throws FDResourceException {
 		try {
 			ErpInfoSB infoSB = this.getErpInfoSB();
