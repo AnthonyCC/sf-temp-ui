@@ -643,6 +643,9 @@ li.cleanli .gen-arrow {
 		display: block;
 		margin: 6px auto;
 	}
+	#MBRDPopup1 .qs-popup-content {
+		/* padding-top: 15px; */
+	}
 	#MBRDPopup2.BRD-popup-container .qs-popup {
 		width: 95%;
 		max-width: 950px;
@@ -654,6 +657,9 @@ li.cleanli .gen-arrow {
 	#MBRDPopup2 .itemlist-item-header {
 		max-width: 100%;
 		width: auto;
+	}
+	#MBRDPopup2.BRD-popup-container .MBRD-order {
+		margin: -5px -15px 10px -20px;
 	}
 	#MBRDPopup2.BRD-popup-container .qs-popup {
 		width: 90%;

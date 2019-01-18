@@ -10,7 +10,9 @@ import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class URLRewriteRule extends ModelSupport {
-	
+
+	private static final long serialVersionUID = -7945088765624246139L;
+
 	private static final Category LOGGER = LoggerFactory.getInstance(URLRewriteRule.class); 
 	
 	private String name;
@@ -18,7 +20,7 @@ public class URLRewriteRule extends ModelSupport {
 	private Pattern from;
 	private Pattern redirect;
 	private String comments;
-	private List options;
+	private List<String> options;
 	private int priority;
 	
 	private boolean valid = true;
@@ -81,11 +83,11 @@ public class URLRewriteRule extends ModelSupport {
 		this.comments = comments;
 	}
 	
-	public List getOptions() {
+	public List<String> getOptions() {
 		return options;
 	}
 	
-	public void setOptions(List options) {
+	public void setOptions(List<String> options) {
 		this.options = options;
 	}
 	

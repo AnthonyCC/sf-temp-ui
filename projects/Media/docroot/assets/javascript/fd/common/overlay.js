@@ -209,19 +209,10 @@ var FreshDirect = FreshDirect || {};
     },
     reset:{
       value: function () {
-        var $el = $(this.bodySelector),
-        rect;
-
         $('[tabindex="-1"]').each(function (i, tiel) {
           var $tiel = $(tiel);
 
           $tiel.attr('tabindex', null);
-        });
-
-        $el.find('[tabindex]').each(function (i, tiel) {
-          var $tiel = $(tiel);
-
-          $tiel.attr('tabindex', '-1');
         });
 
         this.tabIndixes.forEach(function (tiel) {

@@ -908,6 +908,21 @@
 .order-line .order-line-product label {
   font-weight: bold;
 }
+.order-line .order-line-product .substitute-product {
+  align-items: center;
+  background-color: #eaeaea;
+  border-radius: 3px;
+  display: flex;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 10px;
+  height: 20px;
+  justify-content: center;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  min-width: fit-content;
+  text-transform: uppercase;
+  width: 80px;
+}
 .order-line .order-line-product .product-desc,
 .order-line .order-line-product .sale-unit {
   letter-spacing: 0.2px;

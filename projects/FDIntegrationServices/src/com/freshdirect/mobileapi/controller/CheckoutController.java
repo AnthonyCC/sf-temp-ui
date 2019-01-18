@@ -2,7 +2,6 @@ package com.freshdirect.mobileapi.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -90,10 +88,8 @@ import com.freshdirect.storeapi.content.CMSPageRequest;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
-import com.freshdirect.webapp.checkout.CheckoutManipulator;
 import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
-import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -718,6 +714,15 @@ public class CheckoutController extends BaseController {
         if(checkResult){
 	        callAvalaraForTax(user);
 	        FDCartModel cartModel = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
+	        
+	        responseMessage = checkDPAvailability(user, request, dlvPassCart,
+					responseMessage);
+            	
+        	if(responseMessage.getStatus()==Message.STATUS_FAILED){
+        		setResponseMessage(model, responseMessage, user);
+                return model;
+        	}
+            
 	        ResultBundle resultBundle = checkout.submitOrder(dlvPassCart);
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
@@ -763,6 +768,41 @@ public class CheckoutController extends BaseController {
         return model;
     }
 
+	private Message checkDPAvailability(SessionUser user,
+			HttpServletRequest request, boolean dlvPassCart,
+			Message responseMessage) throws FDException {
+		responseMessage = new Message();
+		ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession(), dlvPassCart);
+		if (!availabliltyResult.isSuccess()) {
+			if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MAX_PASSES) ||
+			   availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_PASS_EXISTS))
+			{
+				responseMessage.addErrorMessage("Your account already has Delivery Pass enabled, please remove to continue");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_TOO_MANY_PASSES))
+			{
+				responseMessage.addErrorMessage("Too many Delivery Passes added, please choose one and continue");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_NOT_ELIGIBLE))
+			{
+				responseMessage.addErrorMessage("You are not currently eligible for Delivery Passes. Please contact Customer Service");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_PROMOTIONAL_PASS))
+			{
+				responseMessage.addErrorMessage("You are not currently eligible for Delivery Passes. Please contact Customer Service");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+			else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MULTIPLE_AUTORENEW_PASSES))
+			{
+				responseMessage.addErrorMessage("You already have a Delivery Pass scheduled to automatically renew. Please remove and continue");
+				responseMessage.setStatus(Message.STATUS_FAILED);
+			}
+		}
+		return responseMessage;
+	}
 
     /**
      * @param model
@@ -778,6 +818,15 @@ public class CheckoutController extends BaseController {
 
 	        callAvalaraForTax(user);
 	        FDCartModel cartModel = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
+	        
+	        responseMessage = checkDPAvailability(user, request, dlvPassCart,
+					responseMessage);
+            	
+        	if(responseMessage.getStatus()==Message.STATUS_FAILED){
+        		setResponseMessage(model, responseMessage, user);
+                return model;
+        	}
+        	
 	        ResultBundle resultBundle = checkout.submitOrder(dlvPassCart);
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);

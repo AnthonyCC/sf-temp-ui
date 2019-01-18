@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -24,7 +25,9 @@ import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
+import com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
+import com.freshdirect.cms.persistence.service.ERPSDataService;
 import com.freshdirect.cms.ui.editor.ReportAttributes;
 import com.freshdirect.cms.ui.editor.reports.data.HiddenProduct;
 import com.freshdirect.cms.ui.editor.reports.data.HiddenProductByChange;
@@ -40,10 +43,34 @@ public class ReportingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportingService.class);
 
+    private static final Attribute PAIR_IT_REPORT_SKU_COLUMN = AttributeBuilderSupport.stringAttribute("NORMAL|SKUCODE").build();
+    private static final Attribute PAIR_IT_REPORT_MATERIAL_COLUMN = AttributeBuilderSupport.stringAttribute("NORMAL|MATERIAL").build();
+
     // direct subfolders of CMSReports
     public static final ContentKey CMS_REPORTS_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1009");
     public static final ContentKey SMARTSTORE_REPORTS_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1010");
     public static final ContentKey CMS_QUERIES_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1008");
+
+    private static final Attribute NODE_KEY_SELECTOR = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "NODE").type(String.class).build();
+
+    private static final Comparator<Map<Attribute, Object>> DEMOTE_FDFOLDER_NODES = new Comparator<Map<Attribute,Object>>() {
+        @Override
+        public int compare(Map<Attribute, Object> node1, Map<Attribute, Object> node2) {
+            String node1key = (String) node1.get(NODE_KEY_SELECTOR);
+            String node2key = (String) node2.get(NODE_KEY_SELECTOR);
+
+            boolean fdFolderOrNull1 = (node1key == null || "FDFolder".equals(node1key.split(":")[0]));
+            boolean fdFolderOrNull2 = (node2key == null || "FDFolder".equals(node2key.split(":")[0]));
+
+            if (fdFolderOrNull1) {
+                return fdFolderOrNull2 ? 0 : 1;
+            } else if (fdFolderOrNull2) {
+                return -1;
+            }
+
+            return 0;
+        }
+    };
 
     private static final Function<String, ContentKey> MAKE_REPORT_KEY = new Function<String, ContentKey>() {
 
@@ -64,7 +91,7 @@ public class ReportingService {
     // secondary label reports folders
     public static final List<ContentKey> CMS_REPORT_NODE_KEYS = FluentIterable
             .from(Arrays.asList("circularReferences", "hierarchyReport", "invisibleProducts", "multipleReferences", "primaryHomes", "multiHome", "recentChanges",
-                    "recipesSummary", "stackedSkus", "brokenMediaLinks", "hiddenProducts", "recentHiddenProducts"))
+                    "recipesSummary", "stackedSkus", "brokenMediaLinks", "hiddenProducts", "recentHiddenProducts", "pairItProducts", "nodesAssociatedWithRecipes"))
             .transform(MAKE_REPORT_KEY)
             .toList();
 
@@ -97,6 +124,9 @@ public class ReportingService {
 
     @Autowired
     private ContextualContentProvider contentProviderService;
+
+    @Autowired
+    private ERPSDataService erpsDataService;
 
     @Autowired
     private HiddenProductsService hiddenProductsService;
@@ -136,6 +166,8 @@ public class ReportingService {
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "brokenMediaLinks"), "Broken Media Links");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "hiddenProducts"), "Hidden Products");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentHiddenProducts"), "Recent Hidden Products");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "pairItProducts"), "Pair-It Products");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "nodesAssociatedWithRecipes"), "Content Nodes Associated With Recipes");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "scarabRules"), "Scarab merchandising rules");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Smart categories");
@@ -326,6 +358,20 @@ public class ReportingService {
             values.put(ReportAttributes.CmsReport.name, "Recent Hidden Products");
             values.put(ReportAttributes.CmsReport.description, "List of products got hidden in the last week");
             values.put(ReportAttributes.CmsReport.results, result);
+        } else if ("pairItProducts".equals(contentKey.id)) {
+            List<Map<Attribute, Object>> result = fetchPairItProducts();
+
+            values.put(ReportAttributes.CmsReport.name, "Pair-It Products");
+            values.put(ReportAttributes.CmsReport.description, "List of product having 'Pair It' and 'Complete The Meal' fields filled in");
+            values.put(ReportAttributes.CmsReport.results, result);
+        } else if ("nodesAssociatedWithRecipes".equals(contentKey.id)) {
+            List<Map<Attribute, Object>> result = repository.fetchRecipes();
+
+            Collections.sort(result, DEMOTE_FDFOLDER_NODES);
+
+            values.put(ReportAttributes.CmsReport.name, "Nodes associated with Recipes");
+            values.put(ReportAttributes.CmsReport.description, "List of content nodes associated with Recipes");
+            values.put(ReportAttributes.CmsReport.results, result);
         } else {
             values.put(ReportAttributes.CmsReport.name, "Unknown report " + contentKey.id);
             values.put(ReportAttributes.CmsReport.description, "");
@@ -400,5 +446,40 @@ public class ReportingService {
         LOGGER.debug("Skipped " + archivedProducts + " archived products from the report");
 
         return reportPayload;
+    }
+
+    private List<Map<Attribute,Object>> fetchPairItProducts() {
+        List<Map<Attribute, Object>> result = repository.fetchPairItAndCompletedByMealProducts();
+
+        // decorate report with SKU and MATERIAL ID columns
+        for (Map<Attribute, Object> reportEntry: result) {
+            ContentKey productKey = null;
+            for (Map.Entry<Attribute, Object> columnEntry: reportEntry.entrySet()) {
+                final String columnName = columnEntry.getKey().getName();
+                if ("KEY|PRODUCT".equals(columnName)) {
+                    productKey = ContentKeyFactory.get((String) columnEntry.getValue());
+                    break;
+                }
+            }
+
+            if (productKey != null) {
+                // associate SKU CODE
+                ContentKey skuKey = contentProviderService.findSkuKeyForProductKey(productKey);
+                reportEntry.put(PAIR_IT_REPORT_SKU_COLUMN, skuKey.id);
+
+                // associate material ID
+                if (skuKey != null) {
+                    String matId = erpsDataService.fetchMaterialsBySku(skuKey);
+                    reportEntry.put(PAIR_IT_REPORT_MATERIAL_COLUMN, matId);
+                } else {
+                    reportEntry.put(PAIR_IT_REPORT_MATERIAL_COLUMN, "");
+                }
+            } else {
+                reportEntry.put(PAIR_IT_REPORT_SKU_COLUMN, "");
+                reportEntry.put(PAIR_IT_REPORT_MATERIAL_COLUMN, "");
+            }
+        }
+
+        return result;
     }
 }

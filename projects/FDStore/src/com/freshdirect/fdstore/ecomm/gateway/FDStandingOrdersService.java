@@ -481,23 +481,26 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 	@Override
 	public boolean checkIfCustomerHasStandingOrder(FDIdentity identity)
 			throws FDResourceException, RemoteException {
+		
 		Request<FDIdentityData> request = new Request<FDIdentityData>();
 		Response<Boolean> response = new Response<Boolean>();
-		try{
-			request.setData(StandingOrderConverter.buildFdIdentityData(identity));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CHECK_IF_CUST_HAS_SO),new TypeReference<Response<Boolean>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
+		if(null !=identity){
+			try{
+				request.setData(StandingOrderConverter.buildFdIdentityData(identity));
+				String inputJson = buildRequest(request);
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CHECK_IF_CUST_HAS_SO),new TypeReference<Response<Boolean>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+			} catch (FDResourceException e){
+				LOGGER.error(e);
+				throw new RemoteException(e.getMessage());
+			} catch (FDEcommServiceException e) {
+				LOGGER.error(e);
+				throw new RemoteException(e.getMessage());
+			}			
 		}
-		return response.getData();
+		return null !=response && null !=response.getData()? response.getData():false;
 	}
 
 	@Override

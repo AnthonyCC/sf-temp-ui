@@ -36,7 +36,7 @@ import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 public class ReportsRepository {
 
     // TODO : remove remaining navtree references
-    
+
     private static final String QUERY_UNREACHABLE = "select id from cms_contentnode cn "
             + "where contenttype_id not in ('Html','Image','Store','ErpCharacteristic') "
             + "and id not in ('FDFolder:recipes') "
@@ -221,6 +221,36 @@ public class ReportsRepository {
             + "where def_name = 'recommender' "
             + "order by parent_contentnode_id, ordinal";
 
+    private static final String QUERY_PAIR_IT_AND_COMPLETED_BY_MEAL = "select key.productKey as product_key$, hd.pairItHeading as PAIR_IT_HEADING_ATTRIBUTE$, txt.pairItText as PAIR_IT_TEXT_ATTRIBUTE$, ctm.mealProductKey as completeTheMeal_key$ " +
+            "from ( " +
+            "    select distinct(productKey) from ( " +
+            "        select contentnode_id as productKey from cms.attribute where def_name='PAIR_IT_HEADING' or def_name='PAIR_IT_TEXT' " +
+            "        union " +
+            "        select parent_contentnode_id as productKey from CMS.relationship where def_name='completeTheMeal' " +
+            "    ) " +
+            ") key " +
+            "join ( " +
+            "    select contentnode_id as productKey, value as pairItHeading " +
+            "    from CMS.attribute " +
+            "    where def_name='PAIR_IT_HEADING' " +
+            ") hd on(key.productKey = hd.productKey) " +
+            "join ( " +
+            "    select contentnode_id as productKey, value as pairItText " +
+            "    from CMS.attribute " +
+            "    where def_name='PAIR_IT_TEXT' " +
+            ") txt on (key.productKey = txt.productKey) " +
+            "join ( " +
+            "    select parent_contentnode_id as productKey, child_contentnode_id as mealProductKey " +
+            "    from CMS.relationship " +
+            "    where def_name='completeTheMeal' " +
+            ") ctm on (key.productKey = ctm.productKey) " +
+            "order by hd.productKey";
+
+    private static final String QUERY_RECIPES = "select parent_contentnode_id as node_key$, DEF_NAME as relationship, child_contentnode_id as recipe_key$ "
+            + "from cms.relationship "
+            + "where def_contenttype='Recipe' "
+            + "order by parent_contentnode_id, DEF_NAME";
+
     private static final class ReportMapper implements RowMapper<Map<Attribute,Object>> {
 
         private final Attribute[] attributes;
@@ -368,4 +398,11 @@ public class ReportsRepository {
         return fetchReport(QUERY_BROKEN_MEDIA_LINKS);
     }
 
+    public List<Map<Attribute, Object>> fetchPairItAndCompletedByMealProducts() {
+        return fetchReport(QUERY_PAIR_IT_AND_COMPLETED_BY_MEAL);
+    }
+
+    public List<Map<Attribute, Object>> fetchRecipes() {
+        return fetchReport(QUERY_RECIPES);
+    }
 }

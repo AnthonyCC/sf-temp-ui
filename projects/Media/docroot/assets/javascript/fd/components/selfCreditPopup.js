@@ -88,9 +88,6 @@ var FreshDirect = window.FreshDirect || {};
         this.render(this.orders);
 
         var selectEl = $("#self-credit-order-select");
-        setTimeout(function() {
-          $(".selectButton").focus();
-        }, 300);
         selectEl.change(
           function() {
             if (selectEl.val() !== "") {

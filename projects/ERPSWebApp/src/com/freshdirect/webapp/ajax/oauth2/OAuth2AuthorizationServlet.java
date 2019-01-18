@@ -43,15 +43,14 @@ public class OAuth2AuthorizationServlet extends BaseJsonServlet {
 				LOGGER.debug("Redirect to --> " + locationUri);
 			} catch (IOException e) {
 				LOGGER.error("Failed to redirect: ", e);
-				e.printStackTrace();
 				writeResponseData(response, "Failed to redirect to " + locationUri);
 			}
 
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to authorize", e);
 			writeResponseData(response, e.getInput() + " | " + e.getMessage());
 		} catch (OAuthSystemException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to authorize", e);
 			writeResponseData(response, e.getMessage());
 		}
 	}

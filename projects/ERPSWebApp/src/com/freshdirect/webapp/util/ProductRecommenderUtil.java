@@ -202,7 +202,7 @@ public class ProductRecommenderUtil {
 	}
 
     private static List<ProductModel> fetchProductsFromCategory(FDUserI user, CategoryModel category, boolean isProductRandomize) {
-        List<ProductModel> products = category.getAllChildFromTwoLevelProductsAsList();
+        List<ProductModel> products = category.getAllChildProductsAsList();
         cleanUpProducts(products, isProductRandomize, MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
         return sortProducts(user, products, getSortStrategy(category), false);
     }
@@ -432,6 +432,7 @@ public class ProductRecommenderUtil {
 		}
 	}
 
+
 	public static List<ProductModel> getUnavailableReplacementProducts (ProductModel originalProduct, Set<ContentKey> excludedProductKeys){
 		List<ProductModel> replacementProducts = new ArrayList<ProductModel>();
 		if (originalProduct!=null && !originalProduct.isDisableAtpFailureRecommendation()) {
@@ -462,7 +463,7 @@ public class ProductRecommenderUtil {
 			//append list with products under the category's parent category
 			ContentNodeModel grandpaNode = parentCategory.getParentNode();
 			if (replacementProducts.size() < MAX_UNAVAILABLE_REPLACEMENTS_COUNT && grandpaNode instanceof CategoryModel){
-				List<ProductModel> productsUnderGrandpa = ((CategoryModel) grandpaNode).getAllChildFromTwoLevelProductsAsList();
+				List<ProductModel> productsUnderGrandpa = ((CategoryModel) grandpaNode).getAllChildProductsAsList();
 				productsUnderGrandpa.removeAll(replacementProducts);
 				removeProductsByKeys(productsUnderGrandpa, excludedProductKeys);
 

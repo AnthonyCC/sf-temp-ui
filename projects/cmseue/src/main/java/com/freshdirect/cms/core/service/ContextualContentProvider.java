@@ -1,5 +1,6 @@
 package com.freshdirect.cms.core.service;
 
+import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;
 
 import java.util.ArrayList;
@@ -437,5 +438,22 @@ public abstract class ContextualContentProvider {
 
     private boolean isIgnorableTypeForOrphans(ContentType type) {
         return type == ContentType.Image || type == ContentType.Html || type == ContentType.ErpCharacteristic;
+    }
+
+    public ContentKey findSkuKeyForProductKey(ContentKey productKey) {
+        notNull(productKey, "productKey is mandatory parameter");
+        isTrue(productKey.type == ContentType.Product, "Key type must be Product");
+
+        Optional<Object> attributeValue = getAttributeValue(productKey, ContentTypes.Product.skus);
+        List<ContentKey> skuKeys = (List<ContentKey>) attributeValue.or(Collections.emptyList());
+        return skuKeys.isEmpty() ? null : skuKeys.get(0);
+    }
+
+    public ContentKey findProductKeyForSkuKey(ContentKey skuKey) {
+        notNull(skuKey, "skuKey is mandatory parameter");
+        isTrue(skuKey.type == ContentType.Sku, "Key type must be Sku");
+
+        Set<ContentKey> productKeys = getParentKeys(skuKey);
+        return productKeys.isEmpty() ? null : productKeys.iterator().next();
     }
 }
