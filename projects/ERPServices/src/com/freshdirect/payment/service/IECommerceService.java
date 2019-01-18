@@ -131,23 +131,25 @@ public interface IECommerceService {
 	public <E> List loadEnum(String daoClassName)throws RemoteException;
 
 
-	public String getUserIdForUserToken(String userToken) ;
+	public String getUserIdForUserToken(String userToken) throws RemoteException;
 
-	public boolean isUserEmailAlreadyExist(String email);
+	public boolean isUserEmailAlreadyExist(String email)throws RemoteException;
 
-	public int isUserEmailAlreadyExist(String email, String provider) ;
+	public int isUserEmailAlreadyExist(String email, String provider) throws RemoteException;
 
-	public void linkUserTokenToUserId(String customerId, String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified) ;
+	public void linkUserTokenToUserId(String customerId, String userId, String userToken, String identityToken,
+			String provider, String displayName, String preferredUserName, String email, String emailVerified)
+			throws RemoteException;
 
-	public List<String> getConnectedProvidersByUserId(String userId, EnumExternalLoginSource source);
+	public List<String> getConnectedProvidersByUserId(String userId, EnumExternalLoginSource source)throws RemoteException;
 
-	public boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) ;
+	public boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) throws RemoteException;
 
-	public void unlinkExternalAccountWithUser(String email, String userToken, String provider) ;
+	public void unlinkExternalAccountWithUser(String email, String userToken, String provider) throws RemoteException;
 
-	public void unlinkExternalAccountWithUser(String customerId, String provider) ;
+	public void unlinkExternalAccountWithUser(String customerId, String provider) throws RemoteException;
 
-	public boolean isSocialLoginOnlyUser(String customer_id);
+	public boolean isSocialLoginOnlyUser(String customerId)throws RemoteException;
 
 	public List<String> getConnectedProvidersByUserId(String userId) throws RemoteException;
 

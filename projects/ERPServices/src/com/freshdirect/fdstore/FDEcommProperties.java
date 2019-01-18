@@ -51,7 +51,6 @@ public class FDEcommProperties {
     public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
     public final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
     public final static String FDSurveySB = "survey.ejb.FDSurveySB";
-    public final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
     public final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
     public final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
@@ -137,7 +136,6 @@ public class FDEcommProperties {
         defaults.put(FDExtoleManagerSB ,FALSE);
         defaults.put(ErpEWalletSB ,FALSE);
         defaults.put(FDSurveySB ,FALSE);
-        defaults.put(ExternalAccountManagerSB ,FALSE);
         defaults.put(DyfModelSB,FALSE);
         defaults.put(SessionImpressionLogSB ,FALSE);
         defaults.put(RulesManagerSB ,FALSE);
