@@ -837,7 +837,7 @@ public class SapGatewayConverter {
 		paymentData.setAddress(buildContactAddressData(paymentMethod.getAddress()));
 		paymentData.setBillingRef(paymentMethod.getBillingRef());
 		if(paymentMethod.getPaymentMethodType() != null)
-		paymentData.setPaymentType(paymentMethod.getPaymentMethodType().getName());
+		paymentData.setPaymentMethodType(paymentMethod.getPaymentMethodType().getName());
 		paymentData.setReferencedOrder(paymentMethod.getReferencedOrder());
 		paymentData.setCvv(paymentMethod.getCVV());
 		paymentData.setProfileID(paymentMethod.getProfileID());
@@ -864,7 +864,7 @@ public class SapGatewayConverter {
 		}
 		else if (paymentMethod instanceof ErpECheckModel){
 			if(paymentMethod.getPaymentMethodType() != null)
-			paymentData.setBankAccountType(paymentMethod.getPaymentMethodType().getName());
+			paymentData.setBankAccountType(paymentMethod.getBankAccountType().getName());
 			paymentData.setBankName(paymentMethod.getBankName());
 			paymentData.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
 			paymentData.setTermsAccepted(paymentMethod.getIsTermsAccepted());
