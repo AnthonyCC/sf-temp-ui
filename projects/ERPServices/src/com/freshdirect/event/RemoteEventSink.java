@@ -6,8 +6,6 @@ import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.event.ejb.EventLoggerHome;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.event.EventSinkI;
 import com.freshdirect.framework.event.FDWebEvent;
@@ -34,12 +32,4 @@ public class RemoteEventSink implements EventSinkI {
 		} 
 	}
 	
-	private EventLoggerHome getEventLoggerHome() {
-		try {
-			return (EventLoggerHome) serviceLocator.getRemoteHome("freshdirect.event.EventLogger");
-		} catch (NamingException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
-
 }
