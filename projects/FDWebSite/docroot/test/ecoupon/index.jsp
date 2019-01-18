@@ -7,9 +7,9 @@
 <%@ page import="com.freshdirect.fdstore.FDProductInfo" %>
 <%@ page import="com.freshdirect.fdstore.FDCachedFactory" %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.framework.util.*''%> 
-<%@ page import='com.freshdirect.fdstore.customer.*''%> 
-<%@ page import='com.freshdirect.fdstore.ecoupon.*''%>
+<%@ page import='com.freshdirect.framework.util.*'%> 
+<%@ page import='com.freshdirect.fdstore.customer.*'%> 
+<%@ page import='com.freshdirect.fdstore.ecoupon.*'%>
 <%@ page import="java.util.*" %>
 
 <%@ taglib uri='freshdirect' prefix='fd'%>
