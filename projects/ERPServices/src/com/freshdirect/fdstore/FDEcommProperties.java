@@ -58,7 +58,6 @@ public class FDEcommProperties {
     public final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
     public final static String FDGrpInfoSB = "grp.ejb.FDGrpInfoSB";
-    public final static String ScoreFactorSB = "smartstore.ejb.ScoreFactorSB";
     public final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
     public final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
     public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
@@ -151,7 +150,6 @@ public class FDEcommProperties {
         defaults.put(FDSurveySB ,FALSE);
         defaults.put(ExternalAccountManagerSB ,FALSE);
         defaults.put(FDGrpInfoSB ,FALSE);
-        defaults.put(ScoreFactorSB ,FALSE);
         defaults.put(DyfModelSB,FALSE);
         defaults.put(SessionImpressionLogSB ,FALSE);
         defaults.put(RulesManagerSB ,FALSE);

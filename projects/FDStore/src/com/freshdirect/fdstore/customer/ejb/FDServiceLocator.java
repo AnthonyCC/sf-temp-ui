@@ -33,7 +33,6 @@ import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
-import com.freshdirect.smartstore.ejb.ScoreFactorHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.VariantSelectionHome;
@@ -304,10 +303,7 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
-    public ScoreFactorHome getScoreFactorHome() throws NamingException {
-        return (ScoreFactorHome) getRemoteHome("freshdirect.smartstore.ScoreFactorHome");
-    }
-    
+   
     public TEmailInfoHome getTMailerHome() {
         try {
             return (TEmailInfoHome) getRemoteHome("java:comp/env/ejb/TEmailInfoManager");//freshdirect.fdstore.TEmailInfoManager");
