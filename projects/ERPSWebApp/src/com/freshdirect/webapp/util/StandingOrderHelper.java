@@ -600,12 +600,12 @@ public class StandingOrderHelper {
 		}
 		return result;
 	}
-	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList, boolean isModifiedInfo, boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
+	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList, boolean isModifiedInfo, boolean isUpcomingDelivery, FDUserI user) throws FDResourceException, PricingException, FDInvalidConfigurationException {
 		Collection<Map<String, Object>> result = new ArrayList<Map<String, Object>>(); 
 		for (FDStandingOrder so : soList) {
 			
 			
-			Map<String, Object> map = convertStandingOrderToSoy(isModifiedInfo, so, isUpcomingDelivery);
+			Map<String, Object> map = convertStandingOrderToSoy(isModifiedInfo, so, isUpcomingDelivery, user);
 			
 			result.add(map);
 
@@ -622,7 +622,7 @@ public class StandingOrderHelper {
 	 * @throws FDInvalidConfigurationException
 	 * @throws PricingException
 	 */
-	public static Map<String, Object> convertStandingOrderToSoy(boolean isModifiedInfo, FDStandingOrder so, boolean isUpcomingDelivery)
+	public static Map<String, Object> convertStandingOrderToSoy(boolean isModifiedInfo, FDStandingOrder so, boolean isUpcomingDelivery, FDUserI user)
 			throws FDResourceException, FDInvalidConfigurationException, PricingException {
 		boolean isEligibleToShowModifyInfo=false;
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -687,13 +687,23 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
 		if("Y".equalsIgnoreCase(so.getActivate())&& isModifiedInfo)
-			setUpcomingStandingOrder(so);
-		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
+			setUpcomingStandingOrder(so, user);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
-		if(map.get("upComingOrderId")!=null){
-			map.put("addressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo));
-			map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo)); 
-			map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so));
+		
+		String upComingOrderID = so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null;
+        map.put("upComingOrderId", upComingOrderID);
+		if(upComingOrderID!=null && !"".equals(upComingOrderID.trim())){
+			String soID = so.getId();
+			FDOrderI upComingOrder= user.getUpcomingSOinstances().containsKey(soID)?user.getUpcomingSOinstances().get(soID): null;
+			if(null== upComingOrder) {
+				upComingOrder= FDCustomerManager.getOrder(upComingOrderID);
+				user.getUpcomingSOinstances().put(soID, upComingOrder);
+			}
+			if(upComingOrder.isModifiedOrder() || isModifiedInfo ) {
+				map.put("addressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo, upComingOrder));
+				map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo, user, upComingOrder)); 
+				map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so, upComingOrder));
+			}
 		}
 		return map;
 	}
@@ -814,7 +824,6 @@ public class StandingOrderHelper {
 		return false;
 	}
 
-	
 	public static Map<String,Object> getValidSO3DataForProducts(FDUserI user){
 		Map<String,Object> validSO3Data = user.getValidSO3Data();
 		if(user.isRefreshSO3Settings()){
@@ -849,7 +858,7 @@ public class StandingOrderHelper {
 		try {
 			if(null != user.getIdentity()){
 				standingOrders = isAddtoProduct?getValidSO3(user): getAllSO3(user);
-					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isModifiedInfo, false);
+					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isModifiedInfo, false, user);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
 						if(fdStandingOrder.isDefault()){
@@ -886,16 +895,19 @@ public class StandingOrderHelper {
 	private static void populateCurrentDeliveryDate(FDUserI user,
 			Collection<Map<String, Object>> soData) throws FDResourceException {
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
+		Collection<ErpSaleInfo> saleInfos = h.getErpRegSOFutureSaleInfos();
+		int count =0;
 		for(Map<String,Object> soDataMap:soData){
-			a:for (ErpSaleInfo i : h.getErpSaleInfos()) {
+			if(saleInfos.size()== count) {
+				break;
+			}
+			a:for (ErpSaleInfo i : h.getErpRegSOFutureSaleInfos()) {
 				if (soDataMap.get("id").toString().equalsIgnoreCase(i.getStandingOrderId())) {
-					if(!i.getStatus().isCanceled() && !new Date().after(i.getRequestedDate())){
 						soDataMap.put("currentDeliveryDate", DateUtil.formatMonthAndDate(i.getRequestedDate()));
 						soDataMap.put("currentDeliveryTime", DateUtil.formatHourAMPMRange(i.getDeliveryStartTime(), i.getDeliveryEndTime()));
 						soDataMap.put("currentDayOfWeek", DateUtil.formatFullDayOfWk(i.getRequestedDate()));
-						
-					}
-					break a;
+						count ++;
+						break a;
 				}
 			}
 		}
@@ -903,15 +915,12 @@ public class StandingOrderHelper {
 	public static void populateCurrentDeliveryDate(FDUserI user,Map<String, Object> soDataMap) throws FDResourceException {
 		
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
-			a:for (ErpSaleInfo i : h.getErpSaleInfos()) {
+			a:for (ErpSaleInfo i : h.getErpRegSOFutureSaleInfos()) {
 				if (soDataMap.get("id").toString().equalsIgnoreCase(i.getStandingOrderId())) {
-					if(!i.getStatus().isCanceled() && !new Date().after(i.getRequestedDate())){
 						soDataMap.put("currentDeliveryDate", DateUtil.formatMonthAndDate(i.getRequestedDate()));
 						soDataMap.put("currentDeliveryTime", DateUtil.formatHourAMPMRange(i.getDeliveryStartTime(), i.getDeliveryEndTime()));
 						soDataMap.put("currentDayOfWeek", DateUtil.formatFullDayOfWk(i.getRequestedDate()));
-						
-					}
-					break a;
+						break a;
 			}
 		}
 	}
@@ -1195,12 +1204,11 @@ private static String convert(Date time) {
 		return flg;
 	}
 	
-	private static String so3MatchDeliveryAddress(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
+	private static String so3MatchDeliveryAddress(FDStandingOrder so, boolean isEligileToShowModifyInfo, FDOrderI fDOrderI) {
 
 		  String soDeliveryAddress=null;
 		try {
-			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
-	        FDReservation fDReservation=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
+	        FDReservation fDReservation=  fDOrderI.getDeliveryReservation() ;//FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
 	        soDeliveryAddress =so.getDeliveryAddress()!=null?((null !=so.getDeliveryAddress().getScrubbedStreet()?so.getDeliveryAddress().getScrubbedStreet():so.getDeliveryAddress().getAddress1()) +", "+so.getDeliveryAddress().getCity()+" "+so.getDeliveryAddress().getState() +" "+so.getDeliveryAddress().getZipCode()):null;
 	        if(null != so.getAddressId() && !so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
 	        	{ isEligileToShowModifyInfo=true;
@@ -1213,13 +1221,11 @@ private static String convert(Date time) {
 		return soDeliveryAddress;
 	}
 	
-	private static String so3MatchPaymentAccount(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
+	private static String so3MatchPaymentAccount(FDStandingOrder so, boolean isEligileToShowModifyInfo, FDUserI user, FDOrderI fDOrderI) {
 		
 		String soPaymentInfo=null;
 		try {
-			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
-			FDOrderI fDOrderI=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId());
-			String upComingOrderPaymentInfo=fDOrderI.getPaymentMethod()!=null?fDOrderI.getPaymentMethod().getAccountNumber():null;
+			String upComingOrderPaymentInfo = fDOrderI.getPaymentMethod()!=null?fDOrderI.getPaymentMethod().getAccountNumber():null;
 			soPaymentInfo=so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():"";
 			if(!soPaymentInfo.equalsIgnoreCase(upComingOrderPaymentInfo)){
 	        		isEligileToShowModifyInfo=true;
@@ -1232,16 +1238,14 @@ private static String convert(Date time) {
 		return soPaymentInfo;
 	}
 	
-	private static boolean SO3MatchTimeslot(FDStandingOrder so) {
+	private static boolean SO3MatchTimeslot(FDStandingOrder so, FDOrderI fdOrderI) {
 		try {
-			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
-			FDOrderI fdOrderI=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId());
 			
 			if(fdOrderI!=null && fdOrderI.getDeliveryReservation()!=null){
 				FDTimeslot fdTimeslot=fdOrderI.getDeliveryReservation().getTimeslot();
 				return compareSO3Timeslot(fdTimeslot, so);
 			}
-		} catch (FDResourceException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LOGGER.info("while the checking SO3MatchTimeslot" +e);
 		}
@@ -1265,13 +1269,13 @@ private static String convert(Date time) {
 		 
 	 }
 	 
-	 public static void setUpcomingStandingOrder(FDStandingOrder so){
+	 public static void setUpcomingStandingOrder(FDStandingOrder so, FDUserI user){
 			
 		 try {
-			 if(isEligibleForSo3_0(so.getUser())){
+			 if(isEligibleForSo3_0(user)){
 				 List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
 					fdStandingOrder.add(so);
-				FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
+				FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(user, fdStandingOrder);
 			 }
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
@@ -1300,7 +1304,7 @@ private static String convert(Date time) {
 	
 	public static FDUserI setCartOverlayFirstTime(FDUserI user){
 		try{
-			if(user!=null && user.isNewSO3Enabled() && user.isRefreshSoCartOverlay() && user.isCustomerHasStandingOrders()){
+			if(user!=null && null !=user.getIdentity() && user.isNewSO3Enabled() && user.isRefreshSoCartOverlay() && user.isCustomerHasStandingOrders()){
 			ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
 			if(cusotmerInfoModel!=null){
 				user.setSoCartOverlayFirstTime(cusotmerInfoModel.getSoCartOverlayFirstTime()!=null?
@@ -1466,13 +1470,11 @@ private static String convert(Date time) {
 	
 	//SO user if deletes payment which is default in another template, we are here deleting that specific SO template's  paymentID		//COS17-45
 		public static void evaluteSOPaymentId(HttpSession session, FDUserI user, String paymentId) {
-			boolean currentSO= false;
 			try {
 				refreshSO3(user);
 				Collection<FDStandingOrder> allSOlist = user.getAllSO3();
 				for (FDStandingOrder soValidtemplate : allSOlist) {
-					if (paymentId != null && paymentId.equals(soValidtemplate.getPaymentMethodId()) || currentSO) {
-						currentSO = false;
+					if (paymentId != null && paymentId.equals(soValidtemplate.getPaymentMethodId()) ) {
 						LOGGER.info("indside evaluteSOPaymentId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
 								+ "deleting paymentID: "+soValidtemplate.getPaymentMethodId()+", for SO3 template: "+soValidtemplate.getId());
 						soValidtemplate.setPaymentMethodId(null);
@@ -1520,11 +1522,11 @@ private static String convert(Date time) {
 					so.setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));
 					com.freshdirect.logistics.controller.data.Result update = FDStandingOrdersManager.getInstance()
 							.saveStandingOrderToLogistics(so.getId(), so.getTimeSlotId(),
-									Integer.toString(so.getReservedDayOfweek()), so.getUser().getHistoricOrderSize(),
-									so.getCustomerId(), address, so.getUser().isNewSO3Enabled());
+									Integer.toString(so.getReservedDayOfweek()), user.getHistoricOrderSize(),
+									so.getCustomerId(), address, user.isNewSO3Enabled());
 					LOGGER.info("SaveStandingOrderToLogistics() status: " + update.getStatus()
 							+ ", for SO id:" + so.getId() + ",zone_id: "+so.getZoneNew()+" ,address: " + address);
-				} catch (FDAuthenticationException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

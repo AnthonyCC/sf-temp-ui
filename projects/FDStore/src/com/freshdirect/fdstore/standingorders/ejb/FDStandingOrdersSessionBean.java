@@ -344,7 +344,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			} catch (FDResourceException e) {
 				LOGGER.warn( "FDResourceException catched", e );
 			}
-			
+			FDUserI user = so.getUser();
 			if (so.getId() == null ||  so.getId().isEmpty()) {
 				// create object
 				LOGGER.debug( "Creating new standing order." );
@@ -361,8 +361,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				ErpAddressModel address=getShipToAddress(so.getAddressId());
 				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),
 						so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),
-						so.getUser().getHistoricOrderSize(),
-						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
+						user.getHistoricOrderSize(),
+						so.getCustomerId(),address, user.isNewSO3Enabled());
 				}
 			} else {
 				LOGGER.debug( "Updating existing standing order." );
@@ -379,8 +379,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				ErpAddressModel address=getShipToAddress(so.getAddressId());
 				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),
 						so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),
-						so.getUser().getHistoricOrderSize(),
-						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
+						user.getHistoricOrderSize(),
+						so.getCustomerId(),address, user.isNewSO3Enabled());
 				}
 			}
 							

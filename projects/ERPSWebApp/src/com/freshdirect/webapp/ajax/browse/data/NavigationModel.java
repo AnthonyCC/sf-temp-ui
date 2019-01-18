@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,11 +77,11 @@ public class NavigationModel {
 	private List<CategorySectionModel> categorySections;
 	private List<FilteringSortingItem<ProductModel>> searchResults = new ArrayList<FilteringSortingItem<ProductModel>>();
 	private List<Recipe> recipeResults = new ArrayList<Recipe>();
-    private Set<DepartmentModel> departmentsOfSearchResults = new LinkedHashSet<DepartmentModel>();
-    private Set<CategoryModel> categoriesOfSearchResults = new LinkedHashSet<CategoryModel>();
-    private Set<CategoryModel> subCategoriesOfSearchResults = new LinkedHashSet<CategoryModel>();
-    private Set<BrandModel> brandsOfSearchResults = new LinkedHashSet<BrandModel>();
-    private Set<String> showMeOnlyOfSearchResults = new LinkedHashSet<String>();
+    private Set<DepartmentModel> departmentsOfSearchResults = new HashSet<DepartmentModel>();
+    private Set<CategoryModel> categoriesOfSearchResults = new HashSet<CategoryModel>();
+    private Set<CategoryModel> subCategoriesOfSearchResults = new HashSet<CategoryModel>();
+    private Set<BrandModel> brandsOfSearchResults = new HashSet<BrandModel>();
+    private Set<String> showMeOnlyOfSearchResults = new HashSet<String>();
 	private List<DepartmentModel> departmentsOfSuperDepartment;
 	private boolean productListing;
 	private boolean recipeListing;

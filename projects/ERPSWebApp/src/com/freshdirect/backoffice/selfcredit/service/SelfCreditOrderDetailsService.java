@@ -11,14 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freshdirect.backoffice.selfcredit.data.ComplaintReason;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditComplaintReason;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderDetailsData;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData;
@@ -38,9 +36,13 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.EnumProductLayout;
+import com.freshdirect.storeapi.content.PopulatorUtil;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
+import com.freshdirect.webapp.ajax.product.data.BasicProductData;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 
 public class SelfCreditOrderDetailsService {
@@ -66,18 +68,20 @@ public class SelfCreditOrderDetailsService {
 
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
-        	final boolean isDeliverPass = fdCartLine.lookupFDProduct().isDeliveryPass();
+            final boolean isDeliveryPass = fdCartLine.lookupFDProduct().isDeliveryPass();
+            final boolean hasSubstitute = null != fdCartLine.getInvoiceLine() && null != fdCartLine.getInvoiceLine().getSubstituteProductName();
         	
         	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
-        	ProductModel product = fdCartLine.lookupProduct();
+            ProductModel product = hasSubstitute ? PopulatorUtil.getProduct(fdCartLine.getInvoiceLine().getSubstitutedSkuCode()) : fdCartLine.lookupProduct();
+            BasicProductData productData = null != product ? ProductDetailPopulator.populateProductAndBrandName(new ProductData(), product) : null;
         	
     		double deliveredQuantity = collectQuantity(fdCartLine, creditedQuantities);
-        	
-        	if (!isDeliverPass && Double.compare(deliveredQuantity, 0d) > 0) {
+
+            if (!isDeliveryPass && Double.compare(deliveredQuantity, 0d) > 0) {
             	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
-                item.setBrand((null == product) ?"" : product.getPrimaryBrandName());
-                item.setProductName(collectProductName(item.getBrand(), fdCartLine.getDescription()));
+                item.setBrand((null == productData) ? "" : productData.getBrandName());
+                item.setProductName(null == productData ? "" : productData.getProductNameNoBrand());
                 item.setQuantity(deliveredQuantity);
                 item.setProductImage((null == product) ? "" : product.getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
@@ -89,8 +93,10 @@ public class SelfCreditOrderDetailsService {
                 item.setMealBundle(null == product ? false : isItemMealBundle(product));
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
                 item.setFinalPrice(collectFinalPrice(deliveredQuantity, fdCartLine));
+                item.setSubstituted(hasSubstitute);
                 orderLines.add(item);
 			}
+
         }
 
         SelfCreditOrderDetailsData selfCreditOrderDetailsData = new SelfCreditOrderDetailsData();
@@ -142,14 +148,6 @@ public class SelfCreditOrderDetailsService {
 	private double collectFinalPrice(double deliveredQuantity, FDCartLineI fdCartLine) {
 		double finalPrice = fdCartLine.getInvoiceLine().getPrice();
 		return Double.compare(deliveredQuantity, 0d) == 0 ? 0d : finalPrice/deliveredQuantity;
-	}
-
-	private String collectProductName(String brandName, String description) {
-    	String productNameNoBrand = description;
-    	if (brandName != null && brandName.length() > 0 && description.length() >= brandName.length() && description.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
-            productNameNoBrand = description.substring(brandName.length()).trim();
-        }
-    	return productNameNoBrand;
 	}
 
 	private List<SelfCreditComplaintReason> collectComplaintReasons(
