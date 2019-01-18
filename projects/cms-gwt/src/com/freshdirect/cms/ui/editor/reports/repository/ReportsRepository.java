@@ -36,7 +36,7 @@ import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 public class ReportsRepository {
 
     // TODO : remove remaining navtree references
-    
+
     private static final String QUERY_UNREACHABLE = "select id from cms_contentnode cn "
             + "where contenttype_id not in ('Html','Image','Store','ErpCharacteristic') "
             + "and id not in ('FDFolder:recipes') "
@@ -221,6 +221,11 @@ public class ReportsRepository {
             + "where def_name = 'recommender' "
             + "order by parent_contentnode_id, ordinal";
 
+    private static final String QUERY_RECIPES = "select parent_contentnode_id as node_key$, DEF_NAME as relationship, child_contentnode_id as recipe_key$ "
+            + "from cms.relationship "
+            + "where def_contenttype='Recipe' "
+            + "order by parent_contentnode_id, DEF_NAME";
+
     private static final class ReportMapper implements RowMapper<Map<Attribute,Object>> {
 
         private final Attribute[] attributes;
@@ -368,4 +373,7 @@ public class ReportsRepository {
         return fetchReport(QUERY_BROKEN_MEDIA_LINKS);
     }
 
+    public List<Map<Attribute, Object>> fetchRecipes() {
+        return fetchReport(QUERY_RECIPES);
+    }
 }
