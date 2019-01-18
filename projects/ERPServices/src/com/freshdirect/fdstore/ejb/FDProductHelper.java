@@ -40,7 +40,6 @@ import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
-import com.freshdirect.erp.ejb.ErpProductFamilyHome;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -89,7 +88,6 @@ public class FDProductHelper {
 
 	private transient ErpCharacteristicValuePriceHome charValueHome = null;
 	private transient ErpNutritionHome nutritionHome = null;
-	private transient ErpProductFamilyHome erpProductFamilyHome = null;
 
 	public FDProduct getFDProduct(ErpMaterialModel material) throws FDResourceException {
 		// debug

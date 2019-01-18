@@ -189,25 +189,14 @@ public class FDFactory {
 	}
 
 	public static ErpProductFamilyModel getFamilyInfo(String familyId) throws FDGroupNotFoundException, FDResourceException  {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		ErpProductFamilyModel pi;
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
 				pi = FDECommerceService.getInstance().findFamilyInfo(familyId);
-        	}else{
-    			FDFactorySB sb = factoryHome.create();
-
-        		pi = sb.getFamilyInfo(familyId);
-        	}
-		}catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			factoryHome=null;
+        	
+		}catch (RemoteException re) {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 		return pi;
@@ -219,26 +208,14 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static ErpProductFamilyModel getSkuFamilyInfo(String materialId) throws FDGroupNotFoundException, FDResourceException  {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
 		ErpProductFamilyModel pi;
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
-        		IECommerceService service = FDECommerceService.getInstance();
+				IECommerceService service = FDECommerceService.getInstance();
         		pi = service.findSkuFamilyInfo(materialId);
-        	}else{
-    			FDFactorySB sb = factoryHome.create();
-
-        		pi = sb.getSkuFamilyInfo(materialId);
-        	}
-		}catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			factoryHome=null;
+        	
+		}catch (RemoteException re) {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 		return pi;

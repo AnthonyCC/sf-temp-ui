@@ -72,12 +72,6 @@ public interface FDFactorySB extends EJBObject {
 
 	@Deprecated public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
 	
-	@Deprecated public ErpProductFamilyModel getFamilyInfo(String familyId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
-
-	
-	@Deprecated public ErpProductFamilyModel getSkuFamilyInfo(String materialId)throws RemoteException, FDGroupNotFoundException, FDResourceException;
-
-	@Deprecated
-	public Set<String> getModifiedSkus(long lastModified) throws FDResourceException, RemoteException;
+	@Deprecated public Set<String> getModifiedSkus(long lastModified) throws FDResourceException, RemoteException;
 }
 
