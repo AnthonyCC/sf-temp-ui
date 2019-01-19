@@ -24,7 +24,7 @@ import com.freshdirect.storeapi.content.SkuModel;
 
 public class SampleLineApplicator implements PromotionApplicatorI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(SampleStrategy.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(SampleLineApplicator.class);
 
 	private ProductReference sampleProduct;
 	private String categoryId;

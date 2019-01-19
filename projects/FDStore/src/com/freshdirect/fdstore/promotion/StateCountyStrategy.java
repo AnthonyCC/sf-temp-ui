@@ -17,8 +17,8 @@ public class StateCountyStrategy implements PromotionStrategyI {
 	private String promotionId;
 	private String userId;
 	private Date actionDate;
-	private HashSet<String> county;
-	private HashSet<String> states;
+	private Set<String> county;
+	private Set<String> states;
 	private String county_option;
 	private String state_option;
 	private String[] stateArray;
@@ -56,7 +56,7 @@ public class StateCountyStrategy implements PromotionStrategyI {
 			return Collections.emptySet();
 	}
 
-	public void setCounty(HashSet<String> county) {
+	public void setCounty(Set<String> county) {
 		this.county = county;
 	}
 
@@ -67,7 +67,7 @@ public class StateCountyStrategy implements PromotionStrategyI {
 			return Collections.emptySet();
 	}
 
-	public void setStates(HashSet<String> states) {
+	public void setStates(Set<String> states) {
 		this.states = states;
 	}
 
