@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.oauth.provider.ejb.OAuthProviderSessionBean;
+//import com.freshdirect.fdstore.oauth.provider.ejb.OAuthProviderSessionBean;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 import net.oauth.OAuth;
