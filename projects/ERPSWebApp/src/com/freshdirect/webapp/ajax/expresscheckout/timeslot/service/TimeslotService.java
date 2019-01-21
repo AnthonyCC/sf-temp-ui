@@ -261,21 +261,6 @@ public class TimeslotService {
         return reserveDeliveryTimeslot(deliveryTimeSlotId, session, null);
     }
 
-    public void releaseTimeslot(FDUserI user) throws FDResourceException {
-        FDCartModel cart = user.getShoppingCart();
-        FDReservation timeslotReservation = cart.getDeliveryReservation();
-        if (timeslotReservation != null) {
-            String rsvId = timeslotReservation.getPK().getId();
-            ErpAddressModel erpAddress = cart.getDeliveryAddress();
-
-            TimeslotEvent event = new TimeslotEvent((user.getApplication() != null) ? user.getApplication().getCode() : "", cart.isDlvPassApplied(), cart.getDeliverySurcharge(),
-                    cart.isDeliveryChargeWaived(), (cart.getZoneInfo() != null) ? cart.getZoneInfo().isCtActive() : false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
-            LOGGER.info("releaseReservation by ID: " + rsvId);
-            FDDeliveryManager.getInstance().releaseReservation(rsvId, erpAddress, event, true);
-            cart.setDeliveryReservation(null);
-        }
-    }
-
     public boolean isTimeslotSelected(final FDUserI user) {
         FDReservation deliveryReservation = user.getShoppingCart().getDeliveryReservation();
         return (deliveryReservation != null && deliveryReservation.getTimeslotId() != null);

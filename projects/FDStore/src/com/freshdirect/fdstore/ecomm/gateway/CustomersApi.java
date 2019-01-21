@@ -327,7 +327,7 @@ public void releaseModificationLock(String saleId) throws FDResourceException,
 		RemoteException {
 
 	try{
-		String data= httpGetData(getFdCommerceEndPoint(EndPoints.GET_ORDER_IS_READY_TO_PICK.getValue()), String.class, new Object[]{saleId});
+		String data= httpGetData(getFdCommerceEndPoint(EndPoints.GET_ORDER_RELEASE_MODIFICATION_LOCK.getValue()), String.class, new Object[]{saleId});
 
 		Response<Boolean> info = getMapper().readValue(data, new TypeReference<Response<Boolean>>() { });
 		if(!info.getResponseCode().equals("OK")){
