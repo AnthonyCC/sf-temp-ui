@@ -67,17 +67,9 @@
         color: #666666;
         font-size: 16px;
     }
-    .chat-message-popup-name{
-        
-    }
-    .chat-message-popup-email{
-        
-    }
-    .chat-message-popup-phone{
-        
-    }
-    .chat-message-popup-phone-ext{
-        
+    .chat-message-popup-phone-ext-optional{
+    	font-weight: normal;
+    	color: #999999;
     }
     .chat-message-popup-subject,
     .chat-message-popup-order,
@@ -218,14 +210,14 @@
 					</div>
 				</div>
 				<div class="form-group email flex">	
-					<label for="email" class="bold inline">E-mail Address</label>
+					<label for="email" class="bold inline">E-mail</label>
 					<input type="email" name="email" id="email" required class="font16" placeholder="name@website.com" aria-describedby="emailid_error" size="45" value="${contactUsPotato.customerData.email}" />
 					<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span id="emailid_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 				</div>
 				<div class="form-group phone_number flex">
 					<div class="flex chat-message-popup-phone-labels">
-						<label for="home_phone" class="bold inline chat-message-popup-phone-main">Phone Number</label>
-						<label for="home_phone_ext" class="bold inline chat-message-popup-phone-ext">Ext.<span class="offscreen">extension for phone number</span></label>
+						<label for="home_phone" class="bold inline chat-message-popup-phone-main">Phone</label>
+						<label for="home_phone_ext" class="bold inline chat-message-popup-phone-ext">Ext. <span class="chat-message-popup-phone-ext-optional">Optional</span><span class="offscreen">extension for phone number</span></label>
 					</div>
 					<div class="flex chat-message-popup-phone-inputs">
 						<input type="tel" name="home_phone" id="home_phone" class="font16" placeholder="555-555-5555" size="21" min="0" value="${contactUsPotato.customerData.homePhone}" maxlength="15" />
@@ -283,7 +275,7 @@
 			<% } %>
 
 			<div class="form-group message flex">
-				<label for="message" id="msg-textarea-label" class="bold inline">Enter Your Message Here</label>
+				<label for="message" id="msg-textarea-label" class="bold inline">How can we help you?</label>
 				<textarea id="message" required class="font16" placeholder="Please be specific" cols="45" aria-describedby="message_error" rows="5" name="message" >${contactUsPotato.customerData.body}</textarea>
 				<div id="message_error" class="bold error">
 					<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
