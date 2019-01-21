@@ -1,11 +1,13 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
+import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.ObjectNotFoundException;
+
 
 import org.apache.log4j.Category;
 
@@ -203,9 +205,17 @@ public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, Enu
 		request.setData(criteria);
 		ErpSaleModel saleModel=null;
 		try{
-
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
+		if(response!=null&&response.equals("JsonProcessingException")){
+			LOGGER.info("JsonProcessingException in ecom Node");
+			throw new JsonMappingException("JsonProcessingException in eCom Node");
+		}
+		if(response==null||response.trim().equals("")){
+			LOGGER.info("Response is null or Empty");
+			throw new FDResourceException("Response is null or Empty");
+		}
+		
 		Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
 		if(info.getResponseCode().equals("500")){
 			if ("ErpSaleNotFoundException".equals(info.getMessage())) {

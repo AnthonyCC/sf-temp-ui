@@ -16,7 +16,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 
-	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private static final Logger LOGGER = LoggerFactory.getInstance(SimpleDateDeserializer.class);
 
 	@Override
@@ -52,6 +51,7 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 			dateTextValue = jp.getText();
 		}
 		try {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			return simpleDateFormat.parse(dateTextValue);
 		} catch (Exception e) {
 			return null;
