@@ -475,7 +475,7 @@ public class FDCustomerManager {
     			try {
 					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
 						try {
-							address = CustomerAddressService.getInstance().assumeDeliveryAddress(identity, partentOrderId);
+							address = CustomerAddressService.getInstance().assumeDeliveryAddress(identity, partentOrderId, ContentFactory.getInstance().getStoreKey().getId());
 						}catch(Exception e) {}
 					} else {
 						lookupManagerHome();
@@ -985,7 +985,7 @@ public class FDCustomerManager {
 	public static void setDefaultShipToAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				CustomerAddressService.getInstance().setDefaultShippingAddressPK(identity, shipToAddressPK);
+				CustomerAddressService.getInstance().setDefaultShippingAddressPK(identity, shipToAddressPK, ContentFactory.getInstance().getStoreKey().getId());
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
@@ -1010,7 +1010,7 @@ public class FDCustomerManager {
 	public static String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				return CustomerAddressService.getInstance().getDefaultShipToAddressPK(identity);
+				return CustomerAddressService.getInstance().getDefaultShipToAddressPK(identity, ContentFactory.getInstance().getStoreKey().getId());
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
