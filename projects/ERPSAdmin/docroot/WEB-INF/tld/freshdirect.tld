@@ -89,52 +89,6 @@
     </tag>
 
     <tag>
-        <name>AttributeController</name>
-        <tagclass>com.freshdirect.webapp.taglib.content.AttributeControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.content.AttributeControllerTagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <attribute>
-            <name>userMessage</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>erpObject</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-	
-	<tag>
-        <name>BatchUpload</name>
-        <tagclass>com.freshdirect.webapp.taglib.content.BatchUploadTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.erp.BatchUploadTagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-		<attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
-        <name>Material</name>
-        <tagclass>com.freshdirect.webapp.taglib.erp.MaterialTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.erp.MaterialTagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>sapId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <name>Characteristic</name>
         <tagclass>com.freshdirect.webapp.taglib.erp.CharacteristicTag</tagclass>
         <teiclass>com.freshdirect.webapp.taglib.erp.CharacteristicTagEI</teiclass>
