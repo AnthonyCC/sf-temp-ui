@@ -47,7 +47,7 @@
         padding: 30px;
         box-sizing: border-box;
     }
-    .mm-page-overlay .chat-popup{
+    .mm-page-overlay .chat-message-popup{
     	width: auto;
     }
     .chat-message-popup-header{
@@ -103,7 +103,15 @@
         font-size: 16px;
         color: #444444;
     }
-
+	.mm-page-overlay .form-group.subject-container select,
+    .mm-page-overlay .chat-message-popup-order select#order-field,
+    .mm-page-overlay .form-group.message textarea,
+    .mm-page-overlay .form-group.first_name input,
+	.mm-page-overlay .form-group.email input,
+	.mm-page-overlay .chat-message-popup .buttons-container button{
+		width: 100%;
+		box-sizing: border-box;
+	}
     .chat-message-popup-phone-ext{
         float: right;
     }
@@ -114,7 +122,11 @@
     .form-group.phone_number #home_phone{
     	width: 216px;
     }
+    .mm-page-overlay .form-group.phone_number #home_phone{
+		width: 184px;
+     }
     .form-group.phone_number #home_phone_ex{
+    	float: right;
         width: 100px;
 		margin: 0 0 0 20px;
     }
