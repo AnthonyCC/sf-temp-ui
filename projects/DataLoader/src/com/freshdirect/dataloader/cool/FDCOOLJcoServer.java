@@ -21,6 +21,7 @@ import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
+import com.freshdirect.ecomm.gateway.CountryOfOriginService;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
 import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
@@ -221,7 +222,7 @@ public class FDCOOLJcoServer extends FdSapServer {
 			ctx = ErpServicesProperties.getInitialContext();
 //			ServiceLocator serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpCOOLManagerSB)){
-				LogisticsServiceLocator.getInstance().getCommerceService().saveCountryOfOriginData(erpCOOLInfoList);
+				CountryOfOriginService.getInstance().saveCountryOfOriginData(erpCOOLInfoList);
 			}else{
 			ErpCOOLManagerHome mgr = (ErpCOOLManagerHome) ctx.lookup(ErpServicesProperties.getCOOLManagerHome());
 			ErpCOOLManagerSB sb = mgr.create();

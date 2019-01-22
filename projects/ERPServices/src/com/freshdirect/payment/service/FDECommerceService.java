@@ -247,7 +247,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String CMS_FEED_API = "cms/feed/";
 	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
 
-	private static final String GET_COO_API ="coo";
 
 	private static final String GET_EWALLET_BY_ID = "erp/ewallet/findbyid/";
 	private static final String GET_EWALLET_BY_TYPE = "erp/ewallet/findbytype/";
@@ -1138,48 +1137,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	}
 
-	@Override
-	public 	Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since)
-			throws RemoteException {
-			Response<List<CountryOfOriginData>> response = new Response<List<CountryOfOriginData>>();
-
-				try {
-					long date1=0;
-
-					if(since!=null){
-					date1 = since.getTime();
-					}
-					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API+"/"+date1),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
-
-				} catch (FDResourceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				Map<ErpCOOLKey, ErpCOOLInfo> data = ModelConverter.buildCoolModel(response.getData());
-			return data;
-
-	}
-	/*@Override // Will be removed
-	public 	void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList)
-			throws RemoteException {
-
-					Request<List<CountryOfOriginData>> request = new Request<List<CountryOfOriginData>>();
-					request.setData(ModelConverter.buildCoolModelData(erpCOOLInfoList));
-					try {
-						String inputJson = buildRequest(request);
-
-					Response<List<CountryOfOriginData>> response = this.postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
-
-				} catch (FDResourceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FDEcommServiceException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-	}
-	*/
+	
+	
 	@Override
 	public HLBrandProductAdResponse getSearchbykeyword(
 			HLBrandProductAdRequest hLRequestData) throws RemoteException {

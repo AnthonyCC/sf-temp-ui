@@ -73,7 +73,7 @@ public class RegistrationService extends AbstractEcommService implements Registr
 
 			if (!response.getResponseCode().equals("OK")) {
 				if ("ErpDuplicateUserIdException".equals(response.getMessage())) {
-					throw new ErpDuplicateUserIdException();
+					throw new ErpDuplicateUserIdException(erpCustomer!=null?erpCustomer.getUserId():"");
 				}
 				if ("ErpFraudException".equals(response.getMessage())) {
 					throw new ErpFraudException(EnumFraudReason.getEnum(

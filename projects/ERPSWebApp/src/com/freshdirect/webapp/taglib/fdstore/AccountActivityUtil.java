@@ -29,6 +29,7 @@ public class AccountActivityUtil implements SessionName {
 		FDActionInfo info = getActionInfo(session, "");
 		if (info.getIdentity() == null && user != null && user.getIdentity() != null) {
 			info.setIdentity(user.getIdentity());
+			LOGGER.info("fdActionInfo identity" + info.getIdentity() + ", fdUserId=" + info.getFdUserId());
 		}
 		return info;
 	}

@@ -207,23 +207,17 @@ public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, Enu
 		try{
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
-		if(response!=null&&response.equals("JsonProcessingException")){
-			LOGGER.info("JsonProcessingException in ecom Node");
-			throw new JsonMappingException("JsonProcessingException in eCom Node");
-		}
-		if(response==null||response.trim().equals("")){
-			LOGGER.info("Response is null or Empty");
-			throw new FDResourceException("Response is null or Empty");
-		}
-		
-		Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
+		Response<String> info = getMapper().readValue(response, new TypeReference<Response<String>>() { });
 		if(info.getResponseCode().equals("500")){
 			if ("ErpSaleNotFoundException".equals(info.getMessage())) {
 				throw new ErpSaleNotFoundException(info.getMessage());
 			}
+			if ("JsonProcessingException".equals(info.getMessage())) {
+				throw new JsonMappingException(info.getMessage());
+			}
 		}
-		saleModel =info.getData();//ModelConverter.buildErpSaleData(info.getData());
-
+		saleModel =getMapper().readValue(info.getData(), new TypeReference<ErpSaleModel>() { });//ModelConverter.buildErpSaleData(info.getData());
+		cleanUpSaleModel(saleModel);
 		}catch(FDEcommServiceException e){
 			LOGGER.info(e);
 			throw new RemoteException(e.getMessage());
@@ -243,6 +237,14 @@ public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, Enu
 		return new FDOrderAdapter(saleModel);	
 
 	}
+
+private void cleanUpSaleModel(ErpSaleModel saleModel) {
+	if (saleModel.getCartonMetrics() != null && saleModel.getCartonMetrics().containsKey("")) {
+		saleModel.getCartonMetrics().put(null, saleModel.getCartonMetrics().get(""));
+		saleModel.getCartonMetrics().remove("");
+	}
+	
+}
 
 @Override
 public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType,	EnumEStoreId eStore) throws FDResourceException,
@@ -325,7 +327,7 @@ public void releaseModificationLock(String saleId) throws FDResourceException,
 		RemoteException {
 
 	try{
-		String data= httpGetData(getFdCommerceEndPoint(EndPoints.GET_ORDER_IS_READY_TO_PICK.getValue()), String.class, new Object[]{saleId});
+		String data= httpGetData(getFdCommerceEndPoint(EndPoints.GET_ORDER_RELEASE_MODIFICATION_LOCK.getValue()), String.class, new Object[]{saleId});
 
 		Response<Boolean> info = getMapper().readValue(data, new TypeReference<Response<Boolean>>() { });
 		if(!info.getResponseCode().equals("OK")){

@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
-
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -39,7 +35,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.ecommerce.data.common.Response;
-import com.freshdirect.fdlogistics.converter.EnumZoneServiceTypeToString;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -91,13 +86,7 @@ public abstract class AbstractLogisticsService {
 		}
 
 	}
-
 	
-	public static MapperFacade getOrikaMapper(){
-	    	MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-	    	mapperFactory.getConverterFactory().registerConverter(new EnumZoneServiceTypeToString());
-	    	return mapperFactory.getMapperFacade();
-	}
 	protected <T> T getData(String inputJson, String url, Class<T> clazz) throws FDLogisticsServiceException {
 		
 		try {
