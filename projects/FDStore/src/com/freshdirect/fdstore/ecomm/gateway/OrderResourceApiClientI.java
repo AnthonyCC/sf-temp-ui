@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public interface OrderResourceApiClientI {
@@ -63,7 +64,7 @@ public interface OrderResourceApiClientI {
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isBulkOrder) throws RemoteException;
+			boolean isBulkOrder) throws RemoteException, ServiceUnavailableException, FDResourceException, ErpFraudException, ErpAuthorizationException, ErpAddressVerificationException;
 
 
 	public String placeSubscriptionOrder(FDActionInfo info,
