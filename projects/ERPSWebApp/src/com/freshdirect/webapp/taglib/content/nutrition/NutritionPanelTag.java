@@ -127,9 +127,9 @@ public class NutritionPanelTag extends BodyTagSupport {
         JspWriter out = pageContext.getOut();
         
         // If we did not get the nutritionModel then get it from the cache
-        if ( nutritionModel == null ) {
-        	nutritionModel = FDNutritionCache.getInstance().getNutrition( skuCode );
-        }
+/*        if ( nutritionModel == null ) {
+*/        	nutritionModel = FDNutritionCache.getInstance().getNutrition( skuCode );
+       /* }*/
         
         if ( nutritionModel == null ) {
         	LOG.error( "Did not find any nutrition information for sku:"+skuCode );

@@ -13,6 +13,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.ecomm.gateway.CountryOfOriginService;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
@@ -43,7 +44,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 			LOGGER.info("REFRESHING");
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpCOOLManagerSB)){
 			
-				data = FDECommerceService.getInstance().getCountryOfOriginData(since); 
+				data = CountryOfOriginService.getInstance().getCountryOfOriginData(since); 
 			}else{
 				ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();
 				data = sb.load(since);

@@ -19,10 +19,6 @@ import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 
 public interface ICommerceService {
 
-	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException;
-	
-//	public void getCountryOfOriginData() throws RemoteException, LoaderException;
-
 	public void healthCheck()throws RemoteException;
 	public boolean ping() throws RemoteException;
 	public List<Long> getDYFEligibleCustomerIDs() throws RemoteException;

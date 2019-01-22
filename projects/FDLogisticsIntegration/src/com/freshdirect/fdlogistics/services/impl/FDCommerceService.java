@@ -64,52 +64,22 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	private static final String DLV_MANAGER_RESERVE_TIME = "dlvmanager/reservetime";
 	
 	public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException{
+		String inputJson = null;
 		try {
-			//List<PricingZoneData> data = getOrikaMapper().mapAsList(zoneInfoList, PricingZoneData.class);
 			Request<List<ErpZoneMasterInfo>> request = new Request<List<ErpZoneMasterInfo>>();
 			request.setData(zoneInfoList);
-			String inputJson = buildRequest(request);
+			inputJson = buildRequest(request);
 			Response<String> response = getData(inputJson, getFdCommerceEndPoint(SAVE_PRICING_ZONES_API), Response.class);
 			if(!response.getResponseCode().equalsIgnoreCase("OK"))
 				throw new RemoteException(response.getMessage());
 		} catch (FDLogisticsServiceException e) {
 			
-			e.printStackTrace();
-			LOGGER.error(e.getMessage() );
+			LOGGER.error("Error in loadData, data=" + inputJson, e );
 			throw new RemoteException(e.getMessage(), e);
 		}
 		
 		
 	}
-	
-	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException{
-		try {
-			List<CountryOfOriginData> data = getOrikaMapper().mapAsList(cooList, CountryOfOriginData.class);
-			Request<List<CountryOfOriginData>> request = new Request<List<CountryOfOriginData>>();
-			request.setData(data);
-			String inputJson = buildRequest(request);
-			getData(inputJson, getFdCommerceEndPoint(COO_API), Response.class);
-		} catch (FDLogisticsServiceException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage(), e);
-		}
-		
-		
-	}
-	
-/*	public void getCountryOfOriginData() throws RemoteException, LoaderException{
-		try {
-			httpGetData(getFdCommerceEndPoint(COO_API), Response.class);
-		} catch (FDLogisticsServiceException e) {
-			
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage(), e);
-		}
-		
-		
-	}*/
 	
 	public void healthCheck() throws RemoteException{
 		try {

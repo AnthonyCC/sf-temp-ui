@@ -169,7 +169,7 @@ public class TileTag extends BodyTagSupportEx {
 		for (ContentNodeModel item : items) {
 			if (FDContentTypes.CATEGORY.equals(item.getContentKey().getType())) {
 				CategoryModel node = (CategoryModel) item;
-				products.addAll(node.getAllChildProducts());
+				products.addAll(node.getAllChildFromTwoLevelProducts());
 			} else if (FDContentTypes.PRODUCT.equals(item.getContentKey().getType())) {
 				products.add((ProductModel) item);
 			} else if (FDContentTypes.CONFIGURED_PRODUCT.equals(item.getContentKey().getType())) {

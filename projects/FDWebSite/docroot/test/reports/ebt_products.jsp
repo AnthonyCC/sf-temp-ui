@@ -56,7 +56,7 @@ Collection<ContentKey> categories = CmsManager.getInstance().getContentKeysByTyp
 <%for (ContentKey category : categories)
 {	
     CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(category);
-    List<ProductModel> products = categoryModel.getAllChildProductsAsList();
+    List<ProductModel> products = categoryModel.getAllChildFromTwoLevelProductsAsList();
 
     if(!NavigationUtil.isCategoryHiddenInContext(user, categoryModel)){
     

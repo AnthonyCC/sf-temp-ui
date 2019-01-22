@@ -16,6 +16,9 @@
         text-align: center;
         padding: 40px 0;
     }
+    .mm-page-overlay .chat-popup{
+    	width: auto;
+    }
     .chat-cont{
         padding: 0 0 5px;
     }

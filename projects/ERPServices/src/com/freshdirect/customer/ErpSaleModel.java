@@ -493,7 +493,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					"Sale "
 						+ getPK().getId()
 						+ " Material number for orderLineNumber doesnt match: "
-						+ orderLine.getOrderLineNumber());
+						+ orderLine.getOrderLineNumber()+". Invoice has "+invoiceLine.getMaterialNumber()+", and the order has "+orderLine.getMaterialNumber());
 			}
 
 			caseBuilder.reconcile(orderLine, invoiceLine, isShorted);

@@ -127,9 +127,7 @@ public interface IECommerceService {
 	public ErpProductFamilyModel findFamilyInfo(String familyId) throws RemoteException, FDResourceException;
 
 	public ErpProductFamilyModel findSkuFamilyInfo(String materialId)throws RemoteException, FDResourceException;
-
-	public Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since) throws RemoteException;
-
+	
 	public <E> List loadEnum(String daoClassName)throws RemoteException;
 
 
