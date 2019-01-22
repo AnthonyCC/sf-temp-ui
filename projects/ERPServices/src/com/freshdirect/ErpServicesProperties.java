@@ -33,6 +33,7 @@ public class ErpServicesProperties {
 	private final static String PROP_INIT_CTX_FACTORY	= "erpservices.initialContextFactory";
 
     private final static String PROP_PRODUCTTREE_HOME   = "erpservices.productree.home";
+    private final static String PROP_ATTRIBUTES_HOME    = "erpservices.attributes.home";
     private final static String PROP_NUTRITION_HOME     = "erpservices.nutrition.home";
     private final static String PROP_INFO_HOME          = "erpservices.info.home";
     private final static String PROP_BATCH_HOME         = "erpservices.batch.home";
@@ -321,6 +322,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_INIT_CTX_FACTORY,	"weblogic.jndi.WLInitialContextFactory");
 
         defaults.put(PROP_PRODUCTTREE_HOME,	"freshdirect.erp.ProductTree");
+        defaults.put(PROP_ATTRIBUTES_HOME,	"freshdirect.content.AttributeFacade");
         defaults.put(PROP_NUTRITION_HOME,	"freshdirect.content.Nutrition");
         defaults.put(PROP_BATCH_HOME,       "freshdirect.erp.BatchManager");
         defaults.put(PROP_INFO_HOME,	    "freshdirect.erp.Info");
@@ -616,6 +618,10 @@ public class ErpServicesProperties {
 
     public static String getBatchHome() {
 		return config.getProperty(PROP_BATCH_HOME);
+	}
+
+    public static String getAttributesHome() {
+		return config.getProperty(PROP_ATTRIBUTES_HOME);
 	}
 
     public static String getNutritionHome() {

@@ -26,7 +26,77 @@
 
 
     <tmpl:put name='content' direct='true'>
-           
+            <%--
+            <fd:Class id="erpClass" sapId='<%= request.getParameter("sapId") %>'>
+
+            <form action="class_view.jsp" method="post">
+            <input type=hidden name=action value=save>
+			<input type=hidden name=sapId value="<%= request.getParameter("sapId") %>">
+
+                <fd:AttributeController erpObject="<%= erpClass %>" userMessage="feedback" />
+                
+                <table width="600">
+                    <tr>
+                        <td align=left>View/Edit Class</td>
+                        <td align=right><%= feedback %></td>
+                    </tr>
+                    <tr><td colspan=2 bgcolor='#DDDDDD' align=left>Class Data</td></tr>
+                </table>
+                <table>
+                    <tr><td>Class</td><td><%= erpClass.getSapId() %></td></tr>
+                <hr>
+                <!-- characteristics -->
+                <table>
+                    <tr><th>Characteristic</th><th>Priority</th><th></th></tr>
+                    <%  
+                        // sort characteristics by priority
+                        List chs = new ArrayList(erpClass.getCharacteristics());
+                        Collections.sort(chs, AttributeComparator.PRIORITY);
+                    %>
+                <logic:iterate id="charac" collection="<%= chs %>" type="com.freshdirect.erp.model.ErpCharacteristicModel">
+                    <tr>
+                        <td><%= charac.getName() %></td>
+                        <td><% if(SecurityManager.isUserAdmin(request)) {%>
+						<select name="<%= FormElementNameHelper.getFormElementName(charac, EnumAttributeName.PRIORITY.getName()) %>">
+                            <option>
+                            <% for (int i=1;i<erpClass.numberOfCharacteristics()+1;i++) {
+                                out.print("<option");
+                                if (i == charac.getAttributeInt(EnumAttributeName.PRIORITY)) out.print(" SELECTED");
+                                    out.println(">" + i);
+                            } %>
+                        </select>
+						<% } else {%>
+						<%= charac.getAttributeInt(EnumAttributeName.PRIORITY) %>
+						<% } %>
+						</td>
+                        <td><% if(SecurityManager.isUserAdmin(request)) {%>
+						<a href="characteristic_view.jsp?characteristic=<%= charac.getName() %>">View/Edit</a>
+						<% } else {%>
+						<a href="characteristic_view_reader.jsp?characteristic=<%= charac.getName() %>">View</a>
+						<% } %>
+						</td>
+                    </tr>
+                </logic:iterate>
+                            </table>
+
+            </form>
+
+            <fd:MaterialSearch results="classMaterials" searchtype="CLASS" searchterm="<%= erpClass.getSapId() %>">
+                <table width="600" cellspacing=2 cellpadding=0>
+                <tr><td class="section_title">Materials in Class</td></tr>
+                </table>
+                <!-- search results -->
+                    <%= classMaterials.size() %> Materials found
+                    <table>
+                        <tr><th>SAP ID</th><th>Description</th></tr>
+                    <logic:iterate id="material" collection="<%= classMaterials %>" type="com.freshdirect.erp.model.ErpMaterialInfoModel">
+                        <tr><td><%= material.getSapId() %></a></td><td><%= material.getDescription() %></td></tr>
+                    </logic:iterate>
+                    </table>
+            </fd:MaterialSearch>
+
+            </fd:Class>
+            --%>
     </tmpl:put>
 
 

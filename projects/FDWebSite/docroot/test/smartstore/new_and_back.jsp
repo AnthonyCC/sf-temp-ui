@@ -56,7 +56,15 @@ List<SkuEntry> calcSkuEntries(Map<String, Date> skus, Map<String, Date> overridd
 		e.sku = entry.getKey();
 		e.date = entry.getValue();
 		e.age = formatDay(now, e.date);
-		
+		try {
+			ErpProductModel product = ErpFactory.getInstance().getProduct(e.sku);
+			ErpMaterialModel material = product.getProxiedMaterial();
+			if (material != null) {
+				e.sap = material.getSapId();
+				e.matdesc = material.getDescription();
+			}
+		} catch (Exception e1) {
+		}
 		e.unavailable = true;
 		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(FDContentTypes.SKU, entry.getKey()));
 		if (sku != null) {
