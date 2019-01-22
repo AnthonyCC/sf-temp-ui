@@ -42,7 +42,6 @@ public class FDEcommProperties {
     public final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
     public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
     public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
-	public final static String ErpProductPromotionInfoSB = "erp.ejb.ErpProductPromotionInfoSB";
     public final static String ErpZoneInfoSB = "erp.ejb.ErpZoneInfoSB";
     public final static String RecommendationEventLoggerSB = "event.ejb.RecommendationEventLoggerSB";
     public final static String FDCouponActivityLogSB = "fdstore.ecoupon.FDCouponActivityLogSB";
@@ -125,7 +124,6 @@ public class FDEcommProperties {
         defaults.put(SAPZoneInfoLoaderSB,FALSE);
         defaults.put(BatchManagerSB,FALSE);
         defaults.put(AttributeFacadeSB ,FALSE);
-        defaults.put(ErpProductPromotionInfoSB,FALSE);
         defaults.put(ErpZoneInfoSB,FALSE);
         defaults.put(RecommendationEventLoggerSB ,FALSE);
         defaults.put(FDFactorySB_WarmUp ,FALSE);

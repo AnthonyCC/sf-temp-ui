@@ -445,22 +445,6 @@ version="3.0">
       </resource-ref>
     </session>
     <session>
-      <ejb-name>ProductPromotionInfoManager</ejb-name>
-      <home>
-      com.freshdirect.erp.ejb.ErpProductPromotionInfoHome</home>
-      <remote>
-      com.freshdirect.erp.ejb.ErpProductPromotionInfoSB</remote>
-      <ejb-class>
-      com.freshdirect.erp.ejb.ErpProductPromotionInfoSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
-    <session>
       <ejb-name>CouponManager</ejb-name>
       <home>
       com.freshdirect.fdstore.ecoupon.FDCouponManagerHome</home>
@@ -1277,11 +1261,6 @@ version="3.0">
       </method>
       <method>
         <ejb-name>ZoneInfoManager</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-      <method>
-        <ejb-name>ProductPromotionInfoManager</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>
