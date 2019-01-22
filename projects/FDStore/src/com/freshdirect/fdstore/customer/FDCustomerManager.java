@@ -212,69 +212,39 @@ public class FDCustomerManager {
 		return register( info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, false);
 	}
 
-	public static RegistrationResult register(
-			FDActionInfo info,
-			ErpCustomerModel erpCustomer,
-			FDCustomerModel fdCustomer,
-			String cookie,
-			boolean pickupOnly,
-			boolean eligibleForPromotion,
+	public static RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer,
+			FDCustomerModel fdCustomer, String cookie, boolean pickupOnly, boolean eligibleForPromotion,
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException  , ErpDuplicateUserIdException,ErpFraudException {
+			throws FDResourceException, ErpDuplicateUserIdException, ErpFraudException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
-				return RegistrationService.getInstance().register(info, erpCustomer, fdCustomer, cookie, pickupOnly,
-						eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey,
-						serviceType, isGiftCardBuyer);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return RegistrationService.getInstance().register(info, erpCustomer, fdCustomer, cookie, pickupOnly,
+					eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
+
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
-	public static FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
+	public static FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId)
+			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
-				return RegistrationService.getInstance().createNewUser(zipCode, serviceType, eStoreId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.createNewUser(zipCode, serviceType, eStoreId);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return RegistrationService.getInstance().createNewUser(zipCode, serviceType, eStoreId);
+
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
 	}
 
-	public static FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
+	public static FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId)
+			throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
-				return RegistrationService.getInstance().createNewUser(address != null? address.getZipCode() : null, serviceType, eStoreId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.createNewUser(address, serviceType, eStoreId);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return RegistrationService.getInstance().createNewUser(address != null ? address.getZipCode() : null,
+					serviceType, eStoreId);
+
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 

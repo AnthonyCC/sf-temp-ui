@@ -116,44 +116,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 public interface FDCustomerManagerSB  extends EJBObject{
     
     
-    /**
-     * Register and log in a new customer.
-     *
-     * @param ErpCustomerModel erpCustomer
-     * @param FDCustomerModel fdCustomer
-     * @param String cookie
-     *
-     * @return the resulting FDIdentity
-     * @throws FDResourceException if an error occured using remote resources
-     * @throws ErpDuplicateUserIdException if user enters an email address already in the system
-     * @deprecated
-     */
-	@Deprecated
-    public RegistrationResult register(
-		FDActionInfo info,
-		ErpCustomerModel erpCustomer,
-		FDCustomerModel fdCustomer,
-		String cookie,
-		boolean pickupOnly,
-		boolean eligibleForPromotion,
-		FDSurveyResponse survey, EnumServiceType serviceType)
-		throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException, RemoteException;
-
-	@Deprecated
-	public RegistrationResult register(
-			FDActionInfo info,
-			ErpCustomerModel erpCustomer,
-			FDCustomerModel fdCustomer,
-			String cookie,
-			boolean pickupOnly,
-			boolean eligibleForPromotion,
-			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException, RemoteException;
-
-	@Deprecated
-    public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
-	@Deprecated
-    public FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
+    
 	@Deprecated
     public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	@Deprecated

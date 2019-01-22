@@ -94,7 +94,6 @@ public class FDEcommProperties {
 	public static final String FDCustomerOrder = "com.freshdirect.customer.order";
 	public static final String FDCustomer = "com.freshdirect.customer";
 	public static final String FDCustomerFactory = "com.freshdirect.fdstore.customer.FDCustomerFactory";
-	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_TIMEOUT = "ecom.service.conn.timeout";
