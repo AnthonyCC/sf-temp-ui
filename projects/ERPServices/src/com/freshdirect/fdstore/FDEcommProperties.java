@@ -43,7 +43,6 @@ public class FDEcommProperties {
     public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
     public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
     public final static String ErpZoneInfoSB = "erp.ejb.ErpZoneInfoSB";
-    public final static String RecommendationEventLoggerSB = "event.ejb.RecommendationEventLoggerSB";
     public final static String FDCouponActivityLogSB = "fdstore.ecoupon.FDCouponActivityLogSB";
     public final static String EwalletActivityLogSB = "ewallet.ejb.EwalletActivityLogSB";
     public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
@@ -125,7 +124,6 @@ public class FDEcommProperties {
         defaults.put(BatchManagerSB,FALSE);
         defaults.put(AttributeFacadeSB ,FALSE);
         defaults.put(ErpZoneInfoSB,FALSE);
-        defaults.put(RecommendationEventLoggerSB ,FALSE);
         defaults.put(FDFactorySB_WarmUp ,FALSE);
         defaults.put(FDCouponActivityLogSB,FALSE);
         defaults.put(EwalletActivityLogSB ,FALSE);
