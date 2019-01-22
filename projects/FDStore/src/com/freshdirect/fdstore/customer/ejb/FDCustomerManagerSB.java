@@ -136,23 +136,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public FDUser recognizeByEmail(String email, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
     @Deprecated
     public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, FDUser user) throws FDResourceException, RemoteException;
-
-    /**
-     * Authenticate and log in a customer.
-     *
-     * @param userId
-     * @param password
-     *
-     * @return user identity reference
-     *
-     * @throws FDAuthenticationException if the userId/password was not found
-     * @throws FDResourceException if an error occured using remote resources
-     */
-    @Deprecated
-    public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException, RemoteException;
-    @Deprecated
-    public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException, RemoteException;
-
     @Deprecated
     /*
      * SF2.0 end point /customerInfo/getCustomerId

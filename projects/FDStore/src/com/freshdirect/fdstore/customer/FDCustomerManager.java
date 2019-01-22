@@ -268,21 +268,12 @@ public class FDCustomerManager {
 	public static FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
 		FDUser user = null;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
-				user = CustomerIdentityService.getInstance().recognize(cookie, eStoreId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				user = sb.recognize(cookie, eStoreId);
-			}
+			user = CustomerIdentityService.getInstance().recognize(cookie, eStoreId);
+			
 			populateShoppingCart(user, true, true);
 			return user;
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -345,14 +336,8 @@ public class FDCustomerManager {
 		
 		try {
 			FDUser user = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
-				user = CustomerIdentityService.getInstance().recognize(identity, eStoreId, false, false);
-			} else {
-
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				user = sb.recognize(identity, eStoreId, false, false);
-			}
+			user = CustomerIdentityService.getInstance().recognize(identity, eStoreId, false, false);
+			
 			user.setApplication(source);
 			user.setMasqueradeContext(ctx);
 
@@ -365,11 +350,7 @@ public class FDCustomerManager {
 			}
 			return user;
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -562,39 +543,18 @@ public class FDCustomerManager {
 	 */
 	public static FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
 				return CustomerIdentityService.getInstance().login(userId, password);
-			} else {
-				lookupManagerHome();
-
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.login(userId, password);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
-				return CustomerIdentityService.getInstance().login(userId, null);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.login(userId);
-			}
-		} catch (CreateException ce) {
-			ce.printStackTrace();
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerIdentityService.getInstance().login(userId, null);
+			
 		} catch (RemoteException re) {
-			re.printStackTrace();
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}

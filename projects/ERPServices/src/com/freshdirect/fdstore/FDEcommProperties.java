@@ -81,7 +81,6 @@ public class FDEcommProperties {
 	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
 	public static final String StandingOrdersServiceSB = "com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
-	public static final String FDCustomerIdentity = "com.freshdirect.customer.identity";
 	public static final String FDCustomerAddress = "com.freshdirect.customer.address";
 	public static final String FDCustomerPayment = "com.freshdirect.customer.payment";
 	public static final String FDCustomerPreference = "com.freshdirect.customer.preference";
