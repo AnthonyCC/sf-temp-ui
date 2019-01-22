@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,7 +43,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 	}
 
 	@Override
-	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId)
+	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, String eStore)
 			throws FDResourceException, RemoteException {
 		Response<ErpAddressModel> response = null;
 		try {
@@ -53,6 +52,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 			rootNode.put("lastOrderId", lastOrderId);
+			rootNode.put("eStore", eStore);
 
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
@@ -241,10 +241,10 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 	}
 
 	@Override
-	public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
+	public String getDefaultShipToAddressPK(FDIdentity identity, String eStore) throws FDResourceException {
 		Response<String> response = null;
 		response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_DEFAULT_SHIPPING_ADDRESS + "/" + identity.getFDCustomerPK()),
+				getFdCommerceEndPoint(GET_DEFAULT_SHIPPING_ADDRESS + "/" + identity.getFDCustomerPK()) + "/" + eStore,
 				new TypeReference<Response<String>>() {
 				});
 
@@ -258,7 +258,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 	}
 
 	@Override
-	public void setDefaultShippingAddressPK(FDIdentity identity, String shipToAddressPK)
+	public void setDefaultShippingAddressPK(FDIdentity identity, String shipToAddressPK, String eStore)
 			throws FDResourceException, RemoteException {
 		Response<Void> response = null;
 		try {
@@ -267,7 +267,8 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.put("customerId", identity.getFDCustomerPK());
 			rootNode.put("shippingAddressPK", shipToAddressPK);
-
+			rootNode.put("eStore", eStore);
+			
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 

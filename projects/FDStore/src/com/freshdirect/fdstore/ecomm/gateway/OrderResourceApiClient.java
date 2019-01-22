@@ -64,6 +64,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class OrderResourceApiClient extends AbstractEcommService implements OrderResourceApiClientI {
@@ -259,7 +260,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	@Override
 	public String placeGiftCardOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isBulkOrder) throws RemoteException {
+			boolean isBulkOrder) throws ServiceUnavailableException, FDResourceException, ErpFraudException, ErpAuthorizationException, ErpAddressVerificationException, RemoteException {
 
 		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
 
@@ -273,8 +274,34 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 			String inputJson = buildRequest(request);
 			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class,
 					new Object[] {});
+			
+			if(response.getResponseCode().equals("500")){
+				if ("ErpFraudException".equals(response.getMessage())) {
+					throw new ErpFraudException(EnumFraudReason.getEnum(response.getMessage()));
+				}
+				if ("ServiceUnavailableException".equals(response.getMessage())) {
+					throw new ServiceUnavailableException(response.getMessage());
+				}
+				if ("FDResourceException".equals(response.getMessage())) {
+					throw new FDResourceException(response.getMessage());
+				}
+				if ("ErpAuthorizationException".equals(response.getMessage())) {
+					throw new ErpAuthorizationException(response.getMessage());
+				}
+				if ("ErpAddressVerificationException".equals(response.getMessage())) {
+					throw new ErpAddressVerificationException(response.getMessage());
+				}
+				if ("ErpSaleNotFoundException".equals(response.getMessage())) {
+					throw new FDResourceException(response.getMessage());
+				}
+				if ("ErpTransactionException".equals(response.getMessage())) {
+					throw new FDResourceException(response.getMessage());
+				}
+			}
 			return parseResponse(response);
-		} catch (Exception e) {
+
+			
+		} catch (FDEcommServiceException e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
 		}
