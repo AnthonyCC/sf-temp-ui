@@ -4781,12 +4781,18 @@ public class FDCustomerManager {
 	public static boolean updateRAFClickIDPromoCode(FDIdentity identity, String rafclickid,
 			String rafpromocode, EnumEStoreId eStoreId) throws FDResourceException {
 
-		lookupManagerHome();
+		
 		boolean status=true;
 		try {
 			LOGGER.info("updateRAFClickIDPromoCode: rafclickid= "  + rafclickid + ", rafpromocode=" + rafpromocode);
-			FDCustomerManagerSB sb = managerHome.create();
-			status =sb.setRAFClickIDPromoCode(identity, rafclickid, rafpromocode, eStoreId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerMisc1)) {
+				status = CustomerInfoService.getInstance().setRAFClickIDPromoCode(identity, rafclickid, rafpromocode,
+						eStoreId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				status =sb.setRAFClickIDPromoCode(identity, rafclickid, rafpromocode, eStoreId);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -4826,13 +4832,17 @@ public class FDCustomerManager {
 
 		public static boolean reSendInvoiceEmail(String OrderId) throws FDResourceException {
 
-		lookupManagerHome();
+		
 
 		try {
 			LOGGER.info("reSendInvoiceEmail: OrderId= "  + OrderId);
-			FDCustomerManagerSB sb = managerHome.create();
-			 return sb.reSendInvoiceEmail(OrderId);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerMisc1)) {
+				return CustomerNotificationService.getInstance().resendInvoiceEmail(OrderId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.reSendInvoiceEmail(OrderId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

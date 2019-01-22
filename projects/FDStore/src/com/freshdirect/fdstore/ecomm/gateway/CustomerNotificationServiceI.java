@@ -27,5 +27,6 @@ public interface CustomerNotificationServiceI {
 	
 	public void doEmail(XMLEmailI email) throws RemoteException, FDResourceException;
 
+	public boolean resendInvoiceEmail(String orderId) throws FDResourceException, RemoteException;
 	
 }

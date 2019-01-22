@@ -27,6 +27,7 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.FDUserData;
 import com.freshdirect.ecommerce.data.product.ProductRequestData;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -95,6 +96,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
     private static final String GET_PENDING_CREDIT_HISTORY = "customerInfo/getPendingCreditHistory";
 	private static final String IS_REFERRER_ESTRICTED = "customerInfo/isReferrerRestricted";
 	private static final String IS_CREDIT_RESTRICTED = "customerInfo/isCreditRestricted";
+	private static final String SET_CLICK_ID_PROMO_CODE="customerInfo/setRAFClickIDPromoCode";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -992,4 +994,38 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
         }
         return response.getData();
     }
+
+	@Override
+	public boolean setRAFClickIDPromoCode(FDIdentity identity, String rafclickid, String rafpromocode,
+			EnumEStoreId eStoreId) throws FDResourceException, RemoteException {
+		if (identity == null)
+			return true;
+		
+		Response<Void> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("fdCustomerId", identity.getFDCustomerPK());
+			rootNode.put("clickId", rafclickid);
+			rootNode.put("promoCode", rafpromocode);
+			rootNode.put("eStore", null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
+			
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SET_CLICK_ID_PROMO_CODE),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.setRAFClickIDPromoCode: data=" + inputJson);
+				return false;
+			}
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService.setRAFClickIDPromoCode: identity=" + identity + ", rafclickid="
+					+ rafclickid + ", rafpromocode=" + rafpromocode + ", eStoreId=" + eStoreId, e);
+			throw new RemoteException(e.getMessage());
+		}
+		return true;
+	}
 }
