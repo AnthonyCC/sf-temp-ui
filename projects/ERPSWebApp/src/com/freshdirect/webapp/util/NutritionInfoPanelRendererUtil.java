@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -162,15 +161,10 @@ public class NutritionInfoPanelRendererUtil {
 		try {
 			Document doc = new XMLSerializer().serializeDocument("nutrition", nutritionDoc);
 			synchronized (transformer) {
-				StringWriter sw = new StringWriter();
-			    StreamResult output = new StreamResult(sw);
-				transformer.transform(new DocumentSource(doc), output);
-				out.write(output.getWriter().toString());
+				transformer.transform(new DocumentSource(doc), new StreamResult(out));
 			}
 			return true;
 		} catch (TransformerException e) {
-			LOG.error("Failed to render nutrition panel", e);
-		} catch (IOException e) {
 			LOG.error("Failed to render nutrition panel", e);
 		}
 
