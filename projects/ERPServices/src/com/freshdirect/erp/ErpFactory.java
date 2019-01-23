@@ -532,6 +532,20 @@ public class ErpFactory {
 		}
 	}
 
+	private void lookupAttributesHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			attributeHome = (AttributeFacadeHome) ctx.lookup(ErpServicesProperties.getAttributesHome());
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
+			}
+		}
+	}
 	
 	public ErpNutritionModel getNutrition(String skuCode) throws FDResourceException {
 
