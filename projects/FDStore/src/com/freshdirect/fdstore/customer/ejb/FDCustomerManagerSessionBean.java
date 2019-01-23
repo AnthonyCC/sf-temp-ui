@@ -3857,29 +3857,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 
-	public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getOrdersByTruckNumber(truckNumber, dlvDate);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public ErpOrderHistory getOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getOrderHistoryInfo(new PrimaryKey(identity.getErpCustomerPK()));
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -4957,64 +4934,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new EJBException(ex);
 		}
 		return deliveryPasses;
-	}
-
-	/**
-	 * This method returns Map containing dlvPassId as key and DlvPassUsageInfo as
-	 * value.
-	 *
-	 * @param identity
-	 * @return
-	 */
-	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(FDIdentity identity) {
-		Map<String, DlvPassUsageInfo> mapInfo = null;
-		try {
-			ErpCustomerManagerSB customerManagerSB = this.getErpCustomerManagerHome().create();
-			mapInfo = customerManagerSB.getDlvPassesUsageInfo(identity.getErpCustomerPK());
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ce) {
-			LOGGER.warn(ce);
-			throw new EJBException(ce);
-
-		}
-		return mapInfo;
-
-	}
-
-	/**
-	 * This method returns the list of orders that used the specified delivery pass.
-	 *
-	 * @param dlvPassId
-	 * @return java.util.List
-	 */
-	public ErpOrderHistory getOrdersByDlvPassId(FDIdentity identity, String dlvPassId) {
-		ErpOrderHistory orders = null;
-		try {
-			ErpCustomerManagerSB customerManagerSB = this.getErpCustomerManagerHome().create();
-			orders = customerManagerSB.getOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ce) {
-			LOGGER.warn(ce);
-			throw new EJBException(ce);
-
-		}
-		return orders;
-	}
-
-	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld)
-			throws FDResourceException {
-		try {
-			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
-			return erpCustomerManagerSB.getRecentOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId, noOfDaysOld);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
 	}
 
 	/**

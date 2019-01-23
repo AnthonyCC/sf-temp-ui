@@ -321,8 +321,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public List<SavedRecipientModel> loadSavedRecipients(FDUser user) throws FDResourceException, RemoteException;
     @Deprecated
-    public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException, RemoteException;
-    @Deprecated
 	public FDOrderI getOrderForCRM(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
 	@Deprecated
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
@@ -333,16 +331,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException, RemoteException;
 
-    /**
-     * Get lightweight info about a customer's orders.
-     *
-     * @param identity the customer's identity reference
-     * @deprecated
-     */
-    @Deprecated
-    public ErpOrderHistory getOrderHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
-
-
+   
     /**
      * Get lightweight info about a customer's used promotions.
      *
@@ -562,21 +551,14 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	@Deprecated
 	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) throws RemoteException;
 	@Deprecated
-	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(FDIdentity identity) throws RemoteException;
-	@Deprecated
 	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,EnumEStoreId eStore) throws RemoteException;
 	@Deprecated
-	public ErpOrderHistory getOrdersByDlvPassId(FDIdentity identity, String dlvPassId) throws RemoteException;
-	@Deprecated
 	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user, EnumEStoreId estore) throws FDResourceException, RemoteException;
-	@Deprecated
-	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException, RemoteException;
 	@Deprecated
 	public Map<String, List<FDCustomerOrderInfo>> cancelOrders(FDActionInfo actionInfo, List<FDCustomerOrderInfo> customerOrders, boolean sendEmail) throws RemoteException;
 	@Deprecated
 	public boolean hasPurchasedPass(String customerPK) throws RemoteException, FDResourceException ;
-	@Deprecated
-	public int getValidOrderCount(FDIdentity identity) throws RemoteException, FDResourceException;
+
 	@Deprecated
 	public String getLastOrderID(FDIdentity identity) throws RemoteException, FDResourceException;
 	@Deprecated

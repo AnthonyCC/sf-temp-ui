@@ -1462,22 +1462,11 @@ public class FDCustomerManager {
 	}
 
 	public static List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
-		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ordersByTruck_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+				OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return service.getOrdersByTruck(truckNumber, dlvDate);
-	    	}else{
-			
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrdersByTruck(truckNumber, dlvDate);
-	    	}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+	    	
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -1575,19 +1564,10 @@ public class FDCustomerManager {
 
 		try {
 
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderHistory_Api")){
-    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
     		return new ErpOrderHistory(service.getOrderHistory(identity.getErpCustomerPK()));
-    	}else{
-    		lookupManagerHome();
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrderHistoryInfo(identity);
-    	}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+    	
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2809,20 +2789,10 @@ public class FDCustomerManager {
 		
 		try {
 
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ordersByDlvPass_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return new FDOrderHistory(service.getOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId));
-	    	}else{
-	    	lookupManagerHome();
-			FDCustomerManagerSB sb = managerHome.create();
-			ErpOrderHistory history = sb.getOrdersByDlvPassId(identity, dlvPassId);
-			return new FDOrderHistory(history.getErpSaleInfos());
-	    	}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			return new FDOrderHistory(service.getOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId));
+
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2839,20 +2809,10 @@ public class FDCustomerManager {
 	public static List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderByDlvPass_recent_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return service.getRecentOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId, noOfDaysOld);
-	    	}else{
-		    	lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getRecentOrdersByDlvPassId(identity, dlvPassId, noOfDaysOld);
-	    	}
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			return service.getRecentOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId, noOfDaysOld);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2879,12 +2839,8 @@ public class FDCustomerManager {
 
 			Map<String, DlvPassUsageInfo> usageInfos = null;
 
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("dlvPassUsage_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		usageInfos =  service.getDlvPassesUsageInfo(identity.getErpCustomerPK());
-	    	}else{
-	    		usageInfos = sb.getDlvPassesUsageInfo(identity);
-	    	}
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			usageInfos = service.getDlvPassesUsageInfo(identity.getErpCustomerPK());
 
 			List<Object> historyInfo = null;
 			for ( DeliveryPassModel model : dlvPasses ) {
@@ -3079,18 +3035,10 @@ public class FDCustomerManager {
 		}
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("validordercount_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+				OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return service.getValidOrderCount(identity.getErpCustomerPK());
-	    	}else{
-	    		lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getValidOrderCount(identity);
-	    	}
+	    	
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -3419,25 +3367,13 @@ public class FDCustomerManager {
 
 
 	public static String getLastOrderId(FDIdentity identity, EnumEStoreId eStoreId) throws FDResourceException {
-		String lastOrderId = null;
-		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("lastOrderId_Estore_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return service.getLastOrderId(identity.getErpCustomerPK(), eStoreId);
-	    	}else{
-	    		lookupManagerHome();
-				FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
-				lastOrderId = customerManagerSessionBean.getLastOrderID(identity, eStoreId);
-	    	}
-		} catch (CreateException exception) {
-			invalidateManagerHome();
-			throw new FDResourceException(exception, "Error creating session bean");
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			return service.getLastOrderId(identity.getErpCustomerPK(), eStoreId);
+
 		} catch (RemoteException exception) {
-			invalidateManagerHome();
 			throw new FDResourceException(exception, "Error talking session bean");
 		}
-		return lastOrderId;
 	}
 
 	public static FDOrderI getLastOrder(FDIdentity identity) throws FDResourceException {

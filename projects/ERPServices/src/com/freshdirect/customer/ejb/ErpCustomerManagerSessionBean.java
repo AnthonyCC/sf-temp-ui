@@ -81,7 +81,6 @@ import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpInvoicedCreditModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
@@ -330,9 +329,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				ctx.setRollbackOnly();
 				throw new ErpFraudException(EnumFraudReason.DEACTIVATED_ACCOUNT);
 			}
-			// comment out this unnecessary call
-			//ErpOrderHistory orderHistory = getOrderHistoryInfo(erpCustomerPk);
-
+			
 			//
 			// Do fraud check
 			//
@@ -556,8 +553,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
 			PrimaryKey erpCustomerPk = sale.getCustomerPk();
 
-			//comment out this unnecessary call
-			//ErpOrderHistory orderHistory = getOrderHistoryInfo(erpCustomerPk);
+			
 			preCheckOrderFraud(erpCustomerPk, order, agentRole);
 
 			// reverse credits applied to the last order Transaction
@@ -897,36 +893,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (RemoteException ex) {
 			LOGGER.warn("RemoteException: ", ex);
 			throw new EJBException(ex);
-		}
-	}
-
-	
-	/**
-	 * Get lightweight info about a customer's orders.
-	 *
-	 * @param erpCustomerPk primary key of ErpCustomer
-	 *
-	 * @return collection of ErpSaleInfo objects
-	 */
-	public ErpOrderHistory getOrderHistoryInfo(PrimaryKey erpCustomerPk) {
-		Connection conn = null;
-
-		try {
-			conn = this.getConnection();
-			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
-
-			return new ErpOrderHistory(history);
-
-		} catch (SQLException ex) {
-			throw new EJBException(ex);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException ex) {
-					LOGGER.warn("Unable to close connection", ex);
-				}
-			}
 		}
 	}
 
@@ -1291,26 +1257,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			} catch (SQLException e) {
 				LOGGER.warn("SQLException while cleaning: ", e);
-			}
-		}
-	}
-
-	public List<DlvSaleInfo> getOrdersByTruckNumber(String truckNumber, Date deliveryDate) {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.getOrdersByTruckNumber(conn, truckNumber, deliveryDate);
-
-		} catch (SQLException se) {
-			throw new EJBException(se);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up: ", se);
 			}
 		}
 	}
@@ -2712,90 +2658,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		erpActivityRecord.setNote(note);
 		new ErpLogActivityCommand(LOCATOR, erpActivityRecord, true).execute();
 	}
-
-	/**
-	 * Get a list of orders that used the specific delivery pass on a customer account.
-	 */
-	public ErpOrderHistory getOrdersByDlvPassId(String customerPk, String dlvPassId) {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrdersByDlvPassId(conn, customerPk, dlvPassId);
-
-			return new ErpOrderHistory(history);
-
-		} catch (SQLException ex) {
-			throw new EJBException(ex);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException ex) {
-					LOGGER.warn("Unable to close connection", ex);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Get a list of orders that used the specific delivery pass on a customer account.
-	 */
-	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(String customerPk, String dlvPassId,int noOfDaysOld) {
-		Connection conn = null;
-		List<DlvPassUsageLine> recentOrders = null;
-		try {
-			conn = this.getConnection();
-			recentOrders = ErpSaleInfoDAO.getRecentOrdersByDlvPassId(conn, customerPk, dlvPassId, noOfDaysOld);
-
-		} catch (SQLException ex) {
-			throw new EJBException(ex);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException ex) {
-					LOGGER.warn("Unable to close connection", ex);
-				}
-			}
-		}
-		return recentOrders;
-	}
-
-	/**
-	 * Get a list of orders that used delivery passes on a customer account.
-	 */
-	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(String customerPk) {
-		Connection conn = null;
-		Map<String, DlvPassUsageInfo> mapInfo = new HashMap<String, DlvPassUsageInfo>();
-		try {
-			conn = this.getConnection();
-			Collection<DlvPassUsageLine> usageList = ErpSaleInfoDAO.getOrdersUsingDlvPass(conn, customerPk);
-			for ( DlvPassUsageLine usageLine : usageList ) {
-				String dlvPassId = usageLine.getDlvPassIdUsed();
-				DlvPassUsageInfo usageInfo = null;
-				if(mapInfo.containsKey(dlvPassId)) {
-					usageInfo = mapInfo.get(dlvPassId);
-
-				}else{
-					//Create a usageInfo Object and add it to the Map.
-					usageInfo = new DlvPassUsageInfo();
-				}
-				usageInfo.addUsageLine(usageLine);
-				mapInfo.put(dlvPassId, usageInfo);
-			}
-		} catch (SQLException ex) {
-			throw new EJBException(ex);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException ex) {
-					LOGGER.warn("Unable to close connection", ex);
-				}
-			}
-		}
-		return mapInfo;
-	}
+	
 	public void updateDlvPassIdToSale(String saleId, String dlvPassId){
 		try{
 			ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
