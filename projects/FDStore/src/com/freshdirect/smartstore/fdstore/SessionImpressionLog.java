@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.ejb.CreateException;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
@@ -20,8 +19,6 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
-import com.freshdirect.smartstore.ejb.SessionImpressionLogHome;
-import com.freshdirect.smartstore.ejb.SessionImpressionLogSB;
 
 public class SessionImpressionLog {
 	private static SessionImpressionLog sharedInstance = null;
@@ -35,16 +32,6 @@ public class SessionImpressionLog {
 	private SessionImpressionLog() throws NamingException {
 		serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
 	}
-
-	private SessionImpressionLogHome getSessionImpressionLogHome() {
-		try {
-			return (SessionImpressionLogHome) serviceLocator.getRemoteHome(
-				SessionImpressionLogHome.JNDI_HOME);
-		} catch (NamingException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
-
 
 	/**
 	 * Get shared instance.
@@ -63,52 +50,40 @@ public class SessionImpressionLog {
 
 	public void saveLogEntry(SessionImpressionLogEntry entry) {
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.SessionImpressionLogSB")){
-				Request<SessionImpressionLogEntryData> request = new Request<SessionImpressionLogEntryData>();
-				SessionImpressionLogEntryData data = dataConversion(entry);
-				request.setData(data);
-				try {
-					FDECommerceService.getInstance().saveLogEntry(request);
-				} catch (FDResourceException e) {
-					LOGGER.warn("Session impression log",e);
-				}
-			}else{
-				SessionImpressionLogSB bean = this.getSessionImpressionLogHome().create();
-				bean.saveLogEntry(entry);
+
+			Request<SessionImpressionLogEntryData> request = new Request<SessionImpressionLogEntryData>();
+			SessionImpressionLogEntryData data = dataConversion(entry);
+			request.setData(data);
+			try {
+				FDECommerceService.getInstance().saveLogEntry(request);
+			} catch (FDResourceException e) {
+				LOGGER.warn("Session impression log", e);
 			}
+
 		} catch (RemoteException e) {
-			LOGGER.warn("Session impression log",e);
-		} catch (CreateException e) {
-			LOGGER.warn("Session impression log",e);
+			LOGGER.warn("Session impression log", e);
 		}
 	}
 
 	public void saveLogEntries(Collection entries) {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.SessionImpressionLogSB")){
-				try {
-					Collection<SessionImpressionLogEntryData> entriesCollection = new ArrayList<SessionImpressionLogEntryData>();
-					Request<Collection<SessionImpressionLogEntryData>> request = new Request<Collection<SessionImpressionLogEntryData>>();
-					
-					for (Object object : entries) {
-						SessionImpressionLogEntryData data = dataConversion((SessionImpressionLogEntry)object);
-						entriesCollection.add(data);
-					}
-					request.setData(entriesCollection);
-					FDECommerceService.getInstance().saveLogEntries(request);
-				} catch (FDResourceException e) {
-					LOGGER.warn("Session impression log",e);
+			try {
+				Collection<SessionImpressionLogEntryData> entriesCollection = new ArrayList<SessionImpressionLogEntryData>();
+				Request<Collection<SessionImpressionLogEntryData>> request = new Request<Collection<SessionImpressionLogEntryData>>();
+
+				for (Object object : entries) {
+					SessionImpressionLogEntryData data = dataConversion((SessionImpressionLogEntry) object);
+					entriesCollection.add(data);
 				}
-			}else{
-				SessionImpressionLogSB bean = this.getSessionImpressionLogHome().create();
-				bean.saveLogEntries(entries);
+				request.setData(entriesCollection);
+				FDECommerceService.getInstance().saveLogEntries(request);
+			} catch (FDResourceException e) {
+				LOGGER.warn("Session impression log", e);
 			}
+
 		} catch (RemoteException e) {
 			LOGGER.warn("Session impression log",e);
-		} catch (CreateException e) {
-			LOGGER.warn("Session impression log",e);
-		}
+		} 
 	}
 	
 	public static String getPageId() {
