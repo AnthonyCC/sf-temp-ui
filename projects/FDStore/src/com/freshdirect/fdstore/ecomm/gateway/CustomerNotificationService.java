@@ -34,6 +34,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 	private static final String GET_ID_BY_EMAIL = "customerNotification/getIdByEmail";
 	private static final String IS_ON_ALERT = "customerNotification/isOnAlert";
 	private static final String DO_EMAIL = "customerNotification/doEmail";
+	private static final String RESEND_INVOICE = "customerNotification/resendInvoiceEmail";
 	
 	private static CustomerNotificationServiceI INSTANCE;
 
@@ -214,6 +215,31 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (JsonProcessingException e) {
+			LOGGER.error("Error in CustomerNotificationService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean resendInvoiceEmail(String orderId) throws FDResourceException, RemoteException {
+		Response<Boolean> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("orderId", orderId);
+
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(RESEND_INVOICE),
+					new TypeReference<Response<Boolean>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return true;
+		} catch (FDEcommServiceException e) {
 			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}

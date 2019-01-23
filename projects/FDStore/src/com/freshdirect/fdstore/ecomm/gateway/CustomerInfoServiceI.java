@@ -14,6 +14,7 @@ import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.ecommerce.data.product.ProductRequestData;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.URLRewriteRule;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -134,4 +135,6 @@ public interface CustomerInfoServiceI {
 
 	public boolean isCreditRestricted(FDIdentity identity)throws RemoteException;
 	
+	public boolean setRAFClickIDPromoCode(FDIdentity identity, String rafclickid, String rafpromocode,
+			EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 }
