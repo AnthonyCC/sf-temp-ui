@@ -68,10 +68,6 @@ public interface FDFactorySB extends EJBObject {
 	 */
 	@Deprecated  public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException;
 
-	@Deprecated public ErpZoneMasterInfo getZoneInfo(String zoneId) throws RemoteException, FDResourceException;
-
-	@Deprecated public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
-	
 	@Deprecated public Set<String> getModifiedSkus(long lastModified) throws FDResourceException, RemoteException;
 }
 

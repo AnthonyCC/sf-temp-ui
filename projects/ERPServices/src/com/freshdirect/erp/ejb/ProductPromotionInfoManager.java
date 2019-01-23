@@ -5,20 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
-import javax.naming.Context;
-import javax.naming.NamingException;
-
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 
@@ -58,18 +51,9 @@ public class ProductPromotionInfoManager {
 		try {
 
 			long startTime = startIntervalTimer();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)) {
-				zoneInfo = FDECommerceService.getInstance().getAllZoneInfoDetails();
-				logTimeInterval(startTime, "FDECommerceService.getAllZoneInfoDetails");
-			} else {
-				ErpZoneInfoHome home = getErpZoneInfoHome();
-				ErpZoneInfoSB remote = home.create();
-				zoneInfo = remote.getAllZoneInfoDetails();
-				logTimeInterval(startTime, "ErpProductPromotionInfoSB.getAllZoneInfoDetails");
-			}
-		} catch (CreateException sqle) {
-			LOGGER.error("Unable to load all getAllZoneInfoDetails ", sqle);
-			throw new FDResourceException(sqle);
+			zoneInfo = FDECommerceService.getInstance().getAllZoneInfoDetails();
+			logTimeInterval(startTime, "FDECommerceService.getAllZoneInfoDetails");
+
 		} catch (RemoteException re) {
 
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -90,24 +74,6 @@ public class ProductPromotionInfoManager {
 
 		return erpProductPromotionPreviewInfo;
 
-	}
-
-	private static ErpZoneInfoHome getErpZoneInfoHome() {
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			return (ErpZoneInfoHome) ctx.lookup("freshdirect.erp.ZoneInfoManager");
-		} catch (NamingException ne) {
-			throw new EJBException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
 	}
 
 	public static Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,

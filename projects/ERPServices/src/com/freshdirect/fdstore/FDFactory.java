@@ -235,24 +235,12 @@ public class FDFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static Collection getZoneInfo(String zoneIds[]) throws FDResourceException, FDSkuNotFoundException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
 		try {
 			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpZoneInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)){
-				return FDECommerceService.getInstance().findZoneInfoMaster(zoneIds);
-			}else{
-				FDFactorySB sb = factoryHome.create();
+			// so we are directly calling ErpZoneInfoSessionBean equivalent service in 2.0
+			return FDECommerceService.getInstance().findZoneInfoMaster(zoneIds);
 
-				return sb.getZoneInfos(zoneIds);
-			}
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
