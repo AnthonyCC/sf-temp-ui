@@ -58,14 +58,6 @@ version="3.0">
         <home>com.freshdirect.erp.ejb.ErpInfoHome</home>
         <remote>com.freshdirect.erp.ejb.ErpInfoSB</remote>
       </ejb-ref>
-      <ejb-ref>
-        <ejb-ref-name>ejb/ErpNutrition</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-        <home>
-        com.freshdirect.content.nutrition.ejb.ErpNutritionHome</home>
-        <remote>
-        com.freshdirect.content.nutrition.ejb.ErpNutritionSB</remote>
-      </ejb-ref>
     </session>
     <session>
       <ejb-name>FraudManager</ejb-name>
@@ -344,22 +336,6 @@ version="3.0">
       <home>com.freshdirect.content.attributes.ejb.AttributeFacadeHome</home>
       <remote>com.freshdirect.content.attributes.ejb.AttributeFacadeSB</remote>
       <ejb-class>com.freshdirect.content.attributes.ejb.AttributeFacadeSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
-    <session>
-      <ejb-name>ErpNutritionSessionBean</ejb-name>
-      <home>
-      com.freshdirect.content.nutrition.ejb.ErpNutritionHome</home>
-      <remote>
-      com.freshdirect.content.nutrition.ejb.ErpNutritionSB</remote>
-      <ejb-class>
-      com.freshdirect.content.nutrition.ejb.ErpNutritionSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <resource-ref>
@@ -1271,16 +1247,12 @@ version="3.0">
         *** Factory and Info Session Beans ***
         **************************************
         -->
+   
     <container-transaction>
       <method>
         <ejb-name>AttributeFacade</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>storeAttributes</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpNutritionSessionBean</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
       </method>
       <trans-attribute>Required</trans-attribute>
     </container-transaction>

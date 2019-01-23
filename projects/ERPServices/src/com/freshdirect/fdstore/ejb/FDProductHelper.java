@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -32,8 +31,6 @@ import com.freshdirect.content.attributes.GetRootNodesErpVisitor;
 import com.freshdirect.content.attributes.SetAttributesErpVisitor;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.erp.PricingFactory;
@@ -87,7 +84,6 @@ public class FDProductHelper {
 	private final static boolean DEBUG = false;
 
 	private transient ErpCharacteristicValuePriceHome charValueHome = null;
-	private transient ErpNutritionHome nutritionHome = null;
 
 	public FDProduct getFDProduct(ErpMaterialModel material) throws FDResourceException {
 		// debug
@@ -403,24 +399,14 @@ public class FDProductHelper {
 		}
 	}
 	protected ErpNutritionModel getNutrition(ErpProductModel product) throws FDResourceException {
-		if (this.nutritionHome==null) {
-			this.lookupNutritionHome();
-		}
+		
 		try {
-			ErpNutritionSB sb = this.nutritionHome.create();
 			ErpNutritionModel nutr;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-				nutr=ErpNutritionService.getInstance().getNutrition(product.getSkuCode());
-        	}else{
-        		nutr = sb.getNutrition(product.getSkuCode());
-        	}
+			nutr=ErpNutritionService.getInstance().getNutrition(product.getSkuCode());
+        	
 			
 			return nutr;
-		} catch (CreateException ce) {
-			this.nutritionHome=null;
-			throw new FDResourceException(ce, "Error creating ErpNutrition session bean");
 		} catch (RemoteException re) {
-			this.nutritionHome=null;
 			throw new FDResourceException(re, "Error talking to ErpNutrition session bean");
 		}
 	}
@@ -553,20 +539,6 @@ public class FDProductHelper {
 		try {
 			ctx = new InitialContext();
 			this.charValueHome = (ErpCharacteristicValuePriceHome) ctx.lookup("java:comp/env/ejb/ErpCharacteristicValuePrice");
-		} catch (NamingException ex) {
-			throw new FDResourceException(ex);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException ne) {}
-		}
-	}
-	
-	private void lookupNutritionHome() throws FDResourceException {
-		Context ctx = null;
-		try {
-			ctx = new InitialContext();
-			this.nutritionHome = (ErpNutritionHome) ctx.lookup("java:comp/env/ejb/ErpNutrition");
 		} catch (NamingException ex) {
 			throw new FDResourceException(ex);
 		} finally {

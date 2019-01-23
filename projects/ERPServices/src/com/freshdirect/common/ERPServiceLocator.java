@@ -7,8 +7,6 @@ import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.ejb.ErpInfoHome;
@@ -95,25 +93,7 @@ public class ERPServiceLocator extends ServiceLocator {
             throw new EJBException(e);
         }
     }
-
-    private ErpNutritionHome getErpNutritionHome() {
-        try {
-            return (ErpNutritionHome) getRemoteHome("freshdirect.content.Nutrition");
-        } catch (NamingException ne) {
-            throw new EJBException(ne);
-        }
-    }
-
-    public ErpNutritionSB getErpNutritionSessionBean() {
-        try {
-            return getErpNutritionHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }
-    }
-
+    
     public FDFactoryHome getFactoryHome() {
         try {
             return (FDFactoryHome) getRemoteHome(FDStoreProperties.getFDFactoryHome());

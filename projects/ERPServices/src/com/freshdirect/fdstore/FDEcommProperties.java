@@ -58,7 +58,6 @@ public class FDEcommProperties {
     public final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
 	public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
-	public static final String ErpNutritionSB = "nutrition.ejb.ErpNutritionSB";
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
