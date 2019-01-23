@@ -240,17 +240,5 @@ public class PaymentManager {
 			}
 			return auth;
 		}
-	
-	/**
-	 * Check whether Valut TOken is valid or not
-	 * @param token
-	 * @return
-	 */
-	public boolean isValidVaultToken(String token, String customerId){
-			PaymentGatewayContext context = null;
-			context = new PaymentGatewayContext(GatewayType.PAYPAL, null);
-			Gateway gateway = GatewayFactory.getGateway(context);
-			return gateway.isValidToken(token,customerId);
-		
-	}
+
 }

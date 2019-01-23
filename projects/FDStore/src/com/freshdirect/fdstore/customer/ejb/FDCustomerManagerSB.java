@@ -20,7 +20,6 @@ import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
-import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
@@ -41,7 +40,6 @@ import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
@@ -51,9 +49,6 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
-import com.freshdirect.deliverypass.DeliveryPassModel;
-import com.freshdirect.deliverypass.DlvPassUsageInfo;
-import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -85,7 +80,6 @@ import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
-import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.request.FDProductRequest;
@@ -823,8 +817,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 			String serviceType)throws FDResourceException, RemoteException;
 	@Deprecated
 	public void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
-
-	public boolean isValidVaultToken(String token, String customerId)throws FDResourceException, RemoteException;
 
 	@Deprecated
 	public int updateShippingInfoCartonDetails() throws FDResourceException ,RemoteException;

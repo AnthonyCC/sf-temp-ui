@@ -7453,21 +7453,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 
-	/**
-	 * @param token
-	 * @return
-	 * @throws FDResourceException
-	 */
-	public boolean isValidVaultToken(String token, String customerId) throws FDResourceException {
-		PaymentManagerSB sb = null;
-		try {
-			sb = this.getPaymentManagerHome().create();
-			return sb.isValidVaultToken(token, customerId);
-		} catch (Exception e) {
-			throw new FDResourceException(e);
-		}
-	}
-
 	private static final String SHIPPING_INFO_SALES_ID = " SELECT  S.ID FROM CUST.SALE S, CUST.SALESACTION SA WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND "
 			+ " SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN trunc(SYSDATE)-1 AND trunc(SYSDATE)  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM <= 999 "
 			+ "  and S.TRUCK_NUMBER IS NULL ";

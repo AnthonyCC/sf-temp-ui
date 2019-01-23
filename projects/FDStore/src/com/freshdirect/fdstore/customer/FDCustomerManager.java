@@ -4732,33 +4732,24 @@ public class FDCustomerManager {
 		}
 	}
 
-		/**
-		 * @param token
-		 * @return
-		 * @throws FDResourceException
-		 */
-		public static boolean isValidVaultToken(String token, String customerId) throws FDResourceException {
-			
-			boolean isValid=false;
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-					isValid = FDECommerceService.getInstance().isValidVaultToken(token, customerId);
-				} else {
-					lookupManagerHome();
-					FDCustomerManagerSB sb = managerHome.create();
-					isValid =sb.isValidVaultToken(token,customerId);
-				}
+	/**
+	 * @param token
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static boolean isValidVaultToken(String token, String customerId) throws FDResourceException {
 
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
+		boolean isValid = false;
+		try {
+			isValid = FDECommerceService.getInstance().isValidVaultToken(token, customerId);
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
 
 		return isValid;
-		}
+	}
+
 	public static int updateShippingInfoCartonDetails() throws FDResourceException {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
