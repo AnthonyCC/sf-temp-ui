@@ -323,13 +323,7 @@ public class FDCustomerManager {
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
 		return recognize(identity, source, eStoreId, ctx, true, true);
 	}
-	/*
-	 * This new method was added as part of task PERF-22. This method
-	 * will be called directly from CrmGetFDUserTag to set the application
-	 * source as CSR so that the CRM application knows which order history
-	 * object should be loaded before the FDSessionUser object is created
-	 * where it is actually set.
-	 */
+	
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,
 			MasqueradeContext ctx, boolean updateUserState, boolean populateShoppingCart)
 			throws FDAuthenticationException, FDResourceException {
@@ -354,34 +348,6 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	/*
-	 * This new method was added as part of task PERF-22. This method
-	 * will be called directly from CrmGetFDUserTag to set the application
-	 * source as CSR so that the CRM application knows which order history
-	 * object should be loaded before the FDSessionUser object is created
-	 * where it is actually set.
-	 */
-	public static FDUser recognizeForCRM(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(identity, eStoreId, true);
-			user.setApplication(source);
-			user.setCrmMode(true);
-			populateShoppingCart(user, true, false);
-
-			return user;
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
 
 	public static void updateZoneInfo (FDUserI user) throws FDResourceException {
 		ErpAddressModel address = user.getShoppingCart().getDeliveryAddress();

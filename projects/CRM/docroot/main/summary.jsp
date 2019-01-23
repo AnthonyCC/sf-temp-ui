@@ -73,7 +73,7 @@ if (orderId != null) {
 	}
 } else {
 	//CrmSession.getSessionStatus(session).setSaleId(null);
-	%><crm:GetFDUser id="otherUser"><% user = (FDSessionUser) otherUser; %></crm:GetFDUser><%
+	%><%
 }
 
 // helper class

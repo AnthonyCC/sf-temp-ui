@@ -16,11 +16,7 @@
             ErpAddressModel address = new ErpAddressModel();
 	    request.setAttribute("addAddress","true");
         %>
-		<crm:GetFDUser id="user">
-			<crm:CrmAddressController address="<%=address%>" result="result" actionName="<%=actionName%>" successPage="/main/account_details.jsp">
-        		<%@ include file="/includes/delivery_address_details.jspf" %>
-			</crm:CrmAddressController>
-		</crm:GetFDUser>
+		
 		<br clear="all">
 	    </tmpl:put>
 
