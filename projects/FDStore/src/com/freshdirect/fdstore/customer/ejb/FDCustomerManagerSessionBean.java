@@ -5312,18 +5312,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.isOrderBelongsToUser(new PrimaryKey(identity.getErpCustomerPK()), saleId);
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public OrderHistoryI getWebOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();

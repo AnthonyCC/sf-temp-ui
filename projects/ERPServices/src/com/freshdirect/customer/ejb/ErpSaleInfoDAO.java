@@ -21,8 +21,6 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -31,13 +29,8 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTruckInfo;
-import com.freshdirect.customer.RedeliverySaleInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDConfiguredProduct;
-import com.freshdirect.fdstore.FDConfiguredProductFactory;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.DaoUtil;
@@ -575,33 +568,7 @@ public class ErpSaleInfoDAO {
             DaoUtil.closePreserveException(rs,ps);
         }
 	}
-	// Check if this order belongs to the user. This method has been added to replace the
-	// existing logic which loops through the order history info to get the same information. 
 	
-	private static final String orderBelongsToUserQuery = "select count(*) from cust.sale where id = ? and customer_id = ?";
-	
-	public static boolean isOrderBelongsToUser(Connection conn, String erpCustomerId, String saleId) throws SQLException {
-		int orderCount =0;
-        PreparedStatement ps = null; 
-        ResultSet rs = null;
-
-        try {
-			ps = conn.prepareStatement(orderBelongsToUserQuery);
-			ps.setString(1, saleId);
-			ps.setString(2, erpCustomerId);
-			rs = ps.executeQuery();
-			if(rs.next()){
-				orderCount = rs.getInt(1);	
-			}
-			if(orderCount > 0)
-				return true;
-			else
-				return false;
-        } finally {
-            DaoUtil.closePreserveException(rs,ps);
-        }
-	}
-
 	private static final String QUERY_WEB_ORDER_HISTORY = 
 		"select	s.id, s.status, s.truck_number, s.stop_sequence, s.standingorder_id as standingorder_id, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source,"
 		+ "		(select action_date from cust.salesaction where sale_id = s.id and customer_id=s.customer_id and action_type = 'CRO') as create_date, "

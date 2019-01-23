@@ -246,8 +246,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
 	
 	public String getLastOrderID(PrimaryKey erpCustomerPk) throws RemoteException;
 	
-	public boolean isOrderBelongsToUser(PrimaryKey erpCustomerPk, String saleId) throws RemoteException;
-
 	   /**
      * Get lightweight info about a customer's used promotions.
      *

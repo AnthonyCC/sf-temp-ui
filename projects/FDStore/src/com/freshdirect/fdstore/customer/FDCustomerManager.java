@@ -1904,18 +1904,9 @@ public class FDCustomerManager {
 		
 
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderBelongsToUser_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return service.isOrderBelongsToUser(identity.getErpCustomerPK(), saleId);
-	    	}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.isOrderBelongsToUser(identity, saleId);
-	    	}
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			return service.isOrderBelongsToUser(identity.getErpCustomerPK(), saleId);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");

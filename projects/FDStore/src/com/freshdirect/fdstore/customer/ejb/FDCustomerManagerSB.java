@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import javax.ejb.EJBObject;
-import javax.ejb.FinderException;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.StoreContext;
@@ -22,7 +21,6 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
-import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
@@ -636,8 +634,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException, RemoteException;
 	@Deprecated
 	public  Object[] getAutoRenewalInfo(EnumEStoreId eStore)throws FDResourceException, RemoteException;
-	@Deprecated
-	public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws RemoteException, FDResourceException;
 	/**
      * Get lightweight info object about a customer's past orders.
      *

@@ -2847,25 +2847,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
-	public boolean isOrderBelongsToUser(PrimaryKey erpCustomerPk, String saleId) {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.isOrderBelongsToUser(conn, erpCustomerPk.getId(), saleId);
-		} catch (SQLException se) {
-			throw new EJBException(se);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
-		}
-	}
 	 public OrderHistoryI getWebOrderHistoryInfo(PrimaryKey erpCustomerPk) {
 			Connection conn = null;
 			try {
