@@ -48,7 +48,6 @@ public class FDEcommProperties {
     public final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
     public final static String FDSurveySB = "survey.ejb.FDSurveySB";
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
-    public final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
     public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
     public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
     public final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
@@ -122,7 +121,6 @@ public class FDEcommProperties {
         defaults.put(FDExtoleManagerSB ,FALSE);
         defaults.put(ErpEWalletSB ,FALSE);
         defaults.put(FDSurveySB ,FALSE);
-        defaults.put(DyfModelSB,FALSE);
         defaults.put(RulesManagerSB ,FALSE);
         defaults.put(ErpRoutingGatewaySB ,FALSE);
         defaults.put(FDXOrderPickEligibleSB, FALSE);

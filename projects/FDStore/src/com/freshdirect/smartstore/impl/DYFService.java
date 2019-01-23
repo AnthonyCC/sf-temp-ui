@@ -6,12 +6,10 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.ejb.DyfModelHome;
 import com.freshdirect.smartstore.impl.SessionCache.TimedEntry;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
@@ -46,11 +44,4 @@ public abstract class DYFService extends BaseContentKeyRecommendationService {
 		return this.cache;
 	}
 
-	protected DyfModelHome getModelHome() {
-		try {
-			return (DyfModelHome) serviceLocator.getRemoteHome("freshdirect.smartstore.DyfModelHome");
-		} catch (NamingException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
 }
