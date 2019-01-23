@@ -1272,11 +1272,6 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>getAttributes</method-name>
       </method>
-      <method>
-        <ejb-name>ErpNutritionSessionBean</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>getNutrition</method-name>
-      </method>
       <trans-attribute>Supports</trans-attribute>
     </container-transaction>
     <!--
