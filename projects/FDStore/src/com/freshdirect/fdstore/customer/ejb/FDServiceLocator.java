@@ -32,8 +32,6 @@ import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
-import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
-import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.VariantSelectionHome;
 import com.freshdirect.smartstore.ejb.VariantSelectionSB;
 
@@ -274,25 +272,7 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
 
-    // get service configuration home bean
-    private SmartStoreServiceConfigurationHome getServiceConfigurationHome() {
-        try {
-            return (SmartStoreServiceConfigurationHome) getRemoteHome("freshdirect.smartstore.SmartStoreServiceConfiguration");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-    public SmartStoreServiceConfigurationSB getSmartStoreServiceConfiguration() {
-        try {
-            return getServiceConfigurationHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }
-    }
-    
+   
    
     public TEmailInfoHome getTMailerHome() {
         try {

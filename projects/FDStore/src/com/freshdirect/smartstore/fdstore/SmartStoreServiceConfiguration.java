@@ -9,13 +9,9 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.ecomm.gateway.SmartStoreConfigurationService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
-import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 
 /**
  * Configures SmartStore services.
@@ -50,14 +46,8 @@ public class SmartStoreServiceConfiguration {
 
 	public Collection<DynamicSiteFeature> loadDynamicSiteFeatures(String eStoreId) {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
-				return SmartStoreConfigurationService.getInstance().getSiteFeatures(eStoreId);
-			}
-			else{
-				SmartStoreServiceConfigurationSB sb;
-				sb = FDServiceLocator.getInstance().getSmartStoreServiceConfiguration();
-				return sb.getSiteFeatures(eStoreId);
-			}
+			return SmartStoreConfigurationService.getInstance().getSiteFeatures(eStoreId);
+			
 		} catch (RemoteException e) {
 			LOGGER.warn("SmartStore Service Configuration", e);
 			return Collections.emptyList();
