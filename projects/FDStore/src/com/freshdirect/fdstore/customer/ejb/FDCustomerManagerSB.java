@@ -549,20 +549,12 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	@Deprecated
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
 	@Deprecated
-	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) throws RemoteException;
-	@Deprecated
-	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,EnumEStoreId eStore) throws RemoteException;
-	@Deprecated
-	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user, EnumEStoreId estore) throws FDResourceException, RemoteException;
-	@Deprecated
 	public Map<String, List<FDCustomerOrderInfo>> cancelOrders(FDActionInfo actionInfo, List<FDCustomerOrderInfo> customerOrders, boolean sendEmail) throws RemoteException;
 	@Deprecated
 	public boolean hasPurchasedPass(String customerPK) throws RemoteException, FDResourceException ;
 
 	@Deprecated
 	public String getLastOrderID(FDIdentity identity) throws RemoteException, FDResourceException;
-	@Deprecated
-	public String hasAutoRenewDP(String customerPK) throws FDResourceException, RemoteException;
 	@Deprecated
 	public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator,boolean autoRenew)throws FDResourceException, RemoteException;
 	@Deprecated

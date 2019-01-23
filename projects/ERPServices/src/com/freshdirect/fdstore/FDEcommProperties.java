@@ -88,7 +88,6 @@ public class FDEcommProperties {
 	public static final String FDCustomerReport = "com.freshdirect.customer.report";
 	public static final String FDCustomerNotification = "com.freshdirect.customer.notification";
 	public static final String FDCustomerInfo = "com.freshdirect.customer.info";
-	public static final String FDCustomerDeliveryPass = "com.freshdirect.customer.deliveryPass";
 	public static final String FDCustomerOrder = "com.freshdirect.customer.order";
 	public static final String FDCustomer = "com.freshdirect.customer";
 	public static final String FDCustomerMisc1 = "com.freshdirect.customer.misc1";

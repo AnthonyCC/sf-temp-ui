@@ -2730,23 +2730,15 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
-	
-	public static List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,EnumEStoreId eStoreId) throws FDResourceException {
-		
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
-				return DlvPassManagerService.getInstance().getDlvPassesByStatus(identity.getErpCustomerPK(), status,eStoreId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDeliveryPassesByStatus(identity, status,eStoreId);
-			}
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+	public static List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,
+			EnumEStoreId eStoreId) throws FDResourceException {
+
+		try {
+			return DlvPassManagerService.getInstance().getDlvPassesByStatus(identity.getErpCustomerPK(), status,
+					eStoreId);
+
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2788,15 +2780,9 @@ public class FDCustomerManager {
 		
 		try {
 			FDIdentity identity = user.getIdentity();
-			FDCustomerManagerSB sb = null;
 			List<DeliveryPassModel> dlvPasses = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
-				dlvPasses = DlvPassManagerService.getInstance().getDeliveryPasses(identity.getErpCustomerPK(), user.getUserContext().getStoreContext().getEStoreId());
-			}else {
-				lookupManagerHome();
-				sb = managerHome.create();
-				dlvPasses = sb.getDeliveryPasses(identity, user.getUserContext().getStoreContext().getEStoreId());
-			}
+			dlvPasses = DlvPassManagerService.getInstance().getDeliveryPasses(identity.getErpCustomerPK(), user.getUserContext().getStoreContext().getEStoreId());
+			
 			
 			if(dlvPasses == null || ((dlvPasses!=null) && dlvPasses.size() == 0)){
 				//Return Empty map.
@@ -2847,11 +2833,8 @@ public class FDCustomerManager {
 				}
 			}
 			dlvPassesInfo.put(DlvPassConstants.PASS_HISTORY, historyInfo);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+		
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 		return dlvPassesInfo;
@@ -2859,19 +2842,9 @@ public class FDCustomerManager {
 
 	public static FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
-				return CustomerDeliveryPassService.getInstance().getDeliveryPassInfo(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDeliveryPassInfo(user, user.getUserContext().getStoreContext().getEStoreId());
-			}
+			return CustomerDeliveryPassService.getInstance().getDeliveryPassInfo(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
 			
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
 		} catch (RemoteException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
 		}
 	}
@@ -2914,14 +2887,8 @@ public class FDCustomerManager {
 
 	public static EnumDPAutoRenewalType hasAutoRenewDP(String customerPK) throws FDResourceException {
 		try {
-			String value;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
-				value = CustomerDeliveryPassService.getInstance().hasAutoRenewDP(customerPK);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				value = sb.hasAutoRenewDP(customerPK);
-			}
+			String value = CustomerDeliveryPassService.getInstance().hasAutoRenewDP(customerPK);
+			
 
 			if (value == null) {
 				return EnumDPAutoRenewalType.NONE;
@@ -2932,11 +2899,7 @@ public class FDCustomerManager {
 			}
 			return EnumDPAutoRenewalType.NONE;
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}

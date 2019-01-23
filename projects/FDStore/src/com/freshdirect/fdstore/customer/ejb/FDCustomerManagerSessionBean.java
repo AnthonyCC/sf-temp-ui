@@ -4914,51 +4914,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 
-	/**
-	 * This method returns the list of delivery passes that are linked to this
-	 * customer's account.
-	 *
-	 * @param customerId
-	 * @return java.util.List
-	 */
-	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) {
-		List<DeliveryPassModel> deliveryPasses = null;
-		try {
-			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
-			deliveryPasses = sb.getDeliveryPasses(identity.getErpCustomerPK(), estore);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		}
-		return deliveryPasses;
-	}
-
-	/**
-	 * This method returns the one or more delivery passes that are linked to this
-	 * customer's account for the specified delivery pass status.
-	 *
-	 * @param customerId
-	 * @return java.util.List
-	 */
-	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,
-			EnumEStoreId eStore) {
-		List<DeliveryPassModel> deliveryPasses = null;
-		try {
-			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
-			deliveryPasses = sb.getDlvPassesByStatus(identity.getErpCustomerPK(), status, eStore);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		}
-		return deliveryPasses;
-	}
-
 	public Map<String, List<FDCustomerOrderInfo>> cancelOrders(FDActionInfo actionInfo,
 			List<FDCustomerOrderInfo> customerOrders, boolean sendEmail) {
 
@@ -5178,23 +5133,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
-	}
-
-	public String hasAutoRenewDP(String customerPK) throws FDResourceException {
-
-		FDCustomerEB eb;
-		try {
-			eb = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(customerPK));
-			FDCustomerModel model = (FDCustomerModel) eb.getModel();
-			FDCustomerEStoreModel info = model.getCustomerEStoreModel();
-
-			return info.getHasAutoRenewDP();
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (FinderException e) {
-			throw new FDResourceException(e);
-		}
-
 	}
 
 	public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator, boolean autoRenew)
