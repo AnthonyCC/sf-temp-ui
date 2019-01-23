@@ -560,37 +560,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return user;
 	}
 
-	public FDUser recognizeByEmail(String email, EnumEStoreId eStoreId)
-			throws FDAuthenticationException, FDResourceException {
-
-		Connection conn = null;
-		FDUser user = null;
-		try {
-			conn = getConnection();
-
-			user = FDUserDAO.recognizeWithEmail(conn, email, eStoreId);
-
-			if (user.isAnonymous()) {
-				throw new FDAuthenticationException("Unrecognized user");
-			}
-			// Load Broom Audience Details for this customer.
-			user.setAssignedCustomerParams(getAssignedCustomerParams(user, conn));
-
-			user.setDlvPassInfo(getDeliveryPassInfo(user, eStoreId));
-
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-
-		if (user != null) {
-			setAddressbyZipCode(user.getZipCode(), user);
-			// user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
-		}
-		return user;
-	}
-
 	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user, EnumEStoreId estore) throws FDResourceException {
 		FDUserDlvPassInfo dlvPassInfo = null;
 		try {

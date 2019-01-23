@@ -3197,23 +3197,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static FDUser getFDUserByEmail(String email, EnumEStoreId eStoreId)
-			throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognizeByEmail(email,eStoreId);
-			return user;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-
 	public static Object[] getAutoRenewalInfo(EnumEStoreId eStore) throws FDResourceException {
 		Object[] autoRenewInfo = null;
 		

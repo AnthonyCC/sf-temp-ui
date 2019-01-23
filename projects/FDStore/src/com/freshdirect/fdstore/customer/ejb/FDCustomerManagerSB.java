@@ -131,8 +131,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
     @Deprecated
     public FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
     @Deprecated
-    public FDUser recognizeByEmail(String email, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
-    @Deprecated
     public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, FDUser user) throws FDResourceException, RemoteException;
     @Deprecated
     /*
