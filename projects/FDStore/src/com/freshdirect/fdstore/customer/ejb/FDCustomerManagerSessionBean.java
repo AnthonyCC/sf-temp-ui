@@ -2333,6 +2333,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			try {
 				// FDOrderI order = getOrder(pk.getId());
 				if (FDStoreProperties.getSmsOrderConfirmation()
+						&& EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().getContentId())
 						&& "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices()))
 					isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber,
 							pk.getId()/* order.getErpSalesId() */, EnumEStoreId.FDX.name());
