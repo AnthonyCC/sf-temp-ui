@@ -84,7 +84,6 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.DeliveryAddressValidatorUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
-import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.storeapi.content.CMSPageRequest;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
@@ -1123,15 +1122,11 @@ public class CheckoutController extends BaseController {
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
-		} else {
-			responseMessage = getErrorMessage(result, request);
-			if (EnumPaymentMethodType.ECHECK.getName().equalsIgnoreCase(reqestMessage.getPaymentMethodType())) {
-				responseMessage.setShowCaptcha(false);
-			} else {
-				responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
-						request.getSession(), SessionName.PAYMENT_ATTEMPT));
-			}
-		}
+        } else {
+            responseMessage = getErrorMessage(result, request);
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
+        }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
         setResponseMessage(model, responseMessage, user);
@@ -1152,12 +1147,8 @@ public class CheckoutController extends BaseController {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
-        	if (EnumPaymentMethodType.ECHECK.getName().equalsIgnoreCase(reqestMessage.getPaymentMethodType())) {
-				responseMessage.setShowCaptcha(false);
-			} else {
-				responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
-						request.getSession(), SessionName.PAYMENT_ATTEMPT));
-			}
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
@@ -1204,12 +1195,8 @@ public class CheckoutController extends BaseController {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
-        	if (EnumPaymentMethodType.ECHECK.getName().equalsIgnoreCase(reqestMessage.getPaymentMethodType())) {
-				responseMessage.setShowCaptcha(false);
-			} else {
-				responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
-						request.getSession(), SessionName.PAYMENT_ATTEMPT));
-			}
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
@@ -1233,12 +1220,8 @@ public class CheckoutController extends BaseController {
             responseMessage = Message.createSuccessMessage("Payment method updated successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
-        	if (EnumPaymentMethodType.ECHECK.getName().equalsIgnoreCase(reqestMessage.getPaymentMethodType())) {
-				responseMessage.setShowCaptcha(false);
-			} else {
-				responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
-						request.getSession(), SessionName.PAYMENT_ATTEMPT));
-			}
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
