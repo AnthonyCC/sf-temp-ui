@@ -57,15 +57,15 @@ public class ErpAffiliateDAO implements EnumDAOI {
 	
 	private static final String MERCHANT_QUERY = "SELECT PAYMENT_TYPE, MERCHANT FROM CUST.AFFILIATE_MERCHANT WHERE AFFILIATE_CODE = ?";
 	
-	private Map loadMerchants(String affiliateCode, Connection conn) throws SQLException {
+	private Map<EnumCardType, String> loadMerchants(String affiliateCode, Connection conn) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Map m;
+		Map<EnumCardType, String> m;
 		try {
 			ps = conn.prepareStatement(MERCHANT_QUERY);
 			ps.setString(1, affiliateCode);
 			rs = ps.executeQuery();
-			m = new HashMap();
+			m = new HashMap<EnumCardType, String>();
 			while (rs.next()) {
 				m.put(EnumCardType.getEnum(rs.getString("PAYMENT_TYPE")), rs.getString("MERCHANT"));
 			} 

@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
@@ -77,8 +78,6 @@ import com.freshdirect.ecommerce.data.enums.CrmEnumTypeData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
-import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
-import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
@@ -120,8 +119,6 @@ import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
 import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
 import com.freshdirect.ecommerce.data.zoneInfo.ErpMasterInfoData;
 import com.freshdirect.erp.EnumApprovalStatus;
-import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -1082,8 +1079,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		if(data.size()>0){
 			if(data.get(1) instanceof BillingCountryInfoData ){
 				return ModelConverter.buildBillingCountryInfoList(data);
-			}else if(data.get(1) instanceof ErpAffiliateData ){
-				return ModelConverter.buildErpAffiliateList(data);
+			}else if(data.get(1) instanceof ErpAffiliate ){
+				return data;
 			}else if(data.get(1) instanceof DeliveryPassTypeData ){
 				return ModelConverter.buildDeliveryPassTypeList(data);
 			}else if(data.get(1) instanceof EnumFeaturedHeaderTypeData ){
@@ -1120,7 +1117,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		if (daoClassName.equals("BillingCountryDAO")) {
 			return   (E) new TypeReference<Response<List<BillingCountryInfoData>>>(){} ;
 		} else if (daoClassName.equals("ErpAffiliateDAO")) {
-			return  (E) new TypeReference<Response<List<ErpAffiliateData>>>() {} ;
+			return  (E) new TypeReference<Response<List<ErpAffiliate>>>() {} ;
 		} else if (daoClassName.equals("DlvPassTypeDAO")) {
 			return  (E) new TypeReference<Response<List<DeliveryPassTypeData>>>() {} ;
 		} else if (daoClassName.equals("EnumFeaturedHeaderTypeDAO")) {
