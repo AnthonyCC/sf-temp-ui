@@ -123,6 +123,7 @@ import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
+import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
@@ -1963,30 +1964,6 @@ public class FDDeliveryManager {
 
 	}
 
-	public void recommitReservation(String rsvId, String customerId,
-			OrderContext context, ContactAddressModel address, boolean pr1)
-			throws ReservationException, FDResourceException {
-
-		try {
-			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
-				try {
-					FDECommerceService.getInstance().recommitReservation(rsvId, customerId,context, address, pr1);
-				} catch (ReservationUnavailableException e) {
-					throw new ReservationException(e.getMessage());
-				} catch (com.freshdirect.logistics.delivery.model.ReservationException e) {
-					throw new ReservationException(e.getMessage());
-				}
-			}else{
-				sb.recommitReservation(rsvId, customerId, context, address, pr1);
-			}
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		}
-	}
-
 	public RouteStopInfo getRouteStopInfo(String orderId)
 			throws FDResourceException {
 		try {
@@ -2024,4 +2001,29 @@ public class FDDeliveryManager {
 		}
 	}
 
+	
+	public void recommitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address ,boolean pr1) throws ReservationException, FDResourceException, ReservationUnavailableException{
+
+		try {
+
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.reconfirmReservation(LogisticsDataEncoder.
+					encodeReconfirmReservationRequest(rsvId, customerId, context, address,pr1));
+			if(response.getErrorCode() == EnumApplicationException.ReservationUnavailableException.getValue()){
+				throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+			}
+			else if(response.getErrorCode() == EnumApplicationException.ReservationException.getValue()){
+				
+				throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+			}
+			LogisticsDataDecoder.decodeResult(response);
+		}catch (FDResourceException ex) {
+			throw ex;
+		}catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+
+	}	
+	
 }
