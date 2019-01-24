@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintReason;
@@ -28,13 +29,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CallCenterManagerService extends AbstractEcommService implements CallCenterManagerServiceI{
 	
-private final static Category LOGGER = LoggerFactory.getInstance(CallCenterManagerService.class);
+private static final Category LOGGER = LoggerFactory.getInstance(CallCenterManagerService.class);
 
 private static final String RESUBMIT_ORDER = "callcenter/resubmitOrder/saleId/";
 private static final String RESUBMIT_CUSTOMER = "callcenter/resubmitCustomer/customerId/";
 private static final String SCHEDULE_REDELIVERY = "callcenter/scheduleRedelivery/saleId/";
 private static final String EMAIL_CUTTOFF_TIME_REPORT = "callcenter/cuttOffTime/report/email/date/";
 private static final String SAVE_TOP_FAQs = "callcenter/topFaqs/save";
+private static final String ADD_NEW_IVR_CALL_LOG = "callcenter/addNewIVRCallLog";
 
 	private static CallCenterManagerService INSTANCE;
 	
@@ -141,6 +143,31 @@ private static final String SAVE_TOP_FAQs = "callcenter/topFaqs/save";
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
+	}
+
+
+	@Override
+	public void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException, RemoteException {
+		Request<CallLogModel> request = new Request<CallLogModel>();
+		try {
+			request.setData(callLogModel);
+			String inputJson = buildRequest(request);
+			Response<Void> response = postDataTypeMap(inputJson, getFdCommerceEndPoint(ADD_NEW_IVR_CALL_LOG),
+					new TypeReference<Response<Void>>() {
+					});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CallCenterManagerService.addNewIVRCallLog: inputJson=" + inputJson
+						+ ", response=" + response);
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error("Error in CallCenterManagerService.addNewIVRCallLog:", e);
+			throw new RemoteException(e.getMessage());
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CallCenterManagerService.addNewIVRCallLog:", e);
+			throw new RemoteException(e.getMessage());
+		}
+		
 	}
 
 }

@@ -473,6 +473,14 @@ FreshDirect.modules.common.productSerialize = FreshDirect.modules.common.product
     	      eventLabel: source + ' modify',
     	});
     },
+    keepModifyOrder: function () {
+    	dataLayer.push({
+	      event: 'modify-click',
+	      eventCategory: 'modify',
+	      eventAction: 'do not cancel changes',
+	      eventLabel: 'banner modal nevermind',
+    	});
+    },
     cancelModifyOrder: function(source) {
     	source = (source || '').replace('-', ' ');
     	dataLayer.push({

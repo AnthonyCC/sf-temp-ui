@@ -1158,12 +1158,19 @@ public class CallCenterServices {
 	}
 	
 	public static void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException {
-		if (callCenterHome == null) {
-			lookupManagerHome();
-		}
+		
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				CallCenterManagerService.getInstance().addNewIVRCallLog(callLogModel);
+			}
+			else {
+				if (callCenterHome == null) {
+					lookupManagerHome();
+				}
 				CallCenterManagerSB sb = callCenterHome.create();
 				sb.addNewIVRCallLog(callLogModel);
+			}
+				
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");

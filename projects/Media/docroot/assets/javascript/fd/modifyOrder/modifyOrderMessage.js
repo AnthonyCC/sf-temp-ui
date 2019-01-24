@@ -24,7 +24,7 @@ var FreshDirect = FreshDirect || {};
 				'<div class="location-modify-order-message"><strong class="modify-delivery-label">Modifying Order: </strong><div class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span class="text-uppercase">' + time + '</span></div></div>'+
 			
 				'<div class="location-modify-order-btn-cont">'+
-					'<span><a class="cssbutton small orange cancel-changes-link" href="javascript:void(0);" role="alertdialog" '+
+					'<span><a class="cssbutton small whiteborder transparent cancel-changes-link" aria-label="exit modify order mode" href="javascript:void(0);" role="alertdialog" '+
 						'data-alignpopupfunction="modifyOrderAlign" '+
 						'data-confirm-data=\''+ JSON.stringify(popupConfig)+'\' '+
 						'data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" '+
@@ -62,10 +62,18 @@ var FreshDirect = FreshDirect || {};
 		});
 	}
 	
-	function cancelChanges() {
-		if (fd.gtm) {
+	function keepModifyMode() {
+		if (fd.gtm && fd.gtm.updateDataLayer) {
 			fd.gtm.updateDataLayer({
-			  cancelModifyOrder: 'banner'
+				  keepModifyOrder: null
+			  });
+		}
+	}
+	
+	function cancelChanges() {
+		if (fd.gtm && fd.gtm.updateDataLayer) {
+			fd.gtm.updateDataLayer({
+			  cancelModifyOrder: 'banner modal'
 		  });
 		}
 		document.location.href = "/your_account/cancel_modify_order.jsp";
@@ -93,6 +101,7 @@ var FreshDirect = FreshDirect || {};
 			init : init,
 			stickyMessage: stickyMessage,
 			cancelChanges: cancelChanges,
+			keepModifyMode: keepModifyMode,
 			initAlignFunction: initAlignFunction
 		};
 		

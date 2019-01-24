@@ -154,6 +154,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 							try {
 								LOGGER.info("releaseReservation by ID: " + dlvRsv.getPK().getId());
 								FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress, event, true);
+								LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART " + dlvRsv+ " AND KEEP THE ONE TIME RESERVATION "+advRsv);
 							} catch (FDResourceException fdre) {
 								LOGGER.warn("Error releasing reservation", fdre);
 							}
@@ -164,7 +165,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 							setSODeliveryTimeslot(session, advRsv);
 						}
 						
-						LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART AND KEEP THE ONE TIME RESERVATION "+advRsv);
+						
 							} else {
 								
 								
@@ -194,7 +195,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 										LOGGER.info("RESERVATIONISSUE: dlvRsv IS NULL, user = "+ user.getUserId()+ "addressId = " +addressId+ " customerId = "+ ((erpAddress!=null)?erpAddress.getCustomerId():null));
 									}
 									//ADDED below code for modify address issue order in wrong zone
-									if ((cart instanceof FDModifyCartModel) && TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()) && (deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()))) {
+									if ((cart instanceof FDModifyCartModel) && dlvRsv!=null && TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()) && (deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()))) {
 										LOGGER.warn("ORDWRNGRT: During order modification, address changed but timeslot is same, for order: "+((FDModifyCartModel)cart).getOriginalOrder().getErpSalesId());
 									    actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
 	                                    return actionResult;
