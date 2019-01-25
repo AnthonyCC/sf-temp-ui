@@ -17,8 +17,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -50,7 +48,6 @@ import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumComplaintDlvIssueType;
 import com.freshdirect.customer.EnumDeliveryType;
-import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
@@ -68,11 +65,9 @@ import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
-import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpEbtCardModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
-import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPayPalCardModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
@@ -85,7 +80,6 @@ import com.freshdirect.customer.ErpZoneRegionInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.pricing.CharacteristicValuePriceData;
 import com.freshdirect.ecommerce.data.common.pricing.PricingData;
@@ -101,16 +95,9 @@ import com.freshdirect.ecommerce.data.customer.complaint.ErpComplaintReasonData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
 import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassData;
-import com.freshdirect.ecommerce.data.ecoupon.CartCouponData;
-import com.freshdirect.ecommerce.data.ecoupon.CouponCartData;
-import com.freshdirect.ecommerce.data.ecoupon.CouponOrderData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponWalletRequestData;
-import com.freshdirect.ecommerce.data.ecoupon.DiscountData;
-import com.freshdirect.ecommerce.data.ecoupon.ErpCouponDiscountLineModelData;
 import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionDetailModelData;
 import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionModelData;
-import com.freshdirect.ecommerce.data.ecoupon.ErpOrderLineModelData;
-import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityContextData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityLogData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
@@ -121,7 +108,6 @@ import com.freshdirect.ecommerce.data.enums.CrmEnumTypeData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
-import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
@@ -206,7 +192,6 @@ import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -231,11 +216,6 @@ import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
-import com.freshdirect.fdstore.atp.FDAvailabilityI;
-import com.freshdirect.fdstore.atp.FDCompositeAvailability;
-import com.freshdirect.fdstore.atp.FDStatusAvailability;
-import com.freshdirect.fdstore.atp.FDStockAvailability;
-import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
@@ -321,27 +301,6 @@ public class ModelConverter {
 			Collections.sort(regions,BillingRegionInfo.COMPARE_BY_NAME);
 			l.add(new BillingCountryInfo(activeCountry, _countryName,Collections.unmodifiableList(regions),_zipCheck));
 		}
-		return l;
-	}
-
-	public static List buildErpAffiliateList(List data) {
-		
-		List l = new ArrayList();
-		for (Object  obj:data) {
-			ErpAffiliateData erpAffiliate = (ErpAffiliateData)obj;
-			
-			l.add(
-				new ErpAffiliate(
-						erpAffiliate.getCode(),
-						erpAffiliate.getName(),
-						erpAffiliate.getDescription(),
-						erpAffiliate.getTaxConditionType(),
-						erpAffiliate.getDepositConditionType(),
-						erpAffiliate.getMerchants(),
-						erpAffiliate.getPaymentechTxDivisions()));
-		}
-
-
 		return l;
 	}
 

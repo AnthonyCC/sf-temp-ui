@@ -73,7 +73,7 @@ public class FDCouponManagerDAO {
 	public static void storeCoupons(Connection conn, List<FDCouponInfo> coupons) throws SQLException{
 		PreparedStatement ps =null;
 		Date currentTime =new Date();
-		
+		LOGGER.info("CouponMetaData - no.of coupons: "+ (null!=coupons?coupons.size():null));
 		int version =createHistoryData(conn,new Timestamp(currentTime.getTime()));		
 		ps =conn.prepareStatement(
 					"INSERT INTO CUST.FDCOUPON "

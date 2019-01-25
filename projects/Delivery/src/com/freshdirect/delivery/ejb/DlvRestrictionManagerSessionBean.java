@@ -53,9 +53,7 @@ public class DlvRestrictionManagerSessionBean  extends SessionBeanSupport {
 	public EnumRestrictedAddressReason checkAddressForRestrictions(AddressModel address) {
 		Connection conn = null;
 		try {
-			if(address instanceof ErpAddressModel && address.getAddressInfo()!=null){
-				((ErpAddressModel)address).setScrubbedStreet(address.getAddressInfo().getScrubbedStreet());
-			}
+			
 			conn = this.getConnection();
 			return DlvRestrictionDAO.isAddressRestricted(conn, address);
 		} catch (SQLException ex) {
