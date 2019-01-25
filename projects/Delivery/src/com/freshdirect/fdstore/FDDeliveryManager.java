@@ -587,6 +587,9 @@ public class FDDeliveryManager {
 	public EnumRestrictedAddressReason checkAddressForRestrictions(
 			AddressModel address) throws FDResourceException {
 		EnumRestrictedAddressReason eRestrictReason = null;
+		if(address instanceof ErpAddressModel && address.getAddressInfo()!=null){
+			((ErpAddressModel)address).setScrubbedStreet(address.getAddressInfo().getScrubbedStreet());
+		}
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
 				return EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address)));
@@ -849,6 +852,10 @@ public class FDDeliveryManager {
 
 			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
 					.create();
+			
+			if(address instanceof ErpAddressModel && address.getAddressInfo()!=null){
+				((ErpAddressModel)address).setScrubbedStreet(address.getAddressInfo().getScrubbedStreet());
+			}
 			
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
 				result.setRestrictionReason(EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address))));
