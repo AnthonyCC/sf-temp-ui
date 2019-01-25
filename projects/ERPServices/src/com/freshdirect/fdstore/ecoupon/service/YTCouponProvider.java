@@ -61,6 +61,7 @@ public class YTCouponProvider implements CouponService {
 		urlParameters.put(YT_PARAM_RETAILER_FAMILY_ID, CouponConfigProvider.getRetailerId());
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
+		LOGGER.info("CouponMetaData from YouTech: "+ jsonResponse);
 		YTCouponResponse response = parseResponse(jsonResponse, YTCouponMetaDataResponse.class);
 		return (YTCouponMetaDataResponse)response;
 		

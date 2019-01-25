@@ -613,7 +613,7 @@ public class SapGatewayConverter {
 		erpAffiliateData.setTaxConditionType(affiliate.getTaxConditionType());
 		erpAffiliateData.setDepositConditionType(affiliate.getDepositConditionType());
 		erpAffiliateData.setMerchants(affiliate.getMerchants());
-		erpAffiliateData.setPaymentechTxDivisions(getDivisions(affiliate.getPayementechTxDivision()));
+		erpAffiliateData.setPaymentechTxDivisions(getDivisions(affiliate.getPaymentechTxDivision()));
 		return erpAffiliateData;
 	}
 	
