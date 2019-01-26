@@ -432,7 +432,7 @@ public class TimeslotLogic {
 					(deliveryModel.getPreReserveSlotId()!=null && deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())));
 	}
 
-	public static boolean hasPremiumSlots(List<FDTimeslotUtil> timeslotList){
+/*	public static boolean hasPremiumSlots(List<FDTimeslotUtil> timeslotList){
 
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
@@ -444,9 +444,31 @@ public class TimeslotLogic {
 			}
 		}
 		return false;
+	}*/
+
+	public static boolean hasSameDaySlots(List<FDTimeslotUtil> timeslotList,
+			Date startDate, Date endDate) {
+		Iterator<FDTimeslotUtil> it = timeslotList.iterator();
+		FDTimeslotUtil fdTsu;
+		List<FDTimeslot> fdTsList;
+		for (; it.hasNext();) {
+			fdTsu = it.next();
+			fdTsList = fdTsu.getTimeslotsForDate(startDate);
+			if (fdTsList == null || fdTsList.size() == 0) {
+				fdTsu.removeTimeslots(startDate);
+				startDate = DateUtil.addDays(startDate, 1);
+				fdTsList = fdTsu.getTimeslotsForDate(startDate);
+				return hasSameDaySlot(fdTsList);
+			} else if (fdTsList != null && fdTsList.size() > 0) {
+				fdTsu.removeTimeslots(endDate);
+				return hasSameDaySlot(fdTsList);
+			}
+		}
+		return false;
+
 	}
-	
-	public static boolean hasPremiumSlot(List<FDTimeslot> fdTsList)
+
+	public static boolean hasSameDaySlot(List<FDTimeslot> fdTsList)
 	{
 		FDTimeslot fdT;
 		if(fdTsList!=null && fdTsList.size()>0 )
@@ -455,16 +477,16 @@ public class TimeslotLogic {
 			for(;fit.hasNext();)
 			{
 				fdT = fit.next();
-				return hasPremiumSlot(fdT);
+				return  hasSameDaySlot(fdT);
 				
 			}
 		}
 		return false;
 	}
 	
-	public static boolean hasPremiumSlot(FDTimeslot fdT)
+	public static boolean  hasSameDaySlot(FDTimeslot fdT)
 	{
-		return fdT.isPremiumSlot();
+		return fdT.isSameDaySlot();
 	}
 	
 	public static boolean isTimeslotPurged(FDTimeslot ts) {
@@ -580,30 +602,25 @@ public class TimeslotLogic {
 	public static void logTimeslotSessionInfo(FDUserI user,
 			ErpAddressModel address, boolean deliveryInfo, List<FDTimeslotUtil> timeslotList, TimeslotEvent event){
 		try {
-
-			SessionEvent sessionEvent = null;
-			if (user.getSessionEvent() != null) {
-				sessionEvent = user.getSessionEvent();
-			} else {
-				if(user.getUserContext()!=null){
-					EnumEStoreId  eStoreId = user.getUserContext().getStoreContext() != null ? user.getUserContext().getStoreContext().getEStoreId(): EnumEStoreId.FD;
-					 if(eStoreId!=null)
-				 		sessionEvent = new SessionEvent(eStoreId.toString().toLowerCase());
-				}
-				else
-					sessionEvent = new SessionEvent();
-			}
-			sessionEvent.setSameDay(event.getSameDay());
+			
 			for (FDTimeslotUtil timeslots : timeslotList) {
 				if (timeslots != null) {
-					int availCount = 0, soldCount = 0, hiddenCount = 0;
 					String zone = "";
 					if (DateUtil.diffInDays(timeslots.getStartDate(),
 							DateUtil.getCurrentTime()) < 7) {
-						sessionEvent.setLastTimeslot(timeslots.getEventPk());
-						Date nextDay = DateUtil.getNextDate();
+						
 						List<FDTimeslot> tempSlots = timeslots
-								.getTimeslotsForDate(DateUtil.getNextDate()), tempSlots1 = null;
+								.getTimeslotsForDate(DateUtil.getCurrentDate());
+						
+						if(tempSlots!=null && tempSlots.size()>0){
+							logSessionEvent( user,  deliveryInfo, tempSlots, event, timeslots.getEventPk());
+							break;
+						}
+						
+						Date nextDay = DateUtil.getNextDate();
+						tempSlots = timeslots
+								.getTimeslotsForDate(DateUtil.getNextDate());
+						List<FDTimeslot> tempSlots1 = null;
 						if (tempSlots != null && tempSlots.size() == 0) {
 							nextDay = DateUtil.addDays(nextDay, 1);
 							tempSlots1 = timeslots.getTimeslotsForDate(nextDay);
@@ -627,47 +644,7 @@ public class TimeslotLogic {
 							}
 						}
 						if (tempSlots != null && tempSlots.size() > 0) {
-							Iterator<FDTimeslot> slotIterator = tempSlots
-									.iterator();
-							while (slotIterator.hasNext()) {
-								FDTimeslot slot = slotIterator.next();
-								if ("A".equals(slot.getStoreFrontAvailable()))
-									availCount++;
-								else if ("S".equals(slot
-										.getStoreFrontAvailable()))
-									soldCount++;
-								else if ("H".equals(slot
-										.getStoreFrontAvailable()))
-									hiddenCount++;
-								zone = slot.getZoneCode();
-								if (DateUtil.getCurrentTime().before(
-										slot.getCutoffDateTime())) {
-									if (sessionEvent.getCutOff() != null
-											&& sessionEvent.getCutOff().after(
-													slot.getCutoffDateTime()))
-										sessionEvent.setCutOff(slot
-												.getCutoffDateTime());
-									else if (sessionEvent.getCutOff() == null)
-										sessionEvent.setCutOff(slot
-												.getCutoffDateTime());
-								}
-
-							}
-
-							sessionEvent
-									.setPageType((deliveryInfo) ? "DELIVERYINFO"
-											: "CHECKOUT");
-							if (user.getShoppingCart() != null
-									&& user.getShoppingCart() instanceof FDModifyCartModel) {
-								sessionEvent.setPageType("MODIFYORDER");
-							}
-							sessionEvent.setZone(zone);
-							sessionEvent.setAvailCount(availCount);
-							sessionEvent.setSoldCount(soldCount);
-							sessionEvent.setHiddenCount(hiddenCount);
-							sessionEvent.setSector(event.getSector());
-							//sessionEvent.setCompanyCode(FDStoreProperties.getLogisticsCompanyCode());
-							user.setSessionEvent(sessionEvent);
+							logSessionEvent( user,  deliveryInfo, tempSlots, event, timeslots.getEventPk());
 						}
 					}
 				}
@@ -676,6 +653,66 @@ public class TimeslotLogic {
 			LOGGER.error("Exception while logging the timeslots session info",
 					e);
 		}
+	}
+
+	private static void logSessionEvent(FDUserI user, boolean deliveryInfo, List<FDTimeslot> tempSlots, TimeslotEvent event, String eventPk) {
+		int availCount = 0, soldCount = 0, hiddenCount = 0;
+		SessionEvent sessionEvent = null;
+		if (user.getSessionEvent() != null) {
+			sessionEvent = user.getSessionEvent();
+		} else {
+			if(user.getUserContext()!=null){
+				EnumEStoreId  eStoreId = user.getUserContext().getStoreContext() != null ? user.getUserContext().getStoreContext().getEStoreId(): EnumEStoreId.FD;
+				 if(eStoreId!=null)
+			 		sessionEvent = new SessionEvent(eStoreId.toString().toLowerCase());
+			}
+			else
+				sessionEvent = new SessionEvent();
+		}
+		sessionEvent.setLastTimeslot(eventPk);
+		sessionEvent.setSameDay(event.getSameDay());
+		Iterator<FDTimeslot> slotIterator = tempSlots
+				.iterator();
+		while (slotIterator.hasNext()) {
+			FDTimeslot slot = slotIterator.next();
+			if ("A".equals(slot.getStoreFrontAvailable()))
+				availCount++;
+			else if ("S".equals(slot
+					.getStoreFrontAvailable()))
+				soldCount++;
+			else if ("H".equals(slot
+					.getStoreFrontAvailable()))
+				hiddenCount++;
+			sessionEvent.setZone(slot.getZoneCode());
+			if (DateUtil.getCurrentTime().before(
+					slot.getCutoffDateTime())) {
+				if (sessionEvent.getCutOff() != null
+						&& sessionEvent.getCutOff().after(
+								slot.getCutoffDateTime()))
+					sessionEvent.setCutOff(slot
+							.getCutoffDateTime());
+				else if (sessionEvent.getCutOff() == null)
+					sessionEvent.setCutOff(slot
+							.getCutoffDateTime());
+			}
+
+		}
+
+		sessionEvent
+				.setPageType((deliveryInfo) ? "DELIVERYINFO"
+						: "CHECKOUT");
+		if (user.getShoppingCart() != null
+				&& user.getShoppingCart() instanceof FDModifyCartModel) {
+			sessionEvent.setPageType("MODIFYORDER");
+		}
+		
+		sessionEvent.setAvailCount(availCount);
+		sessionEvent.setSoldCount(soldCount);
+		sessionEvent.setHiddenCount(hiddenCount);
+		sessionEvent.setSector(event.getSector());
+		//sessionEvent.setCompanyCode(FDStoreProperties.getLogisticsCompanyCode());
+		user.setSessionEvent(sessionEvent);
+	
 	}
 	
 	

@@ -11,9 +11,9 @@ public class FDZoneCutoffInfo implements Serializable {
 	private final Date day;
 	private final TimeOfDay startTime;
 	private final TimeOfDay endTime;
-	private final TimeOfDay cutoffTime;
+	private final Date cutoffTime;
 
-	public FDZoneCutoffInfo(String zoneCode, Date day, TimeOfDay startTime, TimeOfDay endTime, TimeOfDay cutoffTime) {
+	public FDZoneCutoffInfo(String zoneCode, Date day, TimeOfDay startTime, TimeOfDay endTime, Date cutoffTime) {
 		this.zoneCode = zoneCode;
 		this.day = day;
 		this.startTime = startTime;
@@ -37,7 +37,7 @@ public class FDZoneCutoffInfo implements Serializable {
 		return this.endTime;
 	}
 
-	public TimeOfDay getCutoffTime() {
+	public Date getCutoffTime() {
 		return this.cutoffTime;
 	}
 

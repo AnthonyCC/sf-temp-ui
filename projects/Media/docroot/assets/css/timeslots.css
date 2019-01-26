@@ -1124,13 +1124,16 @@ td.noTopBorder {
 	border-right-color: rgb(51, 51, 51);
 	box-sizing: border-box;
 }
-.tsHeaderE, .tsTableE {
-	width: 223px;
-	border-right-color: rgb(51, 51, 51);
-	box-sizing: border-box;
+
+/* same day */
+#tsContainer [class*="cutoff"] {
+	display: none;
+	visibility: hidden;
 }
-.tsHeaderE, .tsTableE {
-	width: 223px;
-	border-right-color: rgb(51, 51, 51);
-	box-sizing: border-box;
+/* daypart should be 1px, borders on above/below cells make it LOOK 3px total */
+#tsContainer tr.dayPart, #tsContainer td .dayPart td {
+	height: 1px;
+	line-height: 1px;
+	font-size: 1px;
+	display: block;
 }

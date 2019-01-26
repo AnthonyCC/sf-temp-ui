@@ -34,6 +34,7 @@ public class Timeslot implements DateFormat {
     
     private double premiumAmount;
     private boolean premiumSlot;
+    private boolean sameDaySlot;
     
     private String minOrderMsg;
     private double minOrderAmt;
@@ -72,6 +73,7 @@ public class Timeslot implements DateFormat {
         this.alcoholRestricted = slot.isAlcoholRestricted();
         this.premiumAmount = slot.getPremiumAmount();
         this.premiumSlot = slot.isPremiumSlot();
+        this.sameDaySlot = slot.isSameDaySlot();
         this.unavailable = slot.isUnavailable();
         
         this.minOrderMsg = slot.getMinOrderMsg();
@@ -197,6 +199,9 @@ public class Timeslot implements DateFormat {
 	
 	public boolean isPremiumSlot() {
 		return premiumSlot;
+	}
+	public boolean isSameDaySlot() {
+		return sameDaySlot;
 	}
 	
 	public boolean isUnavailable() {

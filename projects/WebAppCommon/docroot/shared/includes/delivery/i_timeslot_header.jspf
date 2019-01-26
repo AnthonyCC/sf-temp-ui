@@ -24,9 +24,7 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
 				so be sure to complete checkout by that time to guarantee your timeslot remains available.
 				Timeslots unavailable for reservation now may become available at time of checkout.
 			<%} else { %>
-				You can use this page to place a standing weekly timeslot reservation or to reserve a time for just this week. Please note
-				that <b>delivery timeslot reservations expire <%= timeMsg %> prior to cutoff</b>, so be sure to complete checkout by that time
-				to guarantee your timeslot remains open. Timeslots unavailable for reservation now may become available at time of checkout. 
+				You can use this page to place a standing weekly timeslot reservation, or to reserve a time for just this week. When you make a reservation, you'll be given a reservation expiry time. Be sure to complete the checkout process before your reservation expires, otherwise you risk losing your preferred timeslot. Please note that timeslots unavailable for reservation now may become available at time of checkout. This is subject to change during holidays, where delivery timeslot reservations may expire earlier. Please refer to holiday specific FAQ for further details.
 				
 			<% } %>
 			<%-- hasPreReserved or not, show this text  --%>

@@ -57,6 +57,10 @@
 	})($jq);
 	</script>
 
+	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
+		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
+	<% } %>
+
 	<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 	
 	<%@ include file="/common/template/includes/i_javascripts_common_bottom.jspf" %>

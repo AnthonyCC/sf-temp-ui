@@ -115,6 +115,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private boolean isSoldOut;
 	private boolean isDepot;
 	private boolean isPremiumSlot;
+	private boolean isSameDaySlot;
 	private boolean isFdxSlot;
 	
 	private String minOrderMsg = "";
@@ -254,7 +255,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	public String getTimeslotShift() {
 		Calendar startTimeCal = DateUtil.toCalendar(this.getStartDateTime());
 		int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-		if (startHour > 12)
+		if (startHour >= 12)
 			return EnumDayShift.DAY_SHIFT_PM.getName();
 		else
 			return EnumDayShift.DAY_SHIFT_AM.getName();
@@ -698,6 +699,14 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setMidWeekDlvPassApplicable(boolean isMidWeekDlvPassApplicable) {
 		this.isMidWeekDlvPassApplicable = isMidWeekDlvPassApplicable;
+	}
+
+	public boolean isSameDaySlot() {
+		return isSameDaySlot;
+	}
+
+	public void setSameDaySlot(boolean isSameDaySlot) {
+		this.isSameDaySlot = isSameDaySlot;
 	}
 	
 	

@@ -172,8 +172,13 @@ if (timeslots.size() > 0) {
 		<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">varminslots['<%= slot.getId() %>'] = "<%= slot.getMinOrderAmt()+ " "+slot.isMinOrderMet() %>";</logic:iterate>
 
 		var timeslot_info = <%=isStaticSlot%>;
+		<%
+			/* only set these the first time */
+			if (!defaultColExp) {
+		%>
 		var dayIndex = 0;
 		var slotIndex = -1;
+		<% } %>
 		var daypartIndex<%= (!isForAdvOrdSlots && !isForNewAdvOrdSlots) ? " = -1" : "" %>;
 		var daypartAdvIndex<%= (isForAdvOrdSlots) ? " = -1" : "" %>;
 		var daypartAdvNewIndex<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
@@ -423,9 +428,7 @@ if (timeslots.size() > 0) {
 				
 	/* dayPart line */
 	stringBuffer.append("						<tr id=\""+"daypart_d"+dayIndex+"_tr"+"\" class=\"dayPart\">\n")
-				.append("							<td id=\"daypart_d"+dayIndex+"\">")
-					.append("<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"1\" border=\"0\" />")
-				.append("</td>\n")
+				.append("							<td id=\"daypart_d"+dayIndex+"\"></td>\n")
 				.append("						</tr>\n");
 
 	if (!isForAdvOrdSlots && !isForNewAdvOrdSlots) {

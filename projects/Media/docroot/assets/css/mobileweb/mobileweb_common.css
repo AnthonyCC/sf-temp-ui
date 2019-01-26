@@ -2226,9 +2226,6 @@ li.cleanli .gen-arrow {
 			.mm-page #addressId {
 			    width: calc(100% - 20px);
 			}
-			.mm-page .timeslot-selector.reserve-timeslot .select-day {
-				padding: 0 10px;
-			}
 			.mm-page .reserve-timeslot-legal {
 				padding: 10px 0;
 			}

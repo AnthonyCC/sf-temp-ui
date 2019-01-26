@@ -1,11 +1,11 @@
 .timeslot-selector {
   text-align: center;
+  padding: 0 10px;
 }
 
 .timeslot-selector .select-day {
   box-sizing: border-box;
-  padding: 0 20px;
-  width: 100%
+  width: 100%;
 }
 
 .timeslot-selector .select-day select,
@@ -70,6 +70,7 @@
 
 .timeslot-selector .select-time ul {
   margin: 0;
+  padding-left: 0;
 }
 
 .timeslot-selector .select-time li {
@@ -216,6 +217,7 @@
 .timeslot-selector .select-time li.soldout .icons .soldout {
   display: block;
   margin-left: 5px;
+  white-space: nowrap;
 }
 
 .timeslot-selector .select-time li.soldout .label label {
@@ -259,4 +261,12 @@
 }
 .timeslot-selector .select-warningmessages .select-warningmessage {
 	
+}
+
+.timeslot-selector .select-time .cutoff {
+	display: none;
+	visibility: hidden;
+}
+.timeslot-selector .select-time ul ~ ul {
+	border-top: 1px solid #ddd;
 }
