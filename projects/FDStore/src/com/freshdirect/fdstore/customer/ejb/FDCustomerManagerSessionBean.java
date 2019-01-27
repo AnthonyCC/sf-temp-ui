@@ -3583,7 +3583,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (order.getDeliveryInfo().getDeliveryReservationId() != null
 				&& !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)) {
 
-			LOGGER.info("Rollback reservation for Authorization and Address verification exception  reservation id : "
+			LOGGER.info("Release reservation for AUF and AVS failures START: "
 					+ order.getDeliveryInfo().getDeliveryReservationId());
 			FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(),
 					order.getDeliveryInfo().getDeliveryAddress(), event, true);// release
@@ -3603,26 +3603,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 																				// causes
 																				// transaction
 																				// rollback
-			recommitReservation(oldReservationId, identity.getErpCustomerPK(),
+			LOGGER.info("Release reservation for AUF and AVS failures END: "
+					+ order.getDeliveryInfo().getDeliveryReservationId());
+			
+			LOGGER.info("Recommit Old reservation START: "
+					+ oldReservationId);
+			FDDeliveryManager.getInstance().recommitReservation(oldReservationId, identity.getErpCustomerPK(),
 					getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
 					order.getDeliveryInfo().getDeliveryAddress(), info.isPR1());
+			LOGGER.info("Recommit Old reservation END: "
+					+ oldReservationId);
 		}
 	}
 
-	private void recommitReservation(String oldReservationId, String erpCustomerPK, OrderContext orderContext,
-			ErpAddressModel deliveryAddress, boolean pr1) throws FDResourceException, ReservationException {
-		DlvManagerSB dlvManagerSB;
-		try {
-			dlvManagerSB = this.getDlvManagerHome().create();
-			dlvManagerSB.recommitReservation(oldReservationId, erpCustomerPK, orderContext, deliveryAddress, pr1);
-
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
-
-	}
 
 	public void modifyAutoRenewOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order,
 			Set<String> usedPromotionCodes, String oldReservationId, boolean sendEmail, CustomerRatingI cra,
