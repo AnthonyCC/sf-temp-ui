@@ -4727,19 +4727,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public boolean isOnAlert(PrimaryKey pk) {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.isOnAlert(pk);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		}
-	}
-
 	private boolean isCustomerActive(PrimaryKey pk) {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();

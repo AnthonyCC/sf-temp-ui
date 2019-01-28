@@ -477,9 +477,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException, RemoteException;
     @Deprecated
     public void setActive(FDActionInfo info, boolean active) throws RemoteException, FDResourceException;
-    @Deprecated
-    public void doEmail(XMLEmailI email) throws RemoteException, FDResourceException;
-
+  
     @Deprecated
     public boolean sendPasswordEmail(String emailAddress, boolean tAltEmail) throws RemoteException, FDResourceException, PasswordNotExpiredException ;
     @Deprecated
@@ -501,14 +499,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     @Deprecated
     public void setDepotCode(FDIdentity identity, String depotCode) throws FDResourceException, RemoteException;
 
-    public String generatePasswordRequest(PrimaryKey fdCustomerPk, java.util.Date expiration) throws FDResourceException, RemoteException;
-
-//	public List loadPromotions() throws FDResourceException, RemoteException;
-	@Deprecated
-	public List<String> getReminderListForToday() throws FDResourceException, RemoteException;
-	@Deprecated
-	public void sendReminderEmail(PrimaryKey custPk) throws FDResourceException, RemoteException;
-
+	
 	public void authorizeSale(String salesId)throws FDResourceException, RemoteException;
 	@Deprecated
 	public void createCase(CrmSystemCaseInfo caseInfo) throws RemoteException, FDResourceException;
@@ -532,10 +523,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public String getNextId(String schema, String sequence) throws FDResourceException, RemoteException;
 	@Deprecated
 	public void setAlert(FDActionInfo info, ErpCustomerAlertModel customerAlert, boolean isOnAlert) throws RemoteException;
-	@Deprecated
-	public boolean isOnAlert(PrimaryKey pk, String alertType) throws RemoteException;
-	@Deprecated
-	public boolean isOnAlert(PrimaryKey pk)  throws RemoteException;
+	
 	@Deprecated
 	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk)  throws RemoteException;
 	@Deprecated
@@ -655,9 +643,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     @Deprecated
     public EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId, EnumTransactionSource source) throws FDResourceException, RemoteException;
-
-    public void doEmail(FTLEmailI email) throws RemoteException, FDResourceException;
-
+    
     public void preAuthorizeSales(String salesId) throws RemoteException, FDResourceException;
     @Deprecated
 	public List getGiftCardOrdersForCustomer(FDIdentity identity) throws RemoteException, FDResourceException;
@@ -715,8 +701,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
     @Deprecated
 	public SortedSet<IgnoreCaseString> getOrderClientCodesForUser(FDIdentity identity) throws FDResourceException, RemoteException;
 
-	@Deprecated
-	public void sendSettlementFailedEmail(String saleID) throws FDResourceException, RemoteException;
 	@Deprecated
 	public void bulkModifyOrder(
 			String saleId,
@@ -799,8 +783,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	@Deprecated
 	public boolean isReadyForPick(String orderNum)	throws FDResourceException, RemoteException;
 	@Deprecated
-	public void updateOrderInProcess(String orderNum) throws FDResourceException, RemoteException;
-	@Deprecated
 	public void releaseModificationLock(String orderId)	throws FDResourceException, RemoteException;
 	@Deprecated
 	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String erpCustomerPk)throws FDResourceException, RemoteException;
@@ -822,18 +804,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public int updateShippingInfoCartonDetails() throws FDResourceException ,RemoteException;
 	@Deprecated
 	public int[] updateShippingInfoTruckDetails() throws FDResourceException,RemoteException;
-	@Deprecated
-	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException, RemoteException;
-	@Deprecated
-	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException;
-	@Deprecated
-	public void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException, RemoteException;
-	@Deprecated
-	public void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException, RemoteException;
-	@Deprecated
-	public void clearModifyCartlines(String currentOrderId) throws FDResourceException, RemoteException;
-	@Deprecated
-	public List<UnsettledOrdersInfo> getUnsettledOrders(Date date) throws FDResourceException, RemoteException;
 	@Deprecated
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
 	@Deprecated

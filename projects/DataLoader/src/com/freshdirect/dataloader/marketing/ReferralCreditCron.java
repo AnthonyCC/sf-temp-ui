@@ -143,19 +143,11 @@ public class ReferralCreditCron {
 					if (referral_max_sale_id != null
 							&& referral_max_sale_id.length() != 0) {
 						// make sure order exists
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
-							boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
-							 if (!isExisted) {
-								 throw new FDResourceException("order " + referral_customer_id+ " does not exist");
-							 }
-						} else {
-							if (fdsb == null) {
-								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
-										.lookup(FDStoreProperties.getFDCustomerManagerHome());
-								fdsb = fdcmHome.create();
-							}
-							fdsb.getOrder(referral_max_sale_id);
+						boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
+						if (!isExisted) {
+							throw new FDResourceException("order " + referral_customer_id + " does not exist");
 						}
+
 						LOGGER.info("got FDOrder:" + referral_max_sale_id);
 	
 						// Create complaint
@@ -341,23 +333,14 @@ public class ReferralCreditCron {
 					
 					if(referral_max_sale_id != null && referral_max_sale_id.length() != 0) {
 						// make sure order exists
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
-							 boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
-							 if (!isExisted) {
-								 throw new FDResourceException("order " + referral_customer_id+ " does not exist");
-							 }
-						} else {
-							if (fdsb == null) {
-								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
-										.lookup(FDStoreProperties.getFDCustomerManagerHome());
-								fdsb = fdcmHome.create();
-							}
-							fdsb.getOrder(referral_max_sale_id);
+						boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
+						if (!isExisted) {
+							throw new FDResourceException("order " + referral_customer_id + " does not exist");
 						}
-						
+
 						LOGGER.info("got FDOrder:" + referral_max_sale_id);
-						
-						//Create complaint
+
+						// Create complaint
 						ErpComplaintModel complaintModel = new ErpComplaintModel();
 						
 						//Create complin line

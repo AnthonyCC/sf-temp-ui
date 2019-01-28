@@ -40,15 +40,8 @@ public class MissingInvoiceCron extends DBReportCreator {
 			
 			FDOrderSearchCriteria criteria = new FDOrderSearchCriteria();
 			criteria.setDeliveryDate(Calendar.getInstance().getTime());
-			List orders;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
-				orders = CustomerOrderService.getInstance().locateOrders(criteria);
-			} else {
-				ctx = getInitialContext();
-				FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
-				FDCustomerManagerSB sb = home.create();
-				orders = sb.locateOrders(criteria);
-			}
+			List orders = CustomerOrderService.getInstance().locateOrders(criteria);
+			
 			List<String> missingFDOrders = new ArrayList<String>();
 //			List<String> missingFDXOrders = new ArrayList<String>();
 
