@@ -17,7 +17,7 @@ import com.freshdirect.payment.service.ModelConverter;
 
 public class ErpComplaintManagerService extends AbstractEcommService implements ErpComplaintManagerServiceI {
 
-	private final static Category LOGGER = LoggerFactory
+	private static final Category LOGGER = LoggerFactory
 			.getInstance(ErpComplaintManagerService.class);
 	
 	private static ErpComplaintManagerService INSTANCE;
@@ -50,8 +50,7 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error occured, excludeCartonReq=" + excludeCartonReq, e);
 		}
 		return ModelConverter.buildErpComplaintReason(response.getData());
 	}
@@ -68,8 +67,7 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error occured, ", e);
 		}
 		return response.getData();
 	}
@@ -87,8 +85,7 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error occured, ", e);
 		}
 		return response.getData();
 	}
@@ -96,19 +93,23 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 	@Override
 	public void rejectMakegoodComplaint(String makegood_sale_id)
 			throws RemoteException {
-		Response<Object> response = null;
+		Response<Void> response = null;
 		try {
 			response = httpGetDataTypeMap(
 					getFdCommerceEndPoint(REJECT_MAKE_GOOD_COMPLAINT
 							+ makegood_sale_id),
-					new TypeReference<Response<Object>>() {
+					new TypeReference<Response<Void>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
-				throw new FDResourceException(response.getMessage());
+				if (response.getError() != null && response.getError().get("FDResourceException") != null) {
+					throw new FDResourceException(response.getError().get("FDResourceException").toString());
+				} else {
+					throw new FDResourceException(response.getMessage());
+				}
 
 		} catch (FDResourceException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error occured, makegood_sale_id=" + makegood_sale_id, e);
+			throw new RemoteException(e.getMessage());
 		}
 	}
 
