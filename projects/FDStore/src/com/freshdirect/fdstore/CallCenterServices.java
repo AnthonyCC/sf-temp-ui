@@ -38,6 +38,7 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.VSReasonCodes;
+import com.freshdirect.ecomm.gateway.ErpComplaintManagerService;
 import com.freshdirect.fdstore.content.meal.MealModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthInfoSearchCriteria;
@@ -784,12 +785,18 @@ public class CallCenterServices {
 	}
 	
 	public static void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException {
-		if(callCenterHome == null) {
-			lookupManagerHome();
-		}
+
 		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)) {
+				ErpComplaintManagerService.getInstance().rejectMakegoodComplaint(makegood_sale_id);
+			} else {
+
+				if (callCenterHome == null) {
+					lookupManagerHome();
+				}
 				CallCenterManagerSB sb = callCenterHome.create();
 				sb.rejectMakegoodComplaint(makegood_sale_id);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -798,7 +805,7 @@ public class CallCenterServices {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return Content keys of top faq entries
