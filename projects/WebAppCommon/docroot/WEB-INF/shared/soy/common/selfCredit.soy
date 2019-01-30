@@ -5,18 +5,20 @@
 * @param? orders
  */
 {template .selfCreditInit autoescape="false"}
-  <h1 tabindex="1">Credit Request</h1>
+  <h1 tabindex="1" id="selfcredit-label">Credit Request</h1>
   <form fdform="self-credit-init-order-id" id="order-id">
-    <div class="self-credit-init-row">
-        <span class="text14bold">Name</span>
-        {if $user.firstName and $user.lastName}<i class="user-info">{$user.firstName} {$user.lastName}</i>{/if}
-    </div>
-    <div class="self-credit-init-row">
-        <span class="text14bold">Email Address</span>
-        <i class="user-info">{$user.userId}</i>
+    <div id="selfcredit-describe">
+      <div class="self-credit-init-row">
+          <span class="text14bold">Name</span>
+          {if $user.firstName and $user.lastName}<i class="user-info">{$user.firstName} {$user.lastName}</i>{/if}
+      </div>
+      <div class="self-credit-init-row">
+          <span class="text14bold">Email Address</span>
+          <i class="user-info">{$user.userId}</i>
+      </div>
     </div>
     <div class="self-credit-init-row-last">
-      <label for="self-credit-order-select">Your Order</label>
+      <label for="self-credit-order-select">Your Order
       <i class="form-field-info-flag">Required</i>
       <div>
         <select name="order-id" id="self-credit-order-select" class="full-width customselect custom-select-light" data-custom-select-button-class="orderselect" data-custom-select-light-class="selectlight">
@@ -32,6 +34,7 @@
         {/if}
         </select>
       </div>
+      </label>
     </div>
     <div>
       <button onclick="FreshDirect.components.selfCreditInitPopup.submit()" class='cssbutton full-width green selfcredit-button' type="button" value="Continue" disabled>Continue</button>

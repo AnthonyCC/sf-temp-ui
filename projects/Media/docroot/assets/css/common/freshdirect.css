@@ -1,5 +1,5 @@
 body[developer] *:focus {
-   outline: #5fb069 solid 2px !important;
+   outline: #5fb069 solid 2px;
   
 }
 :focus{

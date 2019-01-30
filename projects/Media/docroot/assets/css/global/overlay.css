@@ -20,6 +20,11 @@ body.overlay-opened {
   overflow: auto;
 }
 
+.overlay h1:focus {
+  outline: none;
+  text-decoration: underline;
+}
+
 .overlay.overlay-fullscreen {
   animation: fade-in-fullscreen .5s;
 }
