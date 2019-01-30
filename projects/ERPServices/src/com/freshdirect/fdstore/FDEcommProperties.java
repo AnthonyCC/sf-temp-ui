@@ -40,7 +40,7 @@ public class FDEcommProperties {
     public final static String SmsAlertsSB = "sms.ejb.SmsAlertsSB";
     public final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
     public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
-    public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB"
+    public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
     public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
     public final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
     public final static String FDSurveySB = "survey.ejb.FDSurveySB";
