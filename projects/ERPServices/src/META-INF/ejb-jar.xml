@@ -702,23 +702,6 @@ version="3.0">
 	  	</resource-env-ref>
 	</session>
 	
-	  <session>
-      <ejb-name>FDXOrderPickEligibleCron</ejb-name>
-      <home>
-      com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome</home>
-      <remote>
-      com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB</remote>
-      <ejb-class>
-      com.freshdirect.erp.ejb.FDXOrderPickEligibleSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-     
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
     
 	
 	<!-- EWallet Audit Log Changes Session Tag End -->

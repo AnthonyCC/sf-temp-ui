@@ -35,12 +35,10 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
-import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -59,16 +57,10 @@ import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.deliverypass.ejb.DeliveryPassDAO;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerSessionBean;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDPayPalServiceException;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -79,12 +71,8 @@ import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
-import com.freshdirect.payment.ejb.PaymentManagerSessionBean;
-import com.freshdirect.payment.ejb.PaymentSB;
-import com.freshdirect.payment.ejb.PaymentSessionBean;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.routing.ejb.ErpRoutingGatewayHome;
 import com.freshdirect.routing.ejb.ErpRoutingGatewaySB;
@@ -305,26 +293,15 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							list.add(new SapOrderPickEligibleInfo(saleEB.getCurrentOrder().getRequestedDate(),
 									((SapCreateSalesOrder) command).getSapOrderNumber(), saleId));
 							
-							if (FDStoreProperties
-									.isSF2_0_AndServiceEnabled(FDEcommProperties.FDXOrderPickEligibleSB)) {
-								try {
-									FDECommerceService.getInstance().sendFDXEligibleOrdersToSap(list);
-								} catch (RemoteException re) {
-									LOGGER.warn(
-											"FAILED TO SEND SapOrderPickEligibleInfo LIST TO remote service sendFDXEligibleOrdersToSap",
-											re);
-								}
-
-							} else {
-								FDXOrderPickEligibleCronSB pickEligiblesb = getFDXOrderPickEligibleHome().create();
-								try {
-									pickEligiblesb.sendOrdersToSAP(list);
-								} catch (SapException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
+							try {
+								FDECommerceService.getInstance().sendFDXEligibleOrdersToSap(list);
+							} catch (RemoteException re) {
+								LOGGER.warn(
+										"FAILED TO SEND SapOrderPickEligibleInfo LIST TO remote service sendFDXEligibleOrdersToSap",
+										re);
 							}
 
+							
 							LOGGER.info(list);
 						}
 
@@ -607,14 +584,6 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	private GCGatewayHome getGCGatewayHome() {
 		try {
 			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private FDXOrderPickEligibleCronHome getFDXOrderPickEligibleHome() {
-		try {
-			return (FDXOrderPickEligibleCronHome) LOCATOR.getRemoteHome("freshdirect.erp.FDXOrderPickEligibleCron");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
