@@ -16,7 +16,6 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
-import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
@@ -154,14 +153,6 @@ public class FDServiceLocator extends ERPServiceLocator {
     public EwalletServiceHome getEwalletServiceHome() {
         try {
             return (EwalletServiceHome) getRemoteHome(FDStoreProperties.getEwalletServiceHome());
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-	public ErpEWalletHome getErpEWalletHome() {
-        try {
-            return (ErpEWalletHome) getRemoteHome(FDStoreProperties.getErpEWalletHome());
         } catch (NamingException e) {
             throw new EJBException(e);
         }

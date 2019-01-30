@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -24,7 +23,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -45,7 +43,6 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpChargeLineModel;
-import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
@@ -72,8 +69,6 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.customer.ejb.ActivityLogHome;
-import com.freshdirect.customer.ejb.ActivityLogSB;
-import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassInfo;
@@ -87,16 +82,12 @@ import com.freshdirect.ecomm.gateway.DlvPassManagerService;
 import com.freshdirect.ecomm.gateway.GiftCardManagerService;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
-import com.freshdirect.ecommerce.data.dlv.FDReservationData;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
-import com.freshdirect.erp.ejb.ErpEWalletHome;
-import com.freshdirect.erp.ejb.ErpEWalletSB;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
-import com.freshdirect.fdlogistics.services.impl.DlvManagerDecoder;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDEcommProperties;
@@ -143,7 +134,6 @@ import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
@@ -167,8 +157,6 @@ import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
-import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.storeapi.content.ContentFactory;
 
 
@@ -183,7 +171,6 @@ public class FDCustomerManager {
 	private static Category LOGGER = LoggerFactory.getInstance(FDCustomerManager.class);
 
 	private static FDCustomerManagerHome managerHome = null;
-	private static ErpEWalletHome eWalletHome = null;
 	private static MailerGatewayHome mailerHome = null;
 	//private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
 	FDCustomerEStoreModel customerSmsPreferenceModel=null;
@@ -642,20 +629,13 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static int insertLongAccessToken(ErpCustEWalletModel custEWallet){
-		lookupeWalletHome();
 		int rows=0;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				rows = FDECommerceService.getInstance().insertCustomerLongAccessToken(custEWallet);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				rows = erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
-			}
+			
 		} catch (RemoteException e) {
 			e.printStackTrace();
-		} catch (CreateException e) {
-			e.printStackTrace();
-		}
+		} 
 		return rows;
 	}
 
@@ -679,15 +659,10 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static boolean getEwalletMobileStatusByType(String eWalletType){
-		lookupeWalletHome();
 		 try {
 			ErpEWalletModel erpEWalletModel = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				erpEWalletModel = FDECommerceService.getInstance().findEWalletByType(eWalletType);
-			} else {
-				ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-				erpEWalletModel = erpEWalletSB.findEWalletByType(eWalletType);
-			}
+			
 			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
 				 if(erpEWalletModel.getEwalletmStatus().equalsIgnoreCase("Y"))
 				 	return true;
@@ -695,8 +670,6 @@ public class FDCustomerManager {
 					return false;
 			 }
 		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (CreateException e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -708,20 +681,11 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static int updateLongAccessToken(String custId, String longAccessToken, String eWalletType){
-		lookupeWalletHome();
 		int rows=0;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				rows = FDECommerceService.getInstance().updateLongAccessToken(custId, longAccessToken, eWalletType);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				rows = erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
-			}
+			
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return rows;
@@ -735,38 +699,23 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static int deleteLongAccessToken(String custId, String eWalletID){
-		lookupeWalletHome();
 		int rows=0;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
-				rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				rows = erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
-			}
+			rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
+			
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return rows;
 	}
 
 	public static ErpCustEWalletModel findLongAccessTokenByCustID(String customerId, String eWalletType){
-		lookupeWalletHome();
+		
 		ErpCustEWalletModel custEWalletModel = null;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
-				custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
-			}
+			custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
+			
 		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (CreateException e) {
 			e.printStackTrace();
 		}
 		return custEWalletModel;
@@ -2560,15 +2509,6 @@ public class FDCustomerManager {
 		}
 		managerHome = FDServiceLocator.getInstance().getFDCustomerManagerHome();
 	}
-
-	private static void lookupeWalletHome() {
-		if (eWalletHome != null) {
-			return;
-		}
-		eWalletHome = FDServiceLocator.getInstance().getErpEWalletHome();
-	}
-
-
 	private static void lookupMailerGatewayHome() throws FDResourceException {
 		if (mailerHome != null) {
 			return;
