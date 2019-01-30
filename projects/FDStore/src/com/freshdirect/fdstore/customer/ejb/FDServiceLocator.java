@@ -23,8 +23,6 @@ import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.fdstore.ewallet.ejb.EwalletServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome;
-import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
-import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
@@ -133,15 +131,6 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
-    public FDSurveyHome getSurveyHome() {
-        try {
-            return (FDSurveyHome) getRemoteHome(FDStoreProperties.getFDSurveyHome());
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-    
     public FDCustomerManagerHome getFDCustomerManagerHome() {
         try {
             return (FDCustomerManagerHome) getRemoteHome(FDStoreProperties.getFDCustomerManagerHome());
@@ -204,16 +193,6 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
 
-    
-    public FDSurveySB getSurveySessionBean() {
-        try {
-            return getSurveyHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }
-    }
     
     public FDCustomerManagerSB getFDCustomerManagerSessionBean() {
         try {

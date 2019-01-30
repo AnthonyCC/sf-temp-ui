@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.survey;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,24 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.ecommerce.data.survey.FDSurveyAnswerData;
-import com.freshdirect.ecommerce.data.survey.FDSurveyData;
-import com.freshdirect.ecommerce.data.survey.FDSurveyQuestionData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
-import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.ecomm.gateway.FDSurveyService;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.LazyTimedCache;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 
 public class FDSurveyFactory {
 
@@ -157,12 +148,8 @@ public class FDSurveyFactory {
      */
     FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)){
-        		return FDSurveyService.getInstance().getSurvey(key);
-        	}
-        	else{
-        		return FDServiceLocator.getInstance().getSurveySessionBean().getSurvey(key);
-        	}
+        	return FDSurveyService.getInstance().getSurvey(key);
+        	
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -192,14 +179,11 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)){
-        		FDSurveyResponseData surveyResponseData = FDSurveyService.getInstance().getCustomerProfile(identity, serviceType);
-        		FDSurveyResponse fdSurveyResponse = buildFdSurveyResponse(surveyResponseData);
-        		return fdSurveyResponse;
-        	}
-        	else{
-        		return FDServiceLocator.getInstance().getSurveySessionBean().getCustomerProfile(identity, correctServiceType(serviceType));
-        	}
+			FDSurveyResponseData surveyResponseData = FDSurveyService.getInstance().getCustomerProfile(identity,
+					serviceType);
+			FDSurveyResponse fdSurveyResponse = buildFdSurveyResponse(surveyResponseData);
+			return fdSurveyResponse;
+
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }

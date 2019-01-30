@@ -2112,16 +2112,10 @@ public class FDCustomerManager {
 	}
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)) {
-				FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
-				FDSurveyService.getInstance().storeSurvey(surveyDataRequest);
-			} else {
-				FDServiceLocator.getInstance().getSurveySessionBean().storeSurvey(survey);
-			}
-		} catch (RemoteException re) {
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
+
+		FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
+		FDSurveyService.getInstance().storeSurvey(surveyDataRequest);
+
 	}
 
 	private static FDSurveyResponseData buildStoreSurveyRequest(

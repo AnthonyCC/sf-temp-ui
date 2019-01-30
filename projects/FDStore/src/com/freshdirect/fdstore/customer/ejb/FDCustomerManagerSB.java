@@ -603,8 +603,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException;
     @Deprecated
-    public void storeProductRequest(List<FDProductRequest> productRequest,FDSurveyResponse survey) throws RemoteException, FDResourceException;
-    @Deprecated
     public void storeProductRequest(List<FDProductRequest> productRequest) throws RemoteException, FDResourceException;
 
     @Deprecated
