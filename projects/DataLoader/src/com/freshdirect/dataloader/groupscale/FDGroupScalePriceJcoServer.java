@@ -12,26 +12,19 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.EJBException;
-import javax.naming.Context;
-import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
-import com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderHome;
-import com.freshdirect.dataloader.sap.ejb.SapGrpInfoLoaderSB;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.sap.jco.server.param.GroupScalePriceParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
-import com.freshdirect.erp.ejb.ErpGrpInfoHome;
-import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
@@ -399,31 +392,15 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 		 * @throws EJBException
 		 */
 		private void storeScaleGroups(List<ErpGrpPriceModel> scaleGroups) throws EJBException {
-			Context ctx = null;
 			String saleId = null;
 			try {
-				ctx = ErpServicesProperties.getInitialContext();
-
 				LOG.info(String.format("Storing scale group(s) [%s], [%s] ", scaleGroups.size(), new Date()));
 
-				SAPGrpInfoLoaderHome mgr = (SAPGrpInfoLoaderHome) ctx.lookup("freshdirect.dataloader.SAPGrpInfoLoader");
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("sap.ejb.SapGrpInfoLoaderSB")){
-					FDECommerceService.getInstance().loadGroupPriceData(scaleGroups);
-				}else{
-				SapGrpInfoLoaderSB sb = mgr.create();
-				sb.loadData(scaleGroups);
-				}
-
+				FDECommerceService.getInstance().loadGroupPriceData(scaleGroups);
+				
 			} catch (Exception ex) {
 				throw new EJBException("Failed to store: " + saleId + "Msg: " + ex.toString());
-			} finally {
-				if (ctx != null) {
-					try {
-						ctx.close();
-					} catch (NamingException e) {
-					}
-				}
-			}
+			} 
 		}
 
 		/**
@@ -472,19 +449,12 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 	 * @return
 	 */
 	private String checkIfMaterialAlreadyExistsInActiveGroup(String grpId, GroupScalePriceParameter scaleGrpRecord) {
-		Context ctx = null;
 		String existingGrpId = null;
 		FDGroup group=null;
 		try {
-			ctx = ErpServicesProperties.getInitialContext();
-			ErpGrpInfoHome mgr = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
-			ErpGrpInfoSB sb = mgr.create();
 			Map<SalesAreaInfo, FDGroup> salesAreaGroup = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpGrpInfoSB")){
-				salesAreaGroup = FDECommerceService.getInstance().getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());
-			}else{
-			salesAreaGroup=sb.getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());
-			}
+			salesAreaGroup = FDECommerceService.getInstance().getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());
+			
 			SalesAreaInfo salesArea = new SalesAreaInfo(scaleGrpRecord.getSalesOrganizationId(), scaleGrpRecord.getDistributionChannelId());
 			if(null != salesAreaGroup && salesAreaGroup.containsKey(salesArea)){
 				group =salesAreaGroup.get(salesArea);
@@ -503,14 +473,7 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 		} catch (Exception ex) {
 			throw new EJBException("Failed to validate if material already exists in an active Group: " + grpId
 					+ ", Material ID:" + scaleGrpRecord.getMaterialID() + " Exception Msg: " + ex.toString());
-		} finally {
-			if (ctx != null) {
-				try {
-					ctx.close();
-				} catch (NamingException e) {
-				}
-			}
-		}
+		} 
 		return existingGrpId;
 	}
 

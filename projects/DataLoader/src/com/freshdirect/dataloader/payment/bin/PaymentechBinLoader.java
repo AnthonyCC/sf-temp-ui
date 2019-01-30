@@ -31,13 +31,9 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.DataLoaderProperties;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
-import com.freshdirect.payment.ejb.BINInfoManagerHome;
-import com.freshdirect.payment.ejb.BINInfoManagerSB;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -225,13 +221,7 @@ public class PaymentechBinLoader /*implements BINLoader*/ {
 		binInfos.add(visaBINInfo);
 		binInfos.add(mcBINInfo);
 		
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.BINInfoManagerSB)){
-			FDECommerceService.getInstance().saveBINInfo(binInfos);
-		}else {
-		BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();
-		binInfoManagerSB.saveBINInfo(binInfos);
-		}
-
+		FDECommerceService.getInstance().saveBINInfo(binInfos);
 	}
 	
 	private void downloadFile(File visaBinFile, File mcBinFile) throws UnknownHostException, IOException {
@@ -280,22 +270,6 @@ public class PaymentechBinLoader /*implements BINLoader*/ {
 		}
 	}
 	
-	public static BINInfoManagerHome lookupBINInfoManagerHome() throws EJBException {
-		Context ctx = null;
-		try {
-			ctx = getInitialContext();
-			return (BINInfoManagerHome) ctx.lookup("freshdirect.payment.BINInfoManager");
-		} catch (NamingException ex) {
-			throw new EJBException(ex);
-		} finally {
-			try {
-				if (ctx != null)
-					ctx.close();
-			} catch (NamingException ne) {
-				LOGGER.debug(ne);
-			}
-		}
-	}
 	static public Context getInitialContext() throws NamingException {
 		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");

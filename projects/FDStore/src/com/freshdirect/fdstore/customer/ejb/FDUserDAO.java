@@ -342,35 +342,6 @@ public class FDUserDAO {
 
         return user;
     }
-
-    private static final String LOAD_FROM_EMAIL_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.zipcode,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.ZIP_POPUP_USED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, "
-            + "erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE  "
-            + ",fdc.referer_customer_id, fdu.default_list_id, ci.fd_tc_agree, fdee.raf_click_id,fdee.raf_promo_code, erpc.SAP_ID, erpc.USER_ID "
-            + "FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.FDUSER_ESTORE fde, CUST.fdcustomer_estore fdee "
-            + "WHERE fdu.FDCUSTOMER_ID=fdc.id and fdee.FDCUSTOMER_ID(+)=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.user_id=? "
-            + "AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=? and FDEE.E_STORE(+)=?";
-
-    public static FDUser recognizeWithEmail(Connection conn, String email, EnumEStoreId eStoreId) throws SQLException, FDResourceException {
-        LOGGER.debug("attempting to load FDUser based on user id (email)");
-        PreparedStatement ps = conn.prepareStatement(LOAD_FROM_EMAIL_QUERY);
-        ps.setString(1, email);
-        ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
-        ps.setString(3, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
-        ResultSet rs = ps.executeQuery();
-        FDUser user = loadUserFromResultSet(rs, true);
-
-        if (!user.isAnonymous()) {
-            loadCart(conn, user, false);
-            if (user.getIdentity() != null)
-                user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
-
-        }
-        rs.close();
-        ps.close();
-
-        return user;
-    }
-
     private final static String EXTERNAL_CAMPAIGN_Query = "select * from (select campaign_id from cust.ext_campaign where customer_id = ? order by entered_date desc) where rownum<=2";
 
     private static Set<ExternalCampaign> loadExternalCampaigns(Connection conn, String customer_id) throws SQLException {

@@ -464,18 +464,15 @@ public class SocialAccountService implements AccountService {
         return successPage;
     }
 
-    private void logActivity(ErpActivityRecord rec) {
-		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)) {
-			try {
-				FDECommerceService.getInstance().logActivity(rec);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else {
-			new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
+	private void logActivity(ErpActivityRecord rec) {
+
+		try {
+			FDECommerceService.getInstance().logActivity(rec);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
+
 	}
 
 	private boolean isUserIdExistForUserToken(String userToken) {

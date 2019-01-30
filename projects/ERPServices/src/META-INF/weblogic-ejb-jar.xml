@@ -24,22 +24,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     </weblogic-enterprise-bean>
     
     <weblogic-enterprise-bean>
-      <ejb-name>BINInfoManager</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>1</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.payment.BINInfoManager</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
       <ejb-name>CMSManager</ejb-name>
       <stateless-session-descriptor>
         <pool>
@@ -82,18 +66,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <ejb-reference-description>
         <ejb-ref-name>ejb/ErpInfo</ejb-ref-name>
         <jndi-name>freshdirect.erp.Info</jndi-name>
-      </ejb-reference-description>
-      <ejb-reference-description>
-        <ejb-ref-name>ejb/ErpNutrition</ejb-ref-name>
-        <jndi-name>freshdirect.content.Nutrition</jndi-name>
-      </ejb-reference-description>
-      <ejb-reference-description>
-        <ejb-ref-name>ejb/GrpPriceInfo</ejb-ref-name>
-        <jndi-name>freshdirect.erp.GrpInfoManager</jndi-name>
-      </ejb-reference-description>
-       <ejb-reference-description>
-        <ejb-ref-name>ejb/ErpProductFamily</ejb-ref-name>
-        <jndi-name>freshdirect.erp.ErpProductFamily</jndi-name>
       </ejb-reference-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.fdstore.Factory</jndi-name>
@@ -252,60 +224,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <jndi-name>freshdirect.customer.ActivityLog</jndi-name>
     </weblogic-enterprise-bean>    
     <weblogic-enterprise-bean>
-      <ejb-name>ZoneInfoManager</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.erp.ZoneInfoManager</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>GrpInfoManager</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.erp.GrpInfoManager</jndi-name>
-    </weblogic-enterprise-bean>
-      <weblogic-enterprise-bean>
-      <ejb-name>ErpProductFamily</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.erp.ErpProductFamily</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
       <ejb-name>SapGateway</ejb-name>
       <stateless-session-descriptor>
         <pool>
@@ -352,25 +270,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       </resource-env-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.giftcard.Gateway</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>GatewayActivityLog</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <resource-description>
-        <res-ref-name>jms/QueueFactory</res-ref-name>
-        <jndi-name>queueFactory</jndi-name>
-      </resource-description>
-      <resource-env-description>
-        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
-        <jndi-name>./logMetricQueue</jndi-name>
-      </resource-env-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.payment.GatewayActivityLog</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
       <ejb-name>ErpInfo</ejb-name>
@@ -584,24 +483,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>
       freshdirect.erp.CharacteristicValuePrice</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>ErpNutritionSessionBean</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.content.Nutrition</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
       <ejb-name>PaymentManager</ejb-name>
@@ -1034,39 +915,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <jndi-name>freshdirect.enums.EnumManager</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
-      <ejb-name>EventLogger</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.event.EventLogger</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>RecommendationEventLogger</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>
-      freshdirect.event.RecommendationEventLogger</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
       <ejb-name>RestrictedPaymentMethod</ejb-name>
       <stateless-session-descriptor>
         <pool>
@@ -1102,22 +950,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       </resource-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.erp.DlvPassManager</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>COOLInfoManager</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.erp.COOLManager</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
       <ejb-name>EmployeeInfoManager</ejb-name>
@@ -1185,25 +1017,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>
       freshdirect.analytics.CouponActivityLogListener</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>ProductPromotionInfoManager</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>
-      freshdirect.fdstore.ProductPromotionInfoManager</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
       <ejb-name>CouponManager</ejb-name>
@@ -1489,29 +1302,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <transaction-isolation>
       <isolation-level>TransactionReadCommitted</isolation-level>
       <method>
-        <ejb-name>ErpNutritionSessionBean</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>createNutrition</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpNutritionSessionBean</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>updateNutrition</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpNutritionSessionBean</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>removeNutrition</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpNutritionSessionBean</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>createUpcSkuMapping</method-name>
-      </method>
-    </transaction-isolation>
-    <transaction-isolation>
-      <isolation-level>TransactionReadCommitted</isolation-level>
-      <method>
         <ejb-name>ErpCustomer</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
@@ -1629,14 +1419,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <transaction-isolation>
       <isolation-level>TransactionReadCommitted</isolation-level>
       <method>
-        <ejb-name>ProductPromotionInfoManager</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-    </transaction-isolation>
-    <transaction-isolation>
-      <isolation-level>TransactionReadCommitted</isolation-level>
-      <method>
         <ejb-name>CouponManager</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
@@ -1646,14 +1428,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <isolation-level>TransactionReadCommitted</isolation-level>
       <method>
         <ejb-name>CouponActivityLog</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-    </transaction-isolation>
-    <transaction-isolation>
-      <isolation-level>TransactionReadCommitted</isolation-level>
-      <method>
-        <ejb-name>BINInfoManager</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>

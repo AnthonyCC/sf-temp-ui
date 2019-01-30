@@ -44,7 +44,6 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 			.getInstance(FDCommerceService.class);
 
 	private static final String SAVE_PRICING_ZONES_API ="pricing/zone/loadData";
-	private static final String COO_API ="/coo";
 	private static final String DB_MONITOR ="monitor/dbcheck";
 	private static final String TEST_DATA_CUSTOMERID ="test/dyfeligiblecustomerid";
 	private static final String TEST_DATA_PING ="test/ping";
@@ -56,7 +55,6 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	private static final String CMS_FEED_API = "cms/feed/";
 	private static final String SLASH = "/";
 	
-	private static final String DYF_MODEL_API_PRODUCT_FREQUENCIES = "DyfModel/productfrequencies/";
 	private static final String DYF_MODEL_API_GLOBAL_PRODUCT_SCORES = "DyfModel/globalproductscores/";
 	private static final String DYF_MODEL_API_PRODUCT_FREQUENCIES_MAP = "DyfModel/productfrequenciesmap/";
 	private static final String DYF_MODEL_API_PRODUCTS = "DyfModel/products/";

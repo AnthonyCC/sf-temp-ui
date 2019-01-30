@@ -207,7 +207,16 @@ public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, Enu
 		try{
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
-		Response<String> info = getMapper().readValue(response, new TypeReference<Response<String>>() { });
+		if(response!=null&&response.equals("JsonProcessingException")){
+			LOGGER.info("JsonProcessingException in ecom Node");
+			throw new JsonMappingException("JsonProcessingException in eCom Node");
+		}
+		if(response==null||response.trim().equals("")){
+			LOGGER.info("Response is null or Empty");
+			throw new FDResourceException("Response is null or Empty");
+		}
+		
+		Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
 		if(info.getResponseCode().equals("500")){
 			if ("ErpSaleNotFoundException".equals(info.getMessage())) {
 				throw new ErpSaleNotFoundException(info.getMessage());

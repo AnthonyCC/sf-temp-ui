@@ -154,14 +154,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
      */
     public ErpSaleModel getOrder(PrimaryKey erpSalePk) throws RemoteException;
     
-    /**
-     * Get lightweight info about a customer's orders.
-     *
-     * @param erpCustomerPk primary key of ErpCustomer
-     *
-     * @return collection of ErpSaleInfo objects
-     */
-    public ErpOrderHistory getOrderHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
+  
     
     /**
      * Add an invoice to ErpSale
@@ -204,8 +197,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public List<ErpTruckInfo> getTruckNumbersForDate(Date deliveryDate) throws RemoteException;
     
-    public List<DlvSaleInfo> getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws RemoteException;
-    
     public DlvSaleInfo getDlvSaleInfo (String orderNumber) throws ErpSaleNotFoundException, RemoteException;
     
     public void markAsReturn(String saleId, boolean fullReturn, boolean alcoholOnly) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
@@ -234,20 +225,12 @@ public interface ErpCustomerManagerSB extends EJBObject {
 	
 	public void addChargeInvoice(String saleId, double charge) throws RemoteException;
 	
-	public ErpOrderHistory getOrdersByDlvPassId(String customerPk, String dlvPassId) throws RemoteException;
-	
-	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(String customerPk) throws RemoteException;
-	
 	public void updateDlvPassIdToSale(String saleId, String dlvPassId) throws RemoteException;
-	
-	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(String customerPk, String dlvPassId, int noOfDaysOld) throws RemoteException;
 	
 	public int getValidOrderCount(PrimaryKey erpCustomerPk) throws RemoteException;
 	
 	public String getLastOrderID(PrimaryKey erpCustomerPk) throws RemoteException;
 	
-	public boolean isOrderBelongsToUser(PrimaryKey erpCustomerPk, String saleId) throws RemoteException;
-
 	   /**
      * Get lightweight info about a customer's used promotions.
      *

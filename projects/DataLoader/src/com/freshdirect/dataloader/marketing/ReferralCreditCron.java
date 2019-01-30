@@ -39,8 +39,6 @@ import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ejb.ActivityLogHome;
-import com.freshdirect.customer.ejb.ActivityLogSB;
-import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -49,12 +47,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.ecomm.converter.ReferralConverter;
 import com.freshdirect.fdstore.ecomm.gateway.CallCenterManagerService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
@@ -62,10 +58,7 @@ import com.freshdirect.fdstore.ecomm.gateway.CustomerOrderService;
 import com.freshdirect.fdstore.ecomm.gateway.FDReferralManagerService;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDReferAFriendCreditEmail;
-import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralPromotionModel;
-import com.freshdirect.fdstore.referral.ejb.FDReferralManagerHome;
-import com.freshdirect.fdstore.referral.ejb.FDReferralManagerSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.mail.EmailAddress;
@@ -108,11 +101,9 @@ public class ReferralCreditCron {
 			CallCenterManagerSB csb = csManagerHome.create();
 			complaintReasons = csb.getComplaintReasons(false);
 		}
-		FDReferralManagerSB sb = null;
 		FDCustomerManagerSB fdsb = null;
 		ActivityLogHome aHome = (ActivityLogHome) ctx
 				.lookup("freshdirect.customer.ActivityLog");
-		ActivityLogSB logSB = aHome.create();
 		if(FDStoreProperties.isExtoleRafEnabled()){
 			
 			
@@ -126,16 +117,8 @@ public class ReferralCreditCron {
 	
 			// List<ReferralPromotionModel> sales = sb.getSettledSales();
 			List<ReferralPromotionModel> sales = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-				sales = FDReferralManagerService.getInstance().getSettledTransaction();
-			} else {
-				if (sb == null) {
-					FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-							.lookup(FDStoreProperties.getFDReferralManagerHome());
-					sb = managerHome.create();
-				}
-				sales = sb.getSettledTransaction();
-			}
+			sales = FDReferralManagerService.getInstance().getSettledTransaction();
+			
 			LOGGER.info(" Sales list of the Advocates :" + sales);
 	
 			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
@@ -149,17 +132,9 @@ public class ReferralCreditCron {
 							.next();
 					String referral_customer_id = model.getRefCustomerId();
 					String referral_max_sale_id =   null;
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-						referral_max_sale_id = FDReferralManagerService.getInstance()
+					referral_max_sale_id = FDReferralManagerService.getInstance()
 								.getLatestSTLSale(referral_customer_id);
-					} else {
-						if (sb == null) {
-							FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-									.lookup(FDStoreProperties.getFDReferralManagerHome());
-							sb = managerHome.create();
-						}
-						referral_max_sale_id = sb.getLatestSTLSale(referral_customer_id);
-					}
+					
 					LOGGER.info(" Advocate Customer ID : " + referral_customer_id);
 				LOGGER.info(" Advocate Settled Sale ID : " + referral_max_sale_id);
 				// System.out.println("cust_sale_id:" + model.getSaleId());
@@ -168,19 +143,11 @@ public class ReferralCreditCron {
 					if (referral_max_sale_id != null
 							&& referral_max_sale_id.length() != 0) {
 						// make sure order exists
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
-							boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
-							 if (!isExisted) {
-								 throw new FDResourceException("order " + referral_customer_id+ " does not exist");
-							 }
-						} else {
-							if (fdsb == null) {
-								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
-										.lookup(FDStoreProperties.getFDCustomerManagerHome());
-								fdsb = fdcmHome.create();
-							}
-							fdsb.getOrder(referral_max_sale_id);
+						boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
+						if (!isExisted) {
+							throw new FDResourceException("order " + referral_customer_id + " does not exist");
 						}
+
 						LOGGER.info("got FDOrder:" + referral_max_sale_id);
 	
 						// Create complaint
@@ -299,12 +266,8 @@ public class ReferralCreditCron {
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", "
 								+ model.getCustomerId());
-						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
-							FDECommerceService.getInstance().logActivity(rec);
-						}
-						else{
-							logSB.logActivity(rec);
-						}
+						FDECommerceService.getInstance().logActivity(rec);
+						
 						models.add(model);
 					}
 					
@@ -331,16 +294,8 @@ public class ReferralCreditCron {
 			}
 			// Update the Reward Transaction status
 			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-					FDReferralManagerService.getInstance().updateSetteledRewardTransaction(models);
-				} else {
-					if (sb == null) {
-						FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-								.lookup(FDStoreProperties.getFDReferralManagerHome());
-						sb = managerHome.create();
-					}
-					sb.updateSetteledRewardTransaction(models);
-				}
+				FDReferralManagerService.getInstance().updateSetteledRewardTransaction(models);
+				
 			} catch (NumberFormatException e) {
 				StringWriter sw = new StringWriter();
 				e.printStackTrace(new PrintWriter(sw));
@@ -357,12 +312,8 @@ public class ReferralCreditCron {
 	        ErpCustomerInfoHome ecInfoHome = (ErpCustomerInfoHome) ctx.lookup( FDStoreProperties.getErpCustomerInfoHome() );
 	        LOGGER.info("Starting up now");
 			List<ReferralPromotionModel> sales  = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-				 sales = FDReferralManagerService.getInstance().getSettledSales();
-			}
-			else{
-				sales = sb.getSettledSales();
-			}
+			sales = FDReferralManagerService.getInstance().getSettledSales();
+			
 			LOGGER.info("Got sales list:" + sales);
 			
 			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
@@ -372,7 +323,9 @@ public class ReferralCreditCron {
 				try {
 					ReferralPromotionModel model = (ReferralPromotionModel) salesIter.next();
 					String referral_customer_id = model.getRefCustomerId();
-					String referral_max_sale_id = sb.getLatestSTLSale(referral_customer_id);
+					
+					String referral_max_sale_id = FDReferralManagerService.getInstance()
+							.getLatestSTLSale(referral_customer_id);
 					System.out.println("referral_customer_id:" + referral_customer_id);
 					System.out.println("referral_max_sale_id:" + referral_max_sale_id);
 					System.out.println("cust_sale_id:" + model.getSaleId());
@@ -380,23 +333,14 @@ public class ReferralCreditCron {
 					
 					if(referral_max_sale_id != null && referral_max_sale_id.length() != 0) {
 						// make sure order exists
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
-							 boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
-							 if (!isExisted) {
-								 throw new FDResourceException("order " + referral_customer_id+ " does not exist");
-							 }
-						} else {
-							if (fdsb == null) {
-								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
-										.lookup(FDStoreProperties.getFDCustomerManagerHome());
-								fdsb = fdcmHome.create();
-							}
-							fdsb.getOrder(referral_max_sale_id);
+						boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
+						if (!isExisted) {
+							throw new FDResourceException("order " + referral_customer_id + " does not exist");
 						}
-						
+
 						LOGGER.info("got FDOrder:" + referral_max_sale_id);
-						
-						//Create complaint
+
+						// Create complaint
 						ErpComplaintModel complaintModel = new ErpComplaintModel();
 						
 						//Create complin line
@@ -446,19 +390,9 @@ public class ReferralCreditCron {
 									Double.parseDouble(model.getReferral_fee() + ""));
 						}
 						// save the credit in customer invites
-					    if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-					    	FDReferralManagerService.getInstance().saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
+					    FDReferralManagerService.getInstance().saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
 							 
-					    }
-						else {
-							if (sb == null) {
-								FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-										.lookup(FDStoreProperties.getFDReferralManagerHome());
-								sb = managerHome.create();
-							}
-							sb.saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(),
-									model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
-						}
+					    
 					    //send email to referral
 					    String subject = model.getReferralCreditEmailSubject();
 					    String message = model.getReferralCreditEmailText();
@@ -511,12 +445,9 @@ public class ReferralCreditCron {
 						rec.setCustomerId(referral_customer_id);
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", " + model.getCustomerId());
-						if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
-							FDECommerceService.getInstance().logActivity(rec);
-						}
-						else{
-							logSB.logActivity(rec);
-						}
+						
+						FDECommerceService.getInstance().logActivity(rec);
+						
 					}
 					//Ignore the exceptions and proceed with the next record.
 				} catch (FDResourceException e) {

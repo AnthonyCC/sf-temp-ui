@@ -92,6 +92,10 @@ public class Timeslot {
 		return slot.isPremiumSlot();
 	}
 	
+	public boolean isSameDaySlot() {
+		return slot.isSameDaySlot();
+	}
+	
 	public boolean isUnavailable() {
 		return slot.isUnavailable();
 	}

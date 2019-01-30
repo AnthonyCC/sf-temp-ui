@@ -278,14 +278,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
 
-	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
-			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
-			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException, ErpFraudException {
-
-		return register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType,
-				false);
-	}
-
+	
 	private String getCohortId(Connection conn,
 
 			final String customerPrimaryKey) throws SQLException, RemoteException {
@@ -405,211 +398,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			return cohortId;
 		}
 
-	}
-
-	/**
-	 * Register and log in a new customer.
-	 *
-	 * @param ErpCustomerModel
-	 *            erpCustomer
-	 * @param FDCustomerModel
-	 *            fdCustomer
-	 *
-	 * @return the resulting FDIdentity
-	 * @throws FDResourceException
-	 *             if an error occured using remote resources
-	 * @throws ErpDuplicateUserIdException
-	 *             if user enters an email address already in the system
-	 */
-	public RegistrationResult register(FDActionInfo fdActionInfo, ErpCustomerModel erpCustomer,
-			FDCustomerModel fdCustomer, String cookie, boolean pickupOnly, boolean eligibleForPromotion,
-			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException, ErpFraudException {
-
-		// System.out.println("FDCustomerManagerSessionBean: In register");
-		LOGGER.warn("FDSECU_R01:: Registration from [ IP:: " + fdActionInfo.getClientIp() + ", cookie=" + cookie
-				+ " ,user_id=" + erpCustomer.getUserId() + " ]");
-		Connection conn = null;
-
-		try {
-			//
-			// do registration fraud check
-			//
-			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
-			Set<EnumFraudReason> fraudResults = null;
-			if (!isGiftCardBuyer) {
-
-				boolean isRegistrationRestricted = fraudSB.isRegistrationForIPRestricted(fdActionInfo.getClientIp());
-				if (isRegistrationRestricted) {
-					LOGGER.warn("FDSECU:: Registration fraud tripped for [ IP:: " + fdActionInfo.getClientIp()
-							+ ", cookie=" + cookie + " ,user_id=" + erpCustomer.getUserId() + " ]");
-					throw new ErpFraudException(EnumFraudReason.TOO_MANY_ACCOUNTS_CREATED_FROM_IP);
-				}
-				fraudResults = fraudSB.checkRegistrationFraud(erpCustomer);
-			}
-			// System.out.println("FDCustomerManagerSessionBean: Fraud check
-			// done");
-			erpCustomer.setActive(true);
-
-			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
-			LOGGER.debug("Creating customer in ERPS");
-			// System.out.println("FDCustomerManagerSessionBean: Creating
-			// customer in ERPS");
-			PrimaryKey pk = erpCustomerManagerSB.createCustomer(erpCustomer, isGiftCardBuyer);
-			LOGGER.debug("Created customer in ERPS");
-			// System.out.println("FDCustomerManagerSessionBean: Created
-			// customer in ERPS");
-
-			String erpCustomerId = pk.getId();
-			LOGGER.debug("ERPS customer ID: " + erpCustomerId);
-			// System.out.println("FDCustomerManagerSessionBean: ERPS customer
-			// ID: " + erpCustomerId);
-
-			fdCustomer.setErpCustomerPK(erpCustomerId);
-			fdCustomer.setProfile(new ProfileModel());
-			fdCustomer.getCustomerEStoreModel().seteStoreId(fdActionInfo.geteStore());
-
-			FDCustomerEB fdCustomerEB = getFdCustomerHome().create(fdCustomer);
-
-			conn = getConnection();
-			java.sql.PreparedStatement ps = null;
-			ps = conn.prepareStatement("update cust.fduser set fdcustomer_id=? where cookie=?");
-			try {
-				ps.setString(1, fdCustomerEB.getPK().getId());
-				ps.setString(2, cookie);
-				if (ps.executeUpdate() != 1) {
-					throw new FDResourceException(
-							"There was trouble updating a previously anonymous user with a registered id.");
-				}
-			} finally {
-				DaoUtil.close(ps);
-			}
-
-			LOGGER.debug("FDCustomerManagerSessionBean: All set and ready to send email.");
-			// now send email
-			ErpCustomerInfoModel erpInfo = erpCustomer.getCustomerInfo();
-			FDCustomerInfo customerInfo = new FDCustomerInfo(erpInfo.getFirstName(), erpInfo.getLastName());
-			customerInfo.setCorporateUser(EnumServiceType.CORPORATE.equals(serviceType));
-			customerInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
-			customerInfo.setEmailAddress(erpInfo.getEmail());
-			customerInfo.setDepotCode(fdCustomer.getDepotCode());
-			customerInfo.setPickupOnly(pickupOnly);
-			customerInfo.setEligibleForPromotion(eligibleForPromotion);
-
-			/*
-			 * this.doEmail(FDEmailFactory.getInstance(). createConfirmSignupEmail(
-			 * emailInfo));
-			 */
-			// System.out.println("-------------------------------------
-			// isTransEmailEnabled"
-			// + TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP));
-			// boolean isUseOtherEmailMode=true;
-
-			EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
-			EnumEStoreId otherEstoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext()
-					.getEStoreId();
-			if (TEmailsUtil.isTransEmailEnabled(EnumTranEmailType.CUST_SIGNUP)) {
-
-				Map transactEmailInputMap = getParameterHashmapforTransactEmail(conn, customerInfo, fdCustomer,
-						fdCustomerEB.getPK().getId(), serviceType);
-
-				try {
-					this.doEmail(EnumTranEmailType.CUST_SIGNUP, transactEmailInputMap);
-				} catch (TEmailRuntimeException ex) {
-					LOGGER.warn(
-							"Received a runtime exception with silverpop customer signup, re-trying with fallback method: "
-									+ ex.getMessage());
-					this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(customerInfo, estoreId));
-				}
-
-			} // if transact or cheetah mail is on for registration/confirmation
-			else {
-
-				this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(customerInfo, estoreId));
-			}
-
-			FDIdentity fdIdentity = new FDIdentity(fdCustomer.getErpCustomerPK(), fdCustomerEB.getPK().getId());
-
-			fdActionInfo.setIdentity(fdIdentity);
-			this.logActivity(fdActionInfo.createActivity(EnumAccountActivityType.CREATE_ACCOUNT));
-
-			if (null != fraudResults && !fraudResults.isEmpty()) {
-				fdActionInfo.setSource(EnumTransactionSource.SYSTEM);
-				StringBuffer fraudNote = new StringBuffer();
-				for (EnumFraudReason fr : fraudResults) {
-					if (fraudNote.length() > 1)
-						fraudNote.append(" and ");
-					fraudNote.append(fr.getDescription());
-				}
-				this.logActivity(
-						fdActionInfo.createActivity(EnumAccountActivityType.CREATE_ACCOUNT, fraudNote.toString()));
-				this.setSignupPromotionEligibility(fdActionInfo, false);
-			}
-
-			if (survey != null) {
-				// recreate survey with proper identity
-				FDSurveyResponse s = new FDSurveyResponse(fdIdentity, survey.getKey());
-				s.setAnswers(survey.getAnswers());
-				LOCATOR.getSurveySessionBean().storeSurvey(s);
-			}
-			if (isGiftCardBuyer) {
-				return new RegistrationResult(fdIdentity);
-			}
-			return new RegistrationResult(fdIdentity, fraudResults.size() > 0);
-
-		} catch (java.sql.SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} finally {
-			close(conn);
-		}
-	}
-
-	public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId)
-			throws FDResourceException {
-		Connection conn = null;
-		FDUser user = null;
-		try {
-			conn = getConnection();
-
-			user = FDUserDAO.createUser(conn, zipCode, serviceType, eStoreId);
-
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-		if (user != null) {
-			setAddressbyZipCode(user.getZipCode(), user);
-		}
-		return user;
-	}
-
-	public FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId)
-			throws FDResourceException {
-		Connection conn = null;
-		FDUser user = null;
-		try {
-			conn = getConnection();
-
-			if (address != null) {
-				user = FDUserDAO.createUser(conn, address.getZipCode(), serviceType, eStoreId);
-			} else {
-				user = FDUserDAO.createUser(conn, serviceType, eStoreId);
-			}
-
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-		if (user != null) {
-			setAddressbyZipCode(user.getZipCode(), user);
-		}
-		return user;
 	}
 
 	public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId)
@@ -758,37 +546,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
 			}
-
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-
-		if (user != null) {
-			setAddressbyZipCode(user.getZipCode(), user);
-			// user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
-		}
-		return user;
-	}
-
-	public FDUser recognizeByEmail(String email, EnumEStoreId eStoreId)
-			throws FDAuthenticationException, FDResourceException {
-
-		Connection conn = null;
-		FDUser user = null;
-		try {
-			conn = getConnection();
-
-			user = FDUserDAO.recognizeWithEmail(conn, email, eStoreId);
-
-			if (user.isAnonymous()) {
-				throw new FDAuthenticationException("Unrecognized user");
-			}
-			// Load Broom Audience Details for this customer.
-			user.setAssignedCustomerParams(getAssignedCustomerParams(user, conn));
-
-			user.setDlvPassInfo(getDeliveryPassInfo(user, eStoreId));
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
@@ -1352,99 +1109,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 		return address;
-	}
-
-	/**
-	 * Authenticate and log in a customer.
-	 *
-	 * @param userId
-	 * @param password
-	 *
-	 * @return user identity reference
-	 *
-	 * @throws FDAuthenticationException
-	 *             if the userId/password was not found
-	 * @throws FDResourceException
-	 *             if an error occured using remote resources
-	 */
-	public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException {
-		try {
-			// find ERPCustomerEB by userid & password
-			FDIdentity loginIdentity;
-			try {
-				String hashedPassword = MD5Hasher.hash(password);
-				loginIdentity = getLoginIdentity(userId, hashedPassword);
-
-			} catch (ObjectNotFoundException ex) {
-				throw new FDAuthenticationException("Invalid username or password");
-			}
-			// check the active flag
-			if (!loginIdentity.isActive()) {
-
-				/*
-				 * FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(
-				 * erpCustomerEB.getPK().getId()); if(fdCustomerEB!=null &&
-				 * fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.
-				 * getPaymentMethodVerificationLimit()) {
-				 *
-				 * } else { throw new FDAuthenticationException( "Account disabled"); }
-				 */
-				throw new FDAuthenticationException("Account disabled");
-			}
-			// find respective FDCustomerEB
-			String erpCustId = loginIdentity.getErpCustomerPK();
-
-			FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByErpCustomerId(erpCustId);
-			fdCustomerEB.incrementLoginCount();
-			FDIdentity fdIdentity = new FDIdentity(erpCustId, fdCustomerEB.getPK().getId());
-			// String cookie = this.translate( erpCustomerEB.getUserId() );
-			return fdIdentity;
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (FinderException ce) {
-			throw new FDResourceException(ce);
-		}
-	}
-
-	public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException {
-		try {
-			// find ERPCustomerEB by userid
-			FDIdentity loginIdentity;
-			try {
-
-				loginIdentity = getLoginIdentity(userId, null);
-
-			} catch (ObjectNotFoundException ex) {
-				throw new FDAuthenticationException("Invalid username or password");
-			}
-
-			// check the active flag
-			if (!loginIdentity.isActive()) {
-
-				/*
-				 * FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(
-				 * erpCustomerEB.getPK().getId()); if(fdCustomerEB!=null &&
-				 * fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.
-				 * getPaymentMethodVerificationLimit()) {
-				 *
-				 * } else { throw new FDAuthenticationException( "Account disabled"); }
-				 */
-				throw new FDAuthenticationException("Account disabled");
-			}
-			// find respective FDCustomerEB
-			String erpCustId = loginIdentity.getErpCustomerPK();
-			FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByErpCustomerId(erpCustId);
-			fdCustomerEB.incrementLoginCount();
-
-			// String cookie = this.translate( erpCustomerEB.getUserId() );
-			return new FDIdentity(erpCustId, fdCustomerEB.getPK().getId());
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (FinderException ce) {
-			throw new FDResourceException(ce);
-		}
 	}
 
 	private FDIdentity getLoginIdentity(String username, String passwordHash) throws FinderException {
@@ -4163,29 +3827,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 
-	public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getOrdersByTruckNumber(truckNumber, dlvDate);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public ErpOrderHistory getOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getOrderHistoryInfo(new PrimaryKey(identity.getErpCustomerPK()));
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -5086,19 +4727,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public boolean isOnAlert(PrimaryKey pk) {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.isOnAlert(pk);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		}
-	}
-
 	private boolean isCustomerActive(PrimaryKey pk) {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -5241,109 +4869,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			return fdCustomerId;
 		}
 
-	}
-
-	/**
-	 * This method returns the list of delivery passes that are linked to this
-	 * customer's account.
-	 *
-	 * @param customerId
-	 * @return java.util.List
-	 */
-	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) {
-		List<DeliveryPassModel> deliveryPasses = null;
-		try {
-			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
-			deliveryPasses = sb.getDeliveryPasses(identity.getErpCustomerPK(), estore);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		}
-		return deliveryPasses;
-	}
-
-	/**
-	 * This method returns Map containing dlvPassId as key and DlvPassUsageInfo as
-	 * value.
-	 *
-	 * @param identity
-	 * @return
-	 */
-	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(FDIdentity identity) {
-		Map<String, DlvPassUsageInfo> mapInfo = null;
-		try {
-			ErpCustomerManagerSB customerManagerSB = this.getErpCustomerManagerHome().create();
-			mapInfo = customerManagerSB.getDlvPassesUsageInfo(identity.getErpCustomerPK());
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ce) {
-			LOGGER.warn(ce);
-			throw new EJBException(ce);
-
-		}
-		return mapInfo;
-
-	}
-
-	/**
-	 * This method returns the list of orders that used the specified delivery pass.
-	 *
-	 * @param dlvPassId
-	 * @return java.util.List
-	 */
-	public ErpOrderHistory getOrdersByDlvPassId(FDIdentity identity, String dlvPassId) {
-		ErpOrderHistory orders = null;
-		try {
-			ErpCustomerManagerSB customerManagerSB = this.getErpCustomerManagerHome().create();
-			orders = customerManagerSB.getOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ce) {
-			LOGGER.warn(ce);
-			throw new EJBException(ce);
-
-		}
-		return orders;
-	}
-
-	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld)
-			throws FDResourceException {
-		try {
-			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
-			return erpCustomerManagerSB.getRecentOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId, noOfDaysOld);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	/**
-	 * This method returns the one or more delivery passes that are linked to this
-	 * customer's account for the specified delivery pass status.
-	 *
-	 * @param customerId
-	 * @return java.util.List
-	 */
-	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,
-			EnumEStoreId eStore) {
-		List<DeliveryPassModel> deliveryPasses = null;
-		try {
-			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
-			deliveryPasses = sb.getDlvPassesByStatus(identity.getErpCustomerPK(), status, eStore);
-		} catch (RemoteException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		} catch (CreateException ex) {
-			LOGGER.warn(ex);
-			throw new EJBException(ex);
-		}
-		return deliveryPasses;
 	}
 
 	public Map<String, List<FDCustomerOrderInfo>> cancelOrders(FDActionInfo actionInfo,
@@ -5567,23 +5092,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public String hasAutoRenewDP(String customerPK) throws FDResourceException {
-
-		FDCustomerEB eb;
-		try {
-			eb = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(customerPK));
-			FDCustomerModel model = (FDCustomerModel) eb.getModel();
-			FDCustomerEStoreModel info = model.getCustomerEStoreModel();
-
-			return info.getHasAutoRenewDP();
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (FinderException e) {
-			throw new FDResourceException(e);
-		}
-
-	}
-
 	public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator, boolean autoRenew)
 			throws FDResourceException {
 		// public void flipAutoRenewDP(String customerPK)throws
@@ -5615,18 +5123,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(e);
 		} catch (FinderException e) {
 			throw new FDResourceException(e);
-		}
-	}
-
-	public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.isOrderBelongsToUser(new PrimaryKey(identity.getErpCustomerPK()), saleId);
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
 		}
 	}
 
@@ -7943,21 +7439,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 
-	}
-
-	/**
-	 * @param token
-	 * @return
-	 * @throws FDResourceException
-	 */
-	public boolean isValidVaultToken(String token, String customerId) throws FDResourceException {
-		PaymentManagerSB sb = null;
-		try {
-			sb = this.getPaymentManagerHome().create();
-			return sb.isValidVaultToken(token, customerId);
-		} catch (Exception e) {
-			throw new FDResourceException(e);
-		}
 	}
 
 	private static final String SHIPPING_INFO_SALES_ID = " SELECT  S.ID FROM CUST.SALE S, CUST.SALESACTION SA WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND "

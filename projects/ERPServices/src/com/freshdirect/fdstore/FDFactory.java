@@ -55,64 +55,28 @@ public class FDFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static FDProductInfo getProductInfo(String sku) throws FDResourceException, FDSkuNotFoundException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+
 		try {
 
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
-				if (!FDStoreProperties.getPreviewMode()) {
-					return FDFactoryService.getInstance().getProductInfo(sku);
-	            } else {
-	            	try {
-	            		return getPreviewProductInfo( FDFactoryService.getInstance().getProductInfo(sku) );
-	            	} catch (FDSkuNotFoundException ex) {
-	            		return getPreviewProductInfo(sku);
-	            	}
-	            }
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				if (!FDStoreProperties.getPreviewMode()) {
-					return sb.getProductInfo(sku);
-	            } else {
-	            	try {
-	            		return getPreviewProductInfo( sb.getProductInfo(sku) );
-	            	} catch (FDSkuNotFoundException ex) {
-	            		return getPreviewProductInfo(sku);
-	            	}
-	            }
+			if (!FDStoreProperties.getPreviewMode()) {
+				return FDFactoryService.getInstance().getProductInfo(sku);
+			} else {
+				try {
+					return getPreviewProductInfo(FDFactoryService.getInstance().getProductInfo(sku));
+				} catch (FDSkuNotFoundException ex) {
+					return getPreviewProductInfo(sku);
+				}
 			}
 
-
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 	public static FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+		
+			
 				return new FDProductHelper().getFDProductInfoNew(erpProdInfo);//::FDX::
-			}else{
-			FDFactorySB sb = factoryHome.create();
-			return sb.getProductInfo(erpProdInfo);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			factoryHome=null;
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
+		
 	}
 
     /**
@@ -127,23 +91,12 @@ public class FDFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static FDProductInfo getProductInfo(String sku, int version) throws FDResourceException, FDSkuNotFoundException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+			
 				return FDFactoryService.getInstance().getProductInfo(sku,version);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getProductInfo(sku, version);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -157,51 +110,30 @@ public class FDFactory {
 	 * @throws FDSkuNotFoundException
 	 */
 	public static Collection<String> getSkuCodes(String sapId) throws FDResourceException, FDSkuNotFoundException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				return FDFactoryService.getInstance().findSkusBySapId(sapId);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getSkuCodes(sapId);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static Collection<String> getSkuCodes(List<String> sapIds) throws FDResourceException, FDSkuNotFoundException {
 		List skuCodes = new ArrayList<String>();
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
 			for(Iterator<String>it = sapIds.iterator();it.hasNext();) {
 				String sapId = it.next();
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+				
 					skuCodes.addAll(FDFactoryService.getInstance().findSkusBySapId(sapId));
-				}else{
-				FDFactorySB sb = factoryHome.create();
-				skuCodes.addAll(sb.getSkuCodes(sapId));
-				}
+				
 			}
             return skuCodes;
 
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+		
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -217,26 +149,10 @@ public class FDFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDResourceException  {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling FDZoneInfoSB equivalent service in  2.0
-		   	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
-		   		return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
-		   	}else{
-				FDFactorySB sb = factoryHome.create();
+			return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
 
-		   		return sb.getZoneInfo(zoneId);
-		   	}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			LOGGER.error("RemoteException", ce);
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			factoryHome=null;
 			LOGGER.error("RemoteException", re);
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
@@ -263,45 +179,24 @@ public class FDFactory {
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpgrpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
+			
 				pi = FDECommerceService.getInstance().findGrpInfoMaster(group);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				pi = sb.getGrpInfo(group);
-
-			}
-
-		}catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+	
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 		return pi;
 	}
 
 	public static ErpProductFamilyModel getFamilyInfo(String familyId) throws FDGroupNotFoundException, FDResourceException  {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		ErpProductFamilyModel pi;
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
 				pi = FDECommerceService.getInstance().findFamilyInfo(familyId);
-        	}else{
-    			FDFactorySB sb = factoryHome.create();
-
-        		pi = sb.getFamilyInfo(familyId);
-        	}
-		}catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			factoryHome=null;
+        	
+		}catch (RemoteException re) {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 		return pi;
@@ -313,26 +208,14 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static ErpProductFamilyModel getSkuFamilyInfo(String materialId) throws FDGroupNotFoundException, FDResourceException  {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
 		ErpProductFamilyModel pi;
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
-        		IECommerceService service = FDECommerceService.getInstance();
+				IECommerceService service = FDECommerceService.getInstance();
         		pi = service.findSkuFamilyInfo(materialId);
-        	}else{
-    			FDFactorySB sb = factoryHome.create();
-
-        		pi = sb.getSkuFamilyInfo(materialId);
-        	}
-		}catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			factoryHome=null;
+        	
+		}catch (RemoteException re) {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 		return pi;
@@ -352,24 +235,12 @@ public class FDFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static Collection getZoneInfo(String zoneIds[]) throws FDResourceException, FDSkuNotFoundException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
 		try {
 			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpZoneInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)){
-				return FDECommerceService.getInstance().findZoneInfoMaster(zoneIds);
-			}else{
-				FDFactorySB sb = factoryHome.create();
+			// so we are directly calling ErpZoneInfoSessionBean equivalent service in 2.0
+			return FDECommerceService.getInstance().findZoneInfoMaster(zoneIds);
 
-				return sb.getZoneInfos(zoneIds);
-			}
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -388,24 +259,14 @@ public class FDFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static Collection<GroupScalePricing> getGrpInfo(FDGroup grpIds[]) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
+			
 				return FDECommerceService.getInstance().findGrpInfoMaster(grpIds);
-			}else{
-			FDFactorySB sb = factoryHome.create();
-				return sb.getGrpInfos(grpIds);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -507,23 +368,12 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static Collection getNewSkuCodes(int days) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return ErpInfoService.getInstance().findNewSkuCodes(days);
-			}else{
-				FDFactorySB sb = factoryHome.create();
+			
+			return ErpInfoService.getInstance().findNewSkuCodes(days);
+			
 
-				return sb.getNewSkuCodes(days);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -535,23 +385,11 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static Map<String, Integer> getSkusOldness() throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				return ErpInfoService.getInstance().getSkusOldness();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getSkusOldness();
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -564,24 +402,11 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static Collection getReintroducedSkuCodes(int days) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				return ErpInfoService.getInstance().findReintroducedSkuCodes(days);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getReintroducedSkuCodes(days);
-			}
-
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -594,23 +419,11 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static Collection getOutOfStockSkuCodes() throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				return ErpInfoService.getInstance().findOutOfStockSkuCodes();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getOutOfStockSkuCodes();
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -715,25 +528,14 @@ public class FDFactory {
 
 
 	public static Collection getFilteredSkus(List skuList) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
+			
 				return FDECommerceService.getInstance().getFilteredSkus(skuList);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getFilteredSkus(skuList);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -780,22 +582,11 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				return ErpInfoService.getInstance().findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-				return sb.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -810,24 +601,11 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return (List) FDECommerceService.getInstance().findPeakProduceSKUsByDepartment(skuPrefixes);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-				return sb.findPeakProduceSKUsByDepartment(skuPrefixes);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			return (List) FDECommerceService.getInstance().findPeakProduceSKUsByDepartment(skuPrefixes);
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -841,25 +619,15 @@ public class FDFactory {
 		Map<String, Map<String,Date>> overridden;
 		Map<String, Map<String,Date>> overriddenBack;
 		Map<String, Map<String,Date>> regular;
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				regular = ErpInfoService.getInstance().getNewSkus();
 				overridden = ErpInfoService.getInstance().getOverriddenNewSkus();
 				overriddenBack = ErpInfoService.getInstance().getOverriddenBackInStockSkus();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				regular = sb.getNewSkus();
-				overridden = sb.getOverriddenNewSkus();
-				overriddenBack = sb.getOverriddenBackInStockSkus();
-			}
+			
 			Map<String, Map<String,Date>> results = new HashMap<String, Map<String,Date>>((regular.size() + overridden.size()) * 4 / 3);
 			String product="";
 			for (Map.Entry<String, Map<String,Date>> entry : regular.entrySet()) {
@@ -934,11 +702,7 @@ public class FDFactory {
 				results.remove(entry.getKey());*/
 			//System.out.println();
 			return results;
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -950,23 +714,14 @@ public class FDFactory {
 	public static Map<String, Map<String,Date>> getBackInStockSkus() throws FDResourceException {
 		Map<String, Map<String,Date>> regular;
 		Map<String, Map<String,Date>> overridden;
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				regular = ErpInfoService.getInstance().getBackInStockSkus();
 				overridden = ErpInfoService.getInstance().getOverriddenBackInStockSkus();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				regular = sb.getBackInStockSkus();
-				overridden = sb.getOverriddenBackInStockSkus();
-			}
+			
 			Map<String, Map<String,Date>> results = new HashMap<String, Map<String,Date>>((regular.size() + overridden.size()) * 4 / 3);
 			Map<String, Map<String,Date>> newSkus = getNewSkus();
 			String product="";
@@ -1027,11 +782,7 @@ public class FDFactory {
 					results.put(entry.getKey(), entry.getValue());
 					*/
 			return results;
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1041,164 +792,82 @@ public class FDFactory {
 	 * @throws FDResourceException
 	 */
 	public static Map<String, Map<String,Date>> getOverriddenNewSkus() throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				return ErpInfoService.getInstance().getOverriddenNewSkus();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getOverriddenNewSkus();
-			}
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return ErpInfoService.getInstance().getOverriddenBackInStockSkus();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getOverriddenBackInStockSkus();
-			}
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
+			
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				return ErpInfoService.getInstance().getSkuAvailabilityHistory(skuCode);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getSkuAvailabilityHistory(skuCode);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static void refreshNewAndBackViews() throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+			
 				ErpInfoService.getInstance().refreshNewAndBackViews();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				sb.refreshNewAndBackViews();
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 	public static FDGroup getLatestActiveGroup(String groupId) throws FDResourceException, FDGroupNotFoundException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
+			
 				return FDECommerceService.getInstance().getLatestActiveGroup(groupId);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-				return sb.getLatestActiveGroup(groupId);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws FDResourceException{
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
+		
 		try {
-			// FDFactortySession bean is just a pass through,
-	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				return FDECommerceService.getInstance().getGroupIdentityForMaterial(matId);
-			}else{
-			FDFactorySB sb = factoryHome.create();
-          return sb.getGroupIdentityForMaterial(matId);
-			}
+			
 
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+		
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException{
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
+			
 				return 	FDECommerceService.getInstance().getModifiedOnlyGroups(lastModified);
-			}else{
-				FDFactorySB sb = factoryHome.create();
-
-				return sb.getModifiedOnlyGroups(lastModified);
-			}
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}

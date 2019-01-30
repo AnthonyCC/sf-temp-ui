@@ -196,48 +196,33 @@ public class FDTimeslotUtil implements Serializable {
 
 			@Override
 			public int compare(FDTimeslot t1, FDTimeslot t2) {
-				if(t1.getCutoffTime().compareTo(t2.getCutoffTime()) == 0)
+				/*if(t1.getCutoffTime().compareTo(t2.getCutoffTime()) == 0)*/
 					return t1.getStartTime().compareTo(t2.getStartTime());
-				else
-					return t1.getCutoffTime().compareTo(t2.getCutoffTime());
+				/*else
+					return t1.getCutoffTime().compareTo(t2.getCutoffTime());*/
 				}
 			
 		});
 	}
 	
 	public Date getMaxCutoffForDate( String zoneCode, Date day ) {
-		Date cutOff = null;
+		
 		List<FDZoneCutoffInfo> cutoffInfo = null;
 		List<Date> cTimes = new ArrayList<Date>();
 		try {
 			cutoffInfo = FDDeliveryManager.getInstance().getCutofftimeForZone(zoneCode, day);
-			
 			for(FDZoneCutoffInfo zoneCutoff : cutoffInfo){
-				cTimes.add(zoneCutoff.getCutoffTime().getAsDate());
+				cTimes.add(zoneCutoff.getCutoffTime());
 			}
 			if(cTimes.size() > 0){
-				Collections.sort(cTimes);
-				for (Date _cutoff : cTimes) {
-					cutOff = _cutoff;
-				}
+				return Collections.max(cTimes);
 			}
-			if (cutOff != null) {
-				Calendar requestedDate = Calendar.getInstance();
-				requestedDate.setTime(day);
-				requestedDate.add(Calendar.DATE, -1);
-
-				Calendar timeDate = Calendar.getInstance();
-				timeDate.setTime(cutOff);
-				timeDate.set(Calendar.MONTH, requestedDate.get(Calendar.MONTH));
-				timeDate.set(Calendar.DATE, requestedDate.get(Calendar.DATE));
-				timeDate.set(Calendar.YEAR, requestedDate.get(Calendar.YEAR));
-				cutOff = timeDate.getTime();
-			}
+			
 		} catch (FDResourceException e) {
 			e.printStackTrace();
 		}
 
-		return cutOff;
+		return null;
 	}
 	public RestrictionI getHolidayRestrictionForDate( Date day ) {
 		

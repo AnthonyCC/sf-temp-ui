@@ -113,6 +113,10 @@ public class DateUtil {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) DAY)));
 	}
 	
+	public static int getDurationInHours(Date d1, Date d2){
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) HOUR)));
+	}
+	
 	public static int getDiffInDaysFloor(Date d1, Date d2) {
 		return Math.abs((int) Math.floor(((d1.getTime() - d2.getTime()) / (double) DAY)));
 	}
@@ -164,6 +168,13 @@ public class DateUtil {
 		cal.add(Calendar.DATE, 1);
 		return cal.getTime();
 	}
+	
+	public static Date getCurrentDate() {
+		Calendar cal = Calendar.getInstance();
+		cal = truncate(cal);
+		return cal.getTime();
+	}
+	
 	public static Date getCurrentTime() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());		
@@ -431,6 +442,7 @@ public class DateUtil {
 		Date cutoffDateTime = null;
 		Date premiumCutoffDateTime =null;
 		Date now = cal.getTime();
+		//@TODO
 		if (cutoffTime != null && premiumCutoffTime != null) {
 			 cutoffDateTime = DateUtil.addDays(cutoffTime.getAsDate(baseDate),-1);
 			 premiumCutoffDateTime = premiumCutoffTime.getAsDate(baseDate);

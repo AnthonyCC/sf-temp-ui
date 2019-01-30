@@ -32,33 +32,7 @@
             retPage = "/gift_card/purchase/purchase_bulk_giftcard.jsp";
         }        
         %>
-	<crm:GetFDUser id="user">
-		<crm:CrmGetPaymentMethod id="paymentMethod" paymentId="<%=paymentId%>" user="<%=user%>">
-			<crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="<%=retPage%>"><br>
-
-<% 
-if (!result.hasError("payment_method_fraud") && !result.hasError("technical_difficulty")) {%>
-<fd:ErrorHandler result='<%=result%>' field='<%=listOfFields%>'>
-<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; 
-	if( result.hasError("auth_failure") ) {
-		errorMsg=result.getError("auth_failure").getDescription();
-	} %>	
-	<%@ include file="/includes/i_error_messages.jspf" %>
-</fd:ErrorHandler>
-<%} else {%>
-	<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 	
-		<%@ include file="/includes/i_error_messages.jspf" %>
-	</fd:ErrorHandler>
-
-<%} %>
-<%@ include file="/includes/ebt_card_details.jspf" %>
-		
-		
-
-			</crm:CrmPaymentMethodController>
-        </crm:CrmGetPaymentMethod>
-	</crm:GetFDUser>
 	<br clear="all">
 	</tmpl:put>
 

@@ -6,8 +6,6 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -33,12 +31,8 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 			LOGGER.info("REFRESHING: " + (since == null? "0" : since.getTime()));
 
 			Map<String, ErpNutritionModel> data;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)) {
-				data = ErpNutritionService.getInstance().loadNutrition(since);
-			} else {
-				ErpNutritionSB sb = this.lookupNutritionHome().create();
-				data = sb.loadNutrition(since);
-			}
+			data = ErpNutritionService.getInstance().loadNutrition(since);
+			
 			LOGGER.info("REFRESHED: " + (since == null? "0" : since.getTime()) + " , size:" + data.size());
 			return data;
 		} catch (Exception e) {
@@ -63,10 +57,6 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 		return ((ErpNutritionModel)item).getLastModifiedDate();
 	}
 	
-	private ErpNutritionHome lookupNutritionHome() throws Exception {
-		
-		return (ErpNutritionHome) serviceLocator.getRemoteHome("freshdirect.content.Nutrition");
-		
-	}
+	
 
 }
