@@ -859,7 +859,6 @@ public class FDStoreProperties {
     public static final String PROP_EXTOLE_MICROSITE_URL = "fdstore.extole.microsite.url";
     public static final String PROP_EXTOLE_MICROSITE_SUB_URL = "fdstore.extole.microsite.sub.url";
     public static final String PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL = "fdstore.extole.microsite.global.nav.url";
-    public final static String PROP_FD_BRAND_PRODUCTS_AD_HOME = "freshdirect.fdstore.fdBrandProductsAdManager";
     public final static String PROP_HL_PRODUCTS_COUNT = "fdstore.hlproductscount";
 
     // [APPDEV-4650]
@@ -1891,7 +1890,6 @@ public class FDStoreProperties {
         defaults.put(PROP_EXTOLE_MICROSITE_URL, "https://refer.freshdirect.com/myaccountscre");
         defaults.put(PROP_EXTOLE_MICROSITE_SUB_URL, "https://refer.freshdirect.com/myaccountsub");
         defaults.put(PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL, "https://refer.freshdirect.com/globalnav");
-        defaults.put(PROP_FD_BRAND_PRODUCTS_AD_HOME, "freshdirect.fdstore.BrandProductsAdManager");
 
         defaults.put(PROP_FEATURE_ROLLOUT_NEW_SO, "true");
         defaults.put(PROP_SO3_ACTIVATE_CUTOFF_TIME, "23");// 11pm - Hour of the day in 24hr format.
@@ -4766,10 +4764,6 @@ public class FDStoreProperties {
 
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
-    }
-
-    public static String getFDBrandProductsAdManagerHome() {
-        return get(PROP_FD_BRAND_PRODUCTS_AD_HOME);
     }
 
     // Eastern Daylight Time <> Eastern Standard Time (Daylight Saving Time) conversion enabled
