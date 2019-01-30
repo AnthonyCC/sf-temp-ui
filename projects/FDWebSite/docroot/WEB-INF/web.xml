@@ -117,10 +117,6 @@
 		<servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>ClientCodeReportServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.util.ClientCodeReportServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>referralregistration</servlet-name>
 		<jsp-file>/registration/referee_signup.jsp</jsp-file>
 	</servlet>
@@ -712,10 +708,6 @@
 	<servlet-mapping>
 		<servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
 		<url-pattern>/api/json-rpc.jsp</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ClientCodeReportServlet</servlet-name>
-		<url-pattern>/api/clientCodeReport.jsp</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>referralregistration</servlet-name>

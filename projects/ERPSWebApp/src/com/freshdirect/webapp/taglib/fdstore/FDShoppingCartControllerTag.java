@@ -1663,81 +1663,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                             continue;
                         }
 
-                        if ("1".equals(request.getParameter("clicode_dirty"))) {
-                            List<ErpClientCode> clientCodes = orderLine.getClientCodes();
-                            if (quantity == 1) {
-                                // clicode_single
-                                String reqCCode = request.getParameter("clicode_clientcode_" + idx);
-                                if (reqCCode != null)
-                                    reqCCode = reqCCode.trim();
-                                else
-                                    reqCCode = "";
-
-                                if (reqCCode.length() == 0) {
-                                    // removal
-                                    if (clientCodes.size() > 0) {
-                                        clientCodes.clear();
-                                        cartChanged = true;
-                                    }
-                                } else {
-                                    if (clientCodes.size() == 0) {
-                                        // add
-                                        clientCodes.add(new ErpClientCode(reqCCode, 1));
-                                        user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
-                                        cartChanged = true;
-                                    } else {
-                                        ErpClientCode firstCC = clientCodes.get(0);
-                                        if (clientCodes.size() != 1 || firstCC.getQuantity() != 1 || !firstCC.getClientCode().equals(reqCCode)) {
-                                            // update
-                                            clientCodes.clear();
-                                            clientCodes.add(new ErpClientCode(reqCCode, 1));
-                                            user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
-                                            cartChanged = true;
-                                        }
-                                    }
-                                }
-                            } else if (quantity > 1) {
-                                // clicode_multi
-                                try {
-                                    String multiValString = request.getParameter("clicode_multi_val_" + idx);
-                                    if (multiValString == null)
-                                        multiValString = "";
-                                    else
-                                        multiValString = multiValString.trim();
-
-                                    if (multiValString.length() != 0) {
-                                        JSONObject multiVal = new JSONObject(multiValString);
-                                        @SuppressWarnings("unchecked")
-                                        Iterator<String> it = multiVal.keys();
-                                        SortedSet<Integer> keys = new TreeSet<Integer>();
-                                        while (it.hasNext())
-                                            keys.add(Integer.parseInt(it.next()));
-
-                                        List<ErpClientCode> ccs = new ArrayList<ErpClientCode>();
-                                        for (int key : keys) {
-                                            JSONObject item = multiVal.getJSONObject(Integer.toString(key));
-                                            int ccQuantity = item.getInt("quantity");
-                                            String clientCode = item.getString("clientCode");
-                                            ccs.add(new ErpClientCode(clientCode, ccQuantity));
-                                            user.getClientCodesHistory().add(new IgnoreCaseString(clientCode));
-                                        }
-
-                                        if (!ErpClientCode.equalsList(orderLine.getClientCodes(), ccs)) {
-                                            orderLine.getClientCodes().clear();
-                                            orderLine.getClientCodes().addAll(ccs);
-                                            cartChanged = true;
-                                        }
-                                    }
-                                } catch (RuntimeException e) {
-                                    LOGGER.warn("error when processing multi-value client codes for cart line #" + idx, e);
-                                    LOGGER.warn("client code values for cart line #" + idx + " are not changed due to previous error");
-                                } catch (Exception e) {
-                                    LOGGER.warn("error when parsing multi-value client codes for cart line #" + idx, e);
-                                    LOGGER.warn("client code values for cart line #" + idx + " are not changed due to previous error");
-                                }
-                            }
-                        }
-
                         if (quantity != orderLine.getQuantity()) {
 
                             if (!modifyOrderMode) {
@@ -1856,41 +1781,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                             result.addError(new ActionError("salesUnit_" + idx, "Sales unit " + reqSalesUnit + " is not valid"));
                         }
                     }
-
-                    if ("1".equals(request.getParameter("clicode_dirty"))) {
-                        // clicode_sunit (Sales Unit based Client Codes)
-                        List<ErpClientCode> clientCodes = orderLine.getClientCodes();
-
-                        String reqCCode = request.getParameter("clicode_clientcode_" + idx);
-                        if (reqCCode != null)
-                            reqCCode = reqCCode.trim();
-                        else
-                            reqCCode = "";
-
-                        if (reqCCode.length() == 0) {
-                            // removal
-                            if (clientCodes.size() > 0) {
-                                clientCodes.clear();
-                                cartChanged = true;
-                            }
-                        } else {
-                            if (clientCodes.size() == 0) {
-                                // add
-                                clientCodes.add(new ErpClientCode(reqCCode, 1));
-                                user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
-                                cartChanged = true;
-                            } else {
-                                ErpClientCode firstCC = clientCodes.get(0);
-                                if (clientCodes.size() != 1 || firstCC.getQuantity() != 1 || !firstCC.getClientCode().equals(reqCCode)) {
-                                    // update
-                                    clientCodes.clear();
-                                    clientCodes.add(new ErpClientCode(reqCCode, 1));
-                                    user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
-                                    cartChanged = true;
-                                }
-                            }
-                        }
-                    } // if clicode_dirty
                 }
             }
 

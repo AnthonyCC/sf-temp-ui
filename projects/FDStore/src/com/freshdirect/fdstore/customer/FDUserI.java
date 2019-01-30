@@ -487,8 +487,6 @@ public interface FDUserI extends java.io.Serializable {
 
     public Set<String> getAllAppliedPromos();
 
-    public SortedSet<IgnoreCaseString> getClientCodesHistory();
-
     public void clearAllAppliedPromos();
 
     public void addPromoErrorCode(String promoCode, int errorCode);

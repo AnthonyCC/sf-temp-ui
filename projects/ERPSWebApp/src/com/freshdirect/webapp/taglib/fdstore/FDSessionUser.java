@@ -1573,11 +1573,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public SortedSet<IgnoreCaseString> getClientCodesHistory() {
-        return user.getClientCodesHistory();
-    }
-
-    @Override
     public Set<String> getAllAppliedPromos() {
         return this.getUser().getAllAppliedPromos();
     }

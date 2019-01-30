@@ -2831,20 +2831,6 @@ public class FDUser extends ModelSupport implements FDUserI {
         return zoneIdParam;
     }
 
-    @Override
-    public SortedSet<IgnoreCaseString> getClientCodesHistory() {
-        if (clientCodesHistory == null) {
-            clientCodesHistory = new TreeSet<IgnoreCaseString>();
-            try {
-                clientCodesHistory.addAll(FDCustomerManager.getOrderClientCodesForUser(getIdentity()));
-            } catch (FDResourceException e) {
-                LOGGER.warn("unable to retrieve order client codes for: " + getIdentity(), e);
-            }
-            clientCodesHistory.addAll(getCartClientCodes());
-        }
-        return clientCodesHistory;
-    }
-
     private Collection<? extends IgnoreCaseString> getCartClientCodes() {
         Set<IgnoreCaseString> ccs = new HashSet<IgnoreCaseString>();
         for (FDCartLineI ol : getShoppingCart().getOrderLines())
