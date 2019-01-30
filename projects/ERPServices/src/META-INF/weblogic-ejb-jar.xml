@@ -1099,47 +1099,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <jndi-name>freshdirect.fdstore.BrandProductsAdManager</jndi-name>
     </weblogic-enterprise-bean>
     
-    <!--  EWallet Audit Log  -->
-    <weblogic-enterprise-bean>
-      <ejb-name>EwalletActivityLog</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <resource-description>
-        <res-ref-name>jms/QueueFactory</res-ref-name>
-        <jndi-name>queueFactory</jndi-name>
-      </resource-description>
-      <resource-env-description>
-        <resource-env-ref-name>jms/Queue</resource-env-ref-name>
-        <jndi-name>./logMetricQueue</jndi-name>
-      </resource-env-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.payment.EwalletActivityLog</jndi-name>
-    </weblogic-enterprise-bean>
-    
-    <weblogic-enterprise-bean>
-      <ejb-name>EwalletActivityLogListener</ejb-name>
-      <message-driven-descriptor>
-        <pool>
-          <max-beans-in-free-pool>5</max-beans-in-free-pool>
-        </pool>
-        <destination-jndi-name>
-        logMetricQueue</destination-jndi-name>
-      </message-driven-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>
-      freshdirect.payment.EwalletActivityLogListener</jndi-name>
-    </weblogic-enterprise-bean>
-    
- 
-    <!--  End EWallet Audit Log -->
     <transaction-isolation>
       <isolation-level>TransactionReadCommitted</isolation-level>
       <method>

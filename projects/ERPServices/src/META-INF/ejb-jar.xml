@@ -679,33 +679,6 @@ version="3.0">
       </resource-ref>
     </session>
     
-    <!-- EWallet Audit Log Changes Start -->
-	<session>
-		<ejb-name>EwalletActivityLog</ejb-name>
-	    <home>
-	  	com.freshdirect.payment.ewallet.ejb.EwalletActivityLogHome</home>
-	  	<remote>
-	  	com.freshdirect.payment.ewallet.ejb.EwalletActivityLogSB</remote>
-	  	<ejb-class>
-	  	com.freshdirect.payment.ewallet.ejb.EwalletActivityLogSessionBean</ejb-class>
-	  	<session-type>Stateless</session-type>
-	  	<transaction-type>Container</transaction-type>
-	  	<resource-ref>
-	    	<res-ref-name>jms/QueueFactory</res-ref-name>
-	    	<res-type>javax.jms.QueueConnectionFactory</res-type>
-	    	<res-auth>Container</res-auth>
-	  	</resource-ref>
-	  	<resource-env-ref>
-	    	<resource-env-ref-name>jms/Queue</resource-env-ref-name>
-	    	<resource-env-ref-type>
-	    	javax.jms.Queue</resource-env-ref-type>
-	  	</resource-env-ref>
-	</session>
-	
-    
-	
-	<!-- EWallet Audit Log Changes Session Tag End -->
-    
     <entity>
       <ejb-name>ErpProduct</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpProductHome</home>
@@ -895,35 +868,6 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </entity>
-    
-    <!-- EWallet Audit Log Implementation -->
-    <message-driven>
-      <ejb-name>EwalletActivityLogListener</ejb-name>
-      <ejb-class>
-      com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogListener</ejb-class>
-      <transaction-type>Container</transaction-type>
-      <activation-config>
-        <activation-config-property>
-          <activation-config-property-name>
-          messageSelector</activation-config-property-name>
-          <activation-config-property-value>
-          (MessageType='LOG_EWALLETAUDIT_ACTIVITY')</activation-config-property-value>
-        </activation-config-property>
-        <activation-config-property>
-          <activation-config-property-name>
-          destinationType</activation-config-property-name>
-          <activation-config-property-value>
-          javax.jms.Queue</activation-config-property-value>
-        </activation-config-property>
-      </activation-config>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </message-driven>
-    
-    <!-- EWallet Audit Log Implementation END -->
     
     <message-driven>
       <ejb-name>SapCommandListener</ejb-name>
@@ -1531,11 +1475,6 @@ version="3.0">
         <method-intf>Remote</method-intf>
         <method-name>logActivityNewTX</method-name>
       </method>
-       <method>
-                <ejb-name>EwalletActivityLog</ejb-name>
-                <method-intf>Remote</method-intf>
-                <method-name>logActivity</method-name>
-       </method>
       <trans-attribute>RequiresNew</trans-attribute>
     </container-transaction>
     
