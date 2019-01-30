@@ -18,8 +18,6 @@ import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
-import com.freshdirect.security.ticket.TicketServiceHome;
-import com.freshdirect.security.ticket.TicketServiceSB;
 
 public class ERPServiceLocator extends ServiceLocator {
 
@@ -105,24 +103,6 @@ public class ERPServiceLocator extends ServiceLocator {
     public FDFactorySB getFDFactorySessionBean() {
         try {
             return getFactoryHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }
-    }
-
-    TicketServiceHome getTicketServiceHome() {
-        try {
-            return (TicketServiceHome) getRemoteHome(TicketServiceHome.JNDI_HOME);
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-    public TicketServiceSB getTicketServiceSessionBean() {
-        try {
-            return getTicketServiceHome().create();
         } catch (RemoteException e) {
             throw new EJBException(e);
         } catch (CreateException e) {
