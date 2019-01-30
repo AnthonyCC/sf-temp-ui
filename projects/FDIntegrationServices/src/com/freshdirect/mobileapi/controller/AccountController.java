@@ -19,6 +19,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -103,10 +105,11 @@ public class AccountController extends BaseController implements Comparator <Ord
 	            Timezone requestMessage = parseRequestObject(request, response, Timezone.class);
 	            String timezone = requestMessage.getTimezone();
 	            boolean excludeaddr = requestMessage.getExcludeaddr();
+	            String timeslotId = requestMessage.getTimeslotId();
 	            if (addressId == null || addressId.isEmpty()) {
-	            	model = getDeliveryTimeslotByTimezone(model, user, timezone,excludeaddr);
+	            	model = getDeliveryTimeslotByTimezone(model, user, timezone,excludeaddr, timeslotId);
 	            } else {
-	            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone,excludeaddr);
+	            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone,excludeaddr, timeslotId);
 	            }
 	        } else if (ACTION_CANCEL_RESERVATION.equals(action)) {
 	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
@@ -181,6 +184,25 @@ public class AccountController extends BaseController implements Comparator <Ord
     	}
         return model;
     }
+
+	private DeliveryTimeslots filterDeliveryTimeslots(DeliveryTimeslots deliveryTimeslots, String timeslotId) throws FDResourceException,
+			JsonException {
+		if(timeslotId!=null){
+			List<com.freshdirect.mobileapi.controller.data.response.Timeslot> tsList = new ArrayList<com.freshdirect.mobileapi.controller.data.response.Timeslot>();
+			boolean timeslotFound = false;
+			for (com.freshdirect.mobileapi.controller.data.response.Timeslot ts : deliveryTimeslots.getTimeSlots()) {
+		        if (ts.getId().equals(timeslotId)) {
+		        	tsList.add(ts);
+		        	timeslotFound = true;
+		        	break;
+		        }
+		    }
+			if(timeslotFound){
+				deliveryTimeslots.setTimeSlots(tsList);
+			}
+		}
+		return deliveryTimeslots;
+	}
 
 	/**
 	 * @param request
@@ -484,7 +506,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 
     }
 
-    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone, boolean excludeaddr) throws FDException, JsonException, ServiceException {
+    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone, boolean excludeaddr, String timeslotId) throws FDException, JsonException, ServiceException {
         String addressId = null;
 
         //FDX-1873 - Show timeslots for anonymous address
@@ -515,6 +537,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         	LOGGER.info("getDeliveryTimeslotByTimezone[anonymousAddress]: " + anonymousAddress.getStreet1() + ":" + anonymousAddress.getPostalCode() );
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
             DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult, user);
+            deliveryTimeslots = filterDeliveryTimeslots(deliveryTimeslots, timeslotId);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
             setResponseMessage(model, responseMessage, user);
@@ -522,12 +545,13 @@ public class AccountController extends BaseController implements Comparator <Ord
     	} else if(addressId == null) {
     		// Temp fix for null address ids for iphone apps 2.2 and earlier
     		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null, user);//getDeliveryTimeslots(user, addressId);
-            ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
+    		deliveryTimeslots = filterDeliveryTimeslots(deliveryTimeslots, timeslotId);
+    		ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.addWarningMessage("No address found for user");
             setResponseMessage(model, responseMessage, user);
             return model;
         } else {
-    		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone, excludeaddr);
+    		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone, excludeaddr, timeslotId);
     	}
 
     }
@@ -576,7 +600,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         return deliveryTimeslots;
     }
 
-   private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone, boolean excludeaddr) throws FDException, JsonException,
+   private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone, boolean excludeaddr, String timeslotId) throws FDException, JsonException,
 		   ServiceException {
 
 	    if(user!=null&&user.getFDSessionUser()!=null&&user.getFDSessionUser().getIdentity()!=null){
@@ -587,7 +611,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 			}
 			TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
 			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult, user);
-	
+			deliveryTimeslots = filterDeliveryTimeslots(deliveryTimeslots, timeslotId);
 			ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
 			if(user!=null && user.getReservation()!=null && user.getReservation().getExpirationDateTime()!=null ){
 	    		responseMessage.addNoticeMessage("ReservationEndTime", user.getReservation().getExpirationDateTime().toString());
@@ -596,6 +620,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 			setResponseMessage(model, responseMessage, user);
 		}else{
 			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null, user);
+			deliveryTimeslots = filterDeliveryTimeslots(deliveryTimeslots, timeslotId);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.addWarningMessage("No identity found for user");
             setResponseMessage(model, responseMessage, user);
