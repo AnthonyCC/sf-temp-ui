@@ -593,8 +593,15 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			result.addError("".equals(paymentMethod.getAddress1()), EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_REQUIRED);
 			result.addError("".equals(paymentMethod.getCity()), EnumUserInfoName.BIL_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
 			result.addError("".equals(paymentMethod.getState()), EnumUserInfoName.BIL_STATE.getCode(), SystemMessageList.MSG_REQUIRED);
-			result.addError("".equals(paymentMethod.getZipCode()), EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
-			
+			//result.addError("".equals(paymentMethod.getZipCode()), EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
+																																															/* APPDEV-7810 */
+	        	BillingCountryInfo bc=BillingCountryInfo.getEnum(paymentMethod.getCountry());
+	        	Pattern zChk=null;
+	        	if(bc!=null)		zChk=bc.getZipCheckPattern();
+	        	if(zChk!=null) {
+	        		 result.addError( !zChk.matcher(paymentMethod.getZipCode()).matches(),EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_ZIP_CODE );
+	        	}
+	        	
 			if(result.isSuccess()){
 				result.addError(
 		        	PaymentFraudManager.checkBadAccount(paymentMethod, false) && !bypassBadAccountCheck, 
