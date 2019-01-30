@@ -3957,55 +3957,10 @@ public class FDCustomerManager {
 			String partnerMessages, EnumEStoreId eStoreId) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeMobilePreferences(customerId, fdCustomerId, mobileNumber, textOffers, textDelivery, orderNotices,
-						orderExceptions, offers, partnerMessages, eStoreId);
-			} else {
-				lookupManagerHome();
-
-				FDCustomerManagerSB sb = managerHome.create();
-
-				sb.storeMobilePreferences(fdCustomerId, mobileNumber, textOffers, textDelivery, orderNotices,
-						orderExceptions, offers, partnerMessages, eStoreId);
-				FDCustomerEStoreModel smsPreferenceModel = FDCustomerFactory.getFDCustomer(fdCustomerId)
-						.getCustomerSmsPreferenceModel();
-
-				if (EnumEStoreId.FD.getContentId().equalsIgnoreCase(eStoreId.getContentId())
-						&& smsPreferenceModel != null) {
-					FDDeliveryManager.getInstance().addSubscriptions(customerId,
-							smsPreferenceModel.getMobileNumber() != null
-									? smsPreferenceModel.getMobileNumber().getPhone()
-									: "",
-							textOffers, textDelivery,
-							(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderNotices()))
-									? EnumSMSAlertStatus.SUBSCRIBED.value()
-									: EnumSMSAlertStatus.NONE.value(),
-							(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderExceptions()))
-									? EnumSMSAlertStatus.SUBSCRIBED.value()
-									: EnumSMSAlertStatus.NONE.value(),
-							null,
-							(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getPartnerMessages()))
-									? EnumSMSAlertStatus.SUBSCRIBED.value()
-									: EnumSMSAlertStatus.NONE.value(),
-							new Date(), eStoreId.toString());
-				} else {
-					PhoneNumber phoneNumber = new PhoneNumber(mobileNumber);
-					FDDeliveryManager.getInstance().addSubscriptions(customerId,
-							phoneNumber != null ? phoneNumber.getPhone() : "", textOffers, textDelivery,
-							"Y".equalsIgnoreCase(orderNotices) ? "S" : "N",
-							"Y".equalsIgnoreCase(orderExceptions) ? "S" : "N", "Y".equalsIgnoreCase(offers) ? "S" : "N",
-							"Y".equalsIgnoreCase(partnerMessages) ? "S" : "N", new Date(), eStoreId.toString());
-
-				}
-				logSmsActivity(customerId, orderNotices, orderExceptions, offers, smsPreferenceModel,
-						eStoreId.getContentId());
-			}
+			CustomerPreferenceService.getInstance().storeMobilePreferences(customerId, fdCustomerId, mobileNumber,
+					textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages, eStoreId);
 
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -4061,56 +4016,28 @@ public class FDCustomerManager {
 	public static void storeSmsPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeSmsPrefereceFlag(fdCustomerId, flag, eStoreId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeSmsPrefereceFlag(fdCustomerId, flag, eStoreId);
-			}
+			CustomerPreferenceService.getInstance().storeSmsPrefereceFlag(fdCustomerId, flag, eStoreId);
+
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
 	public static void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException {
-		
+
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeGoGreenPreferences(customerId, goGreen);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeGoGreenPreferences(customerId, goGreen);
-				logGoGreenActivity(customerId, "Y".equals(goGreen)?"Y":"N", EnumAccountActivityType.GO_GREEN);
-			}
+			CustomerPreferenceService.getInstance().storeGoGreenPreferences(customerId, goGreen);
+
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
 	public static String loadGoGreenPreference(String customerId) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
 				return CustomerPreferenceService.getInstance().loadGoGreenPreference(customerId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.loadGoGreenPreference(customerId);
-			}
+			
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -4121,20 +4048,6 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.storeMobilePreferencesNoThanks(customerId);
 			logGoGreenActivity(customerId, "Y", EnumAccountActivityType.NO_THANKS);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
-	public static void storeSmsPreferencesNoThanks(String fdCustomerId, EnumEStoreId eStoreId) throws FDResourceException{
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeSmsPreferencesNoThanks(fdCustomerId, eStoreId);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -4547,19 +4460,9 @@ public class FDCustomerManager {
 	public static void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeEmailPreferenceFlag(fdCustomerId, flag, eStoreId);
-			} else {
-				lookupManagerHome();
+			CustomerPreferenceService.getInstance().storeEmailPreferenceFlag(fdCustomerId, flag, eStoreId);
 
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeEmailPreferenceFlag(fdCustomerId, flag, eStoreId);
-			}
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
