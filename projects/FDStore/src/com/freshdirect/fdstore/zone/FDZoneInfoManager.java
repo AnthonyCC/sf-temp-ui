@@ -22,11 +22,8 @@ public class FDZoneInfoManager {
     public static ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws FDResourceException {
         try {
 
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
         	return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
-        	}else {
-            return FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneInfoMaster(zoneId);
-        	}
+        	
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -37,11 +34,8 @@ public class FDZoneInfoManager {
         Collection zoneInfo = null;
         try {
 
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
         		 zoneInfo = FDECommerceService.getInstance().loadAllZoneInfoMaster();
-            	}else {
-            zoneInfo = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().loadAllZoneInfoMaster();
-            	}
+            
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -52,22 +46,21 @@ public class FDZoneInfoManager {
 		String zoneId = null;
 		try {
 			String cacheKey = serviceType + "," + zipCode;
-			String cachedZoneId = CmsServiceLocator.ehCacheUtil().getObjectFromCache(CmsCaches.FD_ZONE_ID_CACHE_NAME.cacheName, cacheKey);
+			String cachedZoneId = CmsServiceLocator.ehCacheUtil()
+					.getObjectFromCache(CmsCaches.FD_ZONE_ID_CACHE_NAME.cacheName, cacheKey);
 			if (cachedZoneId != null) {
 				return cachedZoneId;
 			}
 			LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)) {
-				zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode);
-			} else {
-				zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode);
-			}
+			zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode);
+
 			LOGGER.debug("zoneId found is :" + zoneId);
 			if (zoneId == null) {
 				throw new FDResourceException(
 						"Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);
 			}
-			CmsServiceLocator.ehCacheUtil().putObjectToCache(CmsCaches.FD_ZONE_ID_CACHE_NAME.cacheName, cacheKey, zoneId);
+			CmsServiceLocator.ehCacheUtil().putObjectToCache(CmsCaches.FD_ZONE_ID_CACHE_NAME.cacheName, cacheKey,
+					zoneId);
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -77,21 +70,19 @@ public class FDZoneInfoManager {
 	}
 
     public static String findZoneId(String serviceType, String zipCode, boolean isPickupOnlyORNotServiceble) throws FDResourceException {
-        String zoneId = null;
-        try {
-            LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-            if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
-            	zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode, isPickupOnlyORNotServiceble);
-           	}else {
-            zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode, isPickupOnlyORNotServiceble);
-           	}
-            LOGGER.debug("zoneId found is :" + zoneId);
-            if (zoneId == null) {
-                throw new FDResourceException("Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);
-            }
-        } catch (RemoteException re) {
-            throw new FDResourceException(re, "Error talking to session bean");
-        }
+		String zoneId = null;
+		try {
+			LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
+			zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode, isPickupOnlyORNotServiceble);
+
+			LOGGER.debug("zoneId found is :" + zoneId);
+			if (zoneId == null) {
+				throw new FDResourceException(
+						"Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);
+			}
+		} catch (RemoteException re) {
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
         return zoneId;
 
     }

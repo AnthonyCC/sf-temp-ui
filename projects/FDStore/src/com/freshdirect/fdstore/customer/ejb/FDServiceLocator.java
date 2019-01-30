@@ -19,28 +19,21 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManagerHome;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.fdstore.ewallet.ejb.EwalletServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
-import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
-import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
-import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
+import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
-import com.freshdirect.smartstore.ejb.ScoreFactorHome;
-import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
-import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.VariantSelectionHome;
 import com.freshdirect.smartstore.ejb.VariantSelectionSB;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
-import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 
 public class FDServiceLocator extends ERPServiceLocator {
 
@@ -168,15 +161,6 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
-    public ExternalAccountManagerHome getExternalLoginManagerHome() {
-        try {
-            return (ExternalAccountManagerHome) getRemoteHome(FDStoreProperties.getExternalAccountManagerHome());
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
- 
-    
 	public ErpEWalletHome getErpEWalletHome() {
         try {
             return (ErpEWalletHome) getRemoteHome(FDStoreProperties.getErpEWalletHome());
@@ -269,25 +253,7 @@ public class FDServiceLocator extends ERPServiceLocator {
             throw new EJBException(e);
         }
     }
-    
-    public FDZoneInfoHome getFDZoneInfoHome() {
-        try {
-            return (FDZoneInfoHome) getRemoteHome("freshdirect.fdstore.ZoneInfoManager");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }        
-    }
-    
-    public FDZoneInfoSB getFDZoneInfoSessionBean() {
-        try {
-            return getFDZoneInfoHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }        
-    }
-    
+ 
     public FDFactoryHome getFDFactoryHome() {
         try {
             return (FDFactoryHome) getRemoteHome( FDStoreProperties.getFDFactoryHome() );
@@ -306,29 +272,8 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
 
-    // get service configuration home bean
-    private SmartStoreServiceConfigurationHome getServiceConfigurationHome() {
-        try {
-            return (SmartStoreServiceConfigurationHome) getRemoteHome("freshdirect.smartstore.SmartStoreServiceConfiguration");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-    public SmartStoreServiceConfigurationSB getSmartStoreServiceConfiguration() {
-        try {
-            return getServiceConfigurationHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-    public ScoreFactorHome getScoreFactorHome() throws NamingException {
-        return (ScoreFactorHome) getRemoteHome("freshdirect.smartstore.ScoreFactorHome");
-    }
-    
+   
+   
     public TEmailInfoHome getTMailerHome() {
         try {
             return (TEmailInfoHome) getRemoteHome("java:comp/env/ejb/TEmailInfoManager");//freshdirect.fdstore.TEmailInfoManager");

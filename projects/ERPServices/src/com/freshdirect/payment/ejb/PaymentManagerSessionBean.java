@@ -719,8 +719,4 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public boolean isValidVaultToken(String token, String customerId)throws RemoteException{
-		PaymentManager pm= new PaymentManager();
-		return pm.isValidVaultToken(token,customerId);
-	}
 }

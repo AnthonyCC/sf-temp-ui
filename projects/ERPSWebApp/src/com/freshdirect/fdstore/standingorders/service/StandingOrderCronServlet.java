@@ -266,16 +266,13 @@ private void logActivity ( FDStandingOrder so, SOResult.Result result, String in
 		} /*else if ( status == SOResult.Status.FORCED_SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FORCED_SKIPPED );					
 		}*/
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
-			try {
-				FDECommerceService.getInstance().logActivity(activityRecord);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else{
-		new ErpLogActivityCommand( activityRecord ).execute();	
+		try {
+			FDECommerceService.getInstance().logActivity(activityRecord);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 	
 	private void sendTechnicalMail ( String msg ) {

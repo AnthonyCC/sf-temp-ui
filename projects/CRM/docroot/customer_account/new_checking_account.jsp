@@ -22,20 +22,7 @@
 	<tmpl:put name="header" direct="true"><jsp:include page="/includes/customer_header.jsp" /></tmpl:put>
 
     	<tmpl:put name='content' direct='true'>
-			<crm:GetFDUser id="user">
-	            <%
-	                ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.ECHECK); 
-	                String actionName = "addPaymentMethod";
-	                FDIdentity identity = user.getIdentity();
-	                String retPage = request.getParameter("returnPage");
-	                if (retPage == null) {
-	                	retPage = "/main/account_details.jsp";
-	                }
-	            %>
-				<crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="<%=retPage%>">
-	            	<%@ include file="/includes/checking_account_details.jspf" %>
-				</crm:CrmPaymentMethodController>
-			</crm:GetFDUser>
+			
 		<br clear="all">
 	    </tmpl:put>
 

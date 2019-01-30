@@ -580,8 +580,7 @@ public class FDStoreProperties {
     private final static String PROP_GIVEX_WEB_SERVER_URL = "fdstore.givex.web.url";
 
     private final static String PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS = "fdstore.cos.montue.auth.dayofweek";
-    private final static String PROP_PRODUCTPROMO_INFO_HOME = "fdstore.ProductPromotionManager.home";
-
+  
     private final static String FACEBOOK_APP_KEY = "facebook.app.key";
 
     // APPDEV-2155 Standing Order UI
@@ -1609,7 +1608,6 @@ public class FDStoreProperties {
         // APPDEV-2155 Standing Order UI
         defaults.put(PROP_EMAIL_STANDING_ORDER_CS, "StandingOrders@FreshDirect.com");
         defaults.put(PROP_PHONE_STANDING_ORDER_CS, "");
-        defaults.put(PROP_PRODUCTPROMO_INFO_HOME, "freshdirect.fdstore.ProductPromotionInfoManager");
         // APPDEV-2252 Standing Order - Order Minimum Failure Threshold
         /*
          * defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0"); defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");
@@ -3830,10 +3828,6 @@ public class FDStoreProperties {
     /*
      * public static double getStandingOrderHardLimit() { return Double.parseDouble(get(PROP_STANDING_ORDER_HARD_LIMIT)); }
      */
-
-    public static String getProductPromotionInfoHome() {
-        return get(PROP_PRODUCTPROMO_INFO_HOME);
-    }
 
     public static String getFacebookAppKey() {
         return config.getProperty(FACEBOOK_APP_KEY);

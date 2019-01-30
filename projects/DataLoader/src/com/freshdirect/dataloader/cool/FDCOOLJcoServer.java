@@ -10,12 +10,10 @@ import java.util.Map;
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
-import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
@@ -23,14 +21,9 @@ import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.ecomm.gateway.CountryOfOriginService;
 import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
-import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -216,28 +209,13 @@ public class FDCOOLJcoServer extends FdSapServer {
 	 */
 	private void storeCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList) throws NamingException, EJBException,
 			CreateException, FinderException, FDResourceException, RemoteException {
-		Context ctx = null;
-
+		
 		try {
-			ctx = ErpServicesProperties.getInitialContext();
-//			ServiceLocator serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpCOOLManagerSB)){
-				CountryOfOriginService.getInstance().saveCountryOfOriginData(erpCOOLInfoList);
-			}else{
-			ErpCOOLManagerHome mgr = (ErpCOOLManagerHome) ctx.lookup(ErpServicesProperties.getCOOLManagerHome());
-			ErpCOOLManagerSB sb = mgr.create();
-			sb.updateCOOLInfo(erpCOOLInfoList);
-			}
+			LogisticsServiceLocator.getInstance().getCommerceService().saveCountryOfOriginData(erpCOOLInfoList);
+			
 		} catch (Exception ex) {
 			throw new EJBException(ex.toString());
-		} finally {
-			if (ctx != null) {
-				try {
-					ctx.close();
-				} catch (NamingException e) {
-				}
-			}
-		}
+		} 
 	}
 
 	/**

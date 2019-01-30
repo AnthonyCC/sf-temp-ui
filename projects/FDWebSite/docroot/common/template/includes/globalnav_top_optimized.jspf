@@ -58,11 +58,9 @@ if(user != null) {
             </logic:iterate>
         </fd:GetSiteAnnouncements></div><%
     } %>
-<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
-<%  if (!cutoffInfoDisplayed) {
-    %><div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
-      <div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
-}
+	<div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
+	<div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div>
+<%
     String uri = request.getRequestURI().toLowerCase();
 %>
     <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>

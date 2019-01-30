@@ -31,7 +31,7 @@
   {if $times[$selectedDay].midWeekDlvPassApplicable == true}<div class="selected-day-midweek-dp"><img src="/media/editorial/site_pages/deliverypass/images/group-2.svg"/></div>{/if}
   <div class="select-time" selectTimeslot>
     {foreach $timeslots in $times[$selectedDay].times}
-      <div>Order by {$timeslots[0]}</div>
+      <div class="cutoff">Order by {$timeslots[0]}</div>
       <ul>
         {foreach $time in $timeslots}
         {if not isFirst($time)}

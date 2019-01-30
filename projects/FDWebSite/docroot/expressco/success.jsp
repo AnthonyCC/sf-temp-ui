@@ -130,7 +130,7 @@
 				<div id="oas_SystemMessage">
 		  			<script type="text/javascript">OAS_AD('SystemMessage');</script>
 		  		</div>
-				<div id="oas_DFPSystemMessage" ad-size-width='970' ad-size-height='80' class="container">
+				<div id="oas_DFPSystemMessage" class="container">
 					<script type="text/javascript">OAS_AD('DFPSystemMessage');</script>
 				</div>
 				<div class="nav">

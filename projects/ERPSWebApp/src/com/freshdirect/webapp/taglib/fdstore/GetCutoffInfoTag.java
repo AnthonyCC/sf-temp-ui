@@ -52,11 +52,11 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 			return null;
 		}
 
-		return this.getCutoffInfo(new TimeOfDay(new Date()), user);
+		return this.getCutoffInfo(new Date(), user);
 
 	}
 
-	protected CutoffInfo getCutoffInfo(TimeOfDay today, FDUserI user) throws FDResourceException, FDInvalidAddressException {
+	protected CutoffInfo getCutoffInfo(Date today, FDUserI user) throws FDResourceException, FDInvalidAddressException {
 		FDCartModel cart = user.getShoppingCart();
 		
 		ErpAddressModel address = cart.getDeliveryAddress();
@@ -89,7 +89,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 			FDDeliveryManager dlvMgr = FDDeliveryManager.getInstance();
 			DlvZoneCapacityInfo capacity = dlvMgr.getZoneCapacity(zoneCode, tomorrow);
 			
-			List cutoffTimes = dlvMgr.getCutofftimeForZone(zoneCode, tomorrow);
+			List<FDZoneCutoffInfo> cutoffTimes = dlvMgr.getCutofftimeForZone(zoneCode, tomorrow);
 			
 			if(cutoffTimes.isEmpty()) {
 				return null;
@@ -110,15 +110,15 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 				cutoffInfo.setZipCode(address.getZipCode());
 			}
 			
-			TimeOfDay cutoffTime = nextCutoff.getCutoffTime();
+			Date cutoffTime = nextCutoff.getCutoffTime();
 			cutoffInfo.setHasMultipleCutoff(cutoffTimes.size() > 1 ? true : false);
-			cutoffInfo.setCutoffTime(nextCutoff.getCutoffTime());
-			cutoffInfo.setNextCutoff(cutoffTime);
+			cutoffInfo.setCutoffTime(new TimeOfDay(nextCutoff.getCutoffTime()));
+			cutoffInfo.setNextCutoff(new TimeOfDay(cutoffTime));
 			cutoffInfo.setNextEarliestTimeslot(nextCutoff.getStartTime());
 			cutoffInfo.setNextLatestTimeslot(nextCutoff.getEndTime());
 			
 			FDZoneCutoffInfo lastCutoff = this.getLastCutoff(cutoffTimes);
-			cutoffInfo.setLastCutoff(lastCutoff.getCutoffTime());
+			cutoffInfo.setLastCutoff(new TimeOfDay(lastCutoff.getCutoffTime()));
 			
 			if(capacity.getRemainingCapacity() <= 0 && cutoffInfo.displayWarning()) {
 				return null;
@@ -129,7 +129,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 		return null;
 	}
 	
-	private FDZoneCutoffInfo getNextCutoff(List cInfos, TimeOfDay now) {
+	private FDZoneCutoffInfo getNextCutoff(List<FDZoneCutoffInfo> cInfos, Date now) {
 		Collections.sort(cInfos, new Comparator<FDZoneCutoffInfo>() {
 
 			public int compare(FDZoneCutoffInfo o1, FDZoneCutoffInfo o2) {
@@ -149,7 +149,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 
 	private FDZoneCutoffInfo getLastCutoff(List cInfos) {
 		
-		TimeOfDay last = new TimeOfDay(new Date());
+		Date last = new Date();
 		FDZoneCutoffInfo lastInfo = null; 
 		
 		for(Iterator i = cInfos.iterator(); i.hasNext(); ){
@@ -163,7 +163,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 		return lastInfo;
 	}
 	
-	private FDZoneCutoffInfo getLastElapsedCutoff(List cInfos, TimeOfDay now) {
+	private FDZoneCutoffInfo getLastElapsedCutoff(List<FDZoneCutoffInfo> cInfos, Date now) {
 		FDZoneCutoffInfo info = null;
 		for(Iterator i = cInfos.iterator(); i.hasNext(); ) {
 			FDZoneCutoffInfo tmpInfo = (FDZoneCutoffInfo) i.next();

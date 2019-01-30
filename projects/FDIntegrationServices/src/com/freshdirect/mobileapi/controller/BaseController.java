@@ -687,7 +687,7 @@ public abstract class BaseController extends AbstractController implements Messa
 	    LoggedIn responseMessage = new LoggedIn();
 
         OrderHistory history = user.getOrderHistory();
-        String cutoffMessage = user.getCutoffInfo();
+        String cutoffMessage = ""; //user.getCutoffInfo();
 
         OrderInfo closestPendingOrder = history
                 .getClosestPendingOrderInfo(new Date());

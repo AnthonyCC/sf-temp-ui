@@ -50,16 +50,10 @@ public class DlvPaymentManager {
 	
 	public synchronized List getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws FDResourceException {
 		try{
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ordersByTruck_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return service.getOrdersByTruck(truckNumber, deliveryDate);
-	    	}else{
-			
-			
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
-			return sb.getOrdersByTruckNumber(truckNumber, deliveryDate);
-	    	}	
+
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			return service.getOrdersByTruck(truckNumber, deliveryDate);
+
 		}catch(RemoteException re){
 			LOGGER.warn("RemoteException: ", re);
 			throw new FDResourceException(re, "Cannot talk to SB");
@@ -99,13 +93,9 @@ public class DlvPaymentManager {
 	
 	public synchronized DlvSaleInfo getSaleInfo(String orderNumber) throws FDResourceException, ErpSaleNotFoundException {
 		try{
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderHistory_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return service.getDlvSaleInfo(orderNumber);
-	    	}else{
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
-			return sb.getDlvSaleInfo(orderNumber);
-	    	}
+			OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+			return service.getDlvSaleInfo(orderNumber);
+
 		}catch(RemoteException re){
 			throw new FDResourceException (re, "Cannot talk to SB");
 		}

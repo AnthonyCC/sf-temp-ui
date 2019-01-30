@@ -14,17 +14,11 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.fdlogistics.services.ICommerceService;
-
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
-
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import com.freshdirect.smartstore.ejb.DyfModelHome;
-import com.freshdirect.smartstore.ejb.DyfModelSB;
 
 /**
  * Product statistics provider.
@@ -82,26 +76,17 @@ public class ProductStatisticsProvider {
 	 * @throws RemoteException
 	 * @throws CreateException
 	 */
-	/* TODO ASK IF THIS NEEDS A STOREFRONT 2.0 TOGGLE */
 	private ProductStatisticsProvider() throws NamingException, RemoteException, CreateException {
-		if (FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.DyfModelSB")) {
 
-			service = LogisticsServiceLocator.getInstance().getCommerceService();
-			try {
-				Map<String,Float> intermediaryMap=service.getDYFModelGlobalProductscores();
-				globalProductScores =  convertSimpleMapToContentKeyMap (intermediaryMap);//(service.getDYFModelGlobalProductscores();
-			} catch (FDResourceException e) {
-				throw new FDRuntimeException(e);
-
-			}
+		service = LogisticsServiceLocator.getInstance().getCommerceService();
+		try {
+			Map<String, Float> intermediaryMap = service.getDYFModelGlobalProductscores();
+			globalProductScores = convertSimpleMapToContentKeyMap(intermediaryMap);
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
 
 		}
 
-		else {
-			serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-			DyfModelSB source = getModelHome().create();
-			globalProductScores = source.getGlobalProductScores();
-		}
 	}
 
 	/**
@@ -124,43 +109,17 @@ public class ProductStatisticsProvider {
 	 */
 	public Set getProducts(String customerID) {
 
-		if (FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.DyfModelSB")) {
-
-			try {
-				Set<String>intermediary = service.getDYFModelProducts(customerID);;
-				return  convertStringSetToContentKey(intermediary);//service.getDYFModelProducts(customerID);
-			} catch (RemoteException e) {
-				throw new FDRuntimeException(e);
-
-			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				throw new FDRuntimeException(e);
-			}
-
-		} else
-			try {
-				return getModel().getProducts(customerID);
-			} catch (RemoteException e) {
-				throw new FDRuntimeException(e);
-			}
-	}
-
-	protected DyfModelHome getModelHome() {
 		try {
-			return (DyfModelHome) serviceLocator.getRemoteHome("freshdirect.smartstore.DyfModelHome");
-		} catch (NamingException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
-
-	protected DyfModelSB getModel() {
-		try {
-			return getModelHome().create();
+			Set<String> intermediary = service.getDYFModelProducts(customerID);
+			
+			return convertStringSetToContentKey(intermediary);
 		} catch (RemoteException e) {
 			throw new FDRuntimeException(e);
-		} catch (CreateException e) {
+
+		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}
+
 	}
 	
 	

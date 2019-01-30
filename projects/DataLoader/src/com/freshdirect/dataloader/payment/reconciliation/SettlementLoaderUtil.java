@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -186,7 +187,12 @@ public class SettlementLoaderUtil {
 		
 		ReconciliationSB reconciliationSB = lookupReconciliationHome().create();
 		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-		ReconciliationService.getInstance().sendSettlementReconToSap(fileName, DataLoaderProperties.getSapUploadFolder());
+		File f = new File(DataLoaderProperties.getWorkingDir() + fileName);
+				try {
+					ReconciliationService.getInstance().sendSettlementReconToSap(new FileInputStream(f),fileName, DataLoaderProperties.getWorkingDir());
+				} catch (FileNotFoundException e) {
+					throw new RemoteException(e.getMessage());
+				}
 			}else{
 		reconciliationSB.sendSettlementReconToSap(fileName, DataLoaderProperties.getSapUploadFolder());
 			}

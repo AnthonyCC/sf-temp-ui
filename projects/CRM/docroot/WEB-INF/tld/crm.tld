@@ -659,35 +659,7 @@
         </attribute>
     </tag>
     
-    <tag>
-        <name>GetFDUser</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmGetFDUserTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmGetFDUserTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>useId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>erpCustId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>fdCustId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    
-    <tag>
+      <tag>
         <name>CrmDepotMembershipController</name>
         <tagclass>com.freshdirect.webapp.taglib.crm.CrmDepotMembershipControllerTag</tagclass>
         <teiclass>com.freshdirect.webapp.taglib.crm.CrmDepotMembershipControllerTag$TagEI</teiclass>

@@ -1747,8 +1747,6 @@ public class BrowseUtil {
                 LOG.error("Error in getSkuInfo()=>" + sku.getSkuCode() + " " + e.toString());
             } catch (FDSkuNotFoundException e) {
                 LOG.error("Error in getSkuInfo()=>" + sku.getSkuCode() + " " + e.toString());
-            } catch (FDException e) {
-                LOG.error("Error in getSkuInfo()=>" + sku.getSkuCode() + " " + e.toString());
             } catch (FDRuntimeException e) {
                 LOG.error("Error in getSkuInfo()=>" + sku.getSkuCode() + " " + e.toString());
             }

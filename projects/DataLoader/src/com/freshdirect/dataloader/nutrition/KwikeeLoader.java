@@ -19,21 +19,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ejb.CreateException;
-import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
-import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.ecomm.gateway.ErpNutritionService;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class KwikeeLoader {
     
@@ -145,56 +138,27 @@ public class KwikeeLoader {
         System.out.println("\n----- starting doLoad() -----");
         
         ArrayList<ErpNutritionModel> nutritionModels = kwikeeParser.getNutritionModels();
-        ErpNutritionModel model;
-        
-        Context ctx = null;
-        try {
-            ctx = getInitialContext();
-            ErpNutritionHome home = (ErpNutritionHome) ctx.lookup("freshdirect.content.Nutrition");
-            
-            ErpNutritionSB sb = home.create();
-            for(int i = 0, size = nutritionModels.size(); i < size; i++){
-                model = nutritionModels.get(i);
-                //System.out.println(model.getUpc());
-                String skuCode;
-                try{
-                	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-                		skuCode=ErpNutritionService.getInstance().getSkuCodeForUpc(model.getUpc());
-                	}else{
-                     skuCode = sb.getSkuCodeForUpc(model.getUpc());
-                	}
-                    model.setSkuCode(skuCode);
-                    if(skuCode != null && (!skuCode.equals(""))){
-                        model.setSkuCode(skuCode);
-                        if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-                        	ErpNutritionService.getInstance().createNutrition(model);
-                        }else{
-                        sb.createNutrition(model);
-                        }
-                    }
-                }catch(FinderException fe){
-                    System.out.println(fe.getMessage());
-                }
-                
-                
-            }
-            
-            System.out.println("\n----- normally exiting doLoad() -----");
-            
-        } catch (CreateException ce) {
-            ce.printStackTrace();
-        } catch (NamingException ne) {
-            ne.printStackTrace();
-        } finally {
-            try {
-                if (ctx != null)
-                    ctx.close();
-            } catch (NamingException ne) {
-                ne.printStackTrace();
-            }
-        }
-        
-    }
+		ErpNutritionModel model;
+
+		for (int i = 0, size = nutritionModels.size(); i < size; i++) {
+			model = nutritionModels.get(i);
+			// System.out.println(model.getUpc());
+			String skuCode;
+
+			skuCode = ErpNutritionService.getInstance().getSkuCodeForUpc(model.getUpc());
+
+			model.setSkuCode(skuCode);
+			if (skuCode != null && (!skuCode.equals(""))) {
+				model.setSkuCode(skuCode);
+				ErpNutritionService.getInstance().createNutrition(model);
+
+			}
+
+		}
+
+		System.out.println("\n----- normally exiting doLoad() -----");
+
+	}
     
     /** helper method to find the naming context for locating objects on a server
      * @throws NamingException any problems encountered locating the remote server

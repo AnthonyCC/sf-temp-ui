@@ -1,6 +1,5 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
-<fd:DepotLoginController actionName='checkByDepotCode' depotCode='CMP' successPage='/index.jsp' result='result'>
 
   <tmpl:insert template='/common/template/depot_discontinued.jsp'>
 
@@ -17,4 +16,3 @@
 
   </tmpl:insert>
 
-</fd:DepotLoginController>

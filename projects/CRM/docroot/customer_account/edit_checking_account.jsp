@@ -26,13 +26,7 @@
         	retPage = "/main/account_details.jsp";
         }
     %>
-	<crm:GetFDUser id="user">
-		<crm:CrmGetPaymentMethod id="paymentMethod" paymentId="<%=paymentId%>" user="<%=user%>">
-			<crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="<%=retPage%>">
-            	<%@ include file="/includes/edit_checking_account_details.jspf" %>
-			</crm:CrmPaymentMethodController>
-        </crm:CrmGetPaymentMethod>
-	</crm:GetFDUser>
+	
 	<br clear="all">
 	</tmpl:put>
 

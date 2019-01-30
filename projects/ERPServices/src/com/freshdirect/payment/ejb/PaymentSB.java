@@ -34,8 +34,7 @@ public interface PaymentSB extends EJBObject {
 	 */
 	public void captureAuthorization(String saleId) throws ErpTransactionException, RemoteException;
 	
-	@Deprecated
-	public void voidCaptures(String saleId) throws ErpTransactionException, RemoteException;
+	
 	@Deprecated
 	public void deliveryConfirm(String saleId) throws ErpTransactionException, RemoteException;
 	@Deprecated

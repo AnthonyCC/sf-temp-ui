@@ -7,18 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.CreateException;
-import javax.naming.Context;
-import javax.naming.NamingException;
-
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.ecomm.gateway.ErpInfoService;
-import com.freshdirect.erp.ejb.ErpInfoHome;
-import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -28,7 +21,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -38,7 +30,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class CartLineFactory {
 
@@ -57,19 +48,12 @@ public class CartLineFactory {
 
 	public List<FDCartLineI> createOrderLines(String[] materials) throws FDResourceException {
 		try {
-			Context ctx = ErpServicesProperties.getInitialContext();
-			ErpInfoHome home = (ErpInfoHome) ctx.lookup("freshdirect.erp.Info");
-			ErpInfoSB infoBean = home.create();
-			
 			List<FDCartLineI> lines = new ArrayList<FDCartLineI>();
 			for (int i=0; i<materials.length; i++) {
 				Collection<ErpProductInfoModel> prods  = new ArrayList<ErpProductInfoModel>();
 				String mat = materials[i];
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
 					prods = ErpInfoService.getInstance().findProductsBySapId(mat);
-				else
-					prods = infoBean.findProductsBySapId(mat);
-			
+				
 				if (prods.isEmpty()) {
 					LOGGER.info("No product found for material "+mat+" - skipping.");
 					continue;
@@ -83,10 +67,6 @@ public class CartLineFactory {
 				//this.createLines(lines, sku); //::FDX:: 				
 			}
 			return lines;
-		} catch (NamingException ex) {
-			throw new FDResourceException(ex);	
-		} catch (CreateException ex) {
-			throw new FDResourceException(ex);	
 		} catch (RemoteException ex) {
 			throw new FDResourceException(ex);	
 		}
