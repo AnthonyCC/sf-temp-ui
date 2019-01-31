@@ -1,9 +1,7 @@
 package com.freshdirect.backoffice.selfcredit.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +12,6 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderDetailsData;
-import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemData;
 import com.freshdirect.backoffice.selfcredit.service.SelfCreditOrderDetailsService;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
