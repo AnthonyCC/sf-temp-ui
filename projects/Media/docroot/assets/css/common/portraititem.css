@@ -30,7 +30,7 @@
 	color:white;
 }
 .isHookLogicProduct.portrait-item:before{
-	content: "FEATURED PRODUCT";
+	content: "SPONSORED";
 	background-color:#B5B5B5;
 	color:white;
 }
