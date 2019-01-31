@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditRequest;
 import com.freshdirect.backoffice.selfcredit.data.IssueSelfCreditResponse;
+import com.freshdirect.backoffice.selfcredit.data.RequestContext;
 import com.freshdirect.backoffice.selfcredit.data.SelfCreditOrderItemRequestData;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -55,16 +56,19 @@ public class BackOfficeSelfCreditService {
     	StringBuilder content = new StringBuilder();
         BufferedReader input = null;
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
         	String backofficeUrl = new StringBuilder().append(FDStoreProperties.getBackOfficeApiUrl()).append(FDStoreProperties.getBkofficeSelfCreditUrl()).toString();
             URL url = new URL(backofficeUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("requestcontext", objectMapper.writeValueAsString(collectRequestContext(user)));
 
             OutputStream output = connection.getOutputStream();
-            ObjectMapper objectMapper = new ObjectMapper();
             String issueCreditRequestAsString = objectMapper.writeValueAsString(issueSelfCreditRequest);
             output.write(issueCreditRequestAsString.getBytes("UTF-8"));
 
@@ -108,7 +112,7 @@ public class BackOfficeSelfCreditService {
         return issueSelfCreditResponse;
     }
 
-	private boolean validateSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
+    private boolean validateSelfCreditRequest(IssueSelfCreditRequest issueSelfCreditRequest, FDUserI user) {
 		final String orderId = issueSelfCreditRequest.getOrderId();
 		final boolean isOrderIdValid = validateOrder(orderId, user);
 		final boolean hasCartonNumbers = validateCartonNumbers(issueSelfCreditRequest.getOrderLineParams(), orderId);
@@ -159,4 +163,11 @@ public class BackOfficeSelfCreditService {
 		}
 	}
 	
+    private RequestContext collectRequestContext(FDUserI user) {
+        RequestContext requestContext = new RequestContext();
+        requestContext.setInitiator(EnumTransactionSource.SYSTEM.getCode());
+        requestContext.setSource(user.getApplication().getCode());
+        return requestContext;
+    }
+
 }
