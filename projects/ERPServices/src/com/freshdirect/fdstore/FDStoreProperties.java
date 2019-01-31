@@ -68,7 +68,6 @@ public class FDStoreProperties {
     private final static String PROP_DLVMANAGER_HOME = "fdstore.deliveryManager.home";
     private final static String PROP_RULESMANAGER_HOME = "fdstore.rulesManager.home";
     private final static String PROP_AIRCLICMANAGER_HOME = "fdstore.airclicManager.home";
-    private final static String PROP_DLVRESTRICTION_MGR_HOME = "freshdirect.delivery.DeliveryRestrictionManager";
     private final static String PROP_CONTENTMANAGER_HOME = "fdstore.ContentManager.home";
     private final static String PROP_FDCUSTOMER_HOME = "fdstore.fdcustomer.home";
     private final static String PROP_ERPCUSTOMER_HOME = "fdstore.erpcustomer.home";
@@ -1133,7 +1132,6 @@ public class FDStoreProperties {
         defaults.put(PROP_DLVMANAGER_HOME, "freshdirect.delivery.DeliveryManager");
         defaults.put(PROP_RULESMANAGER_HOME, "freshdirect.fdstore.RulesManager");
         defaults.put(PROP_AIRCLICMANAGER_HOME, "freshdirect.delivery.AirclicManager");
-        defaults.put(PROP_DLVRESTRICTION_MGR_HOME, "freshdirect.delivery.DeliveryRestrictionManager");
         defaults.put(PROP_FDCUSTOMER_HOME, "freshdirect.fdstore.Customer");
         defaults.put(PROP_EMAIL_PROMOTION, "PromotionNotification@freshdirect.com");
         defaults.put(PROP_ERPCUSTOMER_HOME, "freshdirect.erp.Customer");
@@ -2301,10 +2299,6 @@ public class FDStoreProperties {
 
     public static String getContentManagerHome() {
         return get(PROP_CONTENTMANAGER_HOME);
-    }
-
-    public static String getDlvRestrictionManagerHome() {
-        return get(PROP_DLVRESTRICTION_MGR_HOME);
     }
 
     public static String getDeliveryManagerHome() {

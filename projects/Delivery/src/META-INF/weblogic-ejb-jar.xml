@@ -46,21 +46,7 @@
 <!--     <enable-call-by-reference>true</enable-call-by-reference> -->
 <!--     <jndi-name>freshdirect.SO3.ReservationManager</jndi-name> -->
 <!--   </weblogic-enterprise-bean> -->
- 
-  <weblogic-enterprise-bean>
-    <ejb-name>DlvRestrictionManager</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.DeliveryRestrictionManager</jndi-name>
-  </weblogic-enterprise-bean>
+
   
   <weblogic-enterprise-bean>
     <ejb-name>RoutingLoadListener</ejb-name>
