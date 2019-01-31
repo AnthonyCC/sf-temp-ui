@@ -31,15 +31,11 @@ import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.FileContext;
 import com.freshdirect.dataloader.payment.PaymentFileType;
 import com.freshdirect.dataloader.payment.SFTPFileProcessor;
-import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paypal.parsers.PayPalParser;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
-import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 
 public class PayPalSFTPSettlementLoader {
 	
@@ -51,7 +47,6 @@ public class PayPalSFTPSettlementLoader {
 	
 	private static final String INFIX = ".A";
 	
-	static PayPalReconciliationSB ppReconSB = null;
 	static ReconciliationSB reconSB = null;
 	static List<String> settlementIds = null;
 	static boolean isNEwRecordRequired = false;
@@ -102,12 +97,8 @@ public class PayPalSFTPSettlementLoader {
 			
 			
 			Map<String, Object> lockInfo = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-				lockInfo = PayPalReconciliationService.getInstance().acquirePPLock(SF.parse(timestamp));
-			} else {
-				ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-				lockInfo = ppReconSB.acquirePPLock(SF.parse(timestamp));
-			}
+			lockInfo = PayPalReconciliationService.getInstance().acquirePPLock(SF.parse(timestamp));
+			
 			
 			settlementIds = (List<String>) lockInfo.get("settlementIds");
 			
@@ -115,21 +106,15 @@ public class PayPalSFTPSettlementLoader {
 			
 			loader.loadSettlements();
 			if (settlementIds != null && !settlementIds.isEmpty()) {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-					PayPalReconciliationService.getInstance().releasePPLock(settlementIds);
-				} else {
-					ppReconSB.releasePPLock(settlementIds);
-				}
+				PayPalReconciliationService.getInstance().releasePPLock(settlementIds);
+				
 			}
 				
 		} catch (Exception e) {
 			try {
 				if (settlementIds != null && !settlementIds.isEmpty()){
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-						PayPalReconciliationService.getInstance().releasePPLock(settlementIds);
-					} else {
-						ppReconSB.releasePPLock(settlementIds);
-					}
+					PayPalReconciliationService.getInstance().releasePPLock(settlementIds);
+					
 				}
 			} catch (Exception e2) {
 				LOGGER.info("Exception while releasing PP lock can be ignored ", e2);
@@ -238,7 +223,7 @@ public class PayPalSFTPSettlementLoader {
 
 		//create parser and set loader as its client
 		PayPalParser parser = new PayPalParser();
-		parser.setClient(new PayPalSettlementParserClient(null, reconSB, ppReconSB, settlementIds));
+		parser.setClient(new PayPalSettlementParserClient(null, reconSB, settlementIds));
 		
 		parser.parseFile(is);
 

@@ -458,26 +458,6 @@ version="3.0">
       </resource-ref>
     </session>
     <session>
-      <ejb-name>PayPalReconciliation</ejb-name>
-      <home>com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationHome</home>
-      <remote>com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB</remote>
-      <ejb-class>
-      com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <ejb-ref>
-        <ejb-ref-name>ejb/Reconciliation</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-      	<home>com.freshdirect.payment.ejb.ReconciliationHome</home>
-      	<remote>com.freshdirect.payment.ejb.ReconciliationSB</remote>
-      </ejb-ref>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
-    <session>
       <ejb-name>Payment</ejb-name>
       <home>com.freshdirect.payment.ejb.PaymentHome</home>
       <remote>com.freshdirect.payment.ejb.PaymentSB</remote>
@@ -1279,11 +1259,6 @@ version="3.0">
     <container-transaction>
       <method>
         <ejb-name>Reconciliation</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-            <method>
-      <ejb-name>PayPalReconciliation</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>

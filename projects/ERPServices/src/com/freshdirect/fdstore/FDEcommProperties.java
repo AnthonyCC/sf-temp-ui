@@ -55,8 +55,7 @@ public class FDEcommProperties {
 	public static final String CrmManagerSB = "crm.ejb.CrmManagerSB";
 	public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
 	public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
-	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB"; 
-	public static final String PaypalReconciliationSB = "payment.gateway.ewallet.impl.PaypalReconciliationSB";
+	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB";
 	public static final String SitemapSB = "fdstore.sitemap.SitemapSB";
 	public static final String GiftCardManagerSB = "giftcard.ejb.GiftCardManagerSB";
 	public final static String PostSettlementNotifySB ="payment.ejb.PostSettlementNotifySB";

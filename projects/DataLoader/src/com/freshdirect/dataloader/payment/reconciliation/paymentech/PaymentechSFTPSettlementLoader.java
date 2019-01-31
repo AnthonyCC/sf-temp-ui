@@ -1,16 +1,10 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -21,16 +15,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.FileContext;
 import com.freshdirect.dataloader.payment.PaymentFileType;
-import com.freshdirect.dataloader.payment.SFTPFileProcessor;
-import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
-import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechFINParser;
-import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
-import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.ejb.ReconciliationSB;
-import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.sap.ejb.SapException;
 
 public class PaymentechSFTPSettlementLoader {

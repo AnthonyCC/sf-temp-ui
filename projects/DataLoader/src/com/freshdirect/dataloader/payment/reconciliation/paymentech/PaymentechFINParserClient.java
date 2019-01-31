@@ -37,7 +37,6 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.Money;
 import com.freshdirect.payment.ejb.PayPalSettlementTransactionCodes;
 import com.freshdirect.payment.ejb.ReconciliationSB;
-import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.payment.gateway.impl.ReconciliationConstants;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
@@ -81,8 +80,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		super(builder, reconciliationSB);
 	}
 	
-	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB, List<String> settlementIds) {
-		super(builder, reconciliationSB, ppReconcSB);
+	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, List<String> settlementIds) {
+		super(builder, reconciliationSB);
 		this.settlementIds = settlementIds;
 		this.initWithPayPal = true;
 	}
@@ -268,22 +267,14 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		
 		try {
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB) && this.initWithPayPal) {
-					List ppSettlementInfos = processPPSettlements(settlementIds);
-					if (ppSettlementInfos != null)
-						appendPPSettlements(ppSettlementInfos);
-					else
-						LOGGER.info("No PayPal records to be processed. Please check whether PayPalSettlementLoader is run");
-					PayPalReconciliationService.getInstance().updatePayPalStatus(settlementIds);
-				} else if(this.ppReconSB!=null) {
-					List ppSettlementInfos = processPPSettlements(settlementIds);
-					if (ppSettlementInfos != null)
-						appendPPSettlements(ppSettlementInfos);
-					else
-						LOGGER.info("No PayPal records to be processed. Please check whether PayPalSettlementLoader is run");
-					ppReconSB.updatePayPalStatus(settlementIds);	
-				}
-				
+				List ppSettlementInfos = processPPSettlements(settlementIds);
+				if (ppSettlementInfos != null)
+					appendPPSettlements(ppSettlementInfos);
+				else
+					LOGGER.info(
+							"No PayPal records to be processed. Please check whether PayPalSettlementLoader is run");
+				PayPalReconciliationService.getInstance().updatePayPalStatus(settlementIds);
+
 			}
 		} catch (RemoteException e) {
 			LOGGER.fatal("Could not process PayPal transactions ", e);
@@ -333,11 +324,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	
 		List<ErpSettlementSummaryModel> ppStlmntTrxns;
 		List<ErpPPSettlementInfo> settlementInfos = new ArrayList<ErpPPSettlementInfo>();
-		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-			ppStlmntTrxns = PayPalReconciliationService.getInstance().getPPTrxns(ppStlmntIds);
-		} else {
-			ppStlmntTrxns = this.ppReconSB.getPPTrxns(ppStlmntIds);
-		}
+		ppStlmntTrxns = PayPalReconciliationService.getInstance().getPPTrxns(ppStlmntIds);
+		
 		if (ppStlmntTrxns == null) {
 			return null;
 		}
@@ -408,11 +396,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 				}
 				
 				if(isTrxnExecuted){
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-						PayPalReconciliationService.getInstance().updatePPSettlementTransStatus(trxn.getId());
-					} else {
-						this.ppReconSB.updatePPSettlementTransStatus(trxn.getId());
-					}
+					PayPalReconciliationService.getInstance().updatePPSettlementTransStatus(trxn.getId());
+					
 				}
 				
 				try {

@@ -6,15 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
-
-
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
-import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 
 /**
  * This Job is to notify AppSupport with a list of dates that paypal settlement
@@ -25,24 +18,13 @@ import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
  */
 public class PayPalPreSettlementNotification {
 
-	/**
-	 * @param args
-	 */
-	static PayPalReconciliationSB ppReconSB = null;
 
 	public static void main(String[] args) {
 
 		try {
 			Map<String, String> settlementNotExecutedDates = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-				settlementNotExecutedDates = PayPalReconciliationService.getInstance().getPPSettlementNotProcessed();
-			} else {
-				if (null == ppReconSB) {
-					ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-				}
-				settlementNotExecutedDates = ppReconSB
-						.getPPSettlementNotProcessed();
-			}
+			settlementNotExecutedDates = PayPalReconciliationService.getInstance().getPPSettlementNotProcessed();
+			
 			if (settlementNotExecutedDates.size() != 7) {
 				String body = getEmailContent(settlementNotExecutedDates);
 				SettlementLoaderUtil.sendEmailNotification(" PayPal Settlement Not Processed ",
@@ -56,18 +38,7 @@ public class PayPalPreSettlementNotification {
 							" PayPal Settlement Not Processed ",
 							"Exception occured while excuting PayPal Settlement Not Processed Notification",
 							e);
-		} catch (EJBException e) {
-			SettlementLoaderUtil
-					.sendEmailNotification(
-							" PayPal Settlement Not Processed ",
-							"Exception occured while excuting PayPal Settlement Not Processed Notification",
-							e);
-		} catch (CreateException e) {
-			SettlementLoaderUtil.sendEmailNotification(" PayPal Settlement Not Processed ",
-					"Exception occured while excuting PayPal Settlement Not ProcessedNotification",
-					e);
-		}
-
+		} 
 	}
 
 	private static DateFormat sd = new SimpleDateFormat("EEE, MMM d, yyyy");
