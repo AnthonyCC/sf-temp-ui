@@ -86,12 +86,6 @@ version="3.0">
         <home>com.freshdirect.erp.ejb.ErpProductHome</home>
         <remote>com.freshdirect.erp.ejb.ErpProductEB</remote>
       </ejb-ref>
-      <ejb-ref>
-        <ejb-ref-name>ejb/BatchManager</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-        <home>com.freshdirect.erp.ejb.BatchManagerHome</home>
-        <remote>com.freshdirect.erp.ejb.BatchManagerSB</remote>
-      </ejb-ref>
       <resource-ref>
         <res-ref-name>jdbc/dbpool</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>

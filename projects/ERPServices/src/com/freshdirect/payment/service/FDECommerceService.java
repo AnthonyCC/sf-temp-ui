@@ -44,7 +44,6 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
-import com.freshdirect.ecomm.gateway.CustomResponseDeserializer;
 import com.freshdirect.ecommerce.data.cms.CmsCreateFeedParams;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -120,7 +119,6 @@ import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
 import com.freshdirect.ecommerce.data.zoneInfo.ErpMasterInfoData;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
-import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -668,70 +666,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		return binData;
 	}
 
-	@Override
-	public BatchModel getBatch(int batchId) throws FDResourceException {
-		ResponseEntity<String> response=null;
-		try{
-//		response = httpGetDataTypeMap(getFdCommerceEndPoint(ERP_BATCH_PROCESS_API+batchId), new TypeReference<Response<BatchModel>>() {});
-		response =  getRestTemplate().getForEntity(new URI(getFdCommerceEndPoint(ERP_BATCH_PROCESS_API+batchId)),String.class);
-		} catch (RestClientException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		new ArrayList();
-		String ss = response.getBody();
-
-			GsonBuilder  gSon=  new GsonBuilder();
-			gSon.registerTypeAdapter(Response.class, new CustomResponseDeserializer());
-
-
-			Gson g = gSon.create();
-			Response<Collection<BatchModel>> jsons = g.fromJson(ss, Response.class);
-			Collection<BatchModel> bmlist = jsons.getData();
-		if(!jsons.getResponseCode().equals("OK")){
-			LOGGER.info("Error in FDEcommerceService :"+jsons.getMessage());
-			throw new FDResourceException(jsons.getMessage());
-
-		}
-		BatchModel batchModel = null;
-		for (BatchModel bmlistItem : bmlist) {
-			batchModel = bmlistItem;
-		}
-		return batchModel;
-//			return bmlist.iterator().next();
-
-	}
-	@Override
-	public Collection getRecentBatches() throws FDResourceException {
-		ResponseEntity<String> responsess=null;
-
-	try {
-		responsess = getRestTemplate().getForEntity(new URI(getFdCommerceEndPoint(ERP_RECENT_BATCHES_API)),String.class);
-	} catch (RestClientException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	} catch (URISyntaxException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
-		new ArrayList();
-		String ss = responsess.getBody();
-
-			GsonBuilder  gSon=  new GsonBuilder();
-			gSon.registerTypeAdapter(Response.class, new CustomResponseDeserializer());
-
-
-			Gson g = gSon.create();
-			Response<Collection<BatchModel>> jsons = g.fromJson(ss, Response.class);
-
-		if(!jsons.getResponseCode().equals("OK"))
-			throw new FDResourceException(jsons.getMessage());
-			return jsons.getData();
-
-	}
 
 	@Override
 	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException {

@@ -38,7 +38,6 @@ public class FDEcommProperties {
     public final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
     public final static String SAPProductFamilyLoaderSB = "sap.ejb.SAPProductFamilyLoaderSB";
     public final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
-    public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
     public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
     public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
@@ -98,7 +97,6 @@ public class FDEcommProperties {
         defaults.put(GCGatewaySB,FALSE);
         defaults.put(SAPProductFamilyLoaderSB,FALSE);
         defaults.put(SAPZoneInfoLoaderSB,FALSE);
-        defaults.put(BatchManagerSB,FALSE);
         defaults.put(AttributeFacadeSB ,FALSE);
         defaults.put(FDFactorySB_WarmUp ,FALSE);
         defaults.put(FDExtoleManagerSB ,FALSE);

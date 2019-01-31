@@ -613,38 +613,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
-	<tag>
-		<name>BatchSearch</name>
-		<tagclass>com.freshdirect.webapp.taglib.batch.BatchSearchTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.batch.BatchSearchTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>results</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>Batch</name>
-		<tagclass>com.freshdirect.webapp.taglib.batch.BatchTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.batch.BatchTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>batchNumber</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
 	<tag>
 		<name>Department</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.DepartmentTag</tagclass>

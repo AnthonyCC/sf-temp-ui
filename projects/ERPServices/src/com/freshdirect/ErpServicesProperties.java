@@ -36,7 +36,6 @@ public class ErpServicesProperties {
     private final static String PROP_ATTRIBUTES_HOME    = "erpservices.attributes.home";
     private final static String PROP_NUTRITION_HOME     = "erpservices.nutrition.home";
     private final static String PROP_INFO_HOME          = "erpservices.info.home";
-    private final static String PROP_BATCH_HOME         = "erpservices.batch.home";
 	private final static String PROP_PRODUCT_HOME		= "erpservices.product.home";
     private final static String PROP_MATERIAL_HOME      = "erpservices.material.home";
     private final static String PROP_CLASS_HOME         = "erpservices.class.home";
@@ -324,7 +323,6 @@ public class ErpServicesProperties {
         defaults.put(PROP_PRODUCTTREE_HOME,	"freshdirect.erp.ProductTree");
         defaults.put(PROP_ATTRIBUTES_HOME,	"freshdirect.content.AttributeFacade");
         defaults.put(PROP_NUTRITION_HOME,	"freshdirect.content.Nutrition");
-        defaults.put(PROP_BATCH_HOME,       "freshdirect.erp.BatchManager");
         defaults.put(PROP_INFO_HOME,	    "freshdirect.erp.Info");
 		defaults.put(PROP_PRODUCT_HOME,	    "freshdirect.erp.Product");
         defaults.put(PROP_MATERIAL_HOME,	"freshdirect.erp.Material");
@@ -615,11 +613,7 @@ public class ErpServicesProperties {
     public static String getProductTreeHome() {
 		return config.getProperty(PROP_PRODUCTTREE_HOME);
 	}
-
-    public static String getBatchHome() {
-		return config.getProperty(PROP_BATCH_HOME);
-	}
-
+    
     public static String getAttributesHome() {
 		return config.getProperty(PROP_ATTRIBUTES_HOME);
 	}
