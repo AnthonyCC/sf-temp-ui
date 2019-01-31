@@ -2795,9 +2795,7 @@ public class FDCustomerManager {
 
 	/**
 	 * This method was added to avoid unnecessary calls to getOrderHistoryInfo()
-	 * method. Eg: CrmResubmitOrdersTag keeps calling the getOrderHistoryInfo()
-	 * for every resubmitted order where you actually need just the valid order
-	 * count.
+	 * method. 
 	 * @param identity
 	 * @return
 	 * @throws FDResourceException
@@ -3374,17 +3372,21 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
-
+	public static GiftCardApplicationStrategy getGiftCardApplicationStrategy(FDCartModel cart) throws FDResourceException {
+		
 		ErpAbstractOrderModel order = null;
 		if (cart instanceof FDModifyCartModel) {
-			order = FDOrderTranslator.getErpCreateOrderModel(cart);
-		} else {
 			order = FDOrderTranslator.getErpModifyOrderModel(cart);
+		} else {
+			order = FDOrderTranslator.getErpCreateOrderModel(cart);
 		}
 		// Generate Applied gift cards info.
 		GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
 		strategy.generateAppliedGiftCardsInfo();
+		return strategy;
+	}
+	public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
+		GiftCardApplicationStrategy strategy = getGiftCardApplicationStrategy(cart);
 		return strategy.getRemainingBalance();
 
 	}
@@ -3529,18 +3531,8 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static double getPerishableBufferAmount(FDCartModel cart)
-			throws FDResourceException {
-
-		ErpAbstractOrderModel order = null;
-		if (cart instanceof FDModifyCartModel) {
-			order = FDOrderTranslator.getErpCreateOrderModel(cart);
-		} else {
-			order = FDOrderTranslator.getErpModifyOrderModel(cart);
-		}
-		// Generate Applied gift cards info.
-		GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
-		strategy.generateAppliedGiftCardsInfo();
+	public static double getPerishableBufferAmount(FDCartModel cart) throws FDResourceException {
+		GiftCardApplicationStrategy strategy = getGiftCardApplicationStrategy(cart);
 		return strategy.getPerishableBufferAmount();
 	}
 
