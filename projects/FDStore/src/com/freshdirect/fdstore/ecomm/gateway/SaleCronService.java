@@ -9,7 +9,10 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
+import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -58,9 +61,11 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void authorizeSales(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(AUTHORIIZE_SALES + "?timeout=" + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(AUTHORIIZE_SALES + "?timeout=" + timeout),
+					new TypeReference<Response<String>>() {
 					});
+
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
 				throw new FDResourceException(response.getMessage());
@@ -78,8 +83,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void authorizeSubscriptions(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(AUTHORIIZE_SUBSCRIPTIONS + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(AUTHORIIZE_SUBSCRIPTIONS + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -98,8 +104,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public int cutoffSales() throws RemoteException {
 		Response<Integer> response = new Response<Integer>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CUT_OFF_SALES),
-					new TypeReference<Response<Integer>>() {
+
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(CUT_OFF_SALES),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -119,8 +126,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void captureSales(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CAPTURE_SALES + "?timeout=" + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(CAPTURE_SALES + "?timeout=" + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -139,8 +147,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void cancelAuthorizationFailed() throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CANCEL_AUTHORIZATION_FAILED),
-					new TypeReference<Response<Void>>() {
+
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(CANCEL_AUTHORIZATION_FAILED),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -159,8 +168,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void registerGiftCards(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(REGISTER_GIFT_CARDS + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(REGISTER_GIFT_CARDS + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -179,8 +189,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void preAuthorizeSales(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PREAUTHORIZE_SALES + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(PREAUTHORIZE_SALES + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -199,8 +210,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void reverseAuthorizeSales(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(REVERSE_AUTHORIZE_SALES + timeout),
-					new TypeReference<Response<Void>>() {
+
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(REVERSE_AUTHORIZE_SALES + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -219,8 +231,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void postAuthSales(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(POST_AUTH_SALES + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(POST_AUTH_SALES + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -266,8 +279,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void postAuthEBTSales(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(POST_AUTH_EBT_SALES + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(POST_AUTH_EBT_SALES + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -286,8 +300,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void captureEBTSales(long timeout) throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CAPTURE_EBT_SALES + "?timeout=" + timeout),
-					new TypeReference<Response<Void>>() {
+			
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(CAPTURE_EBT_SALES + "?timeout=" + timeout),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
@@ -306,8 +321,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void settleEBTSales() throws RemoteException {
 		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SETTLE_EBT_SALES),
-					new TypeReference<Response<Void>>() {
+
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(SETTLE_EBT_SALES),
+					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in SaleCronService: response=" + response);
