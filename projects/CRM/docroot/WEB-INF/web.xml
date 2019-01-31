@@ -155,10 +155,6 @@
     <servlet-class>com.freshdirect.fdstore.promotion.pxp.PromoPublishServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>FeedPublishServlet</servlet-name>
-    <servlet-class>com.freshdirect.fdstore.cms.FeedPublishServlet</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>JavascriptServlet</servlet-name>
     <servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
     <init-param>
@@ -317,10 +313,6 @@
     <servlet-name>PromoPublishServlet</servlet-name>
     <url-pattern>/promo_publish</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>FeedPublishServlet</servlet-name>
-    <url-pattern>/feed_publish</url-pattern>
-  </servlet-mapping>
    <servlet-mapping>
     <servlet-name>skuReplaceServlet</servlet-name>
     <url-pattern>/api/skuReplaceServlet</url-pattern>
@@ -402,7 +394,6 @@
       <url-pattern>/no_auth.jsp</url-pattern>
       <url-pattern>/main/error.jsp</url-pattern>
       <url-pattern>/promo_publish</url-pattern>
-      <url-pattern>/feed_publish</url-pattern>
       <url-pattern>/admin_service</url-pattern>
       <http-method>POST</http-method>
       <http-method>GET</http-method>

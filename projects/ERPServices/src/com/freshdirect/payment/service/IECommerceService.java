@@ -401,7 +401,6 @@ public interface IECommerceService {
 
 	public List<Date> getStartDates() throws RemoteException;
 	//cms manager
-	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
 	public String getCmsFeed(String storeID) throws FDResourceException;
 
 	public List<SapOrderPickEligibleInfo> queryForFDXSalesPickEligible() throws RemoteException;
