@@ -14,10 +14,6 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.productfeed.FDProductFeedHome;
-import com.freshdirect.fdstore.content.productfeed.FDProductFeedSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -35,16 +31,8 @@ public class FDProductFeedGeneratorCron {
 		
 		try {
 			LOGGER.info("FDProductFeedGeneratorCron Started.");
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ProductFeedSB)) {
-				LOGGER.info("FDProductFeedGeneratorCron calling sf 2.0 service");
-				FDECommerceService.getInstance().uploadProductFeed();
-			} else {
-				LOGGER.info("FDProductFeedGeneratorCron calling ejb.");
-				Context ctx = getInitialContext();
-				FDProductFeedHome managerHome = (FDProductFeedHome) ctx.lookup("freshdirect.fdstore.ProductFeed");
-				FDProductFeedSB sb = managerHome.create();
-				sb.uploadProductFeed();
-			}
+			FDECommerceService.getInstance().uploadProductFeed();
+			
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));

@@ -61,7 +61,6 @@ public class FDEcommProperties {
 	public static final String GiftCardManagerSB = "giftcard.ejb.GiftCardManagerSB";
 	public final static String PostSettlementNotifySB ="payment.ejb.PostSettlementNotifySB";
 	
-	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
 	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
@@ -93,7 +92,6 @@ public class FDEcommProperties {
     static {
 
         defaults.put(FDMonitorSB,FALSE);
-        defaults.put(ProductFeedSB,FALSE);
         defaults.put(SaleCronSB,FALSE);
         defaults.put(EnumManagerSB,FALSE);
         defaults.put(ErpInventoryManagerSB ,FALSE);

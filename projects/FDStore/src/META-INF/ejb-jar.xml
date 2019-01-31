@@ -235,23 +235,6 @@
       </resource-ref>
     </session>
    
-    <session>
-      <ejb-name>ProductFeed</ejb-name>
-      <home>
-      com.freshdirect.fdstore.content.productfeed.FDProductFeedHome</home>
-      <remote>
-      com.freshdirect.fdstore.content.productfeed.FDProductFeedSB</remote>
-      <ejb-class>
-      com.freshdirect.fdstore.content.productfeed.FDProductFeedSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
-    
     <!-- Ewallet Service Changes Start -->
     <session>
 		<ejb-name>EwalletService</ejb-name>
@@ -392,14 +375,6 @@
         <method-name>sendEmail</method-name>
       </method>
       <trans-attribute>RequiresNew</trans-attribute>
-    </container-transaction>
-    <container-transaction>
-      <method>
-        <ejb-name>ProductFeed</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-      <trans-attribute>NotSupported</trans-attribute>   
     </container-transaction>
 
 	 <container-transaction>
