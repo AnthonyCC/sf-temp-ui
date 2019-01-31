@@ -37,7 +37,6 @@ public class FDEcommProperties {
     public final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
     public final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
     public final static String SAPProductFamilyLoaderSB = "sap.ejb.SAPProductFamilyLoaderSB";
-    public final static String SmsAlertsSB = "sms.ejb.SmsAlertsSB";
     public final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
     public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
     public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
@@ -101,7 +100,6 @@ public class FDEcommProperties {
         defaults.put(DlvManagerSB ,FALSE);
         defaults.put(GCGatewaySB,FALSE);
         defaults.put(SAPProductFamilyLoaderSB,FALSE);
-        defaults.put(SmsAlertsSB ,FALSE);
         defaults.put(SAPZoneInfoLoaderSB,FALSE);
         defaults.put(BatchManagerSB,FALSE);
         defaults.put(AttributeFacadeSB ,FALSE);
