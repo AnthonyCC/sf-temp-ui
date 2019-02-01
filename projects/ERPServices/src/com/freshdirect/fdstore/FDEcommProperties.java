@@ -40,8 +40,6 @@ public class FDEcommProperties {
     public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
     public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
-    public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
-    public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
     public final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
     public final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
 	public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
@@ -98,8 +96,6 @@ public class FDEcommProperties {
         defaults.put(AttributeFacadeSB ,FALSE);
         defaults.put(FDFactorySB_WarmUp ,FALSE);
         defaults.put(FDExtoleManagerSB ,FALSE);
-        defaults.put(RulesManagerSB ,FALSE);
-        defaults.put(ErpRoutingGatewaySB ,FALSE);
         defaults.put(SAPLoaderSB, FALSE);
         defaults.put(CmsFeedmanagerSB, FALSE);
         defaults.put(RestrictedPaymentMethodSB,FALSE);

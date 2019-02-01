@@ -60,7 +60,6 @@ import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -74,8 +73,6 @@ import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.routing.ejb.ErpRoutingGatewayHome;
-import com.freshdirect.routing.ejb.ErpRoutingGatewaySB;
 import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.sap.command.SapCancelSalesOrder;
 import com.freshdirect.sap.command.SapChangeSalesOrder;
@@ -305,37 +302,15 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							LOGGER.info(list);
 						}
 
-						ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-								.ErpRoutingGatewaySB)) {/*
-																 * instead of a
-																 * string
-																 * "routing.ejb.ErpRoutingGatewaySB"
-																 */
+						FDECommerceService.getInstance().sendReservationUpdateRequest(
+								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
+								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
+								saleEB.getSapOrderNumber());
 
-							FDECommerceService.getInstance().sendReservationUpdateRequest(
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
-									saleEB.getSapOrderNumber());
-
-						} else {
-							LOGGER.info("sending sendReservationUpdateRequest ..."
-									+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-							erpRoutingGateway.sendReservationUpdateRequest(
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
-									((SapCreateSalesOrder) command).getSapOrderNumber());
-						}
-
+						
 						if (((ErpSaleModel) saleEB.getModel()).geteStoreId() != null && EnumEStoreId.FDX.name()
 								.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).geteStoreId().name())) {
-							if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-									.ErpRoutingGatewaySB)) { /*
-																	 * instead of
-																	 * a string
-																	 * "routing.ejb.ErpRoutingGatewaySB"
-													
-																	 */
+							
 								FDECommerceService.getInstance().sendSubmitOrderRequest(saleId,
 										(((ErpSaleModel) saleEB.getModel()).getCurrentOrder() != null
 										&& ((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
@@ -365,92 +340,28 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 														.getOrderMobileNumber().getPhone())
 												: null,
 										((SapCreateSalesOrder) command).getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-							} else {
-								LOGGER.info("sending sendSubmitOrderRequest ..."
-										+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-								erpRoutingGateway.sendSubmitOrderRequest(saleId,
-										(((ErpSaleModel) saleEB.getModel()).getCurrentOrder() != null
-												&& ((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
-														.getPaymentMethod() != null && (EnumPaymentType.ADD_ON_ORDER.getName()
-														.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
-																.getPaymentMethod().getPaymentType().getName())))
-																? ((ErpSaleModel) saleEB.getModel())
-																		.getCurrentOrder().getPaymentMethod()
-																		.getReferencedOrder()
-																: null,
-										saleEB.getCurrentOrder().getTip(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-												.getInstructions(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getServiceType() != null
-												? saleEB.getCurrentOrder().getDeliveryInfo().getServiceType().getName()
-												: null,
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-												.getAltDelivery() != null
-														? saleEB.getCurrentOrder().getDeliveryInfo()
-																.getDeliveryAddress().getAltDelivery().getName()
-														: "none",
-										(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber() != null)
-												? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
-														.getOrderMobileNumber().getPhone())
-												: null,
-										((SapCreateSalesOrder) command).getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-
-							}
+							
 						}
 					}
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
-					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 					if (EnumEStoreId.FDX.name()
 							.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).geteStoreId().name())) {
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-								.ErpRoutingGatewaySB)) { /*
-																 * instead of a
-																 * string
-																 * "routing.ejb.ErpRoutingGatewaySB"
-																 */
-							FDECommerceService.getInstance().sendCancelOrderRequest(saleId);
-						} else {
-							LOGGER.info("sending sendCancelOrderRequest ...Sale ID: " + saleId + " Reservation ID: "
-									+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-							erpRoutingGateway.sendCancelOrderRequest(saleId);
-						}
+						
+						FDECommerceService.getInstance().sendCancelOrderRequest(saleId);
+						
 					}
 				} else if (command instanceof SapChangeSalesOrder) {
 					saleEB.modifyOrderComplete();
-					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-							.ErpRoutingGatewaySB)) { /*
-															 * instead of a string
-															 * "routing.ejb.ErpRoutingGatewaySB"
-															 */
-
-						FDECommerceService.getInstance().sendReservationUpdateRequest(
+					FDECommerceService.getInstance().sendReservationUpdateRequest(
 								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
 								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
 								saleEB.getSapOrderNumber());
 
-					} else {
-						LOGGER.info("sending sendReservationUpdateRequest ..."
-								+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-						erpRoutingGateway.sendReservationUpdateRequest(
-								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
-								saleEB.getSapOrderNumber());
-					}
-
+					
 					if (((ErpSaleModel) saleEB.getModel()).geteStoreId() != null && EnumEStoreId.FDX.name()
 							.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).geteStoreId().name())) {
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-								.ErpRoutingGatewaySB)) { /*
-																 * instead of a
-																 * string
-																 * "routing.ejb.ErpRuTingGatewaysB"
-																 */
-							FDECommerceService.getInstance().sendModifyOrderRequest(saleId, null,
+						FDECommerceService.getInstance().sendModifyOrderRequest(saleId, null,
 									saleEB.getCurrentOrder().getTip(),
 									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
 									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
@@ -473,32 +384,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 													.getOrderMobileNumber().getPhone())
 											: null,
 									saleEB.getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-						} else {
-							LOGGER.info("sending sendModifyOrderRequest ..."
-									+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-							erpRoutingGateway.sendModifyOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName(),
-									(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-											.getInstructions() != null)
-													? saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-															.getInstructions()
-													: "none",
-									saleEB.getCurrentOrder().getDeliveryInfo().getServiceType() != null
-											? saleEB.getCurrentOrder().getDeliveryInfo().getServiceType().getName()
-											: null,
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-											.getAltDelivery() != null
-													? saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-															.getAltDelivery().getName()
-													: "none",
-									(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber() != null)
-											? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
-													.getOrderMobileNumber().getPhone())
-											: null,
-									saleEB.getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-						}
+						
 					}
 				}
 
@@ -584,14 +470,6 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	private GCGatewayHome getGCGatewayHome() {
 		try {
 			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private ErpRoutingGatewayHome getErpRoutingGatewayHome() {
-		try {
-			return (ErpRoutingGatewayHome) ROUTING_LOCATOR.getRemoteHome("freshdirect.routing.ErpRoutingGateway");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
