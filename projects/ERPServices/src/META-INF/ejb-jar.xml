@@ -227,27 +227,6 @@ version="3.0">
       </resource-ref>
     </session>
     <session>
-      <ejb-name>ErpInventoryManager</ejb-name>
-      <home>com.freshdirect.erp.ejb.ErpInventoryManagerHome</home>
-      <remote>
-      com.freshdirect.erp.ejb.ErpInventoryManagerSB</remote>
-      <ejb-class>
-      com.freshdirect.erp.ejb.ErpInventoryManagerSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Bean</transaction-type>
-      <ejb-ref>
-        <ejb-ref-name>ejb/ErpInventory</ejb-ref-name>
-        <ejb-ref-type>Entity</ejb-ref-type>
-        <home>com.freshdirect.erp.ejb.ErpInventoryHome</home>
-        <remote>com.freshdirect.erp.ejb.ErpInventoryEB</remote>
-      </ejb-ref>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </session>
-    <session>
       <ejb-name>ActivityLog</ejb-name>
       <home>com.freshdirect.customer.ejb.ActivityLogHome</home>
       <remote>com.freshdirect.customer.ejb.ActivityLogSB</remote>
@@ -622,22 +601,6 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </entity>    
-    <entity>
-      <ejb-name>ErpInventory</ejb-name>
-      <home>com.freshdirect.erp.ejb.ErpInventoryHome</home>
-      <remote>com.freshdirect.erp.ejb.ErpInventoryEB</remote>
-      <ejb-class>
-      com.freshdirect.erp.ejb.ErpInventoryEntityBean</ejb-class>
-      <persistence-type>Bean</persistence-type>
-      <prim-key-class>
-      com.freshdirect.framework.core.PrimaryKey</prim-key-class>
-      <reentrant>false</reentrant>
-      <resource-ref>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-      </resource-ref>
-    </entity>
     <entity>
       <ejb-name>ErpMaterial</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpMaterialHome</home>
@@ -1157,39 +1120,6 @@ version="3.0">
         <method-name>*</method-name>
       </method>
       <trans-attribute>Supports</trans-attribute>
-    </container-transaction>
-    <!--
-        *****************************
-        *** Inventory Entity Bean ***
-        *****************************
-        -->
-    <container-transaction>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-name>*</method-name>
-      </method>
-      <trans-attribute>Supports</trans-attribute>
-    </container-transaction>
-    <container-transaction>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-intf>Home</method-intf>
-        <method-name>create</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>remove</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-name>setFromModel</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-name>setEntries</method-name>
-      </method>
-      <trans-attribute>Required</trans-attribute>
     </container-transaction>
     <!--
         *****************************

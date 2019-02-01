@@ -8,22 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBException;
-import javax.naming.Context;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
-import com.freshdirect.erp.ejb.ErpInventoryManagerHome;
-import com.freshdirect.erp.ejb.ErpInventoryManagerSB;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
@@ -215,28 +209,14 @@ public class FDInventoryJcoServer extends FdSapServer {
 	 * @param stockEntries
 	 * @throws EJBException
 	 */
-	private void updateInventories(List<ErpInventoryModel> stockEntries) throws EJBException {
-		Context ctx = null;
+	private void updateInventories(List<ErpInventoryModel> stockEntries) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInventoryManagerSB)) {
-				FDECommerceService.getInstance().updateInventories(stockEntries);
-			} else {
-				ctx = ErpServicesProperties.getInitialContext();
-				ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
-				ErpInventoryManagerSB sb = mgr.create();
-				sb.updateInventories(stockEntries);
-			}
-		} catch (Exception ex) {
+			FDECommerceService.getInstance().updateInventories(stockEntries);
+			
+		} catch (FDResourceException ex) {
 			LOG.error("updateInventories stockEntries=" + stockEntries, ex);
-			throw new EJBException(ex.toString());
-		} finally {
-			if (ctx != null) {
-				try {
-					ctx.close();
-				} catch (NamingException e) {
-				}
-			}
-		}
+			throw ex;
+		} 
 	}
 
 	/**

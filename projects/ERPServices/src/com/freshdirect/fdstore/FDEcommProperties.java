@@ -33,7 +33,6 @@ public class FDEcommProperties {
     private final static String FALSE="false";
     public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
     public static final String EnumManagerSB = "enums.ejb.EnumManagerSB";
-    public final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
     public final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
     public final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
     public final static String SAPProductFamilyLoaderSB = "sap.ejb.SAPProductFamilyLoaderSB";
@@ -92,7 +91,6 @@ public class FDEcommProperties {
         defaults.put(FDMonitorSB,FALSE);
         defaults.put(SaleCronSB,FALSE);
         defaults.put(EnumManagerSB,FALSE);
-        defaults.put(ErpInventoryManagerSB ,FALSE);
         defaults.put(DlvManagerSB ,FALSE);
         defaults.put(GCGatewaySB,FALSE);
         defaults.put(SAPProductFamilyLoaderSB,FALSE);

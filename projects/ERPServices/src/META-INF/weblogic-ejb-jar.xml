@@ -184,28 +184,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <jndi-name>freshdirect.erp.GiftCardManager</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
-      <ejb-name>ErpInventoryManager</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <ejb-reference-description>
-        <ejb-ref-name>ejb/ErpInventory</ejb-ref-name>
-        <jndi-name>freshdirect.erp.Inventory</jndi-name>
-      </ejb-reference-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.erp.InventoryManager</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
       <ejb-name>ActivityLog</ejb-name>
       <stateless-session-descriptor>
         <pool>
@@ -306,31 +284,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       </resource-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.content.AttributeFacade</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>ErpInventory</ejb-name>
-      <entity-descriptor>
-        <pool></pool>
-        <entity-cache>
-          <max-beans-in-cache>6000</max-beans-in-cache>
-          <idle-timeout-seconds>600</idle-timeout-seconds>
-          <concurrency-strategy>Database</concurrency-strategy>
-        </entity-cache>
-        <persistence>
-          <is-modified-method-name>
-          isModified</is-modified-method-name>
-          <delay-updates-until-end-of-tx>
-          true</delay-updates-until-end-of-tx>
-        </persistence>
-        <entity-clustering></entity-clustering>
-      </entity-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.erp.Inventory</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
       <ejb-name>ErpProduct</ejb-name>
@@ -1036,27 +989,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <transaction-isolation>
       <isolation-level>TransactionReadCommitted</isolation-level>
       <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-intf>Home</method-intf>
-        <method-name>create</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>remove</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-name>setFromModel</method-name>
-      </method>
-      <method>
-        <ejb-name>ErpInventory</ejb-name>
-        <method-name>setEntries</method-name>
-      </method>
-    </transaction-isolation>
-    <transaction-isolation>
-      <isolation-level>TransactionReadCommitted</isolation-level>
-      <method>
         <ejb-name>ErpProduct</ejb-name>
         <method-intf>Home</method-intf>
         <method-name>create</method-name>
@@ -1184,14 +1116,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <isolation-level>TransactionReadCommitted</isolation-level>
       <method>
         <ejb-name>Payment</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-    </transaction-isolation>
-    <transaction-isolation>
-      <isolation-level>TransactionReadCommitted</isolation-level>
-      <method>
-        <ejb-name>ErpInventoryManager</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>

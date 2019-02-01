@@ -85,10 +85,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
         <res-ref-name>jdbc/dbpool</res-ref-name>
         <jndi-name>fddatasource</jndi-name>
       </resource-description>
-      <ejb-reference-description>
-        <ejb-ref-name>ejb/ErpInventory</ejb-ref-name>
-        <jndi-name>freshdirect.erp.Inventory</jndi-name>
-      </ejb-reference-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.payment.Notify</jndi-name>
     </weblogic-enterprise-bean>    
