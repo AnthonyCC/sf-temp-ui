@@ -151,7 +151,7 @@ public class StandingOrderUtil {
 	 * 
 	 */
 	public static SOResult.Result process( FDStandingOrder so, FDStandingOrderAltDeliveryDate altDateInfo, TimeslotEvent event, FDActionInfo info
-					, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek, boolean isSendReminderNotificationEmail) throws FDResourceException {
+					, boolean forceCapacity, boolean createIfSoiExistsForWeek, boolean isSendReminderNotificationEmail) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );
 		boolean errorOccured = false;
@@ -695,7 +695,7 @@ public class StandingOrderUtil {
 
 			LOGGER.info( "Order placed successfully. OrderId = " + orderId );
 			
-			sendSuccessMail( so, customerInfo, orderId, unavCartItems, mailerHome );
+			sendSuccessMail( so, customerInfo, orderId, unavCartItems );
 			
 			// step delivery date 
 			so.skipDeliveryDate();
@@ -736,42 +736,30 @@ public class StandingOrderUtil {
 		FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
 	}
 	
-	private static void sendSuccessMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, List<FDCartLineI> unavCartItems, MailerGatewayHome mailerHome ) {
+	private static void sendSuccessMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, List<FDCartLineI> unavCartItems) {
 		try {
 			FDOrderI order = FDCustomerManager.getOrder( orderId );
 			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmStandingOrderEmail( customerInfo, order, so, unavCartItems );
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(mail);
-			} else {		
-				MailerGatewaySB mailer = mailerHome.create();
-				mailer.enqueueEmail( mail );
-			}
+			FDECommerceService.getInstance().enqueueEmail(mail);
+			
 		} catch ( FDResourceException e ) {
 			LOGGER.error("sending success mail failed", e);
 		} catch ( RemoteException e ) {
-			LOGGER.error("sending success mail failed", e);
-		} catch ( CreateException e ) {
 			LOGGER.error("sending success mail failed", e);
 		}
 	}
 	
-	private static void sendNotificationMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, MailerGatewayHome mailerHome ) {
+	private static void sendNotificationMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId ) {
 		try {
 			FDOrderI order = FDCustomerManager.getOrder( orderId );
 			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmDeliveryStandingOrderEmail( customerInfo, order, so, null );
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(mail);
-			} else {		
-				MailerGatewaySB mailer = mailerHome.create();
-				mailer.enqueueEmail( mail );
-			}
+			FDECommerceService.getInstance().enqueueEmail(mail);
+			
 		} catch ( FDResourceException e ) {
 			LOGGER.error("sending notification mail failed", e);
 		} catch ( RemoteException e ) {
 			LOGGER.error("sending notification mail failed", e);
-		} catch ( CreateException e ) {
-			LOGGER.error("sending notification mail failed", e);
-		}
+		} 
 	}	
 
 	
@@ -1064,7 +1052,7 @@ public class StandingOrderUtil {
 		return contentKey;
 	}
 
-	public static void sendNotification( FDStandingOrder so, MailerGatewayHome mailerHome ) throws FDResourceException {		
+	public static void sendNotification( FDStandingOrder so ) throws FDResourceException {		
 		try {
 			List<FDOrderInfoI> orders = so.getAllOrders();
 			for ( FDOrderInfoI order : orders ) {
@@ -1074,7 +1062,7 @@ public class StandingOrderUtil {
 						LOGGER.info( "Not sending 2days notification email as order instance is cancelled: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
 					} else {
 						LOGGER.info( "Sending 2days notification email: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
-						sendNotificationMail( so, so.getUserInfoEx(), order.getErpSalesId(), mailerHome );
+						sendNotificationMail( so, so.getUserInfoEx(), order.getErpSalesId() );
 					}
 				}
 			}			

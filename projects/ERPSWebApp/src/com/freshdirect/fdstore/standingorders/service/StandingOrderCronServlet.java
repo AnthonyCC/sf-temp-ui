@@ -7,13 +7,13 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.mail.MessagingException;
 
 import org.apache.log4j.Category;
 
@@ -22,10 +22,7 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
@@ -33,11 +30,11 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.util.StandingOrderUtil;
-import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 /**
  
@@ -110,7 +107,6 @@ public class StandingOrderCronServlet extends HttpServlet {
 		} catch (Exception e) {
 			LOGGER.error("Failed to run standing order cron job manually", e);
 			invalidateSOSHome();
-			invalidateMailerHome();
 			sendError(response, "Standing order cron job fails ");
 		}
 
@@ -118,8 +114,6 @@ public class StandingOrderCronServlet extends HttpServlet {
 
 	private SOResult.Result placeStandingOrder(String standingOrderId, Date altDate, Date startTime, Date endTime, String initiator) {
 
-		lookupMailerHome();
-		
 		if (standingOrderId == null) {
 			LOGGER.error("Empty standingOrderId passed.");
 			sendTechnicalMail("Empty standingOrderId passed.");
@@ -144,13 +138,12 @@ public class StandingOrderCronServlet extends HttpServlet {
 					so.setStartTime(startTime);
 					so.setEndTime(endTime);
 					so.clearLastError();
-					result = StandingOrderUtil.process( so, altDateInfo, event, info, mailerHome, true, true, false );
+					result = StandingOrderUtil.process( so, altDateInfo, event, info, true, true, false );
 				}else{
 					LOGGER.info( "Alternate date for standing order # " + standingOrderId + " missing." );
 					return null;
 				}
 			} catch (FDResourceException re) {
-				invalidateMailerHome();
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
 				result = SOResult.createTechnicalError( so, "Processing standing order failed with FDResourceException!" );
 			}
@@ -202,32 +195,6 @@ public class StandingOrderCronServlet extends HttpServlet {
 	
 	private static void invalidateSOSHome() {
 		soHome=null;
-	}
-	private static MailerGatewayHome mailerHome	= null;
-	
-	private static void invalidateMailerHome() {
-		mailerHome = null;
-	}
-	
-	private static void lookupMailerHome() {
-		if (mailerHome != null) {
-			return;
-		}		
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			mailerHome = (MailerGatewayHome) ctx.lookup( "freshdirect.mail.MailerGateway" );
-		} catch ( NamingException ne ) {
-			ne.printStackTrace();
-		} finally {
-			try {
-				if ( ctx != null ) {
-					ctx.close();
-				}
-			} catch ( NamingException ne ) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
 	}
 	
 private void logActivity ( FDStandingOrder so, SOResult.Result result, String initiator ) {

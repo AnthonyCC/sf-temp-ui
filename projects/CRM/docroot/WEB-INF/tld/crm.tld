@@ -31,38 +31,6 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
-	<tag>
-        <name>CrmCCNumberController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmCCNumberControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmCCNumberControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-		<attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-		<attribute>
-            <name>orderId</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
 	
 	<tag>
         <name>CrmGiftCardBalance</name>

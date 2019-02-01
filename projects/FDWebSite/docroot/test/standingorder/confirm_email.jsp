@@ -5,9 +5,7 @@
 <%@page import="com.freshdirect.fdstore.mail.FDStandingOrderEmail"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerInfo"%>
 <%@page import="javax.naming.NamingException"%>
-<%@page import="javax.naming.Context"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
-<%@page import="com.freshdirect.mail.ejb.MailerGatewayHome"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrdersManager"%>
 <%@page import="com.freshdirect.mail.ejb.MailerGatewaySB"%>
@@ -34,24 +32,6 @@
 	<title>Confirmation Email Send Test page</title>
 </head>
 <%
-	MailerGatewayHome		mailerHome			= null;
-	Context ctx = null;
-	try {
-		ctx = FDStoreProperties.getInitialContext();
-		mailerHome = (MailerGatewayHome) ctx.lookup( "freshdirect.mail.MailerGateway" );
-	} catch ( NamingException ne ) {
-		System.err.println("BANG1");
-		ne.printStackTrace();
-	} finally {
-		try {
-			if ( ctx != null ) {
-				ctx.close();
-			}
-		} catch ( NamingException ne ) {
-			System.err.println("BANG2");
-			ne.printStackTrace();
-		}
-	}
 
 	FDStandingOrder myso = null;
 	String soId = request.getParameter("soId");
@@ -92,12 +72,8 @@
 				mail.setHtmlEmail( false );
 			}
 
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(mail);
-			} else {
-				MailerGatewaySB mailer = mailerHome.create();
-				mailer.enqueueEmail( mail );
-			}
+			FDECommerceService.getInstance().enqueueEmail(mail);
+			
 			emailSent = true;
 		}
 	}

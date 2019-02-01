@@ -42,7 +42,6 @@ public class FDEcommProperties {
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
     public final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
     public final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
-	public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
