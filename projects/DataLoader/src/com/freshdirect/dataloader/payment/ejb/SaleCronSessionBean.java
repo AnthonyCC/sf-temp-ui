@@ -128,9 +128,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND =
 			"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'CPG'  "
 			+ " and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC'  "
-			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4)  " 
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=0.5)  " 
 			+ "or(sa.action_type='GCD' "
-			+ " and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4)) "
+			+ " and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=0.5)) "
 			+ " and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
 			+ " and sa1.id=pi.salesaction_id and PI.CARD_TYPE<>'EBT'  )";
 	
@@ -152,9 +152,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'POG' "
             +"and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' " 
-            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4) "  
+            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=0.5) "  
             +"or(sa.action_type='GCD'  "
-            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4)) "
+            +"and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=0.5)) "
             +"and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
             +"and sa1.id=pi.salesaction_id and PI.CARD_TYPE<>'EBT')";
 	
