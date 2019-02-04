@@ -45,7 +45,7 @@ public class ProductStatisticsProvider {
 	/**
 	 * Global product frequency map, Map<@link {@link ContentKey},Float>.
 	 */
-	protected Map<ContentKey, Float> globalProductScores = new HashMap<ContentKey, Float>();
+	protected Map<ContentKey, Float> globalProductScores = null;
 
 	/**
 	 * Get provider instance.
@@ -55,40 +55,14 @@ public class ProductStatisticsProvider {
 	 */
 	public synchronized static ProductStatisticsProvider getInstance() {
 		if (instance == null) {
-			try {
-				instance = new ProductStatisticsProvider();
-			} catch (NamingException e) {
-				LOGGER.error("could not initialize service", e);
-				throw new RuntimeException("could not initialize service", e);
-			} catch (RemoteException e) {
-				LOGGER.error("could not cache global product scores", e);
-			} catch (CreateException e) {
-				LOGGER.error("could not create SS session bean", e);
-			}
+			
+			instance = new ProductStatisticsProvider();
+			
 		}
 		return instance;
 	}
 
-	/**
-	 * Private constructor.
-	 * 
-	 * @throws NamingException
-	 * @throws RemoteException
-	 * @throws CreateException
-	 */
-	private ProductStatisticsProvider() throws NamingException, RemoteException, CreateException {
-
-		service = LogisticsServiceLocator.getInstance().getCommerceService();
-		try {
-			Map<String, Float> intermediaryMap = service.getDYFModelGlobalProductscores();
-			globalProductScores = convertSimpleMapToContentKeyMap(intermediaryMap);
-		} catch (FDResourceException e) {
-			throw new FDRuntimeException(e);
-
-		}
-
-	}
-
+	
 	/**
 	 * Get global product score.
 	 * 
@@ -97,6 +71,17 @@ public class ProductStatisticsProvider {
 	 * @return global popularity, -1
 	 */
 	public float getGlobalProductScore(ContentKey key) {
+		if (globalProductScores == null) {
+			service = LogisticsServiceLocator.getInstance().getCommerceService();
+			try {
+				Map<String, Float> intermediaryMap = service.getDYFModelGlobalProductscores();
+				globalProductScores = convertSimpleMapToContentKeyMap(intermediaryMap);
+			} catch (RemoteException e) {
+				LOGGER.error("could not cache global product scores", e);
+			} catch (FDResourceException e) {
+				throw new FDRuntimeException(e);
+			}
+		}
 		Float score = globalProductScores.get(key);
 		return score == null ? -1 : score.floatValue();
 	}
