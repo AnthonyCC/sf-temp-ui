@@ -14,7 +14,6 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
@@ -51,29 +50,24 @@ public class AddressUtil {
         }
 
 		// overwrite fields with new address
-        shpAddrToModify.setFrom(address);
-                
-        try {
-            
-			foundFraud = FDCustomerManager.updateShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), shpAddrToModify);
-            user.getShoppingCart().setDeliveryAddress(shpAddrToModify);
-            user.setAddress(shpAddrToModify);
-            
-//		      zero lat and long to clear cache and force geocode when order is placed (see dlvManagerDAO.getZoneCode())
-	        AddressInfo info = address.getAddressInfo();	        
-	        if(info != null){
-	        	info.setLatitude(0.0);
-	        	info.setLongitude(0.0);
-	        }
+		shpAddrToModify.setFrom(address);
 
-			if (foundFraud) {
-				user.updateUserState();
-			}
-			
-        } catch (ErpDuplicateAddressException ex){
-            LOGGER.error("AddressUtil:updateShipToAddress(): ErpDuplicateAddressException caught while trying to update a shipping address to the customer info:", ex);
-            result.addError(new ActionError("duplicate_user_address", "The information entered for this address matches an existing address in your account."));
-        }
+		foundFraud = FDCustomerManager.updateShipToAddress(AccountActivityUtil.getActionInfo(session),
+				!user.isDepotUser(), shpAddrToModify);
+		user.getShoppingCart().setDeliveryAddress(shpAddrToModify);
+		user.setAddress(shpAddrToModify);
+
+//		      zero lat and long to clear cache and force geocode when order is placed (see dlvManagerDAO.getZoneCode())
+		AddressInfo info = address.getAddressInfo();
+		if (info != null) {
+			info.setLatitude(0.0);
+			info.setLongitude(0.0);
+		}
+
+		if (foundFraud) {
+			user.updateUserState();
+		}
+
         return foundFraud;
     }
 
