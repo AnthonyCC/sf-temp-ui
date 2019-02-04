@@ -463,12 +463,11 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					var tsMouseOverFunc = function() {
 						if (dayId === expandedDay) { return; }
 						while(!fdTSDisplay.setDayAsExpanded(dayId)){};
-					}
-					if (fdTSDisplay.opts.mouseOverSetTimeout === null) {
-						fdTSDisplay.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
-					}else{ //fix stuck mouseovers
+
 						clearTimeout(fdTSDisplay.opts.mouseOverSetTimeout);
 						fdTSDisplay.opts.mouseOverSetTimeout = null;
+					}
+					if (fdTSDisplay.opts.mouseOverSetTimeout === null) {
 						fdTSDisplay.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
 					}
 				}
@@ -486,8 +485,9 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		/* day-level mouse out */
 			this.dayMouseOut = function(event) {
 				var elemId = $(this).attr('id');
+				var srcElem = $(event).target || $(event).srcElement;
 				var dayId = window.fdTSDisplay.convertId(elemId, 'dayId');
-				var srcDayId = window.fdTSDisplay.convertId(elemId, 'dayId');
+				var srcDayId = window.fdTSDisplay.convertId(srcElem, 'dayId');
 
 				//fdTSDisplay.log('dayMouseOut ', elemId, srcDayId);
 
@@ -499,7 +499,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 				//don't clear on child elems
 				if (dayId === srcDayId && srcDayId !== -1) { return }
-				
+
 				//clear waiting event
 				clearTimeout(fdTSDisplay.opts.mouseOverSetTimeout);
 				//reset on mouse out
