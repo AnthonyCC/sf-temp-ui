@@ -184,10 +184,6 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
-   <servlet>
-    <servlet-name>skuReplaceServlet</servlet-name>
-    <servlet-class>com.freshdirect.webapp.ajax.standingorder.SkuReplacementServlet</servlet-class>
-  </servlet> 
   <servlet>
     <servlet-name>excelExportServlet</servlet-name>
     <servlet-class>com.freshdirect.webapp.ajax.standingorder.ExcelExportServlet</servlet-class>
@@ -313,10 +309,6 @@
     <servlet-name>PromoPublishServlet</servlet-name>
     <url-pattern>/promo_publish</url-pattern>
   </servlet-mapping>
-   <servlet-mapping>
-    <servlet-name>skuReplaceServlet</servlet-name>
-    <url-pattern>/api/skuReplaceServlet</url-pattern>
-  </servlet-mapping> 
   <servlet-mapping>
     <servlet-name>excelExportServlet</servlet-name>
     <url-pattern>/api/excelExportServlet</url-pattern>
