@@ -975,38 +975,6 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-	<name>DeliveryPassController</name>
-	<tagclass>com.freshdirect.webapp.taglib.dlvpass.DeliveryPassControllerTag</tagclass>
-	<teiclass>com.freshdirect.webapp.taglib.dlvpass.DeliveryPassControllerTag$TagEI</teiclass>
-	<bodycontent>JSP</bodycontent>
-	<info></info>
-	<attribute>
-	    <name>dlvPass</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>actionName</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>increment</name>
-	    <required>false</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>noOfWeeks</name>
-	    <required>false</required>
-	    <rtexprvalue>false</rtexprvalue>
-	</attribute>
-	<attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>	
-     </tag>      
      <tag>
 	<name>GetDlvPassActivity</name>
 	<tagclass>com.freshdirect.webapp.taglib.dlvpass.GetDlvPassActivityTag</tagclass>
@@ -1077,28 +1045,7 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>	
       	</tag>    
-    <tag>
-	<name>CancelDPController</name>
-	<tagclass>com.freshdirect.webapp.taglib.dlvpass.CancelDPControllerTag</tagclass>
-	<teiclass>com.freshdirect.webapp.taglib.dlvpass.CancelDPControllerTag$TagEI</teiclass>
-	<bodycontent>JSP</bodycontent>
-	<info></info>
-	<attribute>
-	    <name>passes</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>actionName</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>	
-     </tag>      
+ 
     <tag>
       	<name>GetRestrictedDlv</name>
       	<tagclass>com.freshdirect.webapp.taglib.fdstore.GetRestrictedDlvTag</tagclass>

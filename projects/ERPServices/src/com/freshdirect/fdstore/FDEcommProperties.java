@@ -44,7 +44,6 @@ public class FDEcommProperties {
     public final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
-	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String PayPalServiceSB = "ewallet.ejb.PayPalServiceSB";
 	public static final String MasterpassServiceSB = "ewallet.ejb.MasterpassServiceSB";
 	public static final String CrmManagerSB = "crm.ejb.CrmManagerSB";
@@ -95,7 +94,6 @@ public class FDEcommProperties {
         defaults.put(CmsFeedmanagerSB, FALSE);
         defaults.put(RestrictedPaymentMethodSB,FALSE);
         defaults.put(ErpComplaintManagerSB,FALSE);
-        defaults.put(DlvPassManagerSB, FALSE);
         defaults.put(PayPalServiceSB, FALSE);
         defaults.put(MasterpassServiceSB, FALSE);
         defaults.put(CrmManagerSB, FALSE);

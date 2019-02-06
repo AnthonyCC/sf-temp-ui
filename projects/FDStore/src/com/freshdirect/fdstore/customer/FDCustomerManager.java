@@ -2463,19 +2463,9 @@ public class FDCustomerManager {
 
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
-				return DlvPassManagerService.getInstance().hasPurchasedPass(customerPK);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.hasPurchasedPass(customerPK);
-			}
+			return DlvPassManagerService.getInstance().hasPurchasedPass(customerPK);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -2795,20 +2785,10 @@ public class FDCustomerManager {
 		Object[] autoRenewInfo = null;
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)) {
-				autoRenewInfo = DlvPassManagerService.getInstance().getAutoRenewalInfo(eStore);
-			}else{	
-				lookupManagerHome();	
-				FDCustomerManagerSB sb = managerHome.create();
-				autoRenewInfo = sb.getAutoRenewalInfo(eStore);
-			}
+			autoRenewInfo = DlvPassManagerService.getInstance().getAutoRenewalInfo(eStore);
 			
 			return autoRenewInfo;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -4121,22 +4101,10 @@ public class FDCustomerManager {
 		public static  List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException{
 			
 			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)) {
-					return DlvPassManagerService.getInstance().getAllCustIdsOfFreeTrialSubsOrder();
-				}else{
-					lookupManagerHome();
-					FDCustomerManagerSB sb = managerHome.create();
-					return sb.getAllCustIdsOfFreeTrialSubsOrder();
-				}
-				
+				return DlvPassManagerService.getInstance().getAllCustIdsOfFreeTrialSubsOrder();
 				
 			}catch (RemoteException e) {
 				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
-				invalidateManagerHome();
-				throw new FDResourceException(e, "Error creating session bean");
-			} catch (CreateException e) {
-				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
-				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
 			}
 		}
