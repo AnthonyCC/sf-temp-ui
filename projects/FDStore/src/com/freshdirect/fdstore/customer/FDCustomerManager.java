@@ -2636,26 +2636,14 @@ public class FDCustomerManager {
 			CardInUseException, CardOnHoldException, FDResourceException {
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				return CustomerGiftCardService.getInstance().applyGiftCard(identity, givexNum, info);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.applyGiftCard(identity, givexNum, info);
-			}
+			return CustomerGiftCardService.getInstance().applyGiftCard(identity, givexNum, info);
 			
 
 		} catch (InvalidCardException ie) {
-			invalidateManagerHome();
 			throw ie;
 		} catch (CardInUseException ce) {
-			invalidateManagerHome();
 			throw ce;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2672,19 +2660,8 @@ public class FDCustomerManager {
 	 */
 	public static FDGiftCardInfoList getGiftCards(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				return new FDGiftCardInfoList(CustomerGiftCardService.getInstance().getGiftCards(identity));
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-
-				return new FDGiftCardInfoList(sb.getGiftCards(identity));
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return new FDGiftCardInfoList(CustomerGiftCardService.getInstance().getGiftCards(identity));
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2733,18 +2710,8 @@ public class FDCustomerManager {
 			FDIdentity identity, String saleId, String certificationNum)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
 				return CustomerGiftCardService.getInstance().getRecipientDlvInfo(identity, saleId, certificationNum);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getRecipientDlvInfo(identity, saleId, certificationNum);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2753,18 +2720,8 @@ public class FDCustomerManager {
 			String resendEmailId, String recipName, String personalMsg,
 			EnumTransactionSource source) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				return CustomerGiftCardService.getInstance().resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerGiftCardService.getInstance().resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2927,18 +2884,8 @@ public class FDCustomerManager {
 	public static void saveDonationOptIn(String custId, String saleId, boolean optIn) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				CustomerGiftCardService.getInstance().saveDonationOptIn(custId, saleId, optIn);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.saveDonationOptIn(custId, saleId, optIn);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerGiftCardService.getInstance().saveDonationOptIn(custId, saleId, optIn);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2946,21 +2893,8 @@ public class FDCustomerManager {
 	public static void resubmitGCOrders() {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				CustomerGiftCardService.getInstance().resubmitGCOrders();
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.resubmitGCOrders();
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			// throw new FDResourceException(ce, "Error creating session bean");
-			LOGGER.warn("Error creating session bean:" + ce);
+			CustomerGiftCardService.getInstance().resubmitGCOrders();
 		} catch (RemoteException re) {
-			invalidateManagerHome();
-			// throw new FDResourceException(re,
-			// "Error talking to session bean");
 			LOGGER.warn("Error talking to session bean:" + re);
 		} catch (FDResourceException fe) {
 			LOGGER.warn("Error looking up for manager:" + fe);
