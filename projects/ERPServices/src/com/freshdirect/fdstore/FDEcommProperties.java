@@ -52,7 +52,6 @@ public class FDEcommProperties {
 	public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
 	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB";
 	public static final String SitemapSB = "fdstore.sitemap.SitemapSB";
-	public static final String GiftCardManagerSB = "giftcard.ejb.GiftCardManagerSB";
 	public final static String PostSettlementNotifySB ="payment.ejb.PostSettlementNotifySB";
 	
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
@@ -63,7 +62,6 @@ public class FDEcommProperties {
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String FDCustomerGiftCard = "com.freshdirect.customer.giftCard";
 	public static final String FDCustomerComplaint = "com.freshdirect.customer.complaint";
-	public static final String FDCustomerReport = "com.freshdirect.customer.report";
 	public static final String FDCustomerInfo = "com.freshdirect.customer.info";
 	public static final String FDCustomer = "com.freshdirect.customer";
 	public static final String FDCustomerMisc1 = "com.freshdirect.customer.misc1";
