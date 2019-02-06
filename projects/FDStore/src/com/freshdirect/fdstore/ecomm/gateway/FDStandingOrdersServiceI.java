@@ -20,8 +20,6 @@ import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public interface FDStandingOrdersServiceI {
-//	public FDStandingOrder createStandingOrder(FDCustomerList list) throws FDResourceException, RemoteException;
-	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo) throws FDResourceException, RemoteException;
 	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException,RemoteException;
 	public FDStandingOrder load(PrimaryKey pk) throws FDResourceException, RemoteException;
 	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException, RemoteException;
@@ -68,6 +66,5 @@ public interface FDStandingOrdersServiceI {
 	public void updateNewSoFeaturePreferences(String customerId)throws FDResourceException,RemoteException;
 	public void updateDeActivatedSOError(String soId)throws FDResourceException,RemoteException;
 	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException, RemoteException;
-	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException, RemoteException;
 	
 }
