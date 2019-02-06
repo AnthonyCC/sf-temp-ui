@@ -1254,17 +1254,8 @@ public class FDCustomerManager {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
 
 				FDReservation reservation = null;
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")) {
-					reservation = OrderResourceApiClient.getInstance().cancelOrder(info, saleId, sendEmail,
+				reservation = OrderResourceApiClient.getInstance().cancelOrder(info, saleId, sendEmail,
 							currentDPExtendDays, restoreReservation);
-
-				} else {
-					if (managerHome == null) {
-						lookupManagerHome();
-					}
-					FDCustomerManagerSB sb = managerHome.create();
-					reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
-				}
 
 				// invalidate quickshop past orders cache
 				CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName,
@@ -1275,11 +1266,7 @@ public class FDCustomerManager {
 
 			throw new FDResourceException("Order not found in current user's order history.");
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1616,101 +1603,69 @@ public class FDCustomerManager {
 	/**
 	 * @return FDCartModel with unavailability info populated
 	 */
-	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout,String isFromLogin) throws FDResourceException {
-		
-		try {
-			
+	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout, String isFromLogin)
+			throws FDResourceException {
 
-			boolean skipModifyLines = true;
-			boolean sameDeliveryDate = true;
-			if (cart instanceof FDModifyCartModel) {
-				FDReservation originalReservation = ((FDModifyCartModel) cart).getOriginalOrder().getDeliveryReservation();
-				Date d1 = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
-				Date d2 = DateUtil.truncate(originalReservation.getStartTime());
-				if (d1.before(d2)) {
-					// order moved to a prior day, need to re-check everything
-					skipModifyLines = false;
-				}
-				if(d1.after(d2) || d1.before(d2)){
-					sameDeliveryDate = false;
-				}
-				ErpDeliveryPlantInfoModel origPlantInfo=((FDModifyCartModel) cart).getOriginalOrder().getDeliveryPlantInfo();
-				if(origPlantInfo!=null && !(origPlantInfo.getPlantId().equals(cart.getDeliveryPlantInfo().getPlantId()))) {
-
-					skipModifyLines = false;
-				}
-
+		boolean skipModifyLines = true;
+		boolean sameDeliveryDate = true;
+		if (cart instanceof FDModifyCartModel) {
+			FDReservation originalReservation = ((FDModifyCartModel) cart).getOriginalOrder().getDeliveryReservation();
+			Date d1 = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
+			Date d2 = DateUtil.truncate(originalReservation.getStartTime());
+			if (d1.before(d2)) {
+				// order moved to a prior day, need to re-check everything
+				skipModifyLines = false;
 			}
-
-			// note: FDModifyCartLineI instances skipped
-			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
-			Map<String, FDAvailabilityI> fdInvMap = null;
-			long timer = System.currentTimeMillis();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("checkAvailability_Api")) {
-				fdInvMap = OrderResourceApiClient.getInstance().checkAvailability(identity, createOrder, timeout, isFromLogin);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
-
+			if (d1.after(d2) || d1.before(d2)) {
+				sameDeliveryDate = false;
 			}
-			timer = System.currentTimeMillis() - timer;
-			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines, sameDeliveryDate);
-			cart.setAvailability(new FDCompositeAvailability(invs));
+			ErpDeliveryPlantInfoModel origPlantInfo = ((FDModifyCartModel) cart).getOriginalOrder()
+					.getDeliveryPlantInfo();
+			if (origPlantInfo != null
+					&& !(origPlantInfo.getPlantId().equals(cart.getDeliveryPlantInfo().getPlantId()))) {
 
-			if (FDStoreProperties.isAtpAvailabiltyLogEnabled()) {
-				int unavCount = 0;
-				for ( String key : invs.keySet() ) {
-					FDAvailabilityI inv = invs.get(key);
-					FDReservation deliveryReservation = cart.getDeliveryReservation();
-					DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
-					FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
-					if (!info.isAvailable()) {
-						unavCount++;
-						FDCartLineI cartLine = cart.getOrderLineById(new Integer(key));
-						LOGGER.info(
-							"User "
-								+ identity
-								+ " requested "
-								+ cartLine.getQuantity()
-								+ " "
-								+ cartLine.getSalesUnit()
-								+ " "
-								+ cartLine.getSkuCode()
-								+ " confirmed "
-								+ (info instanceof FDStockAvailabilityInfo ? ((FDStockAvailabilityInfo) info).getQuantity() : 0));
-					}
-				}
-
-				LOGGER.info(
-					"ATP for user "
-						+ identity
-						+ " with "
-						+ cart.numberOfOrderLines()
-						+ " lines took "
-						+ timer
-						+ " msecs, affected "
-						+ unavCount
-						+ " lines");
-
+				skipModifyLines = false;
 			}
-
-			return cart;
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			LOGGER.warn("Error creating session bean", ce);
-			throw new FDResourceException(ce, "Error creating session bean");
-
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			LOGGER.warn("Error talking to session bean", re);
-			throw new FDResourceException(re, "Error talking to session bean");
 
 		}
 
-	}
+		// note: FDModifyCartLineI instances skipped
+		ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines,
+				sameDeliveryDate);
+		Map<String, FDAvailabilityI> fdInvMap = null;
+		long timer = System.currentTimeMillis();
+		fdInvMap = OrderResourceApiClient.getInstance().checkAvailability(identity, createOrder, timeout, isFromLogin);
+		timer = System.currentTimeMillis() - timer;
+		Map<String, FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap,
+				skipModifyLines, sameDeliveryDate);
+		cart.setAvailability(new FDCompositeAvailability(invs));
 
+		if (FDStoreProperties.isAtpAvailabiltyLogEnabled()) {
+			int unavCount = 0;
+			for (String key : invs.keySet()) {
+				FDAvailabilityI inv = invs.get(key);
+				FDReservation deliveryReservation = cart.getDeliveryReservation();
+				DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(),
+						deliveryReservation.getEndTime());
+				FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
+				if (!info.isAvailable()) {
+					unavCount++;
+					FDCartLineI cartLine = cart.getOrderLineById(new Integer(key));
+					LOGGER.info("User " + identity + " requested " + cartLine.getQuantity() + " "
+							+ cartLine.getSalesUnit() + " " + cartLine.getSkuCode() + " confirmed "
+							+ (info instanceof FDStockAvailabilityInfo ? ((FDStockAvailabilityInfo) info).getQuantity()
+									: 0));
+				}
+			}
+
+			LOGGER.info("ATP for user " + identity + " with " + cart.numberOfOrderLines() + " lines took " + timer
+					+ " msecs, affected " + unavCount + " lines");
+
+		}
+
+		return cart;
+
+	}
 
 	/**
 	 * Locate customer records matching the specified criteria
@@ -2943,38 +2898,20 @@ public class FDCustomerManager {
 			// Clear all charges
 			createOrder.setCharges(new ArrayList<ErpChargeLineModel>());
 		
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeDonationOrder_Api")){
-	    		orderId =  OrderResourceApiClient.getInstance().placeDonationOrder(info, createOrder,
-						appliedPromos, cart.getDeliveryReservation().getPK()
-						.getId(), sendEmail, cra,
-				info.getAgent() == null ? null : info.getAgent().getRole(),
-				status, isOptIn);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-			orderId = sb.placeDonationOrder(info, createOrder,
+			orderId =  OrderResourceApiClient.getInstance().placeDonationOrder(info, createOrder,
 					appliedPromos, cart.getDeliveryReservation().getPK()
-							.getId(), sendEmail, cra,
-					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status, isOptIn);
-			}
-			// sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(),
-			// orderId, EnumSaleType.GIFTCARD, cra);
+					.getId(), sendEmail, cra,
+			info.getAgent() == null ? null : info.getAgent().getRole(),
+			status, isOptIn);
+			
 
 			//invalidate quickshop past orders cache
             CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName, info.getIdentity().getErpCustomerPK());
 
 			return orderId;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
-		} /*
-		 * catch (ErpSaleNotFoundException e) { invalidateManagerHome(); throw
-		 * new FDResourceException(e, "Error talking to session bean"); }
-		 */
+		}
 	}
 
 	public static ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(
@@ -3365,20 +3302,10 @@ public class FDCustomerManager {
 	public static boolean isReadyForPick(String orderNum) throws FDResourceException {
 		try {
 			boolean result;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("ReadyForPickOrders_Api")) {
-				result=CustomersApi.getInstance().isReadyForPick(orderNum);
-			}else {
-				lookupManagerHome();			
-				FDCustomerManagerSB sb = managerHome.create();
-				result= sb.isReadyForPick(orderNum);
-
-			}
+			result=CustomersApi.getInstance().isReadyForPick(orderNum);
+			
 			return result;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3794,19 +3721,10 @@ public class FDCustomerManager {
 			
 			ShortSubstituteResponse ssResponse = null;
 			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("ShortSubstituteOrders_Api")) {
 				ssResponse=CustomersApi.getInstance().getShortSubstituteOrders(orderList);
-				}else {
-					lookupManagerHome();	
-					FDCustomerManagerSB sb = managerHome.create();
-					ssResponse= sb.getShortSubstituteOrders(orderList);
-				}
+				
 				return ssResponse;
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
 			} catch (RemoteException re) {
-				invalidateManagerHome();
 				LOGGER.debug("RemoteException: ", re);
 				throw new FDResourceException(re, "Error talking to session bean");
 }
