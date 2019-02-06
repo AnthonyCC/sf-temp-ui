@@ -61,7 +61,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			}
 
 } else {
-	List<CrmVSCampaignModel> campaigns = CallCenterServices.getVSCampaignList();
+	List<CrmVSCampaignModel> campaigns = null;
 %>
 
 <tmpl:insert template='/template/top_nav.jsp'>
@@ -348,7 +348,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				cModel.setPhonenumbers(phonenumbers);
 				cModel.setRouteList(vroutes);
 				cModel.setManual("true".equals(request.getParameter("manual"))?true:false);
-				String call_id = CallCenterServices.saveVSCampaignInfo(cModel);
+				String call_id = null;
 				
 				StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
 				originalXML.append(campaignMenuID);

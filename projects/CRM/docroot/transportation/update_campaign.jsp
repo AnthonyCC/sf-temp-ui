@@ -1,7 +1,6 @@
 <%@ page import='com.freshdirect.crm.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.crm.CrmVSCampaignModel"%>
-<%@ page import='com.freshdirect.fdstore.CallCenterServices' %>
 <%@ page import='com.freshdirect.webapp.taglib.crm.CrmSession' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -76,7 +75,6 @@
 			model.setCampaignId(request.getParameter("cid"));
 			model.setDelay(Integer.parseInt(camp_minutes));
 			
-			CallCenterServices.updateCampaign(model);
 			processed = true;
 		} else {
 			cModel = new CrmVSCampaignModel();
@@ -86,7 +84,6 @@
 			cModel.setSoundFileText(sound_file_text);		
 		}
 	} else {		
-		cModel = CallCenterServices.getCampaignDetails(id);	
 		camp_minutes = cModel.getDelay() + "";
 	}
 %>

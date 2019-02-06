@@ -72,8 +72,6 @@
 			model.setSoundFileText(sound_file_text);
 			model.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
 			model.setDelay(Integer.parseInt(camp_minutes));
-			
-			CallCenterServices.addNewCampaign(model);
 			processed = true;
 		}
 	}

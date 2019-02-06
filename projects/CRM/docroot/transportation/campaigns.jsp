@@ -36,7 +36,7 @@
 			
 			
 			<%
-				List<CrmVSCampaignModel> campaigns = CallCenterServices.getVSCampaignList();
+				List<CrmVSCampaignModel> campaigns = null;
 			%>
 			<script language="Javascript">
 				var cids = new Array();
