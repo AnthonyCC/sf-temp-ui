@@ -76,13 +76,9 @@ public class StandingOrderHelperService extends WebActionSupport {
 		}
 		ErpAddressModel address = cart.getDeliveryAddress();
 
-		if (address instanceof ErpDepotAddressModel) {
-			FDCustomerManager.setDefaultDepotLocationPK(user.getIdentity(), ((ErpDepotAddressModel) address).getLocationId());
-		} else {
-			// get the address pk and set the default address
-			FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
-
-		}
+		
+		// get the address pk and set the default address
+		FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
 
 		/**
 		 * Prepare a standing order object

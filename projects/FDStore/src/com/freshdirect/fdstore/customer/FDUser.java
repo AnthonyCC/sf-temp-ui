@@ -1507,14 +1507,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public boolean isReferrerRestricted() throws FDResourceException {
-        if (this.identity == null) {
-            return false;
-        }
-        return FDCustomerManager.isReferrerRestricted(this.identity);
-    }
-
-    @Override
     public boolean isReferrerEligible() throws FDResourceException {
         if (referrerEligible == null) {
             EligibilityCalculator calc = new EligibilityCalculator("REFERRER");

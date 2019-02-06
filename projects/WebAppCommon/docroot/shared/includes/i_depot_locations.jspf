@@ -11,7 +11,7 @@ String fldDepotLocation = request.getParameter("selectAddressList");
 boolean checkedAddress = false;
 
 if (user !=null && user.getIdentity() != null){
- 	defaultDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
+ 	defaultDepotLocation = null;
 }
 
 if(fldDepotLocation != null && fldDepotLocation.startsWith("DEPOT_")){

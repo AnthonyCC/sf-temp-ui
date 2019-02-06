@@ -15,7 +15,7 @@ Collection pickups = FDDeliveryManager.getInstance().getPickupDepots();
 boolean theHamptonsIsOn = FDStoreProperties.isSummerServiceEnabled();
 String  defaultDepotLocation = "";
 if (user !=null && user.getIdentity() != null){
- 	defaultDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
+ 	defaultDepotLocation = null;
 }
 String fldDepotLocation = request.getParameter("selectAddressList");
 boolean checkedAddress = false;

@@ -600,61 +600,6 @@
     </tag>
     
     <tag>
-        <name>CrmCustomerInfoController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmCustomerInfoControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmCustomerInfoControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>customerInfo</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    
-      <tag>
-        <name>CrmDepotMembershipController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmDepotMembershipControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmDepotMembershipControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>user</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <name>CrmVIPSettingController</name>
         <tagclass>com.freshdirect.webapp.taglib.crm.CrmVIPSettingControllerTag</tagclass>
         <teiclass>com.freshdirect.webapp.taglib.crm.CrmVIPSettingControllerTag$TagEI</teiclass>
@@ -971,28 +916,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>	
     </tag> 
-        <tag>
-            <name>SubscriptionController</name>
-            <tagclass>com.freshdirect.webapp.taglib.crm.CrmSubscriptionControllerTag</tagclass>
-            <teiclass>com.freshdirect.webapp.taglib.crm.CrmSubscriptionControllerTag$TagEI</teiclass>
-            <bodycontent>JSP</bodycontent>
-            <info></info>
-        	<attribute>
-            	<name>PaymentMethod</name>
-            	<required>false</required>
-            	<rtexprvalue>true</rtexprvalue>
-        	</attribute>
-            <attribute>
-                <name>successPage</name>
-                <required>true</required>
-                <rtexprvalue>true</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>result</name>
-                <required>true</required>
-                <rtexprvalue>false</rtexprvalue>
-            </attribute>
-        </tag>
+       
     <tag>
         <name>GiftCardController</name>
         <tagclass>com.freshdirect.webapp.taglib.callcenter.GiftCardControllerTag</tagclass>		

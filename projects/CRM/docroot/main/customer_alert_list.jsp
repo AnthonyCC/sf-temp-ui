@@ -19,7 +19,7 @@
 SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 FDIdentity identity = user.getIdentity();
-List customerAlerts = FDCustomerManager.getAlerts(identity.getErpCustomerPK());
+List customerAlerts = null;
 boolean showAddAlertLink = false;
 for (Iterator iter = EnumAlertType.iterator(); iter.hasNext();) {
 	EnumAlertType alertType = (EnumAlertType) iter.next();

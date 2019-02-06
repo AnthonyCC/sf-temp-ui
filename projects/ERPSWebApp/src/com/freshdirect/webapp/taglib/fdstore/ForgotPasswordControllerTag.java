@@ -110,18 +110,6 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 					//skip content if redirecting
 					return SKIP_BODY;
 				}
-
-			} else if (passStep.equals("checkHint")) {
-				//
-				// Check if hint answer is correct
-				//
-				if (isLinkExpired(email, link)) {
-					this.doRedirect(URI_LINK_EXPIRED);
-					return SKIP_BODY;
-				} else {
-					performCheckHint(result, request);
-				}
-
 			} else if (passStep.equals("changePassword")) {
 				//
 				// changes user password
@@ -133,36 +121,6 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 		// place the result as a scripting variable in the page
 		pageContext.setAttribute(this.results, result);
 		return EVAL_BODY_BUFFERED;
-	}
-
-	private void performCheckHint(ActionResult result, HttpServletRequest request) {
-		getHintData(request);
-		validateHintInput(result);
-		LOGGER.debug("Validating: " + hint + " for " + email);
-		if (result.isSuccess()) {
-			try {
-				if (FDCustomerManager.isCorrectPasswordHint(email, hint)) {
-					pageContext.setAttribute(this.password, "true");
-
-				} else {
-					LOGGER.debug("Hint not Valid");
-					result.addError(new ActionError("invalid_hint", SystemMessageList.MSG_INVALID_HINT));
-				}
-
-			} catch (FDResourceException ex) {
-				result.addError(new ActionError("invalid_hint", SystemMessageList.MSG_INVALID_HINT));
-				LOGGER.warn("Failed to locate customer", ex);
-
-			} catch (ErpFraudException ex) {
-				//
-				// Number of unsuccessful guesses > 5
-				//
-				result.addError(new ActionError("numberOfAttempts", 
-	            		MessageFormat.format(SystemMessageList.MSG_NUMBER_OF_ATTEMPTS, 
-	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-				LOGGER.warn("Exceeded allowed number of guesses", ex);
-			}
-		}
 	}
 
 	private void performChangePassword(
