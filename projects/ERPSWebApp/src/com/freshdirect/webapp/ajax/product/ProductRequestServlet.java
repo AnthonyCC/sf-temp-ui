@@ -204,21 +204,12 @@ public class ProductRequestServlet extends HttpServlet {
 			List<HashMap<String, String>> deptsList;
 			List<HashMap<String, String>> catsList;
 			List<HashMap<String, String>> mappingList;
-			//sb returns all, including obsolete, so clean it up
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				ProductRequestData productRequestData = CustomerInfoService.getInstance().productRequestFetchAll();
-				deptsList = cleanObsolete(productRequestData.getDepartments());
-				catsList = cleanObsolete(productRequestData.getCategories());
-				mappingList = cleanObsolete(productRequestData.getMapping());
-			} else {
-				Context ctx = getInitialContext();
-				FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
-				FDCustomerManagerSB sb = home.create();
-				deptsList = cleanObsolete(sb.productRequestFetchAllDepts());
-				catsList = cleanObsolete(sb.productRequestFetchAllCats());
-				mappingList = cleanObsolete(sb.productRequestFetchAllMappings());
-			}
-			//create a data structure we can use easily for lookups (i.e. ID={DATA})
+			ProductRequestData productRequestData = CustomerInfoService.getInstance().productRequestFetchAll();
+			deptsList = cleanObsolete(productRequestData.getDepartments());
+			catsList = cleanObsolete(productRequestData.getCategories());
+			mappingList = cleanObsolete(productRequestData.getMapping());
+
+			// create a data structure we can use easily for lookups (i.e. ID={DATA})
 			HashMap<String, HashMap<String, String>> deptsMap = listToMap(deptsList, "ID");
 			HashMap<String, HashMap<String, String>> catsMap = listToMap(catsList, "ID");
 			
@@ -280,13 +271,7 @@ public class ProductRequestServlet extends HttpServlet {
 					LOGGER.debug("Missing Dept or Cat info: "+curMap);
 				}
 			}
-		} catch (NamingException e) {
-			LOGGER.error("Unable to fetch Product Request Data (Cat/Dept Map)");
-			e.printStackTrace();
 		} catch (RemoteException e) {
-			LOGGER.error("Unable to fetch Product Request Data (Cat/Dept Map)");
-			e.printStackTrace();
-		} catch (CreateException e) {
 			LOGGER.error("Unable to fetch Product Request Data (Cat/Dept Map)");
 			e.printStackTrace();
 		} catch (FDResourceException e) {
