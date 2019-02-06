@@ -831,19 +831,8 @@ public class FDCustomerManager {
 	 */
 	public static boolean updateCustomerInfo(FDActionInfo info, ErpCustomerInfoModel customerInfo) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				return CustomerInfoService.getInstance().updateCustomerInfo(info, customerInfo);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.updateCustomerInfo(info, customerInfo);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().updateCustomerInfo(info, customerInfo);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2492,20 +2481,8 @@ public class FDCustomerManager {
 
 	public static FDUser getFDUser(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				return CustomerIdentityService.getInstance().recognize(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				FDUser user = sb.recognize(identity);
-				return user;
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerIdentityService.getInstance().recognize(identity);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3562,21 +3539,9 @@ public class FDCustomerManager {
 	public static void updateDpFreeTrialOptin(boolean dpFreeTrialOptin, String custId, FDActionInfo info)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				CustomerDeliveryPassService.getInstance().setDpFreeTrialOptin(dpFreeTrialOptin, custId, info);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.setDpFreeTrialOptin(dpFreeTrialOptin, custId, info);
-			}
-
+			CustomerDeliveryPassService.getInstance().setDpFreeTrialOptin(dpFreeTrialOptin, custId, info);
 		} catch (RemoteException e) {
 			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -3584,21 +3549,10 @@ public class FDCustomerManager {
 	public static Date getDpFreeTrialOptinDate(String custId) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				return CustomerDeliveryPassService.getInstance().getDpFreeTrialOptinDate(custId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDpFreeTrialOptinDate(custId);
-			}
+			return CustomerDeliveryPassService.getInstance().getDpFreeTrialOptinDate(custId);
 
 		} catch (RemoteException e) {
 			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -3633,20 +3587,9 @@ public class FDCustomerManager {
 	public static void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
 				CustomerInfoService.getInstance().updateFDCustomerEStoreInfo(fdCustomerEStoreModel, custId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.updateFDCustomerEStoreInfo(fdCustomerEStoreModel, custId);
-			}
 		} catch (RemoteException e) {
 			LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -3668,21 +3611,9 @@ public class FDCustomerManager {
 			EnumEStoreId eStore) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				CustomerDeliveryPassService.getInstance().updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
-			}
-
+			CustomerDeliveryPassService.getInstance().updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
 		} catch (RemoteException e) {
 			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
