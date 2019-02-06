@@ -35,12 +35,7 @@
 			SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
 			Date user_date1 = format1.parse(route_date1);
 			
-			if(route != null) {
-				//routeStopLines = CallCenterServices.getRouteStopReport(user_date1, wave, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
-				  routeStopLines = CallCenterServices.getRouteStopReport(user_date1, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
-			} else {
-				route_error = true;
-			}
+			
     }
 if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getParameter("xPortVS")) && routeStopLines.size() > 0) { 
             response.addHeader ("Content-Disposition","attachment;filename=route_stop.txt");

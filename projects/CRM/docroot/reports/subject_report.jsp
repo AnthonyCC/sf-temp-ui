@@ -79,7 +79,7 @@ if ("POST".equals(request.getMethod())) {
         dateParam = cal.getTime();
         dateParam2 = cal2.getTime();
         showAutoCases = "true".equals(request.getParameter("showAutoCases")) ? true : false ;
-        subjectLines = CallCenterServices.getSubjectReport(dateParam, dateParam2, showAutoCases);
+        subjectLines = null;
 }
 %>
 <jsp:include page="/includes/reports_nav.jsp" />

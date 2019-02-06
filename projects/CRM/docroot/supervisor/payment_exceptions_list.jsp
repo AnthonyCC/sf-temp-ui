@@ -15,7 +15,7 @@
 
 <tmpl:put name='content' direct='true'>
 
-<%	Collection sales = CallCenterServices.getFailedAuthorizationSales(); %>
+<%	Collection sales = null; %>
 
 <div class="sub_nav">
 <span class="sub_nav_title">Payment Exceptions ( <span class="result"><%= sales.size() %></span> )</span> A = Automatic Order   M = Manual Order

@@ -38,7 +38,7 @@ if ("POST".equals(request.getMethod())) {
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.YEAR, year);
 
-        credits = CallCenterServices.getCreditSummaryForDate(cal.getTime());
+        credits = null;
 }
 %>
 

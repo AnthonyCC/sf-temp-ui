@@ -6,7 +6,6 @@
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
-<%@ page import="com.freshdirect.webapp.taglib.callcenter.AdminToolsControllerTag" %>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionType" %>
 
@@ -64,75 +63,7 @@
 		//}
 
 %>
-<crm:AdminToolsController result="result">
-<%
 
-	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    //request.setAttribute("admResult",result);
-
-%>
-	<fd:ErrorHandler result='<%= result %>' name='actionfailure' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>
-	</fd:ErrorHandler>
-	<fd:ErrorHandler result='<%= result %>' name='cancelsuccess' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>
-	</fd:ErrorHandler>
-<crm:GenericLocator id="restrictions" searchParam='PLATTER_RESTRICTION_SEARCH' result="result">
-	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>
-	</fd:ErrorHandler>
-	<fd:ErrorHandler result='<%= result %>' name='searchfailure' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>
-	</fd:ErrorHandler>
-<form name="delRestrictions" id="delRestrictions" method='POST' onsubmit="javascript:doSearch();">
-<%@ include file="/includes/admintools/i_platter_restriction_search.jspf"%>
-<input type="hidden" name="restrictionId" value="">
- <%
-           String successMsg=(String)request.getAttribute("successMsg");
-            if(successMsg==null) successMsg="";
-
-%>
-<table class="case_content_text" border="0" cellpadding="2" cellspacing="2" width="100%">
-	<tr>
-		<td colspan="2" align="center">
-			<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
-			<input type="submit" value="SEARCH PLATTER RESTRICTIONS" class="submit">&nbsp;&nbsp;
-			<input type="button" value="CLEAR" class="submit" onclick="javascript:clearAll();">
-		</td>
-
-
-	</tr>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b3> <font color="red"> <%=successMsg%> </font> <b3>
-    <tr colspan="2">
-	<td>
-    <A HREF="javascript:void(0)" onclick="window.open('/admintools/platterForm.jsp?actionType=getPlatterRestriction','getPlatterRestriction','width=350,height=400,menubar=no,status=no')"><b>View/Edit Weekly Platter Restrictions</b></a>
-    </td>
-	</tr>
-	<tr colspan="2">
-	<td>&nbsp;
-    </td>
-	</tr>
-	<tr colspan="2">
-	<td>
-		<span class="header_text"><b>List of Platter Restrictions</b></span>
-	</td>
-	</tr>
-	<tr><td colspan="2">
-	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:200;">
-		<%@ include file="/includes/admintools/restrictions_list.jspf"%>
-	</div>
-	</td></tr>
-	<tr>
-		<td colspan="2" align="center">
-			<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
-			<input type="button" value="ADD PLATTER RESTRICTION" class="submit" onclick="javascript:location.href='/admintools/platterRestrictionForm.jsp';">
-		</td>
-	</tr>
-	
-</table>
-</form>
-</crm:GenericLocator>
-</crm:AdminToolsController>
 </div>
 </tmpl:put>
 </tmpl:insert>
