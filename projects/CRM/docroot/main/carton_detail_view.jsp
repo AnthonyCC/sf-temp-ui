@@ -19,7 +19,7 @@
 		<fd:GetOrder id='order' saleId='<%= orderId %>' crm="<%= true %>">
 
 <%
-	List cartonInfo = null;
+	List cartonInfo = FDCustomerManager.getCartonDetails((FDOrderI) order);	
 %>
 
 <% int idx = 0; %>

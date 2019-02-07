@@ -943,6 +943,12 @@
 		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdpallplans/</from>
 		<to last="true">/account.do?action=getAllDlvPassPlans&amp;ver=$1</to>
 	</rule>
+
+	<!-- Email capture -->
+	<rule>
+		<from>^/v/([0-9]+)/emailcapture/(.*)</from>
+		<to last="true">/emailcapture.do?email=$2&amp;ver=$1</to>
+	</rule>
 	
 	<!-- Email capture ex-->
 	<rule>

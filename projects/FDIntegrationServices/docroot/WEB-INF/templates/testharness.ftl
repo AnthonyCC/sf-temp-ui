@@ -1002,6 +1002,11 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val("");
 
+  } else if (loaddata == "EmailCapture") {
+  	$("#url").val("/emailcapture/test@test.com");
+  	$("#header").val('');
+  	$("#payload").val("");
+
   } else if (loaddata == "EmailCaptureEX") {
   	$("#url").val("/emailcaptureEx/");
   	$("#header").val('');
@@ -1892,6 +1897,7 @@ function doStuff() {
   <option value="GetAllDlvPassPlans">ACCOUNT - Get All DeliveryPass Plans</option>
 
   <option value=""> ========== MISC ========== </option>
+  <option value="EmailCapture">Email Capture</option>
   <option value="EmailCaptureEX">Email Capture Ex</option>
   <option value="ConfiguredValues">Configured Values</option>
   <option value="Configuration">Configuration</option>
