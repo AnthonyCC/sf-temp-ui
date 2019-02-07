@@ -55,7 +55,6 @@ public class FDEcommProperties {
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
 	public static final String StandingOrdersServiceSB = "com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB";
-	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String FDCustomerComplaint = "com.freshdirect.customer.complaint";
 	public static final String FDCustomerMisc1 = "com.freshdirect.customer.misc1";
 	public static final String FDCustomerMisc2 = "com.freshdirect.customer.misc2";
@@ -96,7 +95,6 @@ public class FDEcommProperties {
         defaults.put(CallCenterManagerSB, FALSE);
         defaults.put(TEmailInfoSB, FALSE);
         defaults.put(FDStandingOrderSB, FALSE);
-        defaults.put(FDCustomerManagerSB, FALSE);
         defaults.put(StandingOrdersServiceSB, FALSE);
         
         
