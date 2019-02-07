@@ -418,35 +418,6 @@ public class SocialAccountService implements AccountService {
                 } catch (Exception e) {
                     LOGGER.error("Exception when trying to update FDCustomer with referral ID", e);
                 }
-            } else if (!FDStoreProperties.isExtoleRafEnabled() && pageContext.getSession().getAttribute("REFERRALNAME") != null) {
-                try {
-                    // user = (FDSessionUser) session.getAttribute(USER);
-                    LOGGER.debug(user.getIdentity().getErpCustomerPK());
-                    LOGGER.debug(user.getUserId());
-                    LOGGER.debug(pageContext.getSession().getAttribute("REFERRALNAME"));
-                    LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:"
-                            + (String) pageContext.getSession().getAttribute("REFERRALNAME"));
-                    String customerId = user.getIdentity().getErpCustomerPK();
-                    String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
-                    user.setReferralCustomerId(referralCustomerId);
-                    session.setAttribute(SessionName.USER, user);
-                    // Record the referee signup in referral activitylog
-                    ErpActivityRecord rec = new ErpActivityRecord();
-                    rec.setActivityType(EnumAccountActivityType.REFEREE_SIGNEDUP);
-                    rec.setSource(EnumTransactionSource.WEBSITE);
-                    rec.setInitiator("CUSTOMER");
-                    rec.setCustomerId(referralCustomerId);
-                    rec.setDate(new Date());
-                    rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">" + user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId
-                            + "\">ID #" + customerId + "</a>");
-
-                    logActivity(rec);
-                    // this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
-                    // this.setSuccessPage("/registration/referee_signup2.jsp");
-                    successPage = "/registration/referee_signup2.jsp";
-                } catch (Exception e) {
-                    LOGGER.error("Exception when trying to update FDCustomer with referral ID", e);
-                }
             } else {
                 if ("true".equals(pageContext.getRequest().getParameter("LITESIGNUP"))) {
                     successPage = "/registration/signup_lite.jsp";
