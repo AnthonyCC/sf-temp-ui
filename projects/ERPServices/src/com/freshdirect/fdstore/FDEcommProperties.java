@@ -60,6 +60,7 @@ public class FDEcommProperties {
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String FDCustomerComplaint = "com.freshdirect.customer.complaint";
 	public static final String FDCustomerMisc1 = "com.freshdirect.customer.misc1";
+	public static final String FDCustomerMisc2 = "com.freshdirect.customer.misc2";
 	public static final String FDCustomerFactory = "com.freshdirect.fdstore.customer.FDCustomerFactory";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";

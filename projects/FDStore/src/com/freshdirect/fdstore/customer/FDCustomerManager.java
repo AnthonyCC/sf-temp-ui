@@ -63,6 +63,7 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
@@ -151,6 +152,7 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -983,19 +985,13 @@ public class FDCustomerManager {
 	}
 
 	public static FDOrderI getOrderForCRM(FDIdentity identity, String saleId) throws FDResourceException {
-		lookupManagerHome();
 
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrderForCRM(identity, saleId);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
+		FDOrderI order = getOrderForCRM(saleId);
+		if (!order.getCustomerId().equals(identity.getErpCustomerPK())) {
+			throw new FDResourceException("Sale doesn't belong to customer");
 		}
+		return order;
+
 	}
 
 	public static FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException {
@@ -1008,11 +1004,28 @@ public class FDCustomerManager {
 	}
 
 	public static FDOrderI getOrderForCRM(String saleId) throws FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrderForCRM(saleId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerMisc2)) {
+				ErpSaleModel saleModel = OrderServiceApiClient.getInstance().getOrder(saleId);
+				if (saleModel != null && saleModel.geteStoreId() != null
+						&& saleModel.geteStoreId().equals(EnumEStoreId.FDX)) {
+					LOGGER.info("Fetching trip and stop from logistics for fdx order " + saleId);
+					RouteStopInfo info = FDDeliveryManager.getInstance().getRouteStopInfo(saleId);
+					if (info != null && info.getRoute() != null && info.getStop() != null
+							&& saleModel.getShippingInfo() != null) {
+						saleModel.getShippingInfo().setTruckNumber(info.getRoute());
+						saleModel.getShippingInfo().setStopSequence(info.getStop());
+						LOGGER.info("Fetched trip " + info.getRoute() + " and stop " + info.getStop()
+								+ "from logistics for fdx order " + saleId);
+					}
+				}
+
+				return new FDOrderAdapter(saleModel, true);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getOrderForCRM(saleId);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
