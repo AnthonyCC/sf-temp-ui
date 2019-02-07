@@ -285,15 +285,6 @@
 	  	<transaction-type>Bean</transaction-type>
 	</session>
 	<!-- PayPal Service Changes End -->
-    <session>
-      <ejb-name>Sitemap</ejb-name>
-      <home>com.freshdirect.fdstore.sitemap.SitemapHome</home>
-      <remote>com.freshdirect.fdstore.sitemap.SitemapSB</remote>
-      <ejb-class>com.freshdirect.fdstore.sitemap.SitemapSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-    </session>
-    
     <entity>
       <ejb-name>FDCustomer</ejb-name>
       <home>com.freshdirect.fdstore.customer.ejb.FDCustomerHome</home>

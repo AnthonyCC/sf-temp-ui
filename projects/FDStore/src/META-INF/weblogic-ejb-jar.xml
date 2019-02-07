@@ -392,21 +392,6 @@
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.fdstore.PPService</jndi-name>
     </weblogic-enterprise-bean>
-    
-   <weblogic-enterprise-bean>
-      <ejb-name>Sitemap</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>5</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>1</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.fdstore.Sitemap</jndi-name>
-    </weblogic-enterprise-bean>
-
   <transaction-isolation>
     <isolation-level>TransactionReadCommitted</isolation-level>
     <method>

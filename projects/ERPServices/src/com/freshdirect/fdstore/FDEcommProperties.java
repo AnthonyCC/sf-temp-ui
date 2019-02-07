@@ -50,7 +50,6 @@ public class FDEcommProperties {
 	public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
 	public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
 	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB";
-	public static final String SitemapSB = "fdstore.sitemap.SitemapSB";
 	public final static String PostSettlementNotifySB ="payment.ejb.PostSettlementNotifySB";
 	
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
