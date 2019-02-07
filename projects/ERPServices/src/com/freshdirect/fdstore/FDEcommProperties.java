@@ -53,7 +53,6 @@ public class FDEcommProperties {
 	public final static String PostSettlementNotifySB ="payment.ejb.PostSettlementNotifySB";
 	
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
-	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
 	public static final String StandingOrdersServiceSB = "com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
@@ -96,7 +95,6 @@ public class FDEcommProperties {
         defaults.put(FDPromotionManagerNewSB, FALSE);
         defaults.put(CallCenterManagerSB, FALSE);
         defaults.put(TEmailInfoSB, FALSE);
-        defaults.put(ProfileCreatorSB, FALSE);
         defaults.put(FDStandingOrderSB, FALSE);
         defaults.put(FDCustomerManagerSB, FALSE);
         defaults.put(StandingOrdersServiceSB, FALSE);
