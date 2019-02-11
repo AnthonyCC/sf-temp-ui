@@ -173,18 +173,6 @@
     <jndi-name>freshdirect.fdstore.monitor.Monitor</jndi-name>
   </weblogic-enterprise-bean>
   <weblogic-enterprise-bean>
-    <ejb-name>AdServerListener</ejb-name>
-    <message-driven-descriptor>
-      <pool>
-        <max-beans-in-free-pool>5</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>5</initial-beans-in-free-pool>
-      </pool>
-      <destination-jndi-name>oasQueue</destination-jndi-name>
-    </message-driven-descriptor>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.AdServerListener</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
     <ejb-name>FDPromotionManager</ejb-name>
     <stateless-session-descriptor>
       <pool>
