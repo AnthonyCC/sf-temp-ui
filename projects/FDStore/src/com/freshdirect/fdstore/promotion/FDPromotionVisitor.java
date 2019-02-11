@@ -18,7 +18,6 @@ import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
-import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -34,7 +33,6 @@ public class FDPromotionVisitor {
 		eligibilities = evaluatePromotions(context, eligibilities);
 //		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
 		resolveConflicts(eligibilities);
-		resolveLineItemConflicts(context, eligibilities);
 //		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
 		Set<String> combinableOffers = applyPromotions(context, eligibilities);
 		
@@ -108,23 +106,6 @@ public class FDPromotionVisitor {
         	}
         }
 	}
-
-	
-    
-
-	/**
-	 * Smart Savings no longer effective
-	 * 
-	 * @param context
-	 * @param eligibilities
-	 */
-	@Deprecated
-	private static void resolveLineItemConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
-		//Reload the promo variant map based on new promotion eligibilities.	
-		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities);
-		context.getUser().setPromoVariantMap(pvMap);
-	}
-
 	
 	 private static FDPromotionEligibility evaluatePromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
          long startTime = System.currentTimeMillis();

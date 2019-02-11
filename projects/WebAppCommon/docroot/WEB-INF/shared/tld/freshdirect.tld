@@ -2455,70 +2455,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-	<!--  @deprecated -->
-	<tag>
-		<name>PromotionController</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.PromotionControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.PromotionControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>promotion</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>zipRestrictionMap</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>GetPromotion</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.GetPromotionTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.GetPromotionTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>promotionId</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>GetAllPromotions</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.GetAllPromotionsTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.GetAllPromotionsTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
 	<tag>
 		<name>GetWSPromotions</name>
 		<tagclass>com.freshdirect.webapp.taglib.promotion.GetWSPromotionTag</tagclass>
@@ -2590,57 +2526,6 @@
 		<attribute>
 			<name>zipcode</name>
 			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>PromoCustomerController</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.PromoCustomerControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.PromoCustomerControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>promoCustomerInfoList</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>GetPromoCustomerInfoList</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.GetPromoCustomerInfoListTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.GetPromoCustomerInfoListTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>promotionId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>customerId</name>
-			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -3927,25 +3812,7 @@
  			<required>false</required>
  			<rtexprvalue>true</rtexprvalue>
  		</attribute>
-	</tag>	
-	<tag>
-		<name>SmartSavingsUpdate</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.SmartSavingsUpdateTag</tagclass>
- 		<teiclass>com.freshdirect.webapp.taglib.fdstore.SmartSavingsUpdateTagEI</teiclass>
-		<bodycontent>empty</bodycontent>
-		<info></info>
- 		<attribute>
-			<name>promoConflictMode</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>justCheckSavingVariantId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
 	</tag>
-	
 	<tag>
 		<name>Tile</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.TileTag</tagclass>

@@ -1,7 +1,6 @@
 <%@ page import='java.util.*' %>
 <%@ page import='java.io.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.framework.webapp.ActionWarning'%>  
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
@@ -75,7 +74,7 @@ boolean showMinError = true;
 
 <fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
 <fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
-<fd:SmartSavingsUpdate promoConflictMode="false"/>
+
 
 <tmpl:put name='content' direct='true'>
 <%
