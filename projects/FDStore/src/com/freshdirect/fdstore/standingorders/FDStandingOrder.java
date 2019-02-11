@@ -507,6 +507,11 @@ public class FDStandingOrder extends ModelSupport {
     }
 	
 	@ExcludeFromXmlSerializer
+    public List<FDOrderInfoI> getAllUpcomingOrders(FDUserI user) throws FDResourceException, FDAuthenticationException {
+            return FDStandingOrdersManager.getInstance().getAllUpcomingOrders( user, this );
+    }
+	
+	@ExcludeFromXmlSerializer
 	public String getLandingPage() {
 		return new StringBuilder().append(STANDING_ORDER_DETAIL_PAGE).append("?ccListId=" + this.getCustomerListId()).toString();
 	}

@@ -109,7 +109,7 @@
 	
 	<%
 	
-		final FDOrderInfoI order = myso.getLastOrder();
+		final FDOrderInfoI order = myso.getLastOrder(fduser);
 		final FDCustomerInfo ci = myso.getUserInfo();
 		
 		if (order != null) {
