@@ -533,8 +533,8 @@ public class ErpServicesProperties {
 
 		//Added by Smerugu
 		defaults.put(PROP_MINIMUM_ORDER_AMOUNT, "30.0");
-		defaults.put(PROP_FDX_MINIMUM_ORDER_AMOUNT, "20.0");
-		defaults.put(PROP_FDX_MINIMUM_ORDER_AMOUNT_DP_USER, "20.0");
+		defaults.put(PROP_FDX_MINIMUM_ORDER_AMOUNT, "30.0");
+		defaults.put(PROP_FDX_MINIMUM_ORDER_AMOUNT_DP_USER, "30.0");
 		defaults.put(PROP_MIN_CORP_ORDER_AMOUNT, "50.0");
 		defaults.put(PROP_BASE_DELIVERY_FEE, "4.99");
 		defaults.put(PROP_CORP_DELIVERY_FEE, "9.99");
