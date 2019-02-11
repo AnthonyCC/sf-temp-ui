@@ -2229,18 +2229,17 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			if (!responseOfTypestring.getResponseCode().equalsIgnoreCase(HttpStatus.OK.name())) {
 
 				if (SystemMessages.GENERIC_ERROR_MESSAGE.equals(responseOfTypestring.getMessage())) {
-					LOGGER.error(" getCmsFeed: storeID=" + storeID + ", responseStr=" + responseStr);
+					LOGGER.error(" getCmsFeed: storeID=" + storeID );
 					throw new FDResourceException(
 							responseOfTypestring.getError().get(SystemMessages.GENERIC_ERROR_MESSAGE).toString());
 				}
-				LOGGER.error(" getCmsFeed: storeID=" + storeID + ", responseStr=" + responseStr);
+				LOGGER.error(" getCmsFeed: storeID=" + storeID);
 				throw new FDResourceException(responseOfTypestring.getMessage());
 			}
 			payload = responseOfTypestring.getData();
 		} catch (Exception ex) {
 
-			LOGGER.error(" getCmsFeed: storeID=" + storeID + ", responseStr=" + responseStr, ex);
-			LOGGER.error(ex);
+			LOGGER.error(" getCmsFeed: storeID=" + storeID , ex);
 			throw new FDResourceException("Could not retrieve cms information for id: " + storeID);
 
 		}
