@@ -13,5 +13,6 @@ public interface StandingOrdersServiceI {
 	public SOResult.ResultList placeStandingOrders(Collection<String> soList, StandingOrdersJobConfig jobConfig)throws RemoteException;
 	public void persistUnavDetailsToDB(SOResult.ResultList resultCounter) throws FDResourceException, RemoteException;
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException, RemoteException;
-	
+	public boolean runManualJob(String orders, boolean sendReportEmail, boolean sendReminderNotificationEmail)
+			throws RemoteException;
 }
