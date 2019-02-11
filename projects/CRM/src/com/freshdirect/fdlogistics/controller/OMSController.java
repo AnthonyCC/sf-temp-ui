@@ -517,6 +517,8 @@ public class OMSController extends BaseController  {
 	
 	private SOResult.Result placeStandingOrder(String standingOrderId, Date altDate, Date startTime, Date endTime, String initiator) {
 		
+		lookupMailerHome();
+		
 		if (standingOrderId == null) {
 			LOGGER.error("Empty standingOrderId passed.");
 			sendTechnicalMail("Empty standingOrderId passed.");
@@ -541,12 +543,13 @@ public class OMSController extends BaseController  {
 					so.setStartTime(startTime);
 					so.setEndTime(endTime);
 					so.clearLastError();
-					result = StandingOrderUtil.process( so, altDateInfo, event, info, true, true, false );
+					result = StandingOrderUtil.process( so, altDateInfo, event, info, mailerHome, true, true, false );
 				}else{
 					LOGGER.info( "Alternate date for standing order # " + standingOrderId + " missing." );
 					return null;
 				}
 			} catch (FDResourceException re) {
+				invalidateMailerHome();
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
 				result = SOResult.createTechnicalError( so, "Processing standing order failed with FDResourceException!" );
 			}
@@ -560,6 +563,33 @@ public class OMSController extends BaseController  {
 			logActivity( so, result, initiator );
 
 		return result;
+	}
+	
+private static MailerGatewayHome mailerHome	= null;
+	
+	private static void invalidateMailerHome() {
+		mailerHome = null;
+	}
+	
+	private static void lookupMailerHome() {
+		if (mailerHome != null) {
+			return;
+		}		
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			mailerHome = (MailerGatewayHome) ctx.lookup( "freshdirect.mail.MailerGateway" );
+		} catch ( NamingException ne ) {
+			ne.printStackTrace();
+		} finally {
+			try {
+				if ( ctx != null ) {
+					ctx.close();
+				}
+			} catch ( NamingException ne ) {
+				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
+			}
+		}
 	}
 	
 	private void logActivity ( FDStandingOrder so, SOResult.Result result, String initiator ) {

@@ -153,8 +153,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				// The main processing occurs here.
 				lookupMailerHome();		
 				FDStandingOrderAltDeliveryDate altDate = getStandingOrderAltDeliveryDateForSO(altDates, so);
-				result = StandingOrderUtil.process( so, altDate, null, null, 
-											jobConfig.isForceCapacity(), jobConfig.isCreateIfSoiExistsForWeek(), jobConfig.isSendReminderNotificationEmail() );
+				result = StandingOrderUtil.process( so, altDate, null, null, mailerHome
+											, jobConfig.isForceCapacity(), jobConfig.isCreateIfSoiExistsForWeek(), jobConfig.isSendReminderNotificationEmail() );
 			} catch (FDResourceException re) {
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
 				result = SOResult.createTechnicalError( so, "Processing standing order failed with FDResourceException!" );
@@ -237,7 +237,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					try {
 						// The main processing occurs here.
 						lookupMailerHome();
-						StandingOrderUtil.sendNotification(so);
+						StandingOrderUtil.sendNotification(so, mailerHome);
 					} catch (FDResourceException re) {
 						LOGGER.error("2days notification for SO failed with FDResourceException!", re);
 						SOResult.createTechnicalError(so, "2days notification for SO failed with FDResourceException!");

@@ -421,8 +421,12 @@ public class ReferralCreditCron {
 					    xemail.setSubject(subject);
 					    xemail.setFromAddress(new EmailAddress("FreshDirect", fromEmail));
 					    xemail.setRecipient(referralCm.getEmail());
-						FDECommerceService.getInstance().enqueueEmail(xemail);
-						
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+							FDECommerceService.getInstance().enqueueEmail(xemail);
+						} else {
+							MailerGatewaySB mailer = mHome.create();
+							mailer.enqueueEmail(xemail);
+						}
 					    //record the event in activity log
 					    ErpActivityRecord rec = new ErpActivityRecord();
 						rec.setActivityType(EnumAccountActivityType.REFERRAL_CREDIT);
