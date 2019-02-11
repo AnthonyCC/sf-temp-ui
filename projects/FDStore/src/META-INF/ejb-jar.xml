@@ -2,20 +2,6 @@
 <ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd" version="3.0">
   <enterprise-beans>
     <session>
-      <ejb-name>FDMonitor</ejb-name>
-      <home>com.freshdirect.fdstore.monitor.ejb.FDMonitorHome</home>
-      <remote>com.freshdirect.fdstore.monitor.ejb.FDMonitorSB</remote>
-      <ejb-class>com.freshdirect.fdstore.monitor.ejb.FDMonitorSessionBean</ejb-class>
-      <session-type>Stateless</session-type>
-      <transaction-type>Container</transaction-type>
-      <ejb-ref>
-        <ejb-ref-name>ejb/ErpMonitor</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-        <home>com.freshdirect.monitor.ejb.ErpMonitorHome</home>
-        <remote>com.freshdirect.monitor.ejb.ErpMonitorSB</remote>
-      </ejb-ref>
-    </session>
-    <session>
       <ejb-name>FDCustomerManager</ejb-name>
       <home>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
       <remote>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB</remote>
@@ -245,11 +231,6 @@
       </method>
       <method>
         <ejb-name>CallCenterManager</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-      <method>
-        <ejb-name>FDMonitor</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>

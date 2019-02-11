@@ -31,7 +31,6 @@ public class FDEcommProperties {
     private final static long REFRESH_PERIOD = 5 * 60 * 1000;
     
     private final static String FALSE="false";
-    public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
     public static final String EnumManagerSB = "enums.ejb.EnumManagerSB";
     public final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
     public final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
@@ -73,8 +72,6 @@ public class FDEcommProperties {
 
    
     static {
-
-        defaults.put(FDMonitorSB,FALSE);
         defaults.put(SaleCronSB,FALSE);
         defaults.put(EnumManagerSB,FALSE);
         defaults.put(DlvManagerSB ,FALSE);
