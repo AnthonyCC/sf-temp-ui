@@ -1,8 +1,5 @@
 package com.freshdirect.webapp.taglib.promotion;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -16,12 +13,10 @@ public class GetPromotionNewTag extends AbstractGetterTag {
 	}
 	@Override
 	protected Object getResult() throws Exception {
-		HttpSession session = pageContext.getSession();
-		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		FDPromotionNewModel promotion = new FDPromotionNewModel();
 		if(null != promotionId && !"".equals(promotionId.trim())){
 			promotion = FDPromotionNewManager.loadPromotion(promotionId);
-			promotion.setAuditChanges(FDPromotionNewManager.loadPromoAuditChanges(promotion.getId()));
+			
 		}		
 		return promotion;
 	}
