@@ -124,7 +124,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 	
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
-						if(null ==so.getZone() && null != so.getAddressId()){											//COS17-56
+						if(null != so.getAddressId() && null != so.getStartTime()){											//COS17-56   //APPDEV-7816
 							FDDeliveryZoneInfo zoneInfo =StandingOrderHelper.getZoneInfoFromLogistics(so);
 							so.setZone(zoneInfo.getZoneCode());
 						}

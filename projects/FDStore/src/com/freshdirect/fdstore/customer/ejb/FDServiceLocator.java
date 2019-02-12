@@ -16,7 +16,6 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
-import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
@@ -24,16 +23,12 @@ import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.fdstore.ewallet.ejb.EwalletServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome;
-import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
-import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
-import com.freshdirect.smartstore.ejb.VariantSelectionHome;
-import com.freshdirect.smartstore.ejb.VariantSelectionSB;
 
 public class FDServiceLocator extends ERPServiceLocator {
 
@@ -136,15 +131,6 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
-    public FDSurveyHome getSurveyHome() {
-        try {
-            return (FDSurveyHome) getRemoteHome(FDStoreProperties.getFDSurveyHome());
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-    
     public FDCustomerManagerHome getFDCustomerManagerHome() {
         try {
             return (FDCustomerManagerHome) getRemoteHome(FDStoreProperties.getFDCustomerManagerHome());
@@ -156,14 +142,6 @@ public class FDServiceLocator extends ERPServiceLocator {
     public EwalletServiceHome getEwalletServiceHome() {
         try {
             return (EwalletServiceHome) getRemoteHome(FDStoreProperties.getEwalletServiceHome());
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-	public ErpEWalletHome getErpEWalletHome() {
-        try {
-            return (ErpEWalletHome) getRemoteHome(FDStoreProperties.getErpEWalletHome());
         } catch (NamingException e) {
             throw new EJBException(e);
         }
@@ -216,16 +194,6 @@ public class FDServiceLocator extends ERPServiceLocator {
     }
 
     
-    public FDSurveySB getSurveySessionBean() {
-        try {
-            return getSurveyHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }
-    }
-    
     public FDCustomerManagerSB getFDCustomerManagerSessionBean() {
         try {
             return getFDCustomerManagerHome().create();
@@ -235,25 +203,7 @@ public class FDServiceLocator extends ERPServiceLocator {
             throw new EJBException(e);
         }
     }
-      
-    public VariantSelectionHome getVariantSelectionHome() {
-        try {
-            return (VariantSelectionHome) getRemoteHome("freshdirect.smartstore.VariantSelection");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
     
-    public VariantSelectionSB getVariantSelectionSessionBean() {
-        try {
-            return getVariantSelectionHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
-            throw new EJBException(e);
-        }
-    }
- 
     public FDFactoryHome getFDFactoryHome() {
         try {
             return (FDFactoryHome) getRemoteHome( FDStoreProperties.getFDFactoryHome() );

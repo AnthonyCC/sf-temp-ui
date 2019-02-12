@@ -26,10 +26,11 @@
 <fd:CheckLoginStatus id="user" guestAllowed='true'
 	recognizedAllowed='true' />
 
+<c:choose>
+	<c:when test="${not empty param.pageType}"><c:set var="pageId" value="${param.pageType}" /></c:when>
+	<c:otherwise><c:set var="pageId" value="search" /></c:otherwise>
+</c:choose>
 <%
-    String pageId = request.getParameter("pageType") != null
-					? (String) request.getParameter("pageType")
-					: "search";
 	// [APPDEV-3953] Special rule for DDPP Preview Mode
 	// Redirect to site access for getting zip code first
 	if (null != request.getParameter("ppPreviewId")) {

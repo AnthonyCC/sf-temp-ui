@@ -8,7 +8,6 @@ import java.util.Set;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
@@ -26,7 +25,6 @@ public interface ICommerceService {
 	public String getFDCustomerIDForErpId(String erpCustomerPK) throws RemoteException;
 	public String getErpIDForUserID(String userID) throws RemoteException;
 	public Collection<String> getSkuCodes() throws RemoteException;
-	public BatchModel getBatch(int versionID) throws FDResourceException;
 	public void loadData(List<ErpZoneMasterInfo> zoneInfos)throws RemoteException;
 	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
 	public String getCmsFeed(String storeID) throws FDResourceException;

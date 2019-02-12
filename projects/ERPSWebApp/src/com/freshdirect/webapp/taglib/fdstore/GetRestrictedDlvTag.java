@@ -21,13 +21,11 @@ import com.freshdirect.delivery.DlvRestrictionManager;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
-import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag;
 
 /**
  *

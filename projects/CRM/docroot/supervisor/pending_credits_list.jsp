@@ -23,8 +23,8 @@
 <% String reason = request.getParameter("reason"); 
 boolean hasFilter = reason!=null && !"".equals(reason);
 %>
-<% List orders = CallCenterServices.getPendingComplaintOrders(reason); 
-Map complaintCodes = new TreeMap(CallCenterServices.getComplaintCodes()); 
+<% List orders = null;
+Map complaintCodes = null; 
 %>
 <span class="sub_nav_title">Pending Credits<% if (hasFilter) { %>: <%=complaintCodes.get(reason)%><% } %> ( <span class="result"><%= orders.size() %></span> )</span> &nbsp;&nbsp; <span class="note">Filter pending credits by: </span>
 <%

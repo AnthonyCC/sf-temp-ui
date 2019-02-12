@@ -18,7 +18,7 @@ public interface TEmailInfoServiceI {
 
     //public FDIdentity getRandomCustomerIdentity() throws FDResourceException, RemoteException;
 	
-	public void sendFailedTransactions(int timeout) throws RemoteException;
+	public int sendFailedTransactions(int timeout) throws RemoteException;
 	
 	public List getFailedTransactionList(int max_count,boolean isMailContentReqd) throws RemoteException;
 	

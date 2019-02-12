@@ -59,13 +59,8 @@ public class URLRewriteManager {
 
 	private List<URLRewriteRule> loadRewriteRules() {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().loadRewriteRules();
-			} else {
-				FDCustomerManagerSB sb = getFDCustomerManager();
-				return sb.loadRewriteRules();
-			}
-			
+			return CustomerInfoService.getInstance().loadRewriteRules();
+
 		} catch (Exception e) {
 			LOGGER.error("Could not load rewrite rules due to: ", e);
 			return Collections.emptyList();

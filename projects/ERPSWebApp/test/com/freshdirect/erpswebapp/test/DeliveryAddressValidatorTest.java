@@ -8,7 +8,6 @@ import mockit.MockUp;
 import org.junit.Test;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.impl.FDLogisticsService;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;

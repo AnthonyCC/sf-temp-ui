@@ -1006,15 +1006,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		FDCartModel cart = getCart(user, actionName, false);
 		setDeliveryAddressInternal(user, session, cart, address, zoneInfo, setServiceType);
 
-		if (address instanceof ErpDepotAddressModel) {
-			FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), locationId );
-			FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), null );
-		} else {
-			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
-				FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), null );
-				FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), address.getPK().getId() );
-			}
+		if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
+			FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
 		}
+		
 
 		// currently, dark store switch is expected only in FoodKick store
 		if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {

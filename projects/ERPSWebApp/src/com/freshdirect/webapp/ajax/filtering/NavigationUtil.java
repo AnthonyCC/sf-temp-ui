@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -515,7 +517,7 @@ public class NavigationUtil {
     }
 
     private static Set<ProductFilterGroup> createAggregatedFilterMultiGroups(Collection<? extends ProductContainer> productContainers, CmsFilteringNavigator navigator, FDUserI user) {
-        Set<ProductFilterGroup> filtersGroups = new HashSet<ProductFilterGroup>();
+        Set<ProductFilterGroup> filtersGroups = new LinkedHashSet<ProductFilterGroup>();
         EnumServiceType serviceType = user.getSelectedServiceType();
         EnumEStoreId eStoreId = user.getUserContext().getStoreContext().getEStoreId();
         for (ProductContainer productContainer : productContainers) {
@@ -533,7 +535,7 @@ public class NavigationUtil {
     }
 
     private static Set<ProductFilterModel> collectProductFilterModels(Collection<? extends ProductContainer> productContainers, FDUserI user) {
-        Set<ProductFilterModel> productFilterModels = new HashSet<ProductFilterModel>();
+        Set<ProductFilterModel> productFilterModels = new LinkedHashSet<ProductFilterModel>();
         EnumServiceType serviceType = user.getSelectedServiceType();
         EnumEStoreId eStoreId = user.getUserContext().getStoreContext().getEStoreId();
         for (ProductContainer container : productContainers) {
@@ -550,7 +552,7 @@ public class NavigationUtil {
     }
 
     private static Map<String, List<ProductFilterGroupModel>> collectProductFilterGroupsByName(Collection<? extends ProductContainer> productContainers, FDUserI user) {
-        Map<String, List<ProductFilterGroupModel>> productFilterGroupByName = new HashMap<String, List<ProductFilterGroupModel>>();
+        Map<String, List<ProductFilterGroupModel>> productFilterGroupByName = new LinkedHashMap<String, List<ProductFilterGroupModel>>();
         EnumServiceType serviceType = user.getSelectedServiceType();
         EnumEStoreId eStoreId = user.getUserContext().getStoreContext().getEStoreId();
         for (ProductContainer container : productContainers) {

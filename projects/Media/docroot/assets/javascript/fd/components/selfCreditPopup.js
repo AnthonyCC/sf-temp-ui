@@ -33,10 +33,10 @@ var FreshDirect = window.FreshDirect || {};
       value: "selfCreditInit"
     },
     ariaDescribedby: {
-      value: "selfcredit"
+      value: "selfcredit-describe"
     },
     ariaLabelledby: {
-      value: ""
+      value: "selfcredit-label"
     },
     overlayConfig: {
       value: {
@@ -90,12 +90,15 @@ var FreshDirect = window.FreshDirect || {};
         var selectEl = $("#self-credit-order-select");
         selectEl.change(
           function() {
-            if (selectEl.val() !== "") {
-              this.overlayEl
-                .find('button[value="Continue"]')
-                .prop("disabled", false)
-                .prop("tabindex", 2);
-            }
+            setTimeout(function () {
+              if (selectEl.val() !== "") {
+                var tabindex = this.overlayEl.find('.overlay-close-icon').first().attr('tabindex') || 1000;
+                this.overlayEl
+                  .find('button[value="Continue"]')
+                  .prop("disabled", false)
+                  .prop("tabindex", +tabindex - 1);
+              }
+            }.bind(this), 100);
           }.bind(this)
         );
       }

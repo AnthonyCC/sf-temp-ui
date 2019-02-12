@@ -406,18 +406,9 @@ public class ReferralCreditCron {
 					    message = message.replace("<first name>", refereeCm.getFirstName());
 					    message = message.replace("<last name>", refereeCm.getLastName());
 						FDCustomerInfo fdCustInfo;
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-							fdCustInfo = CustomerInfoService.getInstance()
-									.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
-						} else {
-							if (fdsb == null) {
-								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
-										.lookup(FDStoreProperties.getFDCustomerManagerHome());
-								fdsb = fdcmHome.create();
-							}
-							fdCustInfo = fdsb
-									.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
-						}
+						fdCustInfo = CustomerInfoService.getInstance()
+								.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
+
 					    String depotCode = fdCustInfo.getDepotCode();
 					    String fromEmail = FDStoreProperties.getCustomerServiceEmail();
 					    

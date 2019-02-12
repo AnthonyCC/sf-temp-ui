@@ -16,7 +16,7 @@
 
 <tmpl:put name='content' direct='true'>
 
-<%	List sales = CallCenterServices.getAutoLateDeliveryCredits(); %>
+<%	List sales = null; %>
 
 <div class="sub_nav">
 <span class="sub_nav_title">Auto Late Delivery Credits </span> 

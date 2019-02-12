@@ -27,15 +27,12 @@ import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.ecomm.gateway.ErpInfoService;
 import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.ecomm.gateway.ErpNutritionServiceI;
-import com.freshdirect.erp.ejb.BatchManagerHome;
-import com.freshdirect.erp.ejb.BatchManagerSB;
 import com.freshdirect.erp.ejb.ErpClassEB;
 import com.freshdirect.erp.ejb.ErpClassHome;
 import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.ejb.ErpProductEB;
 import com.freshdirect.erp.ejb.ErpProductHome;
-import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
@@ -300,63 +297,6 @@ public class ErpFactory {
 		try {
 			ctx = ErpServicesProperties.getInitialContext();
 			productHome = (ErpProductHome) ctx.lookup(ErpServicesProperties.getProductHome());
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-			}
-		}
-	}
-
-	private BatchManagerHome batchHome = null;
-
-	public BatchModel getBatch(int batchId) throws FDResourceException {
-		if (batchHome == null) {
-			lookupBatchHome();
-		}
-		try {
-			BatchModel bm = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.BatchManagerSB")){
-				bm =FDECommerceService.getInstance().getBatch(batchId);
-			}else{
-				BatchManagerSB batchSB = batchHome.create();
-				bm = (BatchModel) batchSB.getBatch(batchId);
-			}
-			return bm;
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	public Collection getBatches() throws FDResourceException {
-		if (batchHome == null) {
-			lookupBatchHome();
-		}
-		try {
-			Collection batches = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.BatchManagerSB")){
-				batches =FDECommerceService.getInstance().getRecentBatches();
-			}else{
-				BatchManagerSB batchSB = batchHome.create();
-				batches = batchSB.getRecentBatches();
-			}
-			return batches;
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	private void lookupBatchHome() throws FDResourceException {
-		Context ctx = null;
-		try {
-			ctx = ErpServicesProperties.getInitialContext();
-			batchHome = (BatchManagerHome) ctx.lookup(ErpServicesProperties.getBatchHome());
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {

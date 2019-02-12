@@ -49,7 +49,6 @@ public class DlvProperties {
 	private final static String PROP_MAPPER_HOME 				= "mapper.home";
 	private final static String PROP_REPORT_HOME 				= "report.home";
 	private final static String PROP_FREE_SPATIAL_ONLY		= "delivery.free.spatial.only";
-	private final static String PROP_SMS_ALERTS_HOME        = "smsalerts.home";
 	private final static String PROP_SMS_EXPIRE_IN_MINS		=	"smsalerts.expire";
 	private final static String PROP_RECEIVED_SMS_IN_MINS		=	"sms.received.time.in";
 	private final static String PROP_SMSETA_NO_OF_THREADS		=	"smsalerts.eta.noofthreads";
@@ -83,7 +82,6 @@ public class DlvProperties {
 		defaults.put(PROP_MAPPER_HOME, "freshdirect.delivery.Mapper");
 		defaults.put(PROP_REPORT_HOME, "freshdirect.delivery.Report");
 		defaults.put(PROP_FREE_SPATIAL_ONLY, "true");
-		defaults.put(PROP_SMS_ALERTS_HOME, "freshdirect.SmsAlerts");
 		defaults.put(PROP_SMS_EXPIRE_IN_MINS, "300");
 		defaults.put(PROP_RECEIVED_SMS_IN_MINS, "30");
 		defaults.put(PROP_NEXTSTOP_SMS_NO_SEND_LIMIT, "30");
@@ -184,9 +182,7 @@ public class DlvProperties {
 		return Boolean.valueOf(config.getProperty(PROP_FREE_SPATIAL_ONLY)).booleanValue();
 	}
 	
-	public static String getSmsAlertsHome(){
-		return config.getProperty(PROP_SMS_ALERTS_HOME);
-	}
+	
 	public static String getSmsExpireInMins(){
 		return config.getProperty(PROP_SMS_EXPIRE_IN_MINS);
 	}

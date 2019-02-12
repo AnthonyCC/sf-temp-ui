@@ -1,15 +1,10 @@
 package com.freshdirect.delivery.sms;
 
 
-import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.ejb.CreateException;
-import javax.naming.Context;
-import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
@@ -17,16 +12,11 @@ import org.apache.log4j.Category;
 import com.freshdirect.backoffice.service.BackOfficeClientService;
 import com.freshdirect.backoffice.service.IBackOfficeClientService;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.delivery.DlvProperties;
-import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
-import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.sms.ResponseResult;
 
 /**
  * This class will handle all the communication with Single Touch API
@@ -47,8 +37,6 @@ public class SMSAlertManager {
 	private static final String CANCEL="CANCEL";
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 	
-	
-	private SmsAlertsHome smsAlertsHome=null;
 	
 	private static SMSAlertManager instance = new SMSAlertManager();
 	
@@ -71,74 +59,26 @@ public class SMSAlertManager {
 		
 		
 		//Call ejb to persist the information in the DB (After test)
-		try{
-			lookupSmsAlertsHome();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				LOGGER.debug("calling FDECommerceService.smsOptIn()");
 				isSent =  FDECommerceService.getInstance().smsOptIn(customerId, mobileNumber, eStoreId);
-			}
-			else{
-				SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-				LOGGER.debug("calling smsAlertSB.smsOptIn()");
-				isSent = smsAlertSB.smsOptIn(customerId,mobileNumber, eStoreId);
-			}
-		}catch (NamingException e) {
-			throw new FDResourceException(e);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
-		
+			
 		
 		return isSent;
 	}
 	public boolean smsOptInNonMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException{
 		boolean isSent=false;
-		PhoneNumber phone = new PhoneNumber(mobileNumber);
-		try{
-			lookupSmsAlertsHome();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
-				LOGGER.debug("calling FDECommerceService.smsOptInNonMarketing()");
-				isSent =  FDECommerceService.getInstance().smsOptInNonMarketing(customerId, mobileNumber, eStoreId);
-			}
-			else{
-				SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-				LOGGER.debug("calling smsAlertSB.smsOptInNonMarketing()");
-				isSent = smsAlertSB.smsOptInNonMarketing(customerId,mobileNumber, eStoreId);
-			}
-		}catch (NamingException e) {
-			throw new FDResourceException(e);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
-		
+		LOGGER.debug("calling FDECommerceService.smsOptInNonMarketing()");
+		isSent = FDECommerceService.getInstance().smsOptInNonMarketing(customerId, mobileNumber, eStoreId);
 		
 		return isSent;
 	}
 	public boolean smsOptInMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException{
 		boolean isSent=false;
-		PhoneNumber phone = new PhoneNumber(mobileNumber);
-		try{
-			lookupSmsAlertsHome();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
+		
 				LOGGER.debug("calling FDECommerceService.smsOptInMarketing()");
 				isSent =  FDECommerceService.getInstance().smsOptInMarketing(customerId, mobileNumber, eStoreId);
-			}
-			else{
-				SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-				LOGGER.debug("calling smsAlertSB.smsOptInMarketing()");
-				isSent = smsAlertSB.smsOptInMarketing(customerId,mobileNumber, eStoreId);
-			}
-		}catch (NamingException e) {
-			throw new FDResourceException(e);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
+			
+			
 		
 		
 		return isSent;
@@ -147,72 +87,25 @@ public class SMSAlertManager {
 	
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStore) throws FDResourceException{
 		boolean isSent=false;
-		PhoneNumber phone = new PhoneNumber(mobileNumber);
-		try{
-			lookupSmsAlertsHome();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
-				LOGGER.debug("calling FDECommerceService.smsOrderConfirmation()");
+			LOGGER.debug("calling FDECommerceService.smsOrderConfirmation()");
 				isSent = FDECommerceService.getInstance().smsOrderConfirmation(customerId, mobileNumber, orderId, eStore);
-			}
-			else{
-				SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-				LOGGER.debug("calling smsAlertSB.smsOrderConfirmation()");
-				isSent = smsAlertSB.smsOrderConfirmation(customerId, mobileNumber, orderId, eStore);
-			}
-		}catch (NamingException e) {
-			throw new FDResourceException(e);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
+			
 		return isSent;
 	}
 	
 	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStore) throws FDResourceException{
 		boolean isSent=false;
-		PhoneNumber phone = new PhoneNumber(mobileNumber);
-		try{
-			lookupSmsAlertsHome();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
-				LOGGER.debug("calling FDECommerceService.smsOrderModification()");
+			LOGGER.debug("calling FDECommerceService.smsOrderModification()");
 				isSent = FDECommerceService.getInstance().smsOrderModification(customerId, mobileNumber, orderId, eStore);
-			}
-			else{
-				SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-				LOGGER.debug("calling smsAlertSB.smsOrderModification()");
-				isSent = smsAlertSB.smsOrderModification(customerId, mobileNumber, orderId, eStore);
-			}
-		}catch (NamingException e) {
-			throw new FDResourceException(e);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
+			
 		return isSent;
 	}
 	
 	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStore) throws FDResourceException{
 		boolean isSent=false;
-		try{
-			lookupSmsAlertsHome();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
-				LOGGER.debug("calling FDECommerceService.smsOrderCancel()");
+			LOGGER.debug("calling FDECommerceService.smsOrderCancel()");
 				isSent = FDECommerceService.getInstance().smsOrderCancel(customerId, mobileNumber, orderId, eStore);
-			}
-			else{
-				SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-				LOGGER.debug("calling smsAlertSB.smsOrderCancel()");
-				isSent = smsAlertSB.smsOrderCancel(customerId, mobileNumber, orderId, eStore );
-			}
-		}catch (NamingException e) {
-			throw new FDResourceException(e);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
+			
 		return isSent;
 	}
 	
@@ -227,7 +120,6 @@ public class SMSAlertManager {
 		try {
 			Date date = sdf.parse(receivedDate);
 			String formattedMobileNumber=formatMobileNumber(mobileNumber);
-			lookupSmsAlertsHome();
 			if (CANCEL.equalsIgnoreCase(message)) {
 				 boolean isCaseCreated=false;
 				try {
@@ -238,38 +130,20 @@ public class SMSAlertManager {
 					catch (Exception e) {
 						LOGGER.info("While sending SMS response to Backoffice got an exception for the MobileNumber:"+mobileNumber +e);
 						}
-						if (FDStoreProperties
-								.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
 							FDECommerceService.getInstance().updateSmsReceived(
 									formattedMobileNumber, shortCode, carrierName,
 									date, message, eStoreId,isCaseCreated);
-						} else {
-							SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-							smsAlertSB.updateSmsReceived(formattedMobileNumber,
-									shortCode, carrierName, date, message, eStoreId,isCaseCreated);
-						}
+						
 					
 			} else {
-				if (FDStoreProperties
-						.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
 					FDECommerceService.getInstance().updateSmsReceived(
 							formattedMobileNumber, shortCode, carrierName,
 							date, message, eStoreId,false);
-				} else {
-					SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-					smsAlertSB.updateSmsReceived(formattedMobileNumber,
-							shortCode, carrierName, date, message, eStoreId,false);
-				}
+				
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
-		} catch (NamingException e) {
-			throw new FDResourceException(e);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		}
+		} 
 	}
 
 	public Date formateDate(String receivedDate) throws ParseException {
@@ -295,18 +169,5 @@ public class SMSAlertManager {
 		return mobileNumber;
 	}
 	
-	protected void lookupSmsAlertsHome() throws NamingException {
-		if(smsAlertsHome != null)
-			return;
-		Context ctx = null;
-		try {
-			ctx = DlvProperties.getInitialContext();
-			this.smsAlertsHome = (SmsAlertsHome) ctx.lookup( DlvProperties.getSmsAlertsHome() );
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {}
-		}
-	}
 
 }

@@ -1507,14 +1507,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public boolean isReferrerRestricted() throws FDResourceException {
-        if (this.identity == null) {
-            return false;
-        }
-        return FDCustomerManager.isReferrerRestricted(this.identity);
-    }
-
-    @Override
     public boolean isReferrerEligible() throws FDResourceException {
         if (referrerEligible == null) {
             EligibilityCalculator calc = new EligibilityCalculator("REFERRER");
@@ -2829,20 +2821,6 @@ public class FDUser extends ModelSupport implements FDUserI {
             throw new FDRuntimeException(e.getMessage());
         }
         return zoneIdParam;
-    }
-
-    @Override
-    public SortedSet<IgnoreCaseString> getClientCodesHistory() {
-        if (clientCodesHistory == null) {
-            clientCodesHistory = new TreeSet<IgnoreCaseString>();
-            try {
-                clientCodesHistory.addAll(FDCustomerManager.getOrderClientCodesForUser(getIdentity()));
-            } catch (FDResourceException e) {
-                LOGGER.warn("unable to retrieve order client codes for: " + getIdentity(), e);
-            }
-            clientCodesHistory.addAll(getCartClientCodes());
-        }
-        return clientCodesHistory;
     }
 
     private Collection<? extends IgnoreCaseString> getCartClientCodes() {

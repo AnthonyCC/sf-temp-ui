@@ -266,9 +266,7 @@ public interface FDUserI extends java.io.Serializable {
     public void setLastRefProgInvtId(String progId);
 
     public String getLastRefProgInvtId();
-
-    public boolean isReferrerRestricted() throws FDResourceException;
-
+    
     public boolean isReferrerEligible() throws FDResourceException;
 
     public boolean isECheckRestricted() throws FDResourceException;
@@ -486,8 +484,6 @@ public interface FDUserI extends java.io.Serializable {
     public void setZPServiceType(EnumServiceType serviceType);
 
     public Set<String> getAllAppliedPromos();
-
-    public SortedSet<IgnoreCaseString> getClientCodesHistory();
 
     public void clearAllAppliedPromos();
 

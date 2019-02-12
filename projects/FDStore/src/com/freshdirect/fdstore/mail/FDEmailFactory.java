@@ -545,13 +545,6 @@ public class FDEmailFactory {
 			return email;
 		}
 	
-	public XMLEmailI createCrmCCSecurityEmail(CrmSecurityCCCheckEmailVO emailVO) {
-		CrmSecurityCCCheckEmail email = new CrmSecurityCCCheckEmail(emailVO);
-		email.setFromAddress(new EmailAddress("CRM Security", GENERAL_CS_EMAIL));		
-		email.setSubject(FDStoreProperties.getCrmCCSecurityEmailSubject());
-
-		return email;
-	}
 	
 	public XMLEmailI createReferAFriendInvitationEmail(String name, String userMessage, String systemMessage, String legal, String refLink, String offerText) {
 		FDReferAFriendInvEmail email = new FDReferAFriendInvEmail(name, userMessage, systemMessage, legal, refLink, offerText);
@@ -1171,27 +1164,6 @@ public class FDEmailFactory {
 			this.setRecipient(VENDING_EMAIL);
 		}
 
-	}
-	
-	protected static class CrmSecurityCCCheckEmail  extends FDContactServiceEmail implements XMLEmailI{
-		private CrmSecurityCCCheckEmailVO emailVO;		
-
-		public CrmSecurityCCCheckEmail(CrmSecurityCCCheckEmailVO emailVO) {
-			super("");
-			this.emailVO=emailVO;
-			this.setRecipient(CRM_SECURITY_CC_EMAIL);
-		}
-		
-		public String getXslPath() {
-			return ErpServicesProperties.getMailerXslHome() + "x_cc_check_security_v1.xsl";
-		}
-		
-		public String getXML() {
-			FDXMLSerializer s = new FDXMLSerializer();
-			Map map = new HashMap();
-			map.put("emailvo", this.emailVO);
-			return s.serialize("fdemail", map);
-		}
 	}
 	
 	private static class FDDPCreditEmail extends FDInfoEmail {

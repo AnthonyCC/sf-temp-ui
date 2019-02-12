@@ -59,7 +59,6 @@ public class FDStoreProperties {
     private final static String PROP_COMPLAINTMGR_HOME = "fdstore.complaintManager.home";
     private final static String PROP_CALLCENTERMGR_HOME = "fdstore.callCenterManager.home";
     private final static String PROP_FDCUSTMGR_HOME = "fdstore.fdCustomerManager.home";
-    private final static String PROP_EWALLET_HOME = "fdstore.ErpEWallet.home";
     private final static String PROP_EWALLET_SERVICE_HOME = "fdstore.EWalletService.home";
     private final static String PROP_MPService_HOME = "fdstore.MPService.home";
     private final static String PROP_PPService_HOME = "fdstore.PPService.home";
@@ -69,7 +68,6 @@ public class FDStoreProperties {
     private final static String PROP_DLVMANAGER_HOME = "fdstore.deliveryManager.home";
     private final static String PROP_RULESMANAGER_HOME = "fdstore.rulesManager.home";
     private final static String PROP_AIRCLICMANAGER_HOME = "fdstore.airclicManager.home";
-    private final static String PROP_DLVRESTRICTION_MGR_HOME = "freshdirect.delivery.DeliveryRestrictionManager";
     private final static String PROP_CONTENTMANAGER_HOME = "fdstore.ContentManager.home";
     private final static String PROP_FDCUSTOMER_HOME = "fdstore.fdcustomer.home";
     private final static String PROP_ERPCUSTOMER_HOME = "fdstore.erpcustomer.home";
@@ -859,7 +857,6 @@ public class FDStoreProperties {
     public static final String PROP_EXTOLE_MICROSITE_URL = "fdstore.extole.microsite.url";
     public static final String PROP_EXTOLE_MICROSITE_SUB_URL = "fdstore.extole.microsite.sub.url";
     public static final String PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL = "fdstore.extole.microsite.global.nav.url";
-    public final static String PROP_FD_BRAND_PRODUCTS_AD_HOME = "freshdirect.fdstore.fdBrandProductsAdManager";
     public final static String PROP_HL_PRODUCTS_COUNT = "fdstore.hlproductscount";
 
     // [APPDEV-4650]
@@ -1122,7 +1119,6 @@ public class FDStoreProperties {
         defaults.put(PROP_COMPLAINTMGR_HOME, "freshdirect.erp.ComplaintManager");
         defaults.put(PROP_CALLCENTERMGR_HOME, "freshdirect.fdstore.CallCenterManager");
         defaults.put(PROP_FDCUSTMGR_HOME, "freshdirect.fdstore.CustomerManager");
-        defaults.put(PROP_EWALLET_HOME, "freshdirect.fdstore.ErpEWallet");
         defaults.put(PROP_EWALLET_SERVICE_HOME, "freshdirect.fdstore.EWalletService");
         defaults.put(PROP_MPService_HOME, "freshdirect.fdstore.MPService");
         defaults.put(PROP_PPService_HOME, "freshdirect.fdstore.PPService");
@@ -1136,7 +1132,6 @@ public class FDStoreProperties {
         defaults.put(PROP_DLVMANAGER_HOME, "freshdirect.delivery.DeliveryManager");
         defaults.put(PROP_RULESMANAGER_HOME, "freshdirect.fdstore.RulesManager");
         defaults.put(PROP_AIRCLICMANAGER_HOME, "freshdirect.delivery.AirclicManager");
-        defaults.put(PROP_DLVRESTRICTION_MGR_HOME, "freshdirect.delivery.DeliveryRestrictionManager");
         defaults.put(PROP_FDCUSTOMER_HOME, "freshdirect.fdstore.Customer");
         defaults.put(PROP_EMAIL_PROMOTION, "PromotionNotification@freshdirect.com");
         defaults.put(PROP_ERPCUSTOMER_HOME, "freshdirect.erp.Customer");
@@ -1892,7 +1887,6 @@ public class FDStoreProperties {
         defaults.put(PROP_EXTOLE_MICROSITE_URL, "https://refer.freshdirect.com/myaccountscre");
         defaults.put(PROP_EXTOLE_MICROSITE_SUB_URL, "https://refer.freshdirect.com/myaccountsub");
         defaults.put(PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL, "https://refer.freshdirect.com/globalnav");
-        defaults.put(PROP_FD_BRAND_PRODUCTS_AD_HOME, "freshdirect.fdstore.BrandProductsAdManager");
 
         defaults.put(PROP_FEATURE_ROLLOUT_NEW_SO, "true");
         defaults.put(PROP_SO3_ACTIVATE_CUTOFF_TIME, "23");// 11pm - Hour of the day in 24hr format.
@@ -1962,7 +1956,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
 
-        defaults.put(PROP_SF_2_0_ENABLED, "false");
+        defaults.put(PROP_SF_2_0_ENABLED, "true");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
         defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "false");
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
@@ -2273,10 +2267,6 @@ public class FDStoreProperties {
         return get(PROP_FDCUSTMGR_HOME);
     }
 
-    public static String getErpEWalletHome() {
-        return get(PROP_EWALLET_HOME);
-    }
-
     public static String getEwalletServiceHome() {
         return get(PROP_EWALLET_SERVICE_HOME);
     }
@@ -2311,10 +2301,6 @@ public class FDStoreProperties {
 
     public static String getContentManagerHome() {
         return get(PROP_CONTENTMANAGER_HOME);
-    }
-
-    public static String getDlvRestrictionManagerHome() {
-        return get(PROP_DLVRESTRICTION_MGR_HOME);
     }
 
     public static String getDeliveryManagerHome() {
@@ -4768,10 +4754,6 @@ public class FDStoreProperties {
 
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
-    }
-
-    public static String getFDBrandProductsAdManagerHome() {
-        return get(PROP_FD_BRAND_PRODUCTS_AD_HOME);
     }
 
     // Eastern Daylight Time <> Eastern Standard Time (Daylight Saving Time) conversion enabled

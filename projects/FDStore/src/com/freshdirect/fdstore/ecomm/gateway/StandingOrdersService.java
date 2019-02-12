@@ -14,6 +14,9 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
@@ -53,6 +56,8 @@ private final static Category LOGGER = LoggerFactory.getInstance(StandingOrdersS
 	private static final String PLACE_STANDING_ORDERS = "standingOrder/place";
 	private static final String PERSIST_UNAV_DETAILS_DB = "standingOrder/unavDetails";
 	private static final String GET_DET_FOR_REPORT_GEN = "standingOrder/reportGeneration";
+	private static final String RUN_MANUAL_JOB = "standingOrder/runManualJob";
+	
 	
 	private static StandingOrdersServiceI INSTANCE;
 	
@@ -177,7 +182,7 @@ private final static Category LOGGER = LoggerFactory.getInstance(StandingOrdersS
 			ResultListData data = StandingOrderConverter.buildResultListData(resultCounter);
 			request.setData(data);
 			inputJson = buildRequest(request);
-			response = postData(inputJson,getFdCommerceEndPoint(PERSIST_UNAV_DETAILS_DB), Response.class);
+			response = postData(inputJson,getFdCommerceEndPoint(RUN_MANUAL_JOB), Response.class);
 			if(!response.getResponseCode().equals("OK"))
 				throw new RemoteException(response.getMessage());	
 		} catch (FDEcommServiceException e) {
@@ -200,5 +205,41 @@ private final static Category LOGGER = LoggerFactory.getInstance(StandingOrdersS
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();	
+	}
+
+
+	@Override
+	public boolean runManualJob(String orders, boolean sendReportEmail, boolean sendReminderNotificationEmail)
+			throws RemoteException {
+		Response<Void> response = null;
+		String inputJson;
+		try{
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("orders", orders);
+			rootNode.put("sendReportEmail", sendReportEmail);
+			rootNode.put("sendReminderNotificationEmail", sendReminderNotificationEmail);
+			
+			request.setData(rootNode);
+			inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(RUN_MANUAL_JOB),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if(!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error occured in runManualJob, orders= " + orders +", sendReportEmail=" + sendReportEmail +
+						", sendReminderNotificationEmail=" + sendReminderNotificationEmail + ", errorMessage="+ response.getMessage());
+				throw new RemoteException(response.getMessage());
+			}
+			return true;
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error occured in runManualJob, orders= " + orders +", sendReportEmail=" + sendReportEmail +
+					", sendReminderNotificationEmail=" + sendReminderNotificationEmail, e);
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error("Error occured in runManualJob, orders= " + orders +", sendReportEmail=" + sendReportEmail +
+					", sendReminderNotificationEmail=" + sendReminderNotificationEmail, e);
+			throw new RemoteException(e.getMessage());
+		}
 	}
 }

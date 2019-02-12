@@ -8,16 +8,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.mail.MessagingException;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
@@ -29,11 +25,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
@@ -76,19 +68,15 @@ public class AutoCreditApprovalCron {
 		LOGGER.info("Regular Credit Approval Enabled: " + String.valueOf(regularCreditApprovalEnabled));
 		LOGGER.info("Self-issued Credit Approval Enabled: " + String.valueOf(selfIssuedCreditApprovalEnabled));
 		
-		Context ctx = getInitialContext();
-		FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
-		FDCustomerManagerSB sb = home.create();
-		
 		try {
-			List<String> regularComplaintIds = regularCreditApprovalEnabled ? collectRegularComplaints(sb) : new ArrayList<String>();
-			Map<String, String> regularComplaintErrors = approveRegularComplaints(regularComplaintIds, sb);
+			List<String> regularComplaintIds = regularCreditApprovalEnabled ? collectRegularComplaints() : new ArrayList<String>();
+			Map<String, String> regularComplaintErrors = approveRegularComplaints(regularComplaintIds);
 			
-			List<String> selfIssuedComplaintIds = selfIssuedCreditApprovalEnabled ? collectSelfIssuedComplaints(sb) : new ArrayList<String>();	
-			Map<String, String> selfIssuedComplaintErrors = approveSelfIssuedComplaints(selfIssuedComplaintIds, sb);
+			List<String> selfIssuedComplaintIds = selfIssuedCreditApprovalEnabled ? collectSelfIssuedComplaints() : new ArrayList<String>();	
+			Map<String, String> selfIssuedComplaintErrors = approveSelfIssuedComplaints(selfIssuedComplaintIds);
 			
 			if (!regularComplaintErrors.isEmpty() || !selfIssuedComplaintErrors.isEmpty()) {
-				logAndEmailErrors(regularComplaintErrors, selfIssuedComplaintErrors, sb);
+				logAndEmailErrors(regularComplaintErrors, selfIssuedComplaintErrors);
 			}
 
 			LOGGER.info("AutoCreditApprovalCron-finished");
@@ -100,15 +88,6 @@ public class AutoCreditApprovalCron {
 					.toString());
 			LOGGER.error(sw.toString());
 			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-					ctx = null;
-				}
-			} catch (NamingException ne) {
-				// could not do the cleanup
-			}
 		}
 	}
 	
@@ -127,43 +106,27 @@ public class AutoCreditApprovalCron {
 		return usages;
 	}
 	
-	private static List<String> collectRegularComplaints(FDCustomerManagerSB sb) throws FDResourceException, ErpComplaintException, RemoteException {
-		final boolean isSF2_0_AndServiceEnabled = FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer);
+	private static List<String> collectRegularComplaints() throws FDResourceException, ErpComplaintException, RemoteException {
 		List<String> regularComplaintIds;
-		if (isSF2_0_AndServiceEnabled) {
-			regularComplaintIds = CustomerComplaintService.getInstance().autoApproveCredit();
-		} else {
-			/* reject the credits older than A month with STF in Sale APPDEV-6785 */
-			LOGGER.info("Going to Reject Credits for morethan a month in Pending status");
-			List<String> lstToRejCredits = sb.getComplaintsToRejectCredits();
-			if (!lstToRejCredits.isEmpty())
-				sb.rejectCreditsOlderThanAMonth(lstToRejCredits);
-			LOGGER.info("Rejecting process has been  Done now");
-			regularComplaintIds = sb.getComplaintsForAutoApproval();
-			LOGGER.info("Going to AUTO approve " + regularComplaintIds.size() + " complaints");
-		}
+		regularComplaintIds = CustomerComplaintService.getInstance().autoApproveCredit();
 		return regularComplaintIds;
 	}
 	
-	private static List<String> collectSelfIssuedComplaints(FDCustomerManagerSB sb) throws RemoteException, FDResourceException {
-		final boolean isSF2_0_AndServiceEnabled = FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer);
+	private static List<String> collectSelfIssuedComplaints() throws RemoteException {
 		PendingSelfComplaintResponse pendingSelfComplaintResponse = null;
-		if (isSF2_0_AndServiceEnabled) {
-			 pendingSelfComplaintResponse = CustomerComplaintService.getInstance().getPendingSelfIssuedComplaints();
-		} else {
-			pendingSelfComplaintResponse = sb.getSelfIssuedComplaintsForAutoApproval();
-		}
+		pendingSelfComplaintResponse = CustomerComplaintService.getInstance().getPendingSelfIssuedComplaints();
+		
 		List<String> pendingSelfComplaints = null == pendingSelfComplaintResponse ? new ArrayList<String>() : pendingSelfComplaintResponse.getPendingSelfComplaints();
 		LOGGER.info("Going to AUTO approve " + pendingSelfComplaints.size() + " self-issued complaints");
 		return pendingSelfComplaints;
 	}
 	
-	private static Map<String, String> approveRegularComplaints(List<String> regularComplaintIds, FDCustomerManagerSB sb) {
+	private static Map<String, String> approveRegularComplaints(List<String> regularComplaintIds) {
 		Map<String, String> regularComplaintErrors = new HashMap<String, String>();
 		final double regularCreditAutoApproveAmount = ErpServicesProperties.getCreditAutoApproveAmount();
 		for (String complaintId : regularComplaintIds) {
 			LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
-			final String errorMessage = approveComplaint(complaintId, regularCreditAutoApproveAmount, sb);
+			final String errorMessage = approveComplaint(complaintId, regularCreditAutoApproveAmount);
 			if (StringUtils.isBlank(errorMessage)) {
 				LOGGER.info("Auto approve FINISHED for complaint ID : " + complaintId);
 			} else {
@@ -175,13 +138,12 @@ public class AutoCreditApprovalCron {
 		return regularComplaintErrors;
 	}
 
-	private static Map<String, String> approveSelfIssuedComplaints(List<String> selfIssuedComplaintIds,
-			FDCustomerManagerSB sb) {
+	private static Map<String, String> approveSelfIssuedComplaints(List<String> selfIssuedComplaintIds) {
 		Map<String, String> selfIssuedComplaintErrors = new HashMap<String, String>();
 		final double selfIssuedComplaintAutoApproveAmount = ErpServicesProperties.getSelfCreditAutoapproveAmountPerComplaint();
 		for (String selfIssuedComplaintId : selfIssuedComplaintIds) {
 			LOGGER.info("Auto approve STARTED for self-issued complaint ID : " + selfIssuedComplaintId);
-			final String errorMessage = approveComplaint(selfIssuedComplaintId, selfIssuedComplaintAutoApproveAmount, sb);
+			final String errorMessage = approveComplaint(selfIssuedComplaintId, selfIssuedComplaintAutoApproveAmount);
 			if (StringUtils.isBlank(errorMessage)) {
 				LOGGER.info("Auto approve FINISHED for self-issued complaint ID : " + selfIssuedComplaintId);
 			} else {
@@ -193,18 +155,12 @@ public class AutoCreditApprovalCron {
 		return selfIssuedComplaintErrors;
 	}
 	
-	private static String approveComplaint(String complaintId, double creditAutoApproveAmount,
-			FDCustomerManagerSB sb) {
-		final boolean isSF2_0_AndServiceEnabled = FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer);
+	private static String approveComplaint(String complaintId, double creditAutoApproveAmount) {
 		final String initiator = EnumTransactionSource.SYSTEM.getName().toUpperCase();
 		String errorMessage = "";
 		try {
-			if (isSF2_0_AndServiceEnabled) {
-				CustomerComplaintService.getInstance().approveComplaint(complaintId, true, initiator, true,
+			CustomerComplaintService.getInstance().approveComplaint(complaintId, true, initiator, true,
 						creditAutoApproveAmount);
-			} else {
-				sb.approveComplaint(complaintId, true, initiator, true, creditAutoApproveAmount);
-			}
 		} catch (ErpComplaintException ex) {
 			StringWriter sw = new StringWriter();
 			ex.printStackTrace(new PrintWriter(sw));
@@ -222,21 +178,21 @@ public class AutoCreditApprovalCron {
 	}
 	
 	private static void logAndEmailErrors(Map<String, String> regularComplaintErrors,
-			Map<String, String> selfIssuedComplaintErrors, FDCustomerManagerSB sb) {
+			Map<String, String> selfIssuedComplaintErrors) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("<table>");
 		
 		for (Map.Entry<String, String> entry : regularComplaintErrors.entrySet()) {
 		    String complaintId = entry.getKey();
 		    String errorMessage = entry.getValue();
-		    logActivity(complaintId, EnumAccountActivityType.REG_CREDIT_APPR_ERROR, sb);
+		    logActivity(complaintId, EnumAccountActivityType.REG_CREDIT_APPR_ERROR);
 		    stringBuilder.append(populateErrorDetails(complaintId, errorMessage));
 		}
 		
 		for (Map.Entry<String, String> entry : selfIssuedComplaintErrors.entrySet()) {
 		    String complaintId = entry.getKey();
 		    String errorMessage = entry.getValue();
-		    logActivity(complaintId, EnumAccountActivityType.SELF_CREDIT_APPR_ERROR, sb);
+		    logActivity(complaintId, EnumAccountActivityType.SELF_CREDIT_APPR_ERROR);
 			stringBuilder.append(populateErrorDetails(complaintId, errorMessage));
 		}
 		
@@ -244,8 +200,7 @@ public class AutoCreditApprovalCron {
 		email(Calendar.getInstance().getTime(), stringBuilder.toString());
 	}
 	
-	private static void logActivity(String complaintId, EnumAccountActivityType accountActivityType,
-			FDCustomerManagerSB sb) {
+	private static void logActivity(String complaintId, EnumAccountActivityType accountActivityType) {
 		try {
 			String customerId = collectCustomerId(complaintId);
 			if (null != customerId) {
@@ -302,13 +257,7 @@ public class AutoCreditApprovalCron {
 		return errorMessage.substring(0, Math.min(500, errorMessage.length()));
 	}
 	
-	static public Context getInitialContext() throws NamingException {
-		Hashtable<String, String> h = new Hashtable<String, String>();
-		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
-		return new InitialContext(h);
-	}
-
+	
 	private static void email(Date processDate, String exceptionMsg) {
 
 		try {

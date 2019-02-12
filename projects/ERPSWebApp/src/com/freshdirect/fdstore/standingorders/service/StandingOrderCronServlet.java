@@ -24,9 +24,11 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.ecomm.gateway.StandingOrdersService;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
@@ -77,11 +79,21 @@ public class StandingOrderCronServlet extends HttpServlet {
 
 			LOGGER.info("Standing order manual job started" + orders);
 			if(placeStandingOrder == null){
-				lookupSOSHome();
-				StandingOrderClientSB clientSB=soHome.create();
-				boolean result=clientSB.runManualJob(orders, sendReportEmail!=null?Boolean.valueOf(sendReportEmail):false, sendReminderNotificationEmail!=null?Boolean.valueOf(sendReminderNotificationEmail):false);
+				boolean result;
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)) {
+					result = StandingOrdersService.getInstance().runManualJob(orders,
+							sendReportEmail != null && Boolean.valueOf(sendReportEmail),
+							sendReminderNotificationEmail != null && Boolean.valueOf(sendReminderNotificationEmail));
+				} else {
+					lookupSOSHome();
+					StandingOrderClientSB clientSB = soHome.create();
+
+					result = clientSB.runManualJob(orders,
+							sendReportEmail != null && Boolean.valueOf(sendReportEmail),
+							sendReminderNotificationEmail != null && Boolean.valueOf(sendReminderNotificationEmail));
+				}
 				LOGGER.info("Standing order manual job runs successfully " + result);
-				
+
 				PrintWriter printWriter=response.getWriter();
 				printWriter.append("Standing order job run successfully");
 				printWriter.flush();

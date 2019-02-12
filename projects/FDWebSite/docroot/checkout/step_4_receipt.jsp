@@ -160,8 +160,6 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			}else if(cm.getMobilePreference() == null || (com.freshdirect.fdstore.customer.ejb.EnumMobilePreferenceType.SAW_MOBILE_PREF.getName()).equals(cm.getMobilePreference())) {
 				//session.removeAttribute("SMSSubmission"+ _ordNum);
 				if(session.getAttribute("SMSSubmission" + _ordNum) == null) {
-					//Store the flag to capture the user has seen the window atleast once event
-					FDCustomerManager.storeSMSWindowDisplayedFlag(curridentity.getErpCustomerPK());
 					%>
 		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 		<script language="javascript">

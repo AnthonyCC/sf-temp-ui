@@ -2,7 +2,6 @@ package com.freshdirect.dataloader.ecoupon;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,7 +9,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.CreateException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -19,9 +17,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.analytics.CouponActivityLogListener;
 import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerHome;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerSB;

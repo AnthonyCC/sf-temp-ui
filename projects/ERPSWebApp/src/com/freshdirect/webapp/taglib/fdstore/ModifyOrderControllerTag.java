@@ -107,10 +107,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
     private static final String RESUBMIT_ACTION = "resubmit";
     private static final String CANCEL_MODIFY_ACTION = "cancelModify";
     private static final String NEW_AUTHORIZATION = "new_authorization";
-    private static final String NEW_AUTHORIZATION_FAILED_SETTLEMENT = "new_payment_for_failed_settlement";
     private static final String REDELIVERY_ACTION = "redelivery";
     private static final String AUTO_RENEW_AUTH = "auto_renew_auth";
-    private static final String PLACE_AUTO_RENEW_ORDER = "place_auto_renew_order";
     private static final String EWALLET_SESSION_ATTRIBUTE_NAME = "EWALLET_CARD_TYPE";
     private static final String WALLET_SESSION_CARD_ID = "WALLET_CARD_ID";
 
@@ -184,9 +182,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			} else if ( NEW_AUTHORIZATION.equalsIgnoreCase(this.action) ) {
 				this.doNewAuthorization(request, results);
 				actionPerformed = true;
-			} else if ( NEW_AUTHORIZATION_FAILED_SETTLEMENT.equalsIgnoreCase(this.action) ) {
-				this.doResubmitPayment(request, results);
-				actionPerformed = true;
 			} else if ( RETURN_ACTION.equalsIgnoreCase(this.action) ) {
 				this.returnOrder(request, results);
 				actionPerformed = true;
@@ -208,15 +203,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			} else if ( AUTO_RENEW_AUTH.equalsIgnoreCase(this.action) ) {
 				this.auto_renew_auth(request, results);
 				actionPerformed = true;
-			}else if ( PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) ) {
-				this.place_auto_renew_order(request, results);
-				actionPerformed = true;
-				StringBuffer successPage = new StringBuffer();
-				successPage.append(this.successPage);
-				successPage.append(this.orderId);
-				setSuccessPage(successPage.toString());
 			}
-
 
 
 		} else { 
@@ -238,10 +225,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			}
 		}
 
-		//do this before (possibly) returning
-		if ( !PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) && request.getRequestURI().indexOf("place_auto_renew_order")<0 )
-			this.setOrderActivityPermissions(results);
-
+		
 		pageContext.setAttribute(result, results);
 		
 		//
@@ -936,130 +920,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
 		}
 	} 
-	protected void place_auto_renew_order(HttpServletRequest request, ActionResult results) throws JspException {
-		HttpSession session = request.getSession();
-
-		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
-		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
-			throw new JspException("No customer was found for the requested action.");
-		}
-		//
-		// Select new payment and resubmit order
-		//
-		String paymentId = request.getParameter("payment_id");
-		if (paymentId != null && !"".equals(paymentId.trim())) {
-			try {
-				ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(currentUser.getIdentity());
-				/// String erpCustomerID = currentUser.getIdentity().getErpCustomerPK();
-				//
-				// Get payment method
-				//
-				ErpPaymentMethodI paymentMethod = null;
-				ErpPaymentMethodI tmpPM = null;
-				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
-				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = it.next();
-					tmpPM = p;
-					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
-						paymentMethod = tmpPM;
-						break;
-					}
-				}
-				Date checkDate = new Date();
-		        results.addError(
-		    	        paymentMethod.getExpirationDate() == null || checkDate.after(paymentMethod.getExpirationDate()),
-		    	        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
-		    	        );
-				if ( results.isSuccess() ) {
-					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-
-		        	ErpAddressModel address= FDCustomerManager.getLastOrderAddress(user.getIdentity());
-					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
-					if (arSKU != null){
-						this.orderId = DeliveryPassUtil.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext(),false);
-					}else{
-						throw new DeliveryPassException("Customer has no valid auto_renew DP. ",currentUser.getIdentity().getErpCustomerPK());
-					
-					}
-				}
-			} catch (FDResourceException ex) {
-				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
-				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
-			} catch(DeliveryPassException ex) {
-				LOGGER.error("Error performing a Delivery pass operation. ", ex);
-				//There was delivery pass validation failure.
-				results.addError(new ActionError("delivery_pass_error","Error performing a Delivery pass operation. "+ex.getMessage()));
-			}
-		} else {
-			LOGGER.warn("No payment id selected by user");
-			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
-		}
-	} 
-
-	protected void doResubmitPayment(HttpServletRequest request, ActionResult results) throws JspException {
-		HttpSession session = request.getSession();
-
-		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
-		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
-			throw new JspException("No customer was found for the requested action.");
-		}
-		//
-		// Select new payment and resubmit order
-		//
-		String paymentId = request.getParameter("payment_id");
-		if (paymentId != null && !"".equals(paymentId.trim())) {
-			try {
-				ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(currentUser.getIdentity());
-				//
-				// Get specified payment method
-				//
-				ErpPaymentMethodI paymentMethod = null;
-				ErpPaymentMethodI tmpPM = null;
-				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
-				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = it.next();
-					tmpPM = p;
-					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
-						paymentMethod = tmpPM;
-						break;
-					}
-				}
-				//
-				// Get list of charges
-				//
-				Collection<ErpChargeLineModel> charges = new ArrayList<ErpChargeLineModel>();
-				if ( !"true".equalsIgnoreCase(request.getParameter("waive_"+paymentId)) ) {
-					ErpChargeLineModel line = new ErpChargeLineModel();
-					// !!! NEED TO READ THIS DYNAMICALLY FROM SOMEWHERE
-					line.setAmount(2.99);
-					line.setType(EnumChargeType.CC_DECLINED);
-					line.setReasonCode("RESUBMT");
-					charges.add(line);
-				}
-
-				EnumPaymentResponse response = CallCenterServices.resubmitPayment(this.orderId, paymentMethod, charges);
-				//
-				// Check for any "Not approved" response
-				//
-				if ( !EnumPaymentResponse.APPROVED.equals(response) ) {
-					results.addError(new ActionError("declinedCCD", "There was a problem with the selected payment method."));
-				}
-
-			} catch (ErpTransactionException ex) {
-				LOGGER.error("Current sale status incompatible with requested action", ex);
-				results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));
-			} catch (FDResourceException ex) {
-				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
-				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
-			}
-		} else {
-			LOGGER.warn("No payment id selected by user");
-			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
-		}
-	}
-
-
+	
 	protected void setOrderActivityPermissions(ActionResult results) {
 
 		HttpSession session = pageContext.getSession();

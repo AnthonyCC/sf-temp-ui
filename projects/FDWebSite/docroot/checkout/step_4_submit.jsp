@@ -1,5 +1,4 @@
 <%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -91,7 +90,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		//for Google Analytics (used in shared include i_step_4_cart_details.jspf)
 		String sem_orderNumber = "0";
 %>
-<% if (!abstractTimeslots) { %><fd:SmartSavingsUpdate promoConflictMode="true"/><% } 
+<%
 		//button include count
 		int incNextButtonCount = 0;
 %>

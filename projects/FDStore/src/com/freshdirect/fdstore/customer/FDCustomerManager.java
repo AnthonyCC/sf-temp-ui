@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.customer;
 
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,12 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
@@ -24,7 +23,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -32,7 +30,6 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
-import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
@@ -45,12 +42,10 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpChargeLineModel;
-import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
-import com.freshdirect.customer.ErpCustomerAlertModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
@@ -67,13 +62,9 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.ErpWebOrderHistory;
-import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.customer.ejb.ActivityLogHome;
-import com.freshdirect.customer.ejb.ActivityLogSB;
-import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassInfo;
@@ -87,16 +78,12 @@ import com.freshdirect.ecomm.gateway.DlvPassManagerService;
 import com.freshdirect.ecomm.gateway.GiftCardManagerService;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
-import com.freshdirect.ecommerce.data.dlv.FDReservationData;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
-import com.freshdirect.erp.ejb.ErpEWalletHome;
-import com.freshdirect.erp.ejb.ErpEWalletSB;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
-import com.freshdirect.fdlogistics.services.impl.DlvManagerDecoder;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDEcommProperties;
@@ -143,7 +130,6 @@ import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
@@ -165,10 +151,9 @@ import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
-import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.storeapi.content.ContentFactory;
 
 
@@ -183,7 +168,6 @@ public class FDCustomerManager {
 	private static Category LOGGER = LoggerFactory.getInstance(FDCustomerManager.class);
 
 	private static FDCustomerManagerHome managerHome = null;
-	private static ErpEWalletHome eWalletHome = null;
 	private static MailerGatewayHome mailerHome = null;
 	//private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
 	FDCustomerEStoreModel customerSmsPreferenceModel=null;
@@ -248,21 +232,6 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
-	}
-
-	public static FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.createNewDepotUser(depotCode, serviceType, eStoreId);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
 	}
 
 	public static FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
@@ -388,29 +357,13 @@ public class FDCustomerManager {
 			*/
     	if(identity != null){
     		
-    			ErpAddressModel address = null;
-    			try {
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-						try {
-							address = CustomerAddressService.getInstance().assumeDeliveryAddress(identity, partentOrderId, ContentFactory.getInstance().getStoreKey().getId());
-						}catch(Exception e) {}
-					} else {
-						lookupManagerHome();
-						FDCustomerManagerSB sb = managerHome.create();
-						try {
-							if (partentOrderId != null)
-								address = sb.assumeDeliveryAddress(identity, partentOrderId, null);
-							else
-								address = sb.assumeDeliveryAddress(identity, null, user);
-						}catch(Exception e) {}
-					}
-    			}catch (CreateException ce) {
-        			invalidateManagerHome();
-        			throw new FDResourceException(ce, "Error creating session bean");
-        		} catch (RemoteException re) {
-        			invalidateManagerHome();
-        			throw new FDResourceException(re, "Error talking to session bean");
-        		}
+    		ErpAddressModel address = null;
+
+			try {
+				address = CustomerAddressService.getInstance().assumeDeliveryAddress(identity, partentOrderId,
+						ContentFactory.getInstance().getStoreKey().getId());
+			} catch (Exception e) {
+			}
 
     			if(address != null && user.getShoppingCart() != null){
    					user.getShoppingCart().setDeliveryAddress(address);
@@ -446,24 +399,11 @@ public class FDCustomerManager {
 		}
 	}
 
-
 	public static List<String> getUsedReservations(String customerId) throws FDResourceException {
-		
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getUsedReservations(customerId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getUsedReservations(customerId);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().getUsedReservations(customerId);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -525,66 +465,31 @@ public class FDCustomerManager {
 		}
 	}
 
-
-
-
-
 	public static PrimaryKey getCustomerId(String userId) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getCustomerId(userId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getCustomerId(userId);
-			}
+			return CustomerInfoService.getInstance().getCustomerId(userId);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+
 	public static FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getCustomerInfo(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getCustomerInfo(identity);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().getCustomerInfo(identity);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getSOCustomerInfo(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getSOCustomerInfo(identity);
-			}
+			return CustomerInfoService.getInstance().getSOCustomerInfo(identity);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-
 
 	/**
 	 * Get all the payment methods of the customer.
@@ -596,18 +501,8 @@ public class FDCustomerManager {
 	 */
 	public static Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
-				return CustomerPaymentService.getInstance().getPaymentMethods(identity);
-			}
-			lookupManagerHome();
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getPaymentMethods(identity);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerPaymentService.getInstance().getPaymentMethods(identity);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -642,20 +537,13 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static int insertLongAccessToken(ErpCustEWalletModel custEWallet){
-		lookupeWalletHome();
 		int rows=0;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				rows = FDECommerceService.getInstance().insertCustomerLongAccessToken(custEWallet);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				rows = erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
-			}
+			
 		} catch (RemoteException e) {
 			e.printStackTrace();
-		} catch (CreateException e) {
-			e.printStackTrace();
-		}
+		} 
 		return rows;
 	}
 
@@ -679,15 +567,10 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static boolean getEwalletMobileStatusByType(String eWalletType){
-		lookupeWalletHome();
 		 try {
 			ErpEWalletModel erpEWalletModel = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				erpEWalletModel = FDECommerceService.getInstance().findEWalletByType(eWalletType);
-			} else {
-				ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-				erpEWalletModel = erpEWalletSB.findEWalletByType(eWalletType);
-			}
+			
 			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
 				 if(erpEWalletModel.getEwalletmStatus().equalsIgnoreCase("Y"))
 				 	return true;
@@ -695,8 +578,6 @@ public class FDCustomerManager {
 					return false;
 			 }
 		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (CreateException e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -708,20 +589,11 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static int updateLongAccessToken(String custId, String longAccessToken, String eWalletType){
-		lookupeWalletHome();
 		int rows=0;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
 				rows = FDECommerceService.getInstance().updateLongAccessToken(custId, longAccessToken, eWalletType);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				rows = erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
-			}
+			
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return rows;
@@ -735,38 +607,23 @@ public class FDCustomerManager {
 	 * @return
 	 */
 	public static int deleteLongAccessToken(String custId, String eWalletID){
-		lookupeWalletHome();
 		int rows=0;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
-				rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				rows = erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
-			}
+			rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
+			
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return rows;
 	}
 
 	public static ErpCustEWalletModel findLongAccessTokenByCustID(String customerId, String eWalletType){
-		lookupeWalletHome();
+		
 		ErpCustEWalletModel custEWalletModel = null;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpEWalletSB)) {
-				custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
-			} else {
-				ErpEWalletSB erpEWalletSB = eWalletHome.create();
-				custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
-			}
+			custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
+			
 		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (CreateException e) {
 			e.printStackTrace();
 		}
 		return custEWalletModel;
@@ -799,39 +656,8 @@ public class FDCustomerManager {
 	public static void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled,
 			boolean isDebitCardSwitch) throws FDResourceException, ErpPaymentMethodException, ErpFraudException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
-				CustomerPaymentService.getInstance().addPaymentMethod(info, paymentMethod, paymentechEnabled, isDebitCardSwitch);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);
-
-				if (isDebitCardSwitch) {
-					String paymentMethodDefaultType = getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK())
-							.getName();
-					if (!paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())) {
-						if (info.getSource().equals(EnumTransactionSource.CUSTOMER_REP)) {
-							if (!paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())) {
-								resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
-							} else {
-								return;
-							}
-						} else {
-							Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
-							List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(
-									paymentMethods);
-							if (PaymentMethodUtil.isNewCardHigherPrioriy(paymentMethod, paymentMethodList)) {
-								updatePaymentMethodDefaultCard(info, isDebitCardSwitch, false, paymentMethods);
-							}
-						}
-					}
-				}
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerPaymentService.getInstance().addPaymentMethod(info, paymentMethod, paymentechEnabled, isDebitCardSwitch);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -854,19 +680,8 @@ public class FDCustomerManager {
 		throws FDResourceException,  ErpPaymentMethodException {		
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
-				CustomerPaymentService.getInstance().updatePaymentMethod(info, paymentMethod);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.updatePaymentMethod(info, paymentMethod);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerPaymentService.getInstance().updatePaymentMethod(info, paymentMethod);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -880,18 +695,8 @@ public class FDCustomerManager {
 	 */
 	public static void setDefaultShipToAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				CustomerAddressService.getInstance().setDefaultShippingAddressPK(identity, shipToAddressPK, ContentFactory.getInstance().getStoreKey().getId());
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.setDefaultShipToAddressPK(identity, shipToAddressPK);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerAddressService.getInstance().setDefaultShippingAddressPK(identity, shipToAddressPK, ContentFactory.getInstance().getStoreKey().getId());
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -904,96 +709,19 @@ public class FDCustomerManager {
 	 * throws FDResourceException if an error occurs while using the remote interface
 	 */
 	public static String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				return CustomerAddressService.getInstance().getDefaultShipToAddressPK(identity, ContentFactory.getInstance().getStoreKey().getId());
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDefaultShipToAddressPK(identity);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-
+		return CustomerAddressService.getInstance().getDefaultShipToAddressPK(identity, ContentFactory.getInstance().getStoreKey().getId());
+		
 	}
 
 	public static void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK, EnumPaymentMethodDefaultType type, boolean isDebitCardSwitch) throws FDResourceException {
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
-				CustomerPaymentService.getInstance().setDefaultPaymentMethod(info, paymentMethodPK.getId(), type, isDebitCardSwitch);
-			} else {
-				lookupManagerHome();
-
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.setDefaultPaymentMethod(info, paymentMethodPK, type, isDebitCardSwitch);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerPaymentService.getInstance().setDefaultPaymentMethod(info, paymentMethodPK.getId(), type, isDebitCardSwitch);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	/**
-	 * method to get the default depot location id for given customer identified by the identity
-	 *
-	 * @param FDIdentity for customer
-	 * @return String default Depot location id
-	 * @throws FDResourceException if there are problems in accessing remote objects
-	 * @deprecated
-	 */
-
-	@Deprecated
-    public static String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getDefaultDepotLocationPK(identity);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-
-	}
-
-	/**
-	 * method to set the default depot location id for given customer identified by the identity
-	 *
-	 * @param FDIdentity for customer
-	 * @param String depot location id to set
-	 * @throws FDResourceException if there are problems in accessing remote objects
-	 * @deprecated
-	 */
-
-	@Deprecated
-    public static void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setDefaultDepotLocationPK(identity, locationId);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-
-	}
+	
 
 	/**
 	 *getDefaultPaymentMethodPK the default payment method for the customer
@@ -1005,18 +733,8 @@ public class FDCustomerManager {
 		
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
-				return CustomerPaymentService.getInstance().getDefaultPaymentMethodPK(identity.getFDCustomerPK());
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDefaultPaymentMethodPK(identity);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerPaymentService.getInstance().getDefaultPaymentMethodPK(identity.getFDCustomerPK());
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -1033,42 +751,8 @@ public class FDCustomerManager {
 	public static void removePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean isDebitCardSwitch) throws FDResourceException {
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
-				CustomerPaymentService.getInstance().removePaymentMethod(info, paymentMethod, isDebitCardSwitch);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.removePaymentMethod(info, paymentMethod);
-
-				if (isDebitCardSwitch && null != paymentMethod) {
-					Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
-					if (paymentMethods.size() == 0) {
-						resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
-					} else {
-						if (info.getSource().equals(EnumTransactionSource.CUSTOMER_REP)) {
-							String paymentMethodDefaultType = getpaymentMethodDefaultType(
-									info.getIdentity().getFDCustomerPK()).getName();
-							if (getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())
-									|| (!getDefaultPaymentMethodPK(info.getIdentity())
-											.equals(paymentMethod.getPK().getId())
-											&& paymentMethodDefaultType
-													.equals(EnumPaymentMethodDefaultType.DEFAULT_SYS.getName()))) {
-								resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
-							} else {
-								return;
-							}
-						} else if (FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity())
-								.equals(paymentMethod.getPK().getId())) {
-							updatePaymentMethodDefaultCard(info, isDebitCardSwitch, true, paymentMethods);
-						}
-					}
-				}
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerPaymentService.getInstance().removePaymentMethod(info, paymentMethod, isDebitCardSwitch);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1083,19 +767,8 @@ public class FDCustomerManager {
 	 */
 	public static boolean updateCustomerInfo(FDActionInfo info, ErpCustomerInfoModel customerInfo) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				return CustomerInfoService.getInstance().updateCustomerInfo(info, customerInfo);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.updateCustomerInfo(info, customerInfo);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().updateCustomerInfo(info, customerInfo);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1103,52 +776,26 @@ public class FDCustomerManager {
 	public static boolean isDisplayNameUsed(String displayName, String custId)
 			throws ErpDuplicateDisplayNameException, FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().isDisplayNameUsed(displayName, custId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.isDisplayNameUsed(displayName, custId);
-			}
+			return CustomerInfoService.getInstance().isDisplayNameUsed(displayName, custId);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
-
-	public static void cancelReservation(
-		FDUserI user,
-		FDReservation reservation,
-		EnumReservationType rsvType,
-		FDActionInfo aInfo, TimeslotEvent event)
-		throws FDResourceException {
+	public static void cancelReservation(FDUserI user, FDReservation reservation, EnumReservationType rsvType,
+			FDActionInfo aInfo, TimeslotEvent event) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().cancelReservation(user.getIdentity(), reservation, aInfo,
-						event);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.cancelReservation(user.getIdentity(), reservation, rsvType, aInfo, event);
-			}
+			CustomerInfoService.getInstance().cancelReservation(user.getIdentity(), reservation, aInfo, event);
+
 			user.setReservation(null);
 			resetUserContext(user);
 		} catch (RemoteException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
-	public static FDReservation makeReservation(
-		FDUserI user,
+	public static FDReservation makeReservation(FDUserI user,
 		String timeslotId,
 		EnumReservationType rsvType,
 		String addressId,
@@ -1156,13 +803,7 @@ public class FDCustomerManager {
 		throws FDResourceException, ReservationException {
 		try {
 			FDReservation rsv;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				rsv = CustomerInfoService.getInstance().makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				rsv = sb.makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
-			}
+			rsv = CustomerInfoService.getInstance().makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
 			
 			if(user.getShoppingCart()!=null
 					&& !(user.getShoppingCart() instanceof FDModifyCartModel)
@@ -1184,12 +825,8 @@ public class FDCustomerManager {
 
 			return rsv;
 		} catch (RemoteException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
+		} 
 	}
 
 	private static void resetUserContext(FDUserI user)
@@ -1218,38 +855,11 @@ public class FDCustomerManager {
 
 	public static void updateUserId(FDActionInfo info, String userId) throws FDResourceException, ErpDuplicateUserIdException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().updateUserId(info, userId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.updateUserId(info, userId);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerInfoService.getInstance().updateUserId(info, userId);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	public static void updatePasswordHint(FDIdentity identity, String passwordHint) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.updatePasswordHint(identity, passwordHint);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
 	/**
 	 * Get the customer's every ship to address.
 	 *
@@ -1260,23 +870,9 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static Collection<ErpAddressModel> getShipToAddresses(FDIdentity identity) throws FDResourceException {
-		
-
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				return CustomerAddressService.getInstance().getShippingAddresses(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getShipToAddresses(identity);
-			}
-			
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerAddressService.getInstance().getShippingAddresses(identity);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1302,17 +898,7 @@ public class FDCustomerManager {
 	public static boolean addShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address)
 	throws FDResourceException, ErpDuplicateAddressException {		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				return CustomerAddressService.getInstance().addShippingAddress(info, checkUniqueness, address);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.addShipToAddress(info, checkUniqueness, address);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerAddressService.getInstance().addShippingAddress(info, checkUniqueness, address);
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -1328,24 +914,14 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occurred using remote resources
 	 */
 	public static boolean updateShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address)
-			throws FDResourceException, ErpDuplicateAddressException {
+			throws FDResourceException {
 		boolean result = false;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				result = CustomerAddressService.getInstance().updateShippingAddress(info, checkUniqueness, address);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				result = sb.updateShipToAddress(info, checkUniqueness, address);
-			}
+			result = CustomerAddressService.getInstance().updateShippingAddress(info, checkUniqueness, address);
 			FDDeliveryManager.getInstance().sendShippingAddress(address);
-
 			return result;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1360,18 +936,9 @@ public class FDCustomerManager {
 	 */
 	public static void removeShipToAddress(FDActionInfo info, ErpAddressModel address) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				CustomerAddressService.getInstance().removeShippingAddress(info, address.getPK());
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.removeShipToAddress(info, address.getPK());
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerAddressService.getInstance().removeShippingAddress(info, address.getPK());
+			
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1386,18 +953,8 @@ public class FDCustomerManager {
 	public static void storeUser(FDUser user) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().storeUser(user);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeUser(user);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
+			CustomerInfoService.getInstance().storeUser(user);
+		}catch (RemoteException re) {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1408,21 +965,10 @@ public class FDCustomerManager {
 	 * @throws FDResourceException
 	 */
 	public static void storeCohortName(FDUser user) throws FDResourceException {
-		lookupManagerHome();
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().storeCohortName(user.getPK().getId(), user.getCohortName());
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeCohortName(user);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerInfoService.getInstance().storeCohortName(user.getPK().getId(), user.getCohortName());
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1439,19 +985,13 @@ public class FDCustomerManager {
 	}
 
 	public static FDOrderI getOrderForCRM(FDIdentity identity, String saleId) throws FDResourceException {
-		lookupManagerHome();
 
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrderForCRM(identity, saleId);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
+		FDOrderI order = getOrderForCRM(saleId);
+		if (!order.getCustomerId().equals(identity.getErpCustomerPK())) {
+			throw new FDResourceException("Sale doesn't belong to customer");
 		}
+		return order;
+
 	}
 
 	public static FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException {
@@ -1464,11 +1004,28 @@ public class FDCustomerManager {
 	}
 
 	public static FDOrderI getOrderForCRM(String saleId) throws FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrderForCRM(saleId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerMisc2)) {
+				ErpSaleModel saleModel = OrderServiceApiClient.getInstance().getOrder(saleId);
+				if (saleModel != null && saleModel.geteStoreId() != null
+						&& saleModel.geteStoreId().equals(EnumEStoreId.FDX)) {
+					LOGGER.info("Fetching trip and stop from logistics for fdx order " + saleId);
+					RouteStopInfo info = FDDeliveryManager.getInstance().getRouteStopInfo(saleId);
+					if (info != null && info.getRoute() != null && info.getStop() != null
+							&& saleModel.getShippingInfo() != null) {
+						saleModel.getShippingInfo().setTruckNumber(info.getRoute());
+						saleModel.getShippingInfo().setStopSequence(info.getStop());
+						LOGGER.info("Fetched trip " + info.getRoute() + " and stop " + info.getStop()
+								+ "from logistics for fdx order " + saleId);
+					}
+				}
+
+				return new FDOrderAdapter(saleModel, true);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getOrderForCRM(saleId);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -1528,20 +1085,11 @@ public class FDCustomerManager {
 		if (identity == null) {
 			// !!! this happens eg. when calculating promotions for an anon user..
 			// but i don't think this should be called then...
-			return new ErpPromotionHistory(Collections.<String,Set<String>>emptyMap());
+			return new ErpPromotionHistory(Collections.<String, Set<String>>emptyMap());
 		}
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getPromoHistoryInfo(identity.getErpCustomerPK());
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getPromoHistoryInfo(identity);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().getPromoHistoryInfo(identity.getErpCustomerPK());
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
@@ -1625,17 +1173,8 @@ public class FDCustomerManager {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
 
 				FDReservation reservation = null;
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")) {
-					reservation = OrderResourceApiClient.getInstance().cancelOrder(info, saleId, sendEmail,
+				reservation = OrderResourceApiClient.getInstance().cancelOrder(info, saleId, sendEmail,
 							currentDPExtendDays, restoreReservation);
-
-				} else {
-					if (managerHome == null) {
-						lookupManagerHome();
-					}
-					FDCustomerManagerSB sb = managerHome.create();
-					reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
-				}
 
 				// invalidate quickshop past orders cache
 				CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName,
@@ -1646,11 +1185,7 @@ public class FDCustomerManager {
 
 			throw new FDResourceException("Order not found in current user's order history.");
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1871,116 +1406,11 @@ public class FDCustomerManager {
 		}
 	}
 
-
-	/**
-	 * Rejects the specified complaint.
-	 *
-	 * @param String complaintId
-	 * @param String saleId
-	 * @param boolean isApproved
-	 * @param String csrId
-	 * @param java.util.Date approvedDate
-	 */
-	public static void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail,Double limit)
-		throws FDResourceException, ErpComplaintException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.approveComplaint(complaintId, isApproved, csrId, sendMail,limit);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-
-	/**
-	 * Assigns auto case to complaint and saves it to database.
-	 *
-	 * @param complaint
-	 * @param autoCasePK
-	 *
-	 * @throws FDResourceException
-	 */
-	public static void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			// set set case PK
-//			complaint.setAutoCaseId(autoCasePK.getId());
-
-			// update complaint in DB
-			sb.assignAutoCaseToComplaint(complaintPk, autoCasePK);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-
-
-	public static XMLEmailI makePreviewCreditEmail(FDCustomerInfo custInfo,String saleId,ErpComplaintModel complaint) throws FDResourceException {
-		try {
-			FDOrderI order = getOrder(saleId);
-			EnumEStoreId estoreId = order.getEStoreId();
-			return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint,estoreId,order);
-		} catch (FDResourceException re) {
-			throw new FDResourceException(re.getMessage());
-		}
-	}
-
-
 	public static void setActive(FDActionInfo info, boolean active) throws FDResourceException {
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().setActive(info, active);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.setActive(info, active);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerInfoService.getInstance().setActive(info, active);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static void setAlert(FDActionInfo info, ErpCustomerAlertModel customerAlert, boolean isOnAlert) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setAlert(info, customerAlert, isOnAlert);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static List<ErpCustomerAlertModel> getAlerts(String customerId) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getAlerts(new PrimaryKey(customerId));
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -1997,162 +1427,71 @@ public class FDCustomerManager {
 	/**
 	 * @return FDCartModel with unavailability info populated
 	 */
-	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout,String isFromLogin) throws FDResourceException {
-		
-		try {
-			
+	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout, String isFromLogin)
+			throws FDResourceException {
 
-			boolean skipModifyLines = true;
-			boolean sameDeliveryDate = true;
-			if (cart instanceof FDModifyCartModel) {
-				FDReservation originalReservation = ((FDModifyCartModel) cart).getOriginalOrder().getDeliveryReservation();
-				Date d1 = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
-				Date d2 = DateUtil.truncate(originalReservation.getStartTime());
-				if (d1.before(d2)) {
-					// order moved to a prior day, need to re-check everything
-					skipModifyLines = false;
-				}
-				if(d1.after(d2) || d1.before(d2)){
-					sameDeliveryDate = false;
-				}
-				ErpDeliveryPlantInfoModel origPlantInfo=((FDModifyCartModel) cart).getOriginalOrder().getDeliveryPlantInfo();
-				if(origPlantInfo!=null && !(origPlantInfo.getPlantId().equals(cart.getDeliveryPlantInfo().getPlantId()))) {
-
-					skipModifyLines = false;
-				}
-
+		boolean skipModifyLines = true;
+		boolean sameDeliveryDate = true;
+		if (cart instanceof FDModifyCartModel) {
+			FDReservation originalReservation = ((FDModifyCartModel) cart).getOriginalOrder().getDeliveryReservation();
+			Date d1 = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
+			Date d2 = DateUtil.truncate(originalReservation.getStartTime());
+			if (d1.before(d2)) {
+				// order moved to a prior day, need to re-check everything
+				skipModifyLines = false;
 			}
-
-			// note: FDModifyCartLineI instances skipped
-			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
-			Map<String, FDAvailabilityI> fdInvMap = null;
-			long timer = System.currentTimeMillis();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("checkAvailability_Api")) {
-				fdInvMap = OrderResourceApiClient.getInstance().checkAvailability(identity, createOrder, timeout, isFromLogin);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
-
+			if (d1.after(d2) || d1.before(d2)) {
+				sameDeliveryDate = false;
 			}
-			timer = System.currentTimeMillis() - timer;
-			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines, sameDeliveryDate);
-			cart.setAvailability(new FDCompositeAvailability(invs));
+			ErpDeliveryPlantInfoModel origPlantInfo = ((FDModifyCartModel) cart).getOriginalOrder()
+					.getDeliveryPlantInfo();
+			if (origPlantInfo != null
+					&& !(origPlantInfo.getPlantId().equals(cart.getDeliveryPlantInfo().getPlantId()))) {
 
-			if (FDStoreProperties.isAtpAvailabiltyLogEnabled()) {
-				int unavCount = 0;
-				for ( String key : invs.keySet() ) {
-					FDAvailabilityI inv = invs.get(key);
-					FDReservation deliveryReservation = cart.getDeliveryReservation();
-					DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
-					FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
-					if (!info.isAvailable()) {
-						unavCount++;
-						FDCartLineI cartLine = cart.getOrderLineById(new Integer(key));
-						LOGGER.info(
-							"User "
-								+ identity
-								+ " requested "
-								+ cartLine.getQuantity()
-								+ " "
-								+ cartLine.getSalesUnit()
-								+ " "
-								+ cartLine.getSkuCode()
-								+ " confirmed "
-								+ (info instanceof FDStockAvailabilityInfo ? ((FDStockAvailabilityInfo) info).getQuantity() : 0));
-					}
-				}
-
-				LOGGER.info(
-					"ATP for user "
-						+ identity
-						+ " with "
-						+ cart.numberOfOrderLines()
-						+ " lines took "
-						+ timer
-						+ " msecs, affected "
-						+ unavCount
-						+ " lines");
-
+				skipModifyLines = false;
 			}
-
-			return cart;
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			LOGGER.warn("Error creating session bean", ce);
-			throw new FDResourceException(ce, "Error creating session bean");
-
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			LOGGER.warn("Error talking to session bean", re);
-			throw new FDResourceException(re, "Error talking to session bean");
 
 		}
 
-	}
+		// note: FDModifyCartLineI instances skipped
+		ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines,
+				sameDeliveryDate);
+		Map<String, FDAvailabilityI> fdInvMap = null;
+		long timer = System.currentTimeMillis();
+		fdInvMap = OrderResourceApiClient.getInstance().checkAvailability(identity, createOrder, timeout, isFromLogin);
+		timer = System.currentTimeMillis() - timer;
+		Map<String, FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap,
+				skipModifyLines, sameDeliveryDate);
+		cart.setAvailability(new FDCompositeAvailability(invs));
 
+		if (FDStoreProperties.isAtpAvailabiltyLogEnabled()) {
+			int unavCount = 0;
+			for (String key : invs.keySet()) {
+				FDAvailabilityI inv = invs.get(key);
+				FDReservation deliveryReservation = cart.getDeliveryReservation();
+				DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(),
+						deliveryReservation.getEndTime());
+				FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
+				if (!info.isAvailable()) {
+					unavCount++;
+					FDCartLineI cartLine = cart.getOrderLineById(new Integer(key));
+					LOGGER.info("User " + identity + " requested " + cartLine.getQuantity() + " "
+							+ cartLine.getSalesUnit() + " " + cartLine.getSkuCode() + " confirmed "
+							+ (info instanceof FDStockAvailabilityInfo ? ((FDStockAvailabilityInfo) info).getQuantity()
+									: 0));
+				}
+			}
 
-	/**
-	 * Locate customer records matching the specified criteria
-	 *
-	 * @param custNumber
-	 * @param firstName
-	 * @param middleName
-	 * @param lastName
-	 * @param email
-	 * @param phone
-	 *
-	 * @return Collection of CustomerSearchResult objects
-	 *
-	 * @throws FDResourceException if an error occured using remote resources
-	 */
-	public static List<FDCustomerOrderInfo> locateCustomers(FDCustomerSearchCriteria criteria) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.locateCustomers(criteria);
+			LOGGER.info("ATP for user " + identity + " with " + cart.numberOfOrderLines() + " lines took " + timer
+					+ " msecs, affected " + unavCount + " lines");
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
 		}
+
+		return cart;
+
 	}
 
-	/**
-	 * Locate order records matching the specified criteria
-	 *
-	 * @param String firstName
-	 * @param String lastName
-	 * @param String email
-	 * @param String phone
-	 * @param String orderNumber
-	 * @param String zipCode
-	 * @param String depotAddress
-	 *
-	 * @return Collection of <code>FDOrderI</code>s
-	 *
-	 * @throws FDResourceException if an error occured using remote resources
-	 */
-
-	public static List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.locateOrders(criteria);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
+	
 	public static void doEmail(XMLEmailI email) throws FDResourceException {
 		try {
 			CustomerNotificationService.getInstance().doEmail(email);
@@ -2163,16 +1502,10 @@ public class FDCustomerManager {
 	}
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)) {
-				FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
-				FDSurveyService.getInstance().storeSurvey(surveyDataRequest);
-			} else {
-				FDServiceLocator.getInstance().getSurveySessionBean().storeSurvey(survey);
-			}
-		} catch (RemoteException re) {
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
+
+		FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
+		FDSurveyService.getInstance().storeSurvey(surveyDataRequest);
+
 	}
 
 	private static FDSurveyResponseData buildStoreSurveyRequest(
@@ -2200,18 +1533,8 @@ public class FDCustomerManager {
 	public static void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().setProfileAttribute(identity, key, value, info);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.setProfileAttribute(identity, key, value, info);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerInfoService.getInstance().setProfileAttribute(identity, key, value, info);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2248,36 +1571,10 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static boolean isCorrectPasswordHint(String emailAddress, String hint) throws FDResourceException, ErpFraudException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.isCorrectPasswordHint(emailAddress, hint);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
 	public static boolean isPasswordRequestExpired(String emailAddress, String passReq) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().isPasswordRequestExpired(emailAddress, passReq);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.isPasswordRequestExpired(emailAddress, passReq);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().isPasswordRequestExpired(emailAddress, passReq);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -2290,51 +1587,13 @@ public class FDCustomerManager {
 			//
 			if (password.length() < 6)
 				throw new ErpInvalidPasswordException("Please enter a password that is at least six characters long.");
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().changePassword(info, emailAddress, password);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.changePassword(info, emailAddress, password);
-			}
+			CustomerInfoService.getInstance().changePassword(info, emailAddress, password);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
-	public static void setSignupPromotionEligibility(FDActionInfo info, boolean eligible) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setSignupPromotionEligibility(info, eligible);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static void setDepotCode(FDIdentity identity, String depotCode) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setDepotCode(identity, depotCode);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
 
 	public static String makePreviewEmail(TellAFriend mailInfo) throws FDResourceException {
 
@@ -2435,25 +1694,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static void sendCrmCCSecurityEmail(CrmSecurityCCCheckEmailVO emailVO) throws FDResourceException {
-		lookupMailerGatewayHome();
-		lookupManagerHome();
-		try {
-			XMLEmailI email = null;
-			email = FDEmailFactory.getInstance().createCrmCCSecurityEmail(emailVO);
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(email);
-			} else {
-				MailerGatewaySB mailer = mailerHome.create();
-				mailer.enqueueEmail(email);
-			}
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
-		} catch (RemoteException re) {
-			throw new FDResourceException(re, "Cannot talk to MailerGatewaySB");
-		}
-	}
-
 	public static List<String> getReminderListForToday() throws FDResourceException {
 
 		try {
@@ -2475,78 +1715,36 @@ public class FDCustomerManager {
 	}
 
 	public static void createCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
-		
+
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().createCase(caseInfo);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.createCase(caseInfo);
-			}
-			
+			CustomerInfoService.getInstance().createCase(caseInfo);
+
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
-	public static FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity) throws FDResourceException {	
+	public static FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getCreditHistory(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getCreditHistory(identity);
-			}
+			return CustomerInfoService.getInstance().getCreditHistory(identity);
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
-    public static FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws FDResourceException {
-        try {
-            if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-                return CustomerInfoService.getInstance().getPendingCreditHistory(identity);
-            } else {
-                lookupManagerHome();
-                FDCustomerManagerSB sb = managerHome.create();
-                return sb.getPendingCreditHistory(identity);
-            }
-        } catch (RemoteException e) {
-            invalidateManagerHome();
-            throw new FDResourceException(e, "Error creating session bean");
-        } catch (CreateException e) {
-            invalidateManagerHome();
-            throw new FDResourceException(e, "Error creating session bean");
-        }
-    }
+	public static FDCustomerCreditHistoryModel getPendingCreditHistory(FDIdentity identity) throws FDResourceException {
+
+		return CustomerInfoService.getInstance().getPendingCreditHistory(identity);
+
+	}
 
 	public static String getNextId(String schema, String sequence) throws FDResourceException {
-		
+
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getNextId(schema, sequence);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getNextId(schema, sequence);
-			}
-			
+			return CustomerInfoService.getInstance().getNextId(schema, sequence);
+
 		} catch (RemoteException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error Talking to session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
@@ -2560,15 +1758,6 @@ public class FDCustomerManager {
 		}
 		managerHome = FDServiceLocator.getInstance().getFDCustomerManagerHome();
 	}
-
-	private static void lookupeWalletHome() {
-		if (eWalletHome != null) {
-			return;
-		}
-		eWalletHome = FDServiceLocator.getInstance().getErpEWalletHome();
-	}
-
-
 	private static void lookupMailerGatewayHome() throws FDResourceException {
 		if (mailerHome != null) {
 			return;
@@ -2593,53 +1782,15 @@ public class FDCustomerManager {
 
 	public static boolean isECheckRestricted(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().isECheckRestricted(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.isECheckRestricted(identity);
-			}
+			return CustomerInfoService.getInstance().isECheckRestricted(identity);
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
-
-	public static boolean isReferrerRestricted(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("referaFriendChanges")) {
-				return CustomerInfoService.getInstance().isReferrerRestricted(identity);
-			}else {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.isReferrerRestricted(identity);
-			}
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-	
 	public static boolean isCreditRestricted(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
-		try {if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+		try {
 			return CustomerInfoService.getInstance().isCreditRestricted(identity);
-		}else {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.isCreditRestricted(identity);
-		}
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -2762,37 +1913,13 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static Map<String, List<FDCustomerOrderInfo>> cancelOrders(FDActionInfo actionInfo,  List<FDCustomerOrderInfo> customerOrders, boolean sendEmail) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.cancelOrders(actionInfo, customerOrders, sendEmail);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
 	public static boolean hasPurchasedPass(String customerPK) throws FDResourceException {
 
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
-				return DlvPassManagerService.getInstance().hasPurchasedPass(customerPK);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.hasPurchasedPass(customerPK);
-			}
+			return DlvPassManagerService.getInstance().hasPurchasedPass(customerPK);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -2817,53 +1944,9 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static void setHasAutoRenewDP(String customerPK, EnumTransactionSource source , String initiator,boolean autoRenew)throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setHasAutoRenewDP( customerPK, source, initiator, autoRenew );
-		} catch ( CreateException ce ) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-
-	}
-
-	public static OrderHistoryI getWebOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
-
-		if (identity == null) {
-			// !!! this happens eg. when calculating promotions for an anon user..
-			// but i don't think this should be called then...
-			return new ErpWebOrderHistory(Collections.EMPTY_LIST);
-		}
-		
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("weborderHistory_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return new ErpWebOrderHistory(service.getWebOrderHistory(identity.getErpCustomerPK()));
-	    	}else{
-	    		lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getWebOrderHistoryInfo(identity);
-	    	}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
 	/**
 	 * This method was added to avoid unnecessary calls to getOrderHistoryInfo()
-	 * method. Eg: CrmResubmitOrdersTag keeps calling the getOrderHistoryInfo()
-	 * for every resubmitted order where you actually need just the valid order
-	 * count.
+	 * method. 
 	 * @param identity
 	 * @return
 	 * @throws FDResourceException
@@ -3092,20 +2175,8 @@ public class FDCustomerManager {
 
 	public static FDUser getFDUser(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				return CustomerIdentityService.getInstance().recognize(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				FDUser user = sb.recognize(identity);
-				return user;
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerIdentityService.getInstance().recognize(identity);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3114,82 +2185,22 @@ public class FDCustomerManager {
 		Object[] autoRenewInfo = null;
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)) {
-				autoRenewInfo = DlvPassManagerService.getInstance().getAutoRenewalInfo(eStore);
-			}else{	
-				lookupManagerHome();	
-				FDCustomerManagerSB sb = managerHome.create();
-				autoRenewInfo = sb.getAutoRenewalInfo(eStore);
-			}
+			autoRenewInfo = DlvPassManagerService.getInstance().getAutoRenewalInfo(eStore);
 			
 			return autoRenewInfo;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
-	    public static void storeProductRequest(List<FDProductRequest> productRequest) throws FDResourceException {
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-					CustomerInfoService.getInstance().storeProductRequest(productRequest);
-				} else {
-					lookupManagerHome();
-
-					FDCustomerManagerSB sb = managerHome.create();
-					sb.storeProductRequest(productRequest);
-				}
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
-		}
-
-	public static String getAutoRenewSKU(String customerPK)
-			throws FDResourceException {
-		String arSKU = null;
-		lookupManagerHome();
+	public static void storeProductRequest(List<FDProductRequest> productRequest) throws FDResourceException {
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			arSKU = sb.getAutoRenewSKU(customerPK);
-			return arSKU;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerInfoService.getInstance().storeProductRequest(productRequest);
+
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	public static String getLastOrderId(FDIdentity identity) throws FDResourceException {
-		String lastOrderId = null;
-		
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("lastOrderId_Api")){
-	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
-	    		return service.getLastOrderId(identity.getErpCustomerPK());
-	    	}else{
-	    		lookupManagerHome();
-				FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
-				lastOrderId = customerManagerSessionBean.getLastOrderID(identity);
-	    	}
-		} catch (CreateException exception) {
-			invalidateManagerHome();
-			throw new FDResourceException(exception, "Error creating session bean");
-		} catch (RemoteException exception) {
-			invalidateManagerHome();
-			throw new FDResourceException(exception, "Error talking session bean");
-		}
-		return lastOrderId;
-	}
-
 
 	public static String getLastOrderId(FDIdentity identity, EnumEStoreId eStoreId) throws FDResourceException {
 		try {
@@ -3199,15 +2210,6 @@ public class FDCustomerManager {
 		} catch (RemoteException exception) {
 			throw new FDResourceException(exception, "Error talking session bean");
 		}
-	}
-
-	public static FDOrderI getLastOrder(FDIdentity identity) throws FDResourceException {
-		FDOrderI lastOrder = null;
-		String lastOrderId = getLastOrderId(identity);
-		if (lastOrderId != null) {
-			lastOrder = getOrder(lastOrderId);
-		}
-		return lastOrder;
 	}
 
 	public static FDOrderI getLastOrder(FDIdentity identity, EnumEStoreId eStoreId) {
@@ -3243,18 +2245,8 @@ public class FDCustomerManager {
 	public static ErpAddressModel getAddress( FDIdentity identity, String id ) throws FDResourceException {
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				return CustomerAddressService.getInstance().getAddress(identity, id);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getAddress( identity, id );
-			}
-		} catch ( CreateException ce ) {
-			invalidateManagerHome();
-			throw new FDResourceException( ce, "Error creating session bean" );
+			return CustomerAddressService.getInstance().getAddress(identity, id);
 		} catch ( RemoteException re ) {
-			invalidateManagerHome();
 			throw new FDResourceException( re, "Error talking to session bean" );
 		}
 	}
@@ -3266,26 +2258,14 @@ public class FDCustomerManager {
 			CardInUseException, CardOnHoldException, FDResourceException {
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				return CustomerGiftCardService.getInstance().applyGiftCard(identity, givexNum, info);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.applyGiftCard(identity, givexNum, info);
-			}
+			return CustomerGiftCardService.getInstance().applyGiftCard(identity, givexNum, info);
 			
 
 		} catch (InvalidCardException ie) {
-			invalidateManagerHome();
 			throw ie;
 		} catch (CardInUseException ce) {
-			invalidateManagerHome();
 			throw ce;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3302,19 +2282,8 @@ public class FDCustomerManager {
 	 */
 	public static FDGiftCardInfoList getGiftCards(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				return new FDGiftCardInfoList(CustomerGiftCardService.getInstance().getGiftCards(identity));
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-
-				return new FDGiftCardInfoList(sb.getGiftCards(identity));
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return new FDGiftCardInfoList(CustomerGiftCardService.getInstance().getGiftCards(identity));
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3322,20 +2291,9 @@ public class FDCustomerManager {
 	public static ErpGiftCardModel verifyStatusAndBalance(
 			ErpGiftCardModel model, boolean reloadBalance)
 			throws FDResourceException {
-		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().verifyStatusAndBalance(model, reloadBalance);
-			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.verifyStatusAndBalance(model, reloadBalance);
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3344,18 +2302,8 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
-				return GiftCardManagerService.getInstance().getGiftCardRecepientsForCustomer(identity.getErpCustomerPK());
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getGiftCardRecepientsForCustomer(identity);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return GiftCardManagerService.getInstance().getGiftCardRecepientsForCustomer(identity.getErpCustomerPK());
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3364,18 +2312,8 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
-				return GiftCardManagerService.getInstance().getGiftCardRecepientsForOrders(saleIds);
-			}else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getGiftCardRecepientsForOrders(saleIds);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return GiftCardManagerService.getInstance().getGiftCardRecepientsForOrders(saleIds);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3384,18 +2322,8 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardOrdersForCustomer(identity.getErpCustomerPK());
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getGiftCardOrdersForCustomer(identity);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3404,18 +2332,8 @@ public class FDCustomerManager {
 			FDIdentity identity, String saleId, String certificationNum)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
 				return CustomerGiftCardService.getInstance().getRecipientDlvInfo(identity, saleId, certificationNum);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getRecipientDlvInfo(identity, saleId, certificationNum);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3424,70 +2342,37 @@ public class FDCustomerManager {
 			String resendEmailId, String recipName, String personalMsg,
 			EnumTransactionSource source) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				return CustomerGiftCardService.getInstance().resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerGiftCardService.getInstance().resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
-	public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
-
+	public static GiftCardApplicationStrategy getGiftCardApplicationStrategy(FDCartModel cart) throws FDResourceException {
+		
 		ErpAbstractOrderModel order = null;
 		if (cart instanceof FDModifyCartModel) {
-			order = FDOrderTranslator.getErpCreateOrderModel(cart);
-		} else {
 			order = FDOrderTranslator.getErpModifyOrderModel(cart);
+		} else {
+			order = FDOrderTranslator.getErpCreateOrderModel(cart);
 		}
 		// Generate Applied gift cards info.
 		GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
 		strategy.generateAppliedGiftCardsInfo();
+		return strategy;
+	}
+	public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
+		GiftCardApplicationStrategy strategy = getGiftCardApplicationStrategy(cart);
 		return strategy.getRemainingBalance();
 
-	}
-
-	public static EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId, EnumTransactionSource source)
-			throws FDResourceException {
-		try {
-			
-			lookupManagerHome();
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.iPhoneCaptureEmail(emailId, source);
-			
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
 	}
 
 	public static Object getGiftCardRedemedOrders(FDIdentity identity,
 			String certNum) throws FDResourceException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardRedeemedOrders(identity.getErpCustomerPK(), certNum);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getGiftCardRedemedOrders(identity, certNum);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3496,39 +2381,17 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardRedeemedOrders( certNum);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getGiftCardRedemedOrders(certNum);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static List getDeletedGiftCardsForCustomer(FDIdentity identity)
 			throws FDResourceException {
-		// TODO Auto-generated method stub
-		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getAllDeletedGiftCard(identity.getErpCustomerPK());
-			}else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDeletedGiftCardForCustomer(identity);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3543,18 +2406,8 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardRecepientsForOrder(saleId);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getGiftCardRecepientsForOrder(saleId);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3563,50 +2416,25 @@ public class FDCustomerManager {
 			throws FDResourceException {
 
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
-				return GiftCardManagerService.getInstance().validateAndGetGiftCardBalance(givexNum);
-			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.validateAndGetGiftCardBalance(givexNum);
-			}
+			return GiftCardManagerService.getInstance().validateAndGetGiftCardBalance(givexNum);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		}
+		} 
 	}
 
 	public static void transferGiftCardBalance(FDIdentity identity,
 			String fromGivexNum, String toGivexNum, double amount)
 			throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 				GiftCardManagerService.getInstance().transferGiftCardBalance(identity.getErpCustomerPK(), fromGivexNum, toGivexNum,amount);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.transferGiftCardBalance(identity, fromGivexNum, toGivexNum,amount);
-			}
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		}
+		} 
 	}
 
-	public static double getPerishableBufferAmount(FDCartModel cart)
-			throws FDResourceException {
-
-		ErpAbstractOrderModel order = null;
-		if (cart instanceof FDModifyCartModel) {
-			order = FDOrderTranslator.getErpCreateOrderModel(cart);
-		} else {
-			order = FDOrderTranslator.getErpModifyOrderModel(cart);
-		}
-		// Generate Applied gift cards info.
-		GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
-		strategy.generateAppliedGiftCardsInfo();
+	public static double getPerishableBufferAmount(FDCartModel cart) throws FDResourceException {
+		GiftCardApplicationStrategy strategy = getGiftCardApplicationStrategy(cart);
 		return strategy.getPerishableBufferAmount();
 	}
 
@@ -3632,57 +2460,28 @@ public class FDCustomerManager {
 			// Clear all charges
 			createOrder.setCharges(new ArrayList<ErpChargeLineModel>());
 		
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeDonationOrder_Api")){
-	    		orderId =  OrderResourceApiClient.getInstance().placeDonationOrder(info, createOrder,
-						appliedPromos, cart.getDeliveryReservation().getPK()
-						.getId(), sendEmail, cra,
-				info.getAgent() == null ? null : info.getAgent().getRole(),
-				status, isOptIn);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-			orderId = sb.placeDonationOrder(info, createOrder,
+			orderId =  OrderResourceApiClient.getInstance().placeDonationOrder(info, createOrder,
 					appliedPromos, cart.getDeliveryReservation().getPK()
-							.getId(), sendEmail, cra,
-					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status, isOptIn);
-			}
-			// sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(),
-			// orderId, EnumSaleType.GIFTCARD, cra);
+					.getId(), sendEmail, cra,
+			info.getAgent() == null ? null : info.getAgent().getRole(),
+			status, isOptIn);
+			
 
 			//invalidate quickshop past orders cache
             CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName, info.getIdentity().getErpCustomerPK());
 
 			return orderId;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
-		} /*
-		 * catch (ErpSaleNotFoundException e) { invalidateManagerHome(); throw
-		 * new FDResourceException(e, "Error talking to session bean"); }
-		 */
+		}
 	}
 
 	public static ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(
 			String certNum) throws FDResourceException {
-		
+
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
-				return GiftCardManagerService.getInstance().loadGiftCardRecipentByCertNum(certNum);
-			}else{
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.GetGiftCardRecipentByCertNum(certNum);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return GiftCardManagerService.getInstance().loadGiftCardRecipentByCertNum(certNum);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3690,18 +2489,8 @@ public class FDCustomerManager {
 	public static void saveDonationOptIn(String custId, String saleId, boolean optIn) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				CustomerGiftCardService.getInstance().saveDonationOptIn(custId, saleId, optIn);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.saveDonationOptIn(custId, saleId, optIn);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerGiftCardService.getInstance().saveDonationOptIn(custId, saleId, optIn);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -3709,150 +2498,33 @@ public class FDCustomerManager {
 	public static void resubmitGCOrders() {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				CustomerGiftCardService.getInstance().resubmitGCOrders();
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.resubmitGCOrders();
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			// throw new FDResourceException(ce, "Error creating session bean");
-			LOGGER.warn("Error creating session bean:" + ce);
+			CustomerGiftCardService.getInstance().resubmitGCOrders();
 		} catch (RemoteException re) {
-			invalidateManagerHome();
-			// throw new FDResourceException(re,
-			// "Error talking to session bean");
 			LOGGER.warn("Error talking to session bean:" + re);
 		} catch (FDResourceException fe) {
 			LOGGER.warn("Error looking up for manager:" + fe);
 		}
 	}
 
-	public static void startGiftCardNSMThread() {
-		Thread thread = new GiftCardNSMThread();
-		thread.setName("GiftCardNSMThread");
-		thread.start();
-	}
-
-	public static class GiftCardNSMThread extends Thread {
-
-		@Override
-		public void run() {
-
-			long refreshFrequency = FDStoreProperties.getNSMFreqSecsForGC() * 1000;
-			long lastTime = System.currentTimeMillis();
-			try {
-				while (true) {
-					Long currentTime = System.currentTimeMillis();
-					if (currentTime - lastTime < refreshFrequency) {
-						synchronized (this) {
-							this.wait(refreshFrequency
-									- (currentTime - lastTime));
-						}
-					}
-
-					resubmitGCOrders();
-					lastTime = System.currentTimeMillis();
-				}
-			} catch (InterruptedException e) {
-				LOGGER.warn("GiftCardNSMThread interrupted:" + e);
-			}
-
-		}
-	}
-
-
 	public static List<String> getTopFaqs() throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getTopFaqs();
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getTopFaqs();
-			}
+			return CustomerInfoService.getInstance().getTopFaqs();
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to bean");
 		}
 	}
 
-
-
-		public static CrmClick2CallModel getClick2CallInfo() throws FDResourceException {
-			
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-					return CustomerInfoService.getInstance().getClick2CallInfo();
-				} else {
-					lookupManagerHome();
-					FDCustomerManagerSB sb = managerHome.create();
-					return sb.getClick2CallInfo();
-				}
-			
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to bean");
-			}
-		}
-
-	public static List<ErpClientCodeReport> findClientCodesBySale(String saleId) throws FDResourceException {
-		lookupManagerHome();
+	public static CrmClick2CallModel getClick2CallInfo() throws FDResourceException {
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.findClientCodesBySale(saleId);
+			return CustomerInfoService.getInstance().getClick2CallInfo();
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to bean");
 		}
 	}
 
-	public static List<ErpClientCodeReport> findClientCodesByDateRange(FDIdentity customerId, Date start, Date end) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.findClientCodesByDateRange(customerId, start, end);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-
-	public static SortedSet<IgnoreCaseString> getOrderClientCodesForUser(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrderClientCodesForUser(identity);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-	
 	public static void sendSettlementFailedEmail(String saleId) throws FDResourceException {
 
 		try {
@@ -3862,48 +2534,6 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		} 
 	}
-
-	public static void bulkModifyOrder(
-			FDIdentity identity,
-			FDActionInfo info,
-			FDModifyCartModel cart,
-			Set<String> appliedPromos,
-			boolean sendEmail)
-			throws FDResourceException,
-			ErpTransactionException,
-			ErpFraudException,
-			ErpAuthorizationException,
-			DeliveryPassException,
-			ErpAddressVerificationException,
-			FDPaymentInadequateException, InvalidCardException
-			{
-			try{
-				lookupManagerHome();
-				String saleId = cart.getOriginalOrder().getErpSalesId();
-				ErpModifyOrderModel order = FDOrderTranslator.getErpModifyOrderModel(cart);
-				order.setTransactionSource(info.getSource());
-				order.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
-				String oldReservationId = cart.getOriginalReservationId();
-				boolean hasCouponDiscounts = false;
-				if(EnumSaleType.REGULAR.equals(cart.getOriginalOrder().getOrderType()) && (order.hasCouponDiscounts()||cart.getOriginalOrder().hasCouponDiscounts())){
-					hasCouponDiscounts = true;
-				}
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.bulkModifyOrder(saleId, identity, info, order, oldReservationId, appliedPromos,
-						info.getAgent() == null ? null : info.getAgent().getRole(), sendEmail,hasCouponDiscounts);
-			}catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to bean");
-			} catch (SQLException ie) {
-				invalidateManagerHome();
-				throw new FDResourceException(ie, "Error talking to bean SQLException");
-			}
-
-
-		}
 
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 
@@ -3916,32 +2546,9 @@ public class FDCustomerManager {
 		}
 	}
 
-	private static ActivityLogHome getActivityLogHome() {
-		try {
-			return (ActivityLogHome) FDServiceLocator.getInstance().getRemoteHome("freshdirect.customer.ActivityLog");
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
 	public static void authorizeSale(String salesId) throws FDResourceException {
 		authorizeSale(salesId, false);
 		}
-
-	/* APPDEV-1888 */
-	public static String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.recordReferral(customerId, referralId, customerEmail);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
 
 	public static String dupeEmailAddress(String email) throws FDResourceException {
 		try {
@@ -3957,244 +2564,42 @@ public class FDCustomerManager {
 			String partnerMessages, EnumEStoreId eStoreId) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeMobilePreferences(customerId, fdCustomerId, mobileNumber, textOffers, textDelivery, orderNotices,
-						orderExceptions, offers, partnerMessages, eStoreId);
-			} else {
-				lookupManagerHome();
-
-				FDCustomerManagerSB sb = managerHome.create();
-
-				sb.storeMobilePreferences(fdCustomerId, mobileNumber, textOffers, textDelivery, orderNotices,
-						orderExceptions, offers, partnerMessages, eStoreId);
-				FDCustomerEStoreModel smsPreferenceModel = FDCustomerFactory.getFDCustomer(fdCustomerId)
-						.getCustomerSmsPreferenceModel();
-
-				if (EnumEStoreId.FD.getContentId().equalsIgnoreCase(eStoreId.getContentId())
-						&& smsPreferenceModel != null) {
-					FDDeliveryManager.getInstance().addSubscriptions(customerId,
-							smsPreferenceModel.getMobileNumber() != null
-									? smsPreferenceModel.getMobileNumber().getPhone()
-									: "",
-							textOffers, textDelivery,
-							(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderNotices()))
-									? EnumSMSAlertStatus.SUBSCRIBED.value()
-									: EnumSMSAlertStatus.NONE.value(),
-							(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getOrderExceptions()))
-									? EnumSMSAlertStatus.SUBSCRIBED.value()
-									: EnumSMSAlertStatus.NONE.value(),
-							null,
-							(EnumSMSAlertStatus.SUBSCRIBED.value().equals(smsPreferenceModel.getPartnerMessages()))
-									? EnumSMSAlertStatus.SUBSCRIBED.value()
-									: EnumSMSAlertStatus.NONE.value(),
-							new Date(), eStoreId.toString());
-				} else {
-					PhoneNumber phoneNumber = new PhoneNumber(mobileNumber);
-					FDDeliveryManager.getInstance().addSubscriptions(customerId,
-							phoneNumber != null ? phoneNumber.getPhone() : "", textOffers, textDelivery,
-							"Y".equalsIgnoreCase(orderNotices) ? "S" : "N",
-							"Y".equalsIgnoreCase(orderExceptions) ? "S" : "N", "Y".equalsIgnoreCase(offers) ? "S" : "N",
-							"Y".equalsIgnoreCase(partnerMessages) ? "S" : "N", new Date(), eStoreId.toString());
-
-				}
-				logSmsActivity(customerId, orderNotices, orderExceptions, offers, smsPreferenceModel,
-						eStoreId.getContentId());
-			}
+			CustomerPreferenceService.getInstance().storeMobilePreferences(customerId, fdCustomerId, mobileNumber,
+					textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages, eStoreId);
 
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
-	}
-
-	private static void logSmsActivity(String customerId, String orderNotices, String orderExceptions, String offers, FDCustomerEStoreModel customerSmsPreferenceModel, String eStore){
-		//Temp variables for sms Alerts:
-		/*String _orderNotices = cm.getOrderNotices()!=null?cm.getOrderNotices().value():EnumSMSAlertStatus.NONE.value();
-		String _orderExceptions = cm.getOrderExceptions()!=null?cm.getOrderExceptions().value():EnumSMSAlertStatus.NONE.value();
-		String _offers = cm.getOffers()!=null?cm.getOffers().value():EnumSMSAlertStatus.NONE.value();
-		*/
-		String _orderNotices;
-		String _orderExceptions;
-		String _offers;
-
-		if(EnumEStoreId.FD.getContentId().equals(eStore) && customerSmsPreferenceModel!=null){
-
-			_orderNotices = customerSmsPreferenceModel.getOrderNotices()!=null?customerSmsPreferenceModel.getOrderNotices():EnumSMSAlertStatus.NONE.value();
-			 _orderExceptions = customerSmsPreferenceModel.getOrderExceptions()!=null?customerSmsPreferenceModel.getOrderExceptions():EnumSMSAlertStatus.NONE.value();
-			 _offers = customerSmsPreferenceModel.getOffers()!=null?customerSmsPreferenceModel.getOffers():EnumSMSAlertStatus.NONE.value();
-
-			if(_orderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) || _orderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-					_offers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
-				_orderNotices= "Y".equals(orderNotices)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
-				_orderExceptions="Y".equals(orderExceptions)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
-				_offers="Y".equals(offers)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
-			} else{
-				_orderNotices= "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value();
-				_orderExceptions="Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value();
-				_offers="Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value();
-			}
-
-		}
-		else{
-			 _orderNotices= "Y".equals(orderNotices)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
-				_orderExceptions="Y".equals(orderExceptions)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
-				_offers="Y".equals(offers)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
-			}
-
-		ErpActivityRecord rec = new ErpActivityRecord();
-		rec.setActivityType(EnumAccountActivityType.SMS_ALERT);
-		rec.setSource(EnumTransactionSource.WEBSITE);
-		rec.setInitiator("CUSTOMER");
-		rec.setCustomerId(customerId);
-		rec.setDate(new Date());
-		if(EnumEStoreId.FD.getContentId().equals(eStore))
-	     rec.setNote("Updated SMS Flags- Order Notif:" + _orderNotices + ", OrderExp Notif:"+ _orderExceptions +", MrkOffers:"+_offers);
-		else
-			rec.setNote("Updated FDX SMS Flags- Delivery Updates:" + _orderNotices + ", order Status:"+ _orderExceptions +", Offers:"+_offers);
-
-		logActivity(rec);
 	}
 
 	public static void storeSmsPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeSmsPrefereceFlag(fdCustomerId, flag, eStoreId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeSmsPrefereceFlag(fdCustomerId, flag, eStoreId);
-			}
+			CustomerPreferenceService.getInstance().storeSmsPrefereceFlag(fdCustomerId, flag, eStoreId);
+
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
 	public static void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException {
-		
+
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeGoGreenPreferences(customerId, goGreen);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeGoGreenPreferences(customerId, goGreen);
-				logGoGreenActivity(customerId, "Y".equals(goGreen)?"Y":"N", EnumAccountActivityType.GO_GREEN);
-			}
+			CustomerPreferenceService.getInstance().storeGoGreenPreferences(customerId, goGreen);
+
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
 
 	public static String loadGoGreenPreference(String customerId) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
 				return CustomerPreferenceService.getInstance().loadGoGreenPreference(customerId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.loadGoGreenPreference(customerId);
-			}
+			
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
-
-	public static void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeMobilePreferencesNoThanks(customerId);
-			logGoGreenActivity(customerId, "Y", EnumAccountActivityType.NO_THANKS);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
-	public static void storeSmsPreferencesNoThanks(String fdCustomerId, EnumEStoreId eStoreId) throws FDResourceException{
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeSmsPreferencesNoThanks(fdCustomerId, eStoreId);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
-	public static void storeAllMobilePreferences(String customerId, String fdCustomerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser, EnumEStoreId eStoreId) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeAllMobilePreferences(customerId, fdCustomerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser, eStoreId);
-			logGoGreenActivity(customerId, "Y".equals(goGreen)?"Y":"N", EnumAccountActivityType.GO_GREEN);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
-	public static void storeSMSWindowDisplayedFlag(String customerId) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeSMSWindowDisplayedFlag(customerId);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
-	private static void logGoGreenActivity(String customerId, String flag, EnumAccountActivityType activity) {
-		ErpActivityRecord rec = new ErpActivityRecord();
-		rec.setActivityType(activity);
-		rec.setSource(EnumTransactionSource.WEBSITE);
-		rec.setInitiator("CUSTOMER");
-		rec.setCustomerId(customerId);
-		rec.setDate(new Date());
-		rec.setNote("Flag updated to:" + flag);
-		logActivity(rec);
-	}
-
-	private static void logActivity(ErpActivityRecord record) {
-
-		try {
-			FDECommerceService.getInstance().logActivity(record);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
 
 	public static void sendEmail(XMLEmailI email) throws FDResourceException {
 		
@@ -4227,36 +2632,12 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	public static List<FDCartonInfo> getCartonDetails(FDOrderI order) throws FDResourceException {
-		lookupManagerHome();
+	
+	public static Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user)
+			throws FDResourceException {
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getCartonDetailsForSale(order);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-
-	}
-
-    public static Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user) throws FDResourceException {
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getAssignedCustomerParams(user);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getAssignedCustomerParams(user);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().getAssignedCustomerParams(user);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -4264,18 +2645,8 @@ public class FDCustomerManager {
 
 	public static void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				CustomerInfoService.getInstance().logIpLocatorEvent(ipLocatorEventDTO);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.logIpLocatorEvent(ipLocatorEventDTO);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			CustomerInfoService.getInstance().logIpLocatorEvent(ipLocatorEventDTO);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -4283,18 +2654,8 @@ public class FDCustomerManager {
 
 	public static IpLocatorEventDTO loadIpLocatorEvent(String fdUserId) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().loadIpLocatorEvent(fdUserId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.loadIpLocatorEvent(fdUserId);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().loadIpLocatorEvent(fdUserId);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -4313,23 +2674,13 @@ public class FDCustomerManager {
 
 		try {
 			FDUser user;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
 				user = CustomerIdentityService.getInstance().recognize(identity, eStoreId, false, true);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				user = sb.getFDUserWithCart(identity,  eStoreId);
-			}
 			
 			populateShoppingCart(user, true, false);
 
 			return user.getShoppingCart();
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -4362,20 +2713,10 @@ public class FDCustomerManager {
 	public static boolean isReadyForPick(String orderNum) throws FDResourceException {
 		try {
 			boolean result;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("ReadyForPickOrders_Api")) {
-				result=CustomersApi.getInstance().isReadyForPick(orderNum);
-			}else {
-				lookupManagerHome();			
-				FDCustomerManagerSB sb = managerHome.create();
-				result= sb.isReadyForPick(orderNum);
-
-			}
+			result=CustomersApi.getInstance().isReadyForPick(orderNum);
+			
 			return result;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
@@ -4414,44 +2755,13 @@ public class FDCustomerManager {
 
 	}
 
-	public static void setFdxSmsPreferences(
-			FDCustomerEStoreModel customerSmsPreferenceModel, String ErpCustomerPK)throws FDResourceException {
-
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setFdxSmsPreferences(customerSmsPreferenceModel, ErpCustomerPK);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-
-
-	}
-
 	public static boolean updateAck(FDIdentity identity, boolean acknowledge,
 			String ackType) throws FDResourceException {
 		boolean status=true;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
 				status = CustomerInfoService.getInstance().setAcknowledge(identity, acknowledge, ackType);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				status = sb.setAcknowledge(identity, acknowledge, ackType);
-
-			}
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 
@@ -4484,35 +2794,16 @@ public class FDCustomerManager {
 	
 	return status;
 	}
-	
+
 	public static String getParentOrderAddressId(String parentOrderId) throws FDResourceException {
 
-		
 		String parentOrderAddressId = null;
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-				parentOrderAddressId = CustomerAddressService.getInstance().getParentOrderAddressId(parentOrderId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				LOGGER.debug("IN FD Customer Manager Parent id is " + parentOrderId);
-				parentOrderAddressId = sb.getParentOrderAddressId(parentOrderId);
-			}
+		parentOrderAddressId = CustomerAddressService.getInstance().getParentOrderAddressId(parentOrderId);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-
-	return parentOrderAddressId;
+		return parentOrderAddressId;
 	}
 
-		public static boolean reSendInvoiceEmail(String OrderId) throws FDResourceException {
-
-		
+	public static boolean reSendInvoiceEmail(String OrderId) throws FDResourceException {
 
 		try {
 			LOGGER.info("reSendInvoiceEmail: OrderId= "  + OrderId);
@@ -4547,19 +2838,9 @@ public class FDCustomerManager {
 	public static void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPreference)) {
-				CustomerPreferenceService.getInstance().storeEmailPreferenceFlag(fdCustomerId, flag, eStoreId);
-			} else {
-				lookupManagerHome();
+			CustomerPreferenceService.getInstance().storeEmailPreferenceFlag(fdCustomerId, flag, eStoreId);
 
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeEmailPreferenceFlag(fdCustomerId, flag, eStoreId);
-			}
 		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -4689,25 +2970,15 @@ public class FDCustomerManager {
 
 	public static ErpCustomerModel getCustomerPaymentAndCredit(FDIdentity identity) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getCustomerPaymentAndCredit(identity);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getCustomer(identity);
-			}
+			return CustomerInfoService.getInstance().getCustomerPaymentAndCredit(identity);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
 	public static Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException {
-		
+
 		try {
 			return CustomerOrderService.getInstance().getPendingDeliveries();
 
@@ -4718,74 +2989,27 @@ public class FDCustomerManager {
 
 	public static boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().insertOrUpdateSilverPopup(silverPopupDetails);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.insertOrUpdateSilverPopup(silverPopupDetails);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+			return CustomerInfoService.getInstance().insertOrUpdateSilverPopup(silverPopupDetails);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
-		public static String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException{
-			
-			try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getCookieByFdCustomerId(fdCustomerId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getCookieByFdCustomerId(fdCustomerId);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
+	public static String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException {
+
+		try {
+			return CustomerInfoService.getInstance().getCookieByFdCustomerId(fdCustomerId);
 		} catch (RemoteException re) {
-			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
 
-
-		private static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException{
-			lookupManagerHome();
-			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getpaymentMethodDefaultType(custId);
-			}catch (RemoteException e) {
-				LOGGER.error("Error verifying payment method "+ e);
-				invalidateManagerHome();
-				throw new FDResourceException(e, "Error creating session bean");
-			} catch (CreateException e) {
-				LOGGER.error("Error verifying payment method "+ e);
-				invalidateManagerHome();
-				throw new FDResourceException(e, "Error creating session bean");
-			}
-		}
 
 	public static int resetDefaultPaymentValueType(String custId) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
-				return CustomerPaymentService.getInstance().resetDefaultPaymentValueType(custId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.resetDefaultPaymentValueType(custId);
-			}
+			return CustomerPaymentService.getInstance().resetDefaultPaymentValueType(custId);
 		} catch (RemoteException e) {
 			LOGGER.error("Error resetting default payment type in fdcustomer " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error resetting default payment type in fdcustomer " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -4793,21 +3017,9 @@ public class FDCustomerManager {
 	public static void updateDpFreeTrialOptin(boolean dpFreeTrialOptin, String custId, FDActionInfo info)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				CustomerDeliveryPassService.getInstance().setDpFreeTrialOptin(dpFreeTrialOptin, custId, info);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.setDpFreeTrialOptin(dpFreeTrialOptin, custId, info);
-			}
-
+			CustomerDeliveryPassService.getInstance().setDpFreeTrialOptin(dpFreeTrialOptin, custId, info);
 		} catch (RemoteException e) {
 			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -4815,21 +3027,10 @@ public class FDCustomerManager {
 	public static Date getDpFreeTrialOptinDate(String custId) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				return CustomerDeliveryPassService.getInstance().getDpFreeTrialOptinDate(custId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDpFreeTrialOptinDate(custId);
-			}
+			return CustomerDeliveryPassService.getInstance().getDpFreeTrialOptinDate(custId);
 
 		} catch (RemoteException e) {
 			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -4837,59 +3038,21 @@ public class FDCustomerManager {
 		public static  List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException{
 			
 			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)) {
-					return DlvPassManagerService.getInstance().getAllCustIdsOfFreeTrialSubsOrder();
-				}else{
-					lookupManagerHome();
-					FDCustomerManagerSB sb = managerHome.create();
-					return sb.getAllCustIdsOfFreeTrialSubsOrder();
-				}
-				
+				return DlvPassManagerService.getInstance().getAllCustIdsOfFreeTrialSubsOrder();
 				
 			}catch (RemoteException e) {
 				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
-				invalidateManagerHome();
-				throw new FDResourceException(e, "Error creating session bean");
-			} catch (CreateException e) {
-				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
-				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
 			}
 		}
 
-		public static boolean hasCustomerDpFreeTrial(String custId) throws FDResourceException{
-			lookupManagerHome();
-			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.hasCustomerDpFreeTrialOptin(custId);
-			}catch (RemoteException e) {
-				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
-				invalidateManagerHome();
-				throw new FDResourceException(e, "Error creating session bean");
-			} catch (CreateException e) {
-				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
-				invalidateManagerHome();
-				throw new FDResourceException(e, "Error creating session bean");
-			}
-		}
-		
+	
 	public static void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
 				CustomerInfoService.getInstance().updateFDCustomerEStoreInfo(fdCustomerEStoreModel, custId);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.updateFDCustomerEStoreInfo(fdCustomerEStoreModel, custId);
-			}
 		} catch (RemoteException e) {
 			LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
@@ -4898,19 +3061,10 @@ public class FDCustomerManager {
 			
 			ShortSubstituteResponse ssResponse = null;
 			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("ShortSubstituteOrders_Api")) {
 				ssResponse=CustomersApi.getInstance().getShortSubstituteOrders(orderList);
-				}else {
-					lookupManagerHome();	
-					FDCustomerManagerSB sb = managerHome.create();
-					ssResponse= sb.getShortSubstituteOrders(orderList);
-				}
+				
 				return ssResponse;
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
 			} catch (RemoteException re) {
-				invalidateManagerHome();
 				LOGGER.debug("RemoteException: ", re);
 				throw new FDResourceException(re, "Error talking to session bean");
 }
@@ -4920,21 +3074,9 @@ public class FDCustomerManager {
 			EnumEStoreId eStore) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
-				CustomerDeliveryPassService.getInstance().updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
-			}
-
+			CustomerDeliveryPassService.getInstance().updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
 		} catch (RemoteException e) {
 			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			LOGGER.error("Error at delivery pass free trial in fdcustomer " + e);
-			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}

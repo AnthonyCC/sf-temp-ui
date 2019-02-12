@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,27 +46,18 @@ import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmQueueInfo;
 import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.crm.CrmSystemCaseInfo;
-import com.freshdirect.customer.ActivityLog;
+import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumCannedTextCategory;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCannedText;
-import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
-import com.freshdirect.customer.ejb.ErpCustomerEB;
-import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.deliverypass.DeliveryPassModel;
-import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -708,31 +698,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	
-	/**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    private DlvPassManagerHome getDlvPassManagerHome() {
-        try {
-            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-	private ErpCustomerHome getErpCustomerHome() {
-		try {
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-	
 	/**
      *@deprecated This method is moved to backoffice project.
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
@@ -870,200 +835,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	
 
 	
-	public void incrDeliveryCount(DeliveryPassModel model, 
-			CrmAgentModel agentmodel, 
-			int delta, 
-			String note, 
-			String reasonCode, 
-			String saleId) throws FDResourceException, CrmAuthorizationException {
-		try {
-			/*
-			 *  CSR would only add 1 delivery to BSGS DP/or one week to unlimited DP. Anything 
-			 *  higher supervisor would have to do.
-			 */
-			//Get the No.Of credits given for this order.
-			ErpActivityRecord template = new ErpActivityRecord();
-			template.setCustomerId(model.getCustomerId());
-			template.setDeliveryPassId(model.getPK().getId());
-			template.setChangeOrderId(saleId);
-			//BSGS Pass.
-			template.setActivityType(EnumAccountActivityType.CREDIT_DLV_PASS);
-			Collection<ErpActivityRecord> credits = ActivityLog.getInstance().findActivityByTemplate(template);
-			if((credits.size()+delta) >3){
-				//He has already got 3 or more weeks extensions on this order. Further extensions
-				//need to handled by the supervsior.
-	            CrmAgentHome home = this.getCrmAgentHome();
-	            CrmAgentEB eb = home.findByPrimaryKey(agentmodel.getPK());
-	            CrmAgentModel user = (CrmAgentModel)eb.getModel();
-	            if(!user.isSupervisor()){
-	                throw new CrmAuthorizationException("You are not authorized to perform this action. Please contact your Supervisor.");
-	            }
-			}
-			
-			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
-			dlvPassManagerSB.creditDelivery(model, delta);
-			//Create a activity log to track the delivery credits.
-			for(int i=0;i<delta;i++) {
-				ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CREDIT_DLV_PASS, 
-																	agentmodel.getUserId(), 
-																	note, 
-																	model,
-																	saleId,
-																	reasonCode);
-				logActivity(activityRecord);
-			}
-			
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}catch(FinderException e){
-            throw new FDResourceException(e);
-        }		
-	}	
 	
-	public void incrExpirationPeriod(DeliveryPassModel model, 
-									CrmAgentModel agentmodel, 
-									int noOfDays, 
-									String note, 
-									String reasonCode, 
-									String saleId) throws FDResourceException, CrmAuthorizationException {
-		try {
-			/*
-			 *  CSR would only add upto 3 delivery to BSGS DP/or one week to unlimited DP. Anything 
-			 *  higher supervisor would have to do.
-			 */
-			//Get the No.Of credits given for this order.
-			ErpActivityRecord template = new ErpActivityRecord();
-			template.setCustomerId(model.getCustomerId());
-			template.setDeliveryPassId(model.getPK().getId());
-			template.setChangeOrderId(saleId);
-			//Unlimited Pass.
-			template.setActivityType(EnumAccountActivityType.EXTEND_DLV_PASS);
-			Collection<ErpActivityRecord> extns = ActivityLog.getInstance().findActivityByTemplate(template);
-			if((extns.size()+(int)(noOfDays/7)) >3){//must come from template.
-				
-	            CrmAgentHome home = this.getCrmAgentHome();
-	            CrmAgentEB eb = home.findByPrimaryKey(agentmodel.getPK());
-	            CrmAgentModel user = (CrmAgentModel)eb.getModel();
-	            if(!user.isSupervisor()){
-	                throw new CrmAuthorizationException("You are not authorized to perform this action. Please contact your Supervisor.");
-	            }
-			}
-			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
-			dlvPassManagerSB.extendExpirationPeriod(model, noOfDays);
-			//Create a activity log to track the delivery credits.
-			for(int i=0;i<(int)(noOfDays/7);i++) {
-				ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.EXTEND_DLV_PASS, 
-																	agentmodel.getUserId(), 
-																	note, 
-																	model,
-																	saleId,
-																	reasonCode);
-				logActivity(activityRecord);
-			}
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch(FinderException e){
-            throw new FDResourceException(e);
-        }		
-	}	
-	
-	private boolean isAutoRenewDPCustomer(String hasAutoRenewDP_Val) {
-		
-		boolean isAutoRenewDPCustomer=false;
-		if(hasAutoRenewDP_Val!=null && !hasAutoRenewDP_Val.equals("") && hasAutoRenewDP_Val.equalsIgnoreCase("Y")) {
-			isAutoRenewDPCustomer=true;
-		}
-		return isAutoRenewDPCustomer;
-			
-	}
-	
-	   
-	public void cancelDeliveryPass(DeliveryPassModel model, 
-								CrmAgentModel agentmodel, 
-								String note, 
-								String reasonCode, 
-								String saleId) throws FDResourceException{
-		try {
-			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
-			model.setStatus(EnumDlvPassStatus.CANCELLED);
-					
-			model.setExpirationDate(new Date());
-			dlvPassManagerSB.cancel(model,null,null);
-			if(model.getType().isAutoRenewDP()) {
-				ErpCustomerEB erpCustomer = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(model.getCustomerId()));
-				ErpCustomerInfoModel custInfo=erpCustomer.getCustomerInfo();
-				if(isAutoRenewDPCustomer(custInfo.getHasAutoRenewDP()) ) {
-						List<DeliveryPassModel> autoRenewPasses=dlvPassManagerSB.getUsableAutoRenewPasses(model.getCustomerId());
-						if(autoRenewPasses.size()==0) {
-						
-				/*			custInfo.setHasAutoRenewDP("N");
-							erpCustomer.setCustomerInfo(custInfo);
-							ErpActivityRecord rec = new ErpActivityRecord();
-							rec.setActivityType(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF);
-							rec.setCustomerId(model.getCustomerId());
-							rec.setSource(EnumTransactionSource.SYSTEM);
-							rec.setInitiator(agentmodel.getUserId());
-							logActivity(rec);*/
-						}
-				}
-			}
-
-			//Create a activity log to track the delivery credits.
-			ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS, 
-																agentmodel.getUserId(), 
-																note, 
-																model,
-																saleId,
-																reasonCode);
-			logActivity(activityRecord);
-			
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (FinderException fe) {
-			throw new FDResourceException(fe);		} 
-	}
-	
-		
-	public void reactivateDeliveryPass(DeliveryPassModel model) throws FDResourceException {
-		try {
-			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
-			dlvPassManagerSB.reactivate(model);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}		
-	}
-	
-	private ErpActivityRecord createActivity(EnumAccountActivityType type, 
-			String initiator, 
-			String note, 
-			DeliveryPassModel model, 
-			String saleId, 
-			String reasonCode) {
-			ErpActivityRecord rec = new ErpActivityRecord();
-			rec.setActivityType(type);
-			
-			rec.setSource(EnumTransactionSource.CUSTOMER_REP);
-			rec.setInitiator(initiator);
-			rec.setCustomerId(model.getCustomerId());
-			
-			StringBuffer sb = new StringBuffer();
-			if (note != null) {
-			sb.append(note);
-			}
-			rec.setNote(sb.toString());
-			rec.setDeliveryPassId(model.getPK().getId());
-			rec.setChangeOrderId(saleId);
-			rec.setReason(reasonCode);
-			return rec;
-	}
 	
 	private void logActivity(ErpActivityRecord record) {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
@@ -1532,16 +1304,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return false;
 	}
 	
-	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws RemoteException, FDResourceException {
-		try{
-		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
-		return sb.getDeliveryPassInfo(dlvPassId);
-		}
-		catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		}
-	}
-	
 	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1556,24 +1318,6 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
-		}
-	}
-	
-	public DeliveryPassModel getActiveDP(String custId, EnumEStoreId estore) throws FDResourceException,RemoteException {
-		try{
-		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
-		List dps = sb.getDeliveryPasses(custId, estore);
-		Iterator iter = dps.iterator();
-		while(iter.hasNext()) {
-			DeliveryPassModel dp = (DeliveryPassModel) iter.next();
-			if(dp.getStatus() == EnumDlvPassStatus.ACTIVE || dp.getStatus() == EnumDlvPassStatus.READY_TO_USE) {
-				return dp;
-			}
-		}
-		return null;
-		}
-		catch (CreateException ce) {
-			throw new FDResourceException(ce);
 		}
 	}
 	

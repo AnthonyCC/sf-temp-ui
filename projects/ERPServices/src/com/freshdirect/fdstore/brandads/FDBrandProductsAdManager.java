@@ -2,14 +2,10 @@ package com.freshdirect.fdstore.brandads;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import javax.ejb.CreateException;
-import javax.naming.Context;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
@@ -20,151 +16,82 @@ public class FDBrandProductsAdManager {
 
 	private static Category LOGGER = LoggerFactory.getInstance(FDBrandProductsAdManager.class);
 
-	private static FDBrandProductsAdManagerHome managerHome = null;
-	
-	public static HLBrandProductAdResponse getHLBrandproducts(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException{
-		lookupManagerHome();
-		
+	public static HLBrandProductAdResponse getHLBrandproducts(HLBrandProductAdRequest hLRequestData)
+			throws FDResourceException, BrandProductAdServiceException {
+
 		try {
 			HLBrandProductAdResponse data = null;
-			FDBrandProductsAdManagerSB sb = managerHome.create();
-		/*	hLRequestData.setUserId("1234");
-			hLRequestData.setSearchKeyWord("storag");*/
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-			data =FDECommerceService.getInstance().getSearchbykeyword(hLRequestData);
-			
-			}else {			
-			data= sb.getSearchbykeyword(hLRequestData);
-			}
+
+			data = FDECommerceService.getInstance().getSearchbykeyword(hLRequestData);
+
 			return data;
 		} catch (RemoteException e) {
-			invalidateManagerHome();
+
 			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
+
 		}
-		
+
 	}
-	
-	public static HLBrandProductAdResponse getHLCategoryProducts(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException{
-		lookupManagerHome();
-		
+
+	public static HLBrandProductAdResponse getHLCategoryProducts(HLBrandProductAdRequest hLRequestData)
+			throws FDResourceException, BrandProductAdServiceException {
+
 		try {
 			HLBrandProductAdResponse result = null;
-			FDBrandProductsAdManagerSB sb = managerHome.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-				result = FDECommerceService.getInstance().getCategoryProducts(hLRequestData);
-			}else{
-				result= sb.getCategoryProducts(hLRequestData);
-			}
+
+			result = FDECommerceService.getInstance().getCategoryProducts(hLRequestData);
 			return result;
 		} catch (RemoteException e) {
-			invalidateManagerHome();
+
 			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
+
 		}
-		
+
 	}
-	
-	private static void invalidateManagerHome() {
-		managerHome = null;
-	}
-	
-	private static void lookupManagerHome() throws FDResourceException {
-		if (managerHome != null) {
-			return;
-		}
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			managerHome = (FDBrandProductsAdManagerHome) ctx.lookup(FDStoreProperties.getFDBrandProductsAdManagerHome());
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
-	}
-	
 
 	public Date getLastSentFeedOrderTime() throws FDResourceException {
-		lookupManagerHome();
-		
+
 		try {
 			Date date = null;
-			FDBrandProductsAdManagerSB sb = managerHome.create();		
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-				date =  FDECommerceService.getInstance().getLastSentFeedOrderTime();
-			}else{
-			date= sb.getLastSentFeedOrderTime();
-			}
+
+			date = FDECommerceService.getInstance().getLastSentFeedOrderTime();
 			return date;
 		} catch (RemoteException e) {
-			invalidateManagerHome();
+
 			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
+
 		}
-		
+
 	}
-	
-	public static HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) throws FDResourceException {
-		lookupManagerHome();
-		
+
+	public static HLBrandProductAdResponse getHLadproductToHomeByFDPriority(
+			HLBrandProductAdRequest hLBrandProductAdRequest) throws FDResourceException {
+
 		try {
 			HLBrandProductAdResponse result = null;
-			FDBrandProductsAdManagerSB sb = managerHome.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-				result = FDECommerceService.getInstance().getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
-			}else{
-				result= sb.getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
-		}
+
+			result = FDECommerceService.getInstance().getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
 			return result;
 		} catch (RemoteException e) {
-			invalidateManagerHome();
+
 			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}catch (BrandProductAdServiceException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error while connecting api");
+
 		}
 	}
 
-	public static HLBrandProductAdResponse getHLadproductToPdp(HLBrandProductAdRequest hLBrandProductAdRequest) throws FDResourceException{
-		lookupManagerHome();
-		
+	public static HLBrandProductAdResponse getHLadproductToPdp(HLBrandProductAdRequest hLBrandProductAdRequest)
+			throws FDResourceException {
+
 		try {
 			HLBrandProductAdResponse result = null;
-			FDBrandProductsAdManagerSB sb = managerHome.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-				result = FDECommerceService.getInstance().getPdpAdProduct(hLBrandProductAdRequest);
-			}else{
-				try {
-					result= sb.getPdpAdProduct(hLBrandProductAdRequest);
-				} 
-					catch (BrandProductAdServiceException e) {
-						invalidateManagerHome();
-						throw new FDResourceException(e, "Error while connecting api");
-				}
-			}
+
+			result = FDECommerceService.getInstance().getPdpAdProduct(hLBrandProductAdRequest);
+
 			return result;
 		} catch (RemoteException e) {
-			invalidateManagerHome();
+
 			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
+
 		}
 	}
 

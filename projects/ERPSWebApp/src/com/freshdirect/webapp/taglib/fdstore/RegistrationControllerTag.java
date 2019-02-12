@@ -197,9 +197,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
             } else if ("otherpreferences".equals(actionName)) {
                 // Save mobile preferences
                 this.changeOtherPreferences(request, actionResult);
-            } else if ("ordermobilepref".equals(actionName)) {
-                // coming from order receipt screen. store all of them together.
-                this.storeMobilePreferences(request, actionResult);
             } else if ("changeDisplayName".equals(actionName)) {
                 // coming from order receipt screen. store all of them together.
                 this.performChangeDisplayName(request, actionResult);
@@ -218,69 +215,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         return true;
     }
 
-    private void storeMobilePreferences(HttpServletRequest request, ActionResult actionResult) {
-        HttpSession session = pageContext.getSession();
-        String orderNumber = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
-        session.removeAttribute("SMSSubmission" + orderNumber);
-        String submitbutton = request.getParameter("submitbutton");
-        if ("update".equals(submitbutton)) {
-            String text_offers = request.getParameter("text_offers");
-            String text_delivery = request.getParameter("text_delivery");
-            String mobile_number = request.getParameter("mobile_number");
-            String go_green = request.getParameter("go_green");
-
-            if ("Y".equals(text_offers) || "Y".equals(text_delivery)) {
-                if (mobile_number == null || mobile_number.length() == 0) {
-                    actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
-                    return;
-                }
-                PhoneNumber phone = new PhoneNumber(mobile_number);
-                if (!phone.isValid()) {
-                    actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
-                    return;
-                }
-            } else if (mobile_number != null && mobile_number.length() != 0) {
-                if (!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
-                    actionResult.addError(true, "text_option", "Please select your text messaging preferences below.");
-                    return;
-                }
-            }
-
-            // check for the other phone
-            String busphone = request.getParameter("busphone");
-            String ext = request.getParameter("busphoneext");
-            if (busphone == null || busphone.length() == 0) {
-                actionResult.addError(true, "busphone", SystemMessageList.MSG_REQUIRED);
-                return;
-            }
-            PhoneNumber bphone = new PhoneNumber(busphone, ext);
-            if (!bphone.isValid()) {
-                actionResult.addError(true, "busphone", SystemMessageList.MSG_PHONE_FORMAT);
-                return;
-            }
-
-            // save it to DB
-            FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-            try {
-                FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), user.getIdentity().getFDCustomerPK(), mobile_number, text_offers, text_delivery,
-                        go_green, busphone, ext, user.isCorporateUser(), user.getUserContext().getStoreContext().getEStoreId());
-            } catch (FDResourceException e) {
-                LOGGER.error("Error from mobile preferences", e);
-            }
-            session.setAttribute("SMSSubmission" + orderNumber, "done");
-        } else if ("remind".equals(submitbutton)) {
-            // ignore
-        } else {
-            // no thanks
-            FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-            try {
-                FDCustomerManager.storeMobilePreferencesNoThanks(user.getIdentity().getErpCustomerPK());
-            } catch (FDResourceException e) {
-                LOGGER.error("Error from mobile preferences", e);
-            }
-            session.setAttribute("SMSSubmission" + orderNumber, "done");
-        }
-    }
+    
 
     private void changeMobilePreferences(HttpServletRequest request, ActionResult actionResult) {
         String text_offers = request.getParameter("text_offers");

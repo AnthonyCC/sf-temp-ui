@@ -35,7 +35,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
-import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.sap.ejb.SapException;
 
 public class SettlementFileProcessor {
@@ -178,20 +177,14 @@ public class SettlementFileProcessor {
 			isFin = new FileInputStream(finFile);
 
 			PaymentechFINParser finParser = new PaymentechFINParser();
-			PayPalReconciliationSB ppReconSB = null;
 			
 			List<String> ppSettlementIds = null;
-			boolean isPPReconSB2Enabled = FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB);
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
 				Map<String, Object> lockInfo = null;
-				if (isPPReconSB2Enabled) {
-					lockInfo = PayPalReconciliationService.getInstance().acquirePPLock(null);
-				} else {
-					ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-					lockInfo = ppReconSB.acquirePPLock(null);
-				}
+				lockInfo = PayPalReconciliationService.getInstance().acquirePPLock(null);
+				
 				ppSettlementIds = (List<String>) lockInfo.get("settlementIds");
-				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB,
+				finParser.setClient(new PaymentechFINParserClient(builder, reconSB,
 						ppSettlementIds));
 			} else {
 				finParser.setClient(new PaymentechFINParserClient(builder, reconSB));
@@ -200,12 +193,9 @@ public class SettlementFileProcessor {
 			finParser.parseFile(isFin);
 
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-				if (isPPReconSB2Enabled) {
 					
-					PayPalReconciliationService.getInstance().releasePPLock(ppSettlementIds);
-				} else {
-					ppReconSB.releasePPLock(ppSettlementIds);
-				}
+				PayPalReconciliationService.getInstance().releasePPLock(ppSettlementIds);
+				
 			}
 
 			LOGGER.info("Finished loading FIN File");

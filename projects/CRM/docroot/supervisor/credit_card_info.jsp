@@ -32,74 +32,7 @@
 		</div>
 		
 		<%String orderId = NVL.apply(request.getParameter("orderId"), "");%>
-		<crm:CrmCCNumberController id="ccList" orderId="<%=orderId%>" result="result" actionName="getAccountNumber">
-		<table>
-			<form name="checkPassword" method="POST">
-			<tr>
-				<td>&nbsp;</td>
-				<td><fd:ErrorHandler result="<%= result %>" name="authentication" id="error"><span class="error_detail"><%=error%></span></fd:ErrorHandler></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td><fd:ErrorHandler result="<%= result %>" name="technical_difficulty" id="error"><span class="error_detail"><%=error%></span></fd:ErrorHandler></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td><b>Please re-enter your password:</b> </td>
-				<td><input type="password" class="input_text" style="width: 150px;" tabindex="1" name="password"></td>
-				<td><input type="submit" value="ENTER" class="submit" name="submit" style="width: 120px;" tabindex="2"></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td><fd:ErrorHandler result="<%= result %>" name="password" id="error"><span class="error_detail"><%=error%></span></fd:ErrorHandler></td>
-				<td>&nbsp;</td>
-			</tr>
-		</table>
-			<%if(ccList != null && !ccList.isEmpty()){%>
-				<logic:iterate id="cc" collection="<%= ccList %>" type="com.freshdirect.customer.ErpPaymentMethodI">
-				<table>
-				    <% if (cc.getCardType() != null && !cc.getCardType().equals(EnumCardType.PAYPAL)) { %>
-						<tr>
-							<td align="left"><b>Account Number:</b></td>
-							<td><%=cc.getAccountNumber()%></td>
-						</tr>
-					<% } %>
-					<tr>
-						<td align="left"><b>Name On Account:</b></td>
-						<td><%=cc.getName()%></td>
-					</tr>
-					<% if (cc.getCardType() != null && !cc.getCardType().equals(EnumCardType.PAYPAL)) { %>
-						<% if (cc.getExpirationDate() != null) { %>
-						<tr>
-							<td align="left"><b>Expiration Date:</b></td>
-							<td><%=CCFormatter.formatCreditCardExpDate(cc.getExpirationDate())%></td>
-						</tr>
-						<% } %>
-						<% if (cc.getAbaRouteNumber() != null) { %>
-						<tr>
-							<td align="left"><b>Aba Route Number:</b></td>
-							<td><%=cc.getAbaRouteNumber()%></td>
-						</tr>
-						<% } %>
-						<% if (cc.getBankAccountType() != null) { %>
-						<tr>
-							<td align="left"><b>Bank Account Type:</b></td>
-							<td><%=cc.getBankAccountType().getDescription()%></td>
-						</tr>
-					<% } %>
-					<% } else { %>
-					<tr>
-						<td><b>Account:</b></td>
-						<td><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="Buy With PayPal"><br />
-	    					<%= cc.getEmailID() %></td>
-					</tr>
-					<% } %>
-				</table>
-				</logic:iterate >
-			<%}%>
-			</form>
-		</crm:CrmCCNumberController>
+		
 		</table>
 		<br>
 		<br>

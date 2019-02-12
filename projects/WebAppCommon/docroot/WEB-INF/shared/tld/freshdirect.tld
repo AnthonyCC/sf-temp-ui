@@ -114,46 +114,7 @@
 		</attribute>
 	</tag>
 
-	<tag>
-		<name>HolidayMealController</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.HolidayMealControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.HolidayMealControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
 
-	<tag>
-		<name>GetHolidayMeals</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.HolidayMealGetterTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.HolidayMealGetterTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
 	<tag>
 		<name>GetCutoffInfo</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetCutoffInfoTag</tagclass>
@@ -202,6 +163,34 @@
 	</tag>
 
 	
+
+	<tag>
+		<name>CorpLoginController</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.depot.CorpLoginControllerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.depot.CorpLoginControllerTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>actionName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>successPage</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>depotCode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 
 	<tag>
 		<name>PickupLoginController</name>
@@ -585,38 +574,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
-	<tag>
-		<name>BatchSearch</name>
-		<tagclass>com.freshdirect.webapp.taglib.batch.BatchSearchTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.batch.BatchSearchTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>results</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>Batch</name>
-		<tagclass>com.freshdirect.webapp.taglib.batch.BatchTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.batch.BatchTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>batchNumber</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
 	<tag>
 		<name>Department</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.DepartmentTag</tagclass>
@@ -856,33 +813,7 @@
 		</attribute>
 	</tag>
 
-	<tag>
-		<name>ReverseCreditController</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.ReverseCreditControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.ReverseCreditControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>saleId</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
+
 	<tag>
 		<name>SideNav</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.SideNav</tagclass>
@@ -1294,28 +1225,6 @@
 			<name>resultName</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>Locator</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.LocatorTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.LocatorTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>originalPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>results</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>searchCriteria</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
@@ -1945,33 +1854,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>IssueCredits</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.IssueCreditControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.IssueCreditControllerTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>action</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>complaintModel</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>ComplaintGrabber</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.ComplaintGrabberTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.callcenter.ComplaintGrabberTagEI</teiclass>
@@ -2029,40 +1911,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>DeactivateAccount</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.DeactivateAccountTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.DeactivateAccountTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>results</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>PlaceAlert</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.PlaceAlertTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.PlaceAlertTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>results</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>ComplaintReasons</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.ComplaintReasonsTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.callcenter.ComplaintReasonsTagEI</teiclass>
@@ -2079,29 +1927,6 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
-	<tag>
-		<name>CreateComplaint</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.ComplaintCreatorTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.ComplaintCreatorTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>newComplaint</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>emailPreview</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-
 	<tag>
 		<name>LoadUser</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.LoadUserTag</tagclass>
@@ -2224,23 +2049,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>PromoEligible</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.PromotionEligibilityTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.PromotionEligibilityTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>AltAddressInfo</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.AlternateAddressInfoTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.callcenter.AlternateAddressInfoTagEI</teiclass>
@@ -2266,9 +2074,9 @@
 	</tag>
 
 	<tag>
-		<name>returnController</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.ReturnControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.ReturnControllerTag$TagEI</teiclass>
+		<name>redeliveryController</name>
+		<tagclass>com.freshdirect.webapp.taglib.callcenter.RedeliveryControllerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.callcenter.RedeliveryControllerTag$TagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
@@ -2283,27 +2091,11 @@
 		</attribute>
 		<attribute>
 			<name>actionName</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>orderNumber</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	
-	<tag>
-		<name>getOrdersByStatus</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.GetOrdersByStatusTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.GetOrdersByStatusTag$TagEI</teiclass>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>status</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -2523,33 +2315,6 @@
 	</tag>
 
 	<tag>
-		<name>CutoffSearchController</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.CutoffTimeSearchControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.CutoffTimeSearchControllerTag$TagEI</teiclass>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>cutoffReportId</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
 		<name>ZipPlus4Address</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.ZipPlus4AddressTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.callcenter.ZipPlus4AddressTag$TagEI</teiclass>
@@ -2682,126 +2447,7 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
-	<tag>
-		<name>CrmOrderStatusSearch</name>
-		<tagclass>com.freshdirect.webapp.taglib.crm.CrmOrderStatusSearchTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.crm.CrmOrderStatusSearchTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>reportName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CrmSettlementProblemSearch</name>
-		<tagclass>com.freshdirect.webapp.taglib.crm.CrmSettlementProblemSearchTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.crm.CrmSettlementProblemSearchTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>reportName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>CrmReportController</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.CRMReportControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.CRMReportControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>criteria</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>CrmAuthSearchController</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.CRMAuthSearchControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.CRMAuthSearchControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>criteria</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
+	
 	<tag>
 		<name>IntermediateSurvey</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.IntermediateSurveyControllerTag</tagclass>
@@ -2825,70 +2471,6 @@
 		</attribute>
 		<attribute>
 			<name>survey</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<!--  @deprecated -->
-	<tag>
-		<name>PromotionController</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.PromotionControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.PromotionControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>promotion</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>zipRestrictionMap</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>GetPromotion</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.GetPromotionTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.GetPromotionTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>promotionId</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>GetAllPromotions</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.GetAllPromotionsTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.GetAllPromotionsTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -2964,57 +2546,6 @@
 		<attribute>
 			<name>zipcode</name>
 			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>PromoCustomerController</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.PromoCustomerControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.PromoCustomerControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>promoCustomerInfoList</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<!-- @deprecated -->
-	<tag>
-		<name>GetPromoCustomerInfoList</name>
-		<tagclass>com.freshdirect.webapp.taglib.promotion.GetPromoCustomerInfoListTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.promotion.GetPromoCustomerInfoListTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>promotionId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>customerId</name>
-			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -3808,6 +3339,33 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>RequestAWineTag</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.RequestAWineTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.RequestAWineTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>actionName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>successPage</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>survey</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>GetDomainValues</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetDomainValuesTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetDomainValuesTag$TagEI</teiclass>
@@ -4274,25 +3832,7 @@
  			<required>false</required>
  			<rtexprvalue>true</rtexprvalue>
  		</attribute>
-	</tag>	
-	<tag>
-		<name>SmartSavingsUpdate</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.SmartSavingsUpdateTag</tagclass>
- 		<teiclass>com.freshdirect.webapp.taglib.fdstore.SmartSavingsUpdateTagEI</teiclass>
-		<bodycontent>empty</bodycontent>
-		<info></info>
- 		<attribute>
-			<name>promoConflictMode</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>justCheckSavingVariantId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
 	</tag>
-	
 	<tag>
 		<name>Tile</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.TileTag</tagclass>

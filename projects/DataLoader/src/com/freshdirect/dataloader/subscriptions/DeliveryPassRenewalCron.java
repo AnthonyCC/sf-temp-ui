@@ -13,7 +13,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.CreateException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -35,12 +34,9 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.deliverypass.DlvPassConstants;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.ecomm.gateway.DlvPassManagerService;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -415,52 +411,25 @@ public class DeliveryPassRenewalCron {
 	private static void emailPendingPassReport(EnumEStoreId eStore)
 	{
 		Calendar cal = Calendar.getInstance();
-		//cal.add(Calendar.DATE, 1);
-		Context ctx = null;
 		List<List<String>> pendingPasses =null;
 		try
 		{
 			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
-				pendingPasses = DlvPassManagerService.getInstance().getPendingPasses(eStore);		
-			}else{
-				ctx = getInitialContext();
-				DlvPassManagerSB dlvPassManagerSB = null;
-				DlvPassManagerHome dph =(DlvPassManagerHome) ctx.lookup("freshdirect.erp.DlvPassManager");
-				dlvPassManagerSB = dph.create();
-				pendingPasses =dlvPassManagerSB.getPendingPasses(eStore);
-			}
+			pendingPasses = DlvPassManagerService.getInstance().getPendingPasses(eStore);		
+			
 			
 			if(pendingPasses.size()>0)
 				email( cal.getTime(),pendingPasses, eStore);
 		}
-		catch(NamingException e)
-		{   
-			email(cal.getTime(), e, eStore);
-		}  catch (RemoteException e) {
-			
-			email(cal.getTime(), e, eStore);
-		} catch (CreateException e) {
+		 catch (RemoteException e) {
 			
 			email(cal.getTime(), e, eStore);
 		}
 		finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-					ctx = null;
-				}
-			} catch (NamingException ne) {
-
-				// TODO Auto-generated catch block
-				ne.printStackTrace();
-			
-			}
 		}
 	}
 	
 	private static void email(Date processDate, Exception e, EnumEStoreId eStore) {
-		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="Pending DeliveryPass Report	[ E-Store: "+eStore.getContentId().toString()+"] for "+ (processDate != null ? dateFormatter.format(Calendar.getInstance()) : " date error");

@@ -32,6 +32,7 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.Discount;
@@ -1292,21 +1293,27 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				//
 				// complaints containing only store credits can be approved once the order is delivered 
 				// CS-65: complaints with the order status en-route are considered to be eligible for auto-approval
-				//
+                // CS-99: ENR carton check is required only in case of self-issued credits
 				
 				
 				if ((pendingComplaint.getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
 					&& !(EnumSaleStatus.SETTLED.equals(saleModel.getStatus())
 						|| EnumSaleStatus.PAYMENT_PENDING.equals(saleModel.getStatus())
-						|| EnumSaleStatus.CAPTURE_PENDING.equals(saleModel.getStatus()))) {
+                                || EnumSaleStatus.CAPTURE_PENDING.equals(saleModel.getStatus()) || EnumSaleStatus.ENROUTE.equals(saleModel.getStatus()))) {
 					
-                    final boolean allCartonsDelivered = EnumSaleStatus.ENROUTE.equals(saleModel.getStatus()) ? checkAllOrderCartonsAreDelivered(pendingComplaint.getId()) : false;
-					
-					if (!allCartonsDelivered) {
-						this.getSessionContext().setRollbackOnly();
-						throw new ErpComplaintException("Store credit can only be approved once the order has been delivered to the customer.");	
-					}
+                    this.getSessionContext().setRollbackOnly();
+                    throw new ErpComplaintException("Store credit can only be approved once the order has been delivered to the customer.");
 				}
+				
+                final boolean selfIssuedComplaint = ErpServicesProperties.getSelfCreditAgent().equals(pendingComplaint.getCreatedBy());
+                if (selfIssuedComplaint && EnumSaleStatus.ENROUTE.equals(saleModel.getStatus())) {
+                    final boolean allCartonsDelivered = checkAllOrderCartonsAreDelivered(complaintId);
+                    if (!allCartonsDelivered) {
+                        this.getSessionContext().setRollbackOnly();
+                        throw new ErpComplaintException("Store credit can only be approved once the order has been delivered to the customer.");
+                    }
+                }
+
 				//Cannot issue cashback that is more than the amount we actually charged for.
 				double invoiceAmount = ((int) Math.round(saleModel.getLastInvoice().getAmount() * 100)) / 100.0;
 				List invoicedGiftCards = saleModel.getLastInvoice().getAppliedGiftCards();

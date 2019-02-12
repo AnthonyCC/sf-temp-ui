@@ -37,11 +37,17 @@ public class UnitPriceUtil {
 			} else if("LB".equalsIgnoreCase(unitPriceUOM)){
 				formattedUnitPriceUOM = "lb";
 			} else if("FT2".equalsIgnoreCase(unitPriceUOM)){
-				formattedUnitPriceUOM = "sq ft";
+				formattedUnitPriceUOM = "Sq Ft";
 			} else if("YD".equalsIgnoreCase(unitPriceUOM)){
 				formattedUnitPriceUOM = "yd";
 			} else if ("SS1".equalsIgnoreCase(unitPriceUOM)){
 			    formattedUnitPriceUOM = "Per Serving";
+			} else if ("SHT".equalsIgnoreCase(unitPriceUOM)){
+			    formattedUnitPriceUOM = "Sheet";
+			} else if ("Z1F".equalsIgnoreCase(unitPriceUOM)){
+			    formattedUnitPriceUOM = "100 Sq Ft";
+			} else if ("Z1S".equalsIgnoreCase(unitPriceUOM)){
+			    formattedUnitPriceUOM = "100 Sheets";
 			}
 			
 		}

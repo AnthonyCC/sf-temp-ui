@@ -23,7 +23,6 @@ import com.freshdirect.ecommerce.data.dlv.ReserveTimeParam;
 import com.freshdirect.ecommerce.data.dlv.TimeslotEventData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.ICommerceService;
@@ -180,58 +179,6 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 			throw new RemoteException(e.getMessage(), e);
 		}
 	}
-	
-	@Override
-public BatchModel getBatch(int versionID) throws FDResourceException{
-		BatchModel batchModel = new BatchModel();
-		long starttime = new java.util.Date().getTime();
-		String responseStr = "";
-		try {
-
-			Request<String> request = new Request<String>();
-
-			request.setData("");
-			/*
-			 * This returns the entire json as a string for processing in a later step
-			 * 
-			 */
-			responseStr = httpGetData(getFdCommerceEndPoint(GET_ERP_BATCH_API + SLASH + Integer.toString(versionID)),
-					String.class);
-			
-			Response<BatchModel> responseOfTypeBatchModel = new  Response<BatchModel>();
-			/*
-			 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific 
-			 * TypeReference<Response<BatchModel>> to convert the entire json string to Response<BatchModel>
-			 */
-			responseOfTypeBatchModel = getMapper().readValue(responseStr, new TypeReference<Response<BatchModel>>() {});
-			batchModel = responseOfTypeBatchModel.getData();
-		} catch (Exception ex) {
-			// (FDLogisticsServiceException e,JsonParseException e )
-			if (ex instanceof FDLogisticsServiceException 
-					|| ex instanceof JsonParseException
-					|| ex instanceof IOException
-
-			) {
-				LOGGER.error("Exception converting Json response  to  Response<BatchModel> while getting getBatch "
-						+ responseStr);
-				LOGGER.error(ex);
-				throw new FDResourceException("Could not retrieve Batch information for id: "+ versionID); 
-			}
-
-			else {
-				LOGGER.error("unknown error while getting getBatch " + responseStr);
-				LOGGER.error(ex);
-				throw new FDResourceException("Could not retrieve Batch information for id: "+ versionID); 
-			}
-
-		}
-		long endTime = new java.util.Date().getTime() - starttime;
-		LOGGER.debug("getbatch elapsedTime: "+endTime );
-		System.out.println("getbatch elapsedTime: "+endTime );
-		return batchModel;
-
-	}
-	
 	
 	// GETCMSDATA BY STORE
 	//story 17-22
