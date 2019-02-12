@@ -256,9 +256,6 @@ public class ComplaintUtil {
 		return map;
 
 	}
-	
-	public static ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException {
-		return CallCenterServices.getReasonByCompCode(cCode);
-	}
+
 
 }

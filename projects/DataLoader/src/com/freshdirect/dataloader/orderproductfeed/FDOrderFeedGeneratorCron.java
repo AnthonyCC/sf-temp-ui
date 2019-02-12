@@ -9,20 +9,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.mail.MessagingException;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerHome;
-import com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -34,15 +28,10 @@ public class FDOrderFeedGeneratorCron {
 	public static void main(String[] args) throws Exception{
 
 		Date orderFeedDateFrom=null;
-		Context ctx = null;
 		List<String> ordersList = null;
 		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
 			try {
 				LOGGER.info("FDOrderFeedGeneratorCron Started.");
-				ctx = getInitialContext();
-				FDBrandProductsAdManagerHome managerHome = (FDBrandProductsAdManagerHome) ctx
-						.lookup(FDStoreProperties.getFDBrandProductsAdManagerHome());
-				FDBrandProductsAdManagerSB sb = managerHome.create();
 				if (args.length >= 1) {
 					for (String arg : args) {
 						if (arg.startsWith("minutes=")) {
@@ -50,32 +39,22 @@ public class FDOrderFeedGeneratorCron {
 							if (null != noOfMins
 									&& !noOfMins.trim().equalsIgnoreCase("")) {
 								orderFeedDateFrom = getDate(noOfMins);
-								if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
 								FDECommerceService.getInstance().submittedOrderdDetailsToHL(orderFeedDateFrom);
-								}else{
-								sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
-								}
+								
 							}
 						} else if (arg.startsWith("orders=")) {
 							String orders = arg.substring("orders=".length());
 							String[] order = orders.split(",");
 							ordersList = new ArrayList<String>(Arrays.asList(order));
-							if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-								FDECommerceService.getInstance().submittedOrderdDetailsToHL(ordersList);
-								}else{
-									sb.submittedOrderdDetailsToHL(ordersList);
-								}
-	
+							FDECommerceService.getInstance().submittedOrderdDetailsToHL(ordersList);
+								
 						}
 						break;
 					}
 				} else {
 					try {
-						if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-							orderFeedDateFrom =FDECommerceService.getInstance().getLastSentFeedOrderTime();
-						} else {
-							orderFeedDateFrom = sb.getLastSentFeedOrderTime();
-						}
+						orderFeedDateFrom =FDECommerceService.getInstance().getLastSentFeedOrderTime();
+						
 					} catch (Exception e) {
 						LOGGER.warn("Exception while getting lastSentFeedOrderTime: "
 								+ e);
@@ -86,11 +65,8 @@ public class FDOrderFeedGeneratorCron {
 						orderFeedDateFrom = getDate(noOfMins.toString());
 					}
 					LOGGER.info("FDOrderFeedGeneratorCron - sending orders from: "+orderFeedDateFrom);
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-						FDECommerceService.getInstance().submittedOrderdDetailsToHL(orderFeedDateFrom);
-						}else{
-					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
-						}
+					FDECommerceService.getInstance().submittedOrderdDetailsToHL(orderFeedDateFrom);
+					
 				}
 	
 			} catch (Exception e) {
@@ -132,14 +108,6 @@ public class FDOrderFeedGeneratorCron {
 			}
 	
 	}
-
-public static Context getInitialContext() throws NamingException {
-	Hashtable<String, String> h = new Hashtable<String, String>();
-	h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-	h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
-	return new InitialContext(h);
-}
-
 private static Date getDate(String noOfMins) throws ParseException{
 	int minute = Integer.parseInt(noOfMins);
 	DateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss aa");

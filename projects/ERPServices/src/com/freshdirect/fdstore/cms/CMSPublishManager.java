@@ -23,25 +23,6 @@ public class CMSPublishManager {
 	private static CMSManagerHome managerHome = null;
 	private static final Logger LOGGER = Logger.getLogger(CMSPublishManager.class);
 
-	public static void createFeed(String feedId, String storeId, String feedData) throws FDResourceException {
-		
-
-		 if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CmsFeedmanagerSB)) { 
-			
-			IECommerceService service = FDECommerceService.getInstance();
-			// ignoring response, which is the word SUCCESS for this service, errors are handled thru fdresourceException.
-			String response = service.createFeedCmsFeed(feedId, storeId, feedData);
-
-		} else
-			try {
-				CMSManagerSB sb = getCMSManagerSB();
-
-				sb.createFeed(feedId, storeId, feedData);
-			} catch (RemoteException re) {
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
-	}
-
 	public static String getLatestFeed(String storeId) throws FDResourceException {
 		String response = null;
 

@@ -31,38 +31,6 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
-	<tag>
-        <name>CrmCCNumberController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmCCNumberControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmCCNumberControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-		<attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-		<attribute>
-            <name>orderId</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
 	
 	<tag>
         <name>CrmGiftCardBalance</name>
@@ -632,61 +600,6 @@
     </tag>
     
     <tag>
-        <name>CrmCustomerInfoController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmCustomerInfoControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmCustomerInfoControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>customerInfo</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    
-      <tag>
-        <name>CrmDepotMembershipController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmDepotMembershipControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmDepotMembershipControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>user</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <name>CrmVIPSettingController</name>
         <tagclass>com.freshdirect.webapp.taglib.crm.CrmVIPSettingControllerTag</tagclass>
         <teiclass>com.freshdirect.webapp.taglib.crm.CrmVIPSettingControllerTag$TagEI</teiclass>
@@ -816,23 +729,7 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <name>CrmResubmitOrders</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmResubmitOrdersTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmResubmitOrdersTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-            <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-</tag>
+   
     <tag>
         <name>CrmLateIssue</name>
         <tagclass>com.freshdirect.webapp.taglib.crm.CrmLateIssueTag</tagclass>
@@ -914,131 +811,6 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
-    
-    <tag>
-        <name>ResubmitOrderController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmResubmitOrderControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmResubmitOrderControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>actionName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>orderId</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    
-    <tag>
-        <name>ResubmitCustomerController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmResubmitCustControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmResubmitCustControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>id</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name> 
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>customerId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <name>GenericLocator</name>
-        <tagclass>com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>searchParam</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>actionName</name> 
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>successPage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-	<name>DeliveryPassController</name>
-	<tagclass>com.freshdirect.webapp.taglib.dlvpass.DeliveryPassControllerTag</tagclass>
-	<teiclass>com.freshdirect.webapp.taglib.dlvpass.DeliveryPassControllerTag$TagEI</teiclass>
-	<bodycontent>JSP</bodycontent>
-	<info></info>
-	<attribute>
-	    <name>dlvPass</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>actionName</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>increment</name>
-	    <required>false</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>noOfWeeks</name>
-	    <required>false</required>
-	    <rtexprvalue>false</rtexprvalue>
-	</attribute>
-	<attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>	
-     </tag>      
      <tag>
 	<name>GetDlvPassActivity</name>
 	<tagclass>com.freshdirect.webapp.taglib.dlvpass.GetDlvPassActivityTag</tagclass>
@@ -1073,18 +845,7 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
       </tag>      
-       <tag>
-      	<name>AdminToolsController</name>
-      	<tagclass>com.freshdirect.webapp.taglib.callcenter.AdminToolsControllerTag</tagclass>
-      	<teiclass>com.freshdirect.webapp.taglib.callcenter.AdminToolsControllerTag$TagEI</teiclass>
-      	<bodycontent>JSP</bodycontent>
-      	<info></info>
-	<attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>	
-      	</tag>    
+         
       	       <tag>
 	      	<name>LookupAcctController</name>
 	      	<tagclass>com.freshdirect.webapp.taglib.callcenter.LookupAcctControllerTag</tagclass>
@@ -1109,28 +870,7 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>	
       	</tag>    
-    <tag>
-	<name>CancelDPController</name>
-	<tagclass>com.freshdirect.webapp.taglib.dlvpass.CancelDPControllerTag</tagclass>
-	<teiclass>com.freshdirect.webapp.taglib.dlvpass.CancelDPControllerTag$TagEI</teiclass>
-	<bodycontent>JSP</bodycontent>
-	<info></info>
-	<attribute>
-	    <name>passes</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-	    <name>actionName</name>
-	    <required>true</required>
-	    <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>	
-     </tag>      
+ 
     <tag>
       	<name>GetRestrictedDlv</name>
       	<tagclass>com.freshdirect.webapp.taglib.fdstore.GetRestrictedDlvTag</tagclass>
@@ -1148,28 +888,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>	
     </tag> 
-        <tag>
-            <name>SubscriptionController</name>
-            <tagclass>com.freshdirect.webapp.taglib.crm.CrmSubscriptionControllerTag</tagclass>
-            <teiclass>com.freshdirect.webapp.taglib.crm.CrmSubscriptionControllerTag$TagEI</teiclass>
-            <bodycontent>JSP</bodycontent>
-            <info></info>
-        	<attribute>
-            	<name>PaymentMethod</name>
-            	<required>false</required>
-            	<rtexprvalue>true</rtexprvalue>
-        	</attribute>
-            <attribute>
-                <name>successPage</name>
-                <required>true</required>
-                <rtexprvalue>true</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>result</name>
-                <required>true</required>
-                <rtexprvalue>false</rtexprvalue>
-            </attribute>
-        </tag>
+       
     <tag>
         <name>GiftCardController</name>
         <tagclass>com.freshdirect.webapp.taglib.callcenter.GiftCardControllerTag</tagclass>		
@@ -1192,23 +911,7 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
-    <tag>
-        <name>CrmClick2CallController</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmClick2CallControllerTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmClick2CallControllerTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+    
     <tag>
         <name>PromoPublish</name>
         <tagclass>com.freshdirect.webapp.taglib.promotion.PromoPublishTag</tagclass>		
@@ -1417,51 +1120,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-	<tag>
-		<name>AutoLateDlvCreditTag</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.AutoLateDlvCreditTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.AutoLateDlvCreditTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>	
-		<attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>		
-	</tag>
 	
-	<tag>
-        <name>CrmReverseAuthOrders</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmReverseAuthOrdersTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmReverseAuthOrdersTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-            <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-</tag>
-<tag>
-        <name>CrmVoidCaptureOrders</name>
-        <tagclass>com.freshdirect.webapp.taglib.crm.CrmVoidCaptureOrdersTag</tagclass>
-        <teiclass>com.freshdirect.webapp.taglib.crm.CrmVoidCaptureOrdersTag$TagEI</teiclass>
-        <bodycontent>JSP</bodycontent>
-        <info></info>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-            <attribute>
-            <name>result</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-</tag>
+	
+
 </taglib>

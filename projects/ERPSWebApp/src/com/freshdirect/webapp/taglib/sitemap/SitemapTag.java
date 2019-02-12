@@ -2,8 +2,6 @@ package com.freshdirect.webapp.taglib.sitemap;
 
 import java.io.IOException;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -11,13 +9,9 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.sitemap.SitemapData;
 import com.freshdirect.fdstore.sitemap.SitemapDataFactory;
-import com.freshdirect.fdstore.sitemap.SitemapHome;
-import com.freshdirect.fdstore.sitemap.SitemapSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 
@@ -35,33 +29,15 @@ public class SitemapTag extends SimpleTagSupport {
         if (password != null && FDStoreProperties.getSitemapPasswords().contains(password)) {
             if ("generate".equals(type)) {
                 LOGGER.debug("Generate sitemap");
-                Context initialContext = null;
                 try {
-                	LOGGER.info("SitemapProperty :" +FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB));
-                	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB)){
-                		LOGGER.debug("Generating sitemap from services");
-                		LOGGER.info("Generating sitemap from services");
-            			FDECommerceService.getInstance().generateSitemap();
-                	}else{
-                		LOGGER.debug("Generating sitemap from EJB");
-                		LOGGER.info("Generating sitemap from EJB");
-
-                   initialContext = ErpServicesProperties.getInitialContext();
-                    SitemapHome managerHome = (SitemapHome) initialContext.lookup(SitemapHome.JNDI_HOME);
-                    SitemapSB sb = managerHome.create();
-                    sb.generateSitemap();
-                	}
+                	
+                	LOGGER.info("Generating sitemap from services");
+            		FDECommerceService.getInstance().generateSitemap();
+                	
                     ctx.setAttribute("siteMapGenerated", true);
                     LOGGER.debug("Generated sitemap successfully");
                 } catch (Exception e) {
                     LOGGER.error("Error occured during sitemap generation", e);
-                } finally {
-                    try {
-                        if (initialContext != null) {
-                            initialContext.close();
-                        }
-                    } catch (NamingException ne) {
-                    }
                 }
             } else {
                 SitemapData rootData = SitemapDataFactory.create();

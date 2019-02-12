@@ -18,8 +18,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
-import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;

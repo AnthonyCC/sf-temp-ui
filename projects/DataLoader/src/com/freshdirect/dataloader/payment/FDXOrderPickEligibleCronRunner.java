@@ -13,26 +13,16 @@ package com.freshdirect.dataloader.payment;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.mail.MessagingException;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapOrderPickEligibleInfo;
 
@@ -42,20 +32,10 @@ public class FDXOrderPickEligibleCronRunner {
 
 	public static void main(String[] args) {
 
-		Context ctx = null;
 		try {
-			ctx = getInitialContext();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDXOrderPickEligibleSB)) {//storefront 2.0 story sf17-64
 				List<SapOrderPickEligibleInfo> eligibleSapOrderLst = FDECommerceService.getInstance().queryForFDXSalesPickEligible();
 				FDECommerceService.getInstance().sendFDXEligibleOrdersToSap(eligibleSapOrderLst);
-			} else {
-
-				FDXOrderPickEligibleCronHome home = (FDXOrderPickEligibleCronHome) ctx
-						.lookup("freshdirect.erp.FDXOrderPickEligibleCron");
-
-				FDXOrderPickEligibleCronSB sb = home.create();
-				sb.queryForSalesPickEligible();
-			}
+			
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -64,26 +44,7 @@ public class FDXOrderPickEligibleCronRunner {
 			LOGGER.info(new StringBuilder("FDXOrderPickEligibleCronRunner failed with Exception...").append(_msg)
 					.toString());
 			LOGGER.error(_msg);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-					ctx = null;
-				}
-			} catch (NamingException ne) {
-				// could not do the cleanup
-				StringWriter sw = new StringWriter();
-				ne.printStackTrace(new PrintWriter(sw));
-				email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-			}
-		}
-	}
-
-	static public Context getInitialContext() throws NamingException {
-		Hashtable<String, String> h = new Hashtable<String, String>();
-		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
-		return new InitialContext(h);
+		} 
 	}
 
 	private static void email(Date processDate, String exceptionMsg) {

@@ -1,27 +1,6 @@
 <weblogic-ejb-jar xmlns="http://xmlns.oracle.com/weblogic/weblogic-ejb-jar" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd http://xmlns.oracle.com/weblogic/weblogic-ejb-jar http://xmlns.oracle.com/weblogic/weblogic-ejb-jar/1.2/weblogic-ejb-jar.xsd">
     <!--weblogic-version:10.3.6-->
   <weblogic-enterprise-bean>
-    <ejb-name>InventoryWarmup</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>1</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <ejb-reference-description>
-      <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
-      <jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
-    </ejb-reference-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.InventoryWarmup</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
     <ejb-name>FDCustomerManager</ejb-name>
     <stateless-session-descriptor>
       <pool>
@@ -56,10 +35,6 @@
       <jndi-name>freshdirect.crm.Manager</jndi-name>
     </ejb-reference-description>
     <ejb-reference-description>
-      <ejb-ref-name>ejb/AdServerGateway</ejb-ref-name>
-      <jndi-name>freshdirect.fdstore.AdServerGateway</jndi-name>
-    </ejb-reference-description>
-    <ejb-reference-description>
       <ejb-ref-name>ejb/PaymentManager</ejb-ref-name>
       <jndi-name>freshdirect.payment.PaymentManager</jndi-name>
     </ejb-reference-description>
@@ -75,12 +50,6 @@
       <ejb-ref-name>ejb/TEmailInfoManager</ejb-ref-name>
       <jndi-name>freshdirect.fdstore.TEmailInfoManager</jndi-name>
     </ejb-reference-description>
-   
-	  <ejb-reference-description>
-        <ejb-ref-name>ejb/ErpEWallet</ejb-ref-name>
-        <jndi-name>freshdirect.fdstore.ErpEWallet</jndi-name>
-      </ejb-reference-description>
-      
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
   </weblogic-enterprise-bean>
@@ -141,23 +110,6 @@
     <jndi-name>freshdirect.fdstore.StandingOrders</jndi-name>
   </weblogic-enterprise-bean>
   <weblogic-enterprise-bean>
-    <ejb-name>Notifications</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.Notifications</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
     <ejb-name>CallCenterManager</ejb-name>
     <stateless-session-descriptor>
       <pool>
@@ -204,77 +156,6 @@
     <jndi-name>freshdirect.fdstore.Customer</jndi-name>
   </weblogic-enterprise-bean>
   <weblogic-enterprise-bean>
-    <ejb-name>FDMonitor</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>5</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>5</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <ejb-reference-description>
-      <ejb-ref-name>ejb/ErpMonitor</ejb-ref-name>
-      <jndi-name>freshdirect.monitor.Monitor</jndi-name>
-    </ejb-reference-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.monitor.Monitor</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>AdServerGateway</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>5</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>5</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jms/QueueFactory</res-ref-name>
-      <jndi-name>queueFactory</jndi-name>
-    </resource-description>
-    <resource-env-description>
-      <resource-env-ref-name>jms/Queue</resource-env-ref-name>
-      <jndi-name>./oasQueue</jndi-name>
-    </resource-env-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.AdServerGateway</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>AdServerListener</ejb-name>
-    <message-driven-descriptor>
-      <pool>
-        <max-beans-in-free-pool>5</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>5</initial-beans-in-free-pool>
-      </pool>
-      <destination-jndi-name>oasQueue</destination-jndi-name>
-    </message-driven-descriptor>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.AdServerListener</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>FDPromotionManager</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-        <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <ejb-reference-description>
-      <ejb-ref-name>ejb/ActivityLog</ejb-ref-name>
-      <jndi-name>freshdirect.customer.ActivityLog</jndi-name>
-    </ejb-reference-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.PromotionManager</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
     <ejb-name>FDPromotionManagerNew</ejb-name>
     <stateless-session-descriptor>
       <pool>
@@ -313,22 +194,6 @@
     <jndi-name>freshdirect.fdstore.ReferralManager</jndi-name>
   </weblogic-enterprise-bean>
   <weblogic-enterprise-bean>
-    <ejb-name>VariantSelection</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>10</max-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.smartstore.VariantSelection</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
     <ejb-name>ScoreFactorHome</ejb-name>
     <stateless-session-descriptor>
       <pool>
@@ -343,22 +208,6 @@
     </resource-description>
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.smartstore.ScoreFactorHome</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>FDSurvey</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>10</max-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.fdstore.FDSurvey</jndi-name>
   </weblogic-enterprise-bean>
   
  <weblogic-enterprise-bean>
@@ -378,47 +227,6 @@
 		 <enable-call-by-reference>true</enable-call-by-reference>
    		<jndi-name>freshdirect.fdstore.RulesManager</jndi-name>
 	</weblogic-enterprise-bean>
-	<weblogic-enterprise-bean>
-      <ejb-name>ProductFeed</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>5</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>1</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.fdstore.ProductFeed</jndi-name>
-    </weblogic-enterprise-bean>
-    
-    <weblogic-enterprise-bean>
-      <ejb-name>EwalletNotify</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <ejb-reference-description>
-      	<ejb-ref-name>ejb/EwalletService</ejb-ref-name>
-      	<jndi-name>freshdirect.fdstore.EwalletService</jndi-name>
-      </ejb-reference-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.fdstore.EWalletNotify</jndi-name>
-    </weblogic-enterprise-bean>
-
     <weblogic-enterprise-bean>
       <ejb-name>EwalletService</ejb-name>
       <stateless-session-descriptor>
@@ -440,25 +248,6 @@
       </ejb-reference-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.fdstore.EWalletService</jndi-name>
-    </weblogic-enterprise-bean>
-
-    <weblogic-enterprise-bean>
-      <ejb-name>ErpEWallet</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>50</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>
-          10</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.fdstore.ErpEWallet</jndi-name>
     </weblogic-enterprise-bean>
     
     <weblogic-enterprise-bean>
@@ -490,21 +279,6 @@
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.fdstore.PPService</jndi-name>
     </weblogic-enterprise-bean>
-    
-   <weblogic-enterprise-bean>
-      <ejb-name>Sitemap</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>5</max-beans-in-free-pool>
-          <initial-beans-in-free-pool>1</initial-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.fdstore.Sitemap</jndi-name>
-    </weblogic-enterprise-bean>
-
   <transaction-isolation>
     <isolation-level>TransactionReadCommitted</isolation-level>
     <method>
@@ -513,14 +287,6 @@
       <method-name>*</method-name>
     </method>
   </transaction-isolation>
-  <transaction-isolation>
-      <isolation-level>TransactionReadCommitted</isolation-level>
-      <method>
-        <ejb-name>ProductFeed</ejb-name>
-        <method-intf>Remote</method-intf>
-        <method-name>*</method-name>
-      </method>
-    </transaction-isolation>
   <weblogic-compatibility>
     <entity-always-uses-transaction>true</entity-always-uses-transaction>
   </weblogic-compatibility>

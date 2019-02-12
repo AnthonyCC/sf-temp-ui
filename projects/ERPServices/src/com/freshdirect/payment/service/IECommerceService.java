@@ -36,7 +36,6 @@ import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
-import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -104,10 +103,6 @@ public interface IECommerceService {
 	public void saveBINInfo(List<List<BINInfo>> binInfos) throws FDResourceException;
 
 	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException;
-
-	public BatchModel getBatch(int batchId)throws FDResourceException;
-
-	public Collection getRecentBatches()throws FDResourceException;
 
 	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException;
 
@@ -406,7 +401,6 @@ public interface IECommerceService {
 
 	public List<Date> getStartDates() throws RemoteException;
 	//cms manager
-	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
 	public String getCmsFeed(String storeID) throws FDResourceException;
 
 	public List<SapOrderPickEligibleInfo> queryForFDXSalesPickEligible() throws RemoteException;

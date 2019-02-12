@@ -2,13 +2,9 @@ package com.freshdirect.security.ticket;
 
 import java.rmi.RemoteException;
 
-import javax.ejb.EJBException;
-
 import org.apache.log4j.Logger;
 
-import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 
@@ -21,7 +17,6 @@ public class TicketService {
 	
 	private static TicketService instance;
 
-	private static TicketServiceSB ticketServiceSB;
 
 	private static java.util.Random rand = new java.util.Random();
 
@@ -30,17 +25,6 @@ public class TicketService {
 		for (int j = 0; j < 3; j++)
 			buff.append(Long.toString(Math.abs(rand.nextLong()), 36).toUpperCase());
 		return buff.toString();
-	}
-
-	private synchronized static TicketServiceSB getTicketService() throws FDResourceException {
-		if (ticketServiceSB == null) {
-		    ticketServiceSB = ERPServiceLocator.getInstance().getTicketServiceSessionBean();
-		}
-		return ticketServiceSB;
-	}
-
-	private synchronized static void invalidateTicketServiceHome() {
-	    ticketServiceSB = null;
 	}
 
 	/**
@@ -63,18 +47,14 @@ public class TicketService {
 			throw new IllegalArgumentException("issuer cannot be null or empty");
 		if (purpose == null || purpose.length() == 0)
 			throw new IllegalArgumentException("purpose cannot be null or empty");
-		TicketServiceSB sb;
+		
 		try {
-			sb = getTicketService();
+			
 			int remainingTries = 5;
 			while (remainingTries > 0) {
 				Ticket ticket = new Ticket(generateKey(), owner, purpose, expiration, false);
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
-					ticket = FDECommerceService.getInstance().createTicket(ticket);
-				}
-				else{
-					ticket = sb.createTicket(ticket);
-				}
+				ticket = FDECommerceService.getInstance().createTicket(ticket);
+				
 				if (ticket != null)
 					return ticket;
 
@@ -82,33 +62,20 @@ public class TicketService {
 			}
 			throw new FDResourceException("failed to generate unique key in 5 attempts");
 		} catch (RemoteException e) {
-			invalidateTicketServiceHome();
 			throw new FDResourceException(e);
-		} catch (EJBException e) {
-                    invalidateTicketServiceHome();
-                    throw e;
 		}
 	}
 
 	public Ticket reload(Ticket ticket) throws NoSuchTicketException, FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
-				ticket = FDECommerceService.getInstance().retrieveTicket(ticket.getKey());
-			}
-			else{
-			TicketServiceSB sb = getTicketService();
-			ticket = sb.retrieveTicket(ticket.getKey());
-			}
+			ticket = FDECommerceService.getInstance().retrieveTicket(ticket.getKey());
+			
 			if (ticket == null)
 				throw new NoSuchTicketException();
 
 			return ticket;
 		} catch (RemoteException e) {
-			invalidateTicketServiceHome();
 			throw new FDResourceException(e);
-                } catch (EJBException e) {
-                    invalidateTicketServiceHome();
-                    throw e;
 		}
 	}
 
@@ -120,35 +87,22 @@ public class TicketService {
 			throw new IllegalArgumentException("user cannot be null or empty");
 		if (purpose == null || purpose.length() == 0)
 			throw new IllegalArgumentException("purpose cannot be null or empty");
-		TicketServiceSB sb;
 		Ticket ticket ;
 		try {
-			sb = getTicketService();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
-				ticket = FDECommerceService.getInstance().retrieveTicket(key);
-			}
-			else{
-				 ticket = sb.retrieveTicket(key);
-			}
+			
+			ticket = FDECommerceService.getInstance().retrieveTicket(key);
+			
 			if (ticket == null)
 				throw new NoSuchTicketException();
 			ticket.use(user, purpose);
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
-				ticket = FDECommerceService.getInstance().updateTicket(ticket);
-			}
-			else{
-				ticket = sb.updateTicket(ticket);
-			}
+			ticket = FDECommerceService.getInstance().updateTicket(ticket);
+			
 			if (ticket == null)
 				throw new NoSuchTicketException();
 			else
 				return ticket;
 		} catch (RemoteException e) {
-			invalidateTicketServiceHome();
 			throw new FDResourceException(e);
-                } catch (EJBException e) {
-                    invalidateTicketServiceHome();
-                    throw e;
 		}
 	}
 }

@@ -41,7 +41,7 @@ for(Iterator<ErpAddressModel> i = FDCustomerManager.getShipToAddresses(identity)
 		hl.add(address);
 	}
 }
-String shipToDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(yuzer.getIdentity() );
+String shipToDepotLocation = null;
 
 String linkURL = null;
 if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {

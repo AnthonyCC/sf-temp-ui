@@ -43,6 +43,7 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.checkout.UnavailabilityPopulator;
 import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
@@ -535,21 +536,33 @@ public class SinglePageCheckoutFacade {
             double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance() - cart.getTotalAppliedGCAmount();
             double gcBufferAmount = 0;
             double ccBufferAmount = 0;
-            double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount(cart);
-            double outStandingBalance = isSOTMPL ? 0 : FDCustomerManager.getOutStandingBalance(cart);
+            double perishableBufferAmount;
+			double outStandingBalance;
 
-            if (!isSOTMPL && perishableBufferAmount > 0) {
-                if (cart.getTotalAppliedGCAmount() > 0) {
-                    if (outStandingBalance > 0) {
-                        gcBufferAmount = gcSelectedBalance;
-                        ccBufferAmount = perishableBufferAmount - gcSelectedBalance;
-                    } else {
-                        gcBufferAmount = perishableBufferAmount;
-                    }
-                } else {
-                    ccBufferAmount = perishableBufferAmount;
-                }
-            }
+			if (isSOTMPL) {
+				perishableBufferAmount = 0;
+				outStandingBalance = 0;
+			} else {
+				GiftCardApplicationStrategy strategy = FDCustomerManager.getGiftCardApplicationStrategy(cart);
+				perishableBufferAmount = strategy.getPerishableBufferAmount();
+				outStandingBalance = strategy.getRemainingBalance();
+
+			}
+
+			if (!isSOTMPL && perishableBufferAmount > 0) {
+
+				if (cart.getTotalAppliedGCAmount() > 0) {
+					if (outStandingBalance > 0) {
+						gcBufferAmount = gcSelectedBalance;
+						ccBufferAmount = perishableBufferAmount - gcSelectedBalance;
+					} else {
+						gcBufferAmount = perishableBufferAmount;
+					}
+				} else {
+					ccBufferAmount = perishableBufferAmount;
+				}
+
+			}
 
             /* No additional payment type is needed, covered by Giftcards */
             if (!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && outStandingBalance <= 0.0) {

@@ -69,31 +69,37 @@ public class SelfCreditOrderDetailsService {
         List<FDCartLineI> orderLinesToDisplay = orderDetailsToDisplay.getOrderLines();
         for (FDCartLineI fdCartLine : orderLinesToDisplay) {
             final boolean isDeliveryPass = fdCartLine.lookupFDProduct().isDeliveryPass();
-            final boolean hasSubstitute = null != fdCartLine.getInvoiceLine() && null != fdCartLine.getInvoiceLine().getSubstituteProductName();
-        	
-        	FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
-            ProductModel product = hasSubstitute ? PopulatorUtil.getProduct(fdCartLine.getInvoiceLine().getSubstitutedSkuCode()) : fdCartLine.lookupProduct();
-            BasicProductData productData = null != product ? ProductDetailPopulator.populateProductAndBrandName(new ProductData(), product) : null;
-        	
-    		double deliveredQuantity = collectQuantity(fdCartLine, creditedQuantities);
+            final double displayQuantity = collectDisplayQuantity(fdCartLine, creditedQuantities);
 
-            if (!isDeliveryPass && Double.compare(deliveredQuantity, 0d) > 0) {
-            	SelfCreditOrderItemData item = new SelfCreditOrderItemData();
+            if (!isDeliveryPass && Double.compare(displayQuantity, 0d) > 0) {
+                final boolean hasSubstitute = null != fdCartLine.getInvoiceLine() && null != fdCartLine.getInvoiceLine().getSubstituteProductName();
+                FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdCartLine.getSku().getSkuCode());
+                ProductModel product = hasSubstitute ? PopulatorUtil.getProduct(fdCartLine.getInvoiceLine().getSubstitutedSkuCode()) : fdCartLine.lookupProduct();
+                BasicProductData productData = null != product ? ProductDetailPopulator.populateProductAndBrandName(new ProductData(), product) : null;
+
+                SelfCreditOrderItemData item = new SelfCreditOrderItemData();
                 item.setOrderLineId(fdCartLine.getOrderLineId());
                 item.setBrand((null == productData) ? "" : productData.getBrandName());
                 item.setProductName(null == productData ? "" : productData.getProductNameNoBrand());
-                item.setQuantity(deliveredQuantity);
+                item.setQuantity(displayQuantity);
                 item.setProductImage((null == product) ? "" : product.getProdImage().getPathWithPublishId());
                 item.setComplaintReasons(collectComplaintReasons(complaintReasonMap, fdCartLine.getDepartmentDesc()));
                 item.setBasePrice(fdCartLine.getBasePrice());
                 item.setBasePriceUnit(productInfo.getDefaultPriceUnit());
                 item.setConfigurationDescription(fdCartLine.getConfigurationDesc());
                 item.setSample(fdCartLine.isSample());
-                item.setFree((null == fdCartLine.getDiscount()) ? false : EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
-                item.setMealBundle(null == product ? false : isItemMealBundle(product));
+                item.setFree((null != fdCartLine.getDiscount()) && EnumDiscountType.FREE.equals(fdCartLine.getDiscount().getDiscountType()));
+                item.setMealBundle(null != product && isItemMealBundle(product));
                 item.setCartonNumbers(collectCartonNumbers(orderDetailsToDisplay.getCartonContents(fdCartLine.getOrderLineNumber())));
-                item.setFinalPrice(collectFinalPrice(deliveredQuantity, fdCartLine));
                 item.setSubstituted(hasSubstitute);
+                
+                double deliveredQuantity = collectDeliveredQuantity(fdCartLine);
+                double finalPricePerItem = collectFinalPrice(deliveredQuantity, fdCartLine);
+                double taxDepositSumPerItem = collectTaxAndDepositPerItem(fdCartLine, finalPricePerItem, deliveredQuantity);
+                item.setFinalPrice(finalPricePerItem + taxDepositSumPerItem);
+                item.setTaxDepositSum(taxDepositSumPerItem);
+                item.setSavedAmount(fdCartLine.getSaveAmount() / deliveredQuantity);
+
                 orderLines.add(item);
 			}
 
@@ -105,7 +111,13 @@ public class SelfCreditOrderDetailsService {
         return selfCreditOrderDetailsData;
     }
 
-	private double collectQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
+    private double collectDeliveredQuantity(FDCartLineI fdCartLine) {
+        String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
+        double deliveredQuantity = Double.parseDouble(quantity);
+        return roundSelfCreditItemQuantity(deliveredQuantity);
+    }
+
+    private double collectDisplayQuantity(FDCartLineI fdCartLine, Map<String, Double> creditedQuantities) {
     	String quantity = "".equals(fdCartLine.getDeliveredQuantity()) ? fdCartLine.getOrderedQuantity() : fdCartLine.getDeliveredQuantity();
     	double deliveredQuantity = Double.parseDouble(quantity);
     	
@@ -113,8 +125,12 @@ public class SelfCreditOrderDetailsService {
     	double creditedQuantity = creditedQuantities.containsKey(orderLineId) ? creditedQuantities.get(orderLineId) : 0d;
     	
     	double displayQuantity = deliveredQuantity - creditedQuantity;
-    	return  Double.compare(displayQuantity, 0d) == 0 ? 0d : (Double.compare(Math.floor(displayQuantity), 0d) == 0 ? 1d : Math.floor(displayQuantity));
+        return roundSelfCreditItemQuantity(displayQuantity);
 	}
+
+    private double roundSelfCreditItemQuantity(double quantity) {
+        return Double.compare(quantity, 0d) == 0 ? 0d : (Double.compare(Math.floor(quantity), 0d) == 0 ? 1d : Math.floor(quantity));
+    }
 
 	private Map<String, Double> collectApprovedComplaintQuantity(Collection<ErpComplaintModel> complaints) {
 		Map<String, Double> creditedQuantitiesByOrderLineId = new HashMap<String, Double>();
@@ -149,6 +165,15 @@ public class SelfCreditOrderDetailsService {
 		double finalPrice = fdCartLine.getInvoiceLine().getPrice();
 		return Double.compare(deliveredQuantity, 0d) == 0 ? 0d : finalPrice/deliveredQuantity;
 	}
+
+    private double collectTaxAndDepositPerItem(FDCartLineI fdCartLine, double finalPricePerItem, double deliveredQuantity) {
+        final double taxRate = fdCartLine.getTaxRate();
+        final double taxValuePerItem = finalPricePerItem * taxRate;
+
+        final double depositValuePerItem = fdCartLine.getDepositValue() / deliveredQuantity;
+
+        return taxValuePerItem + depositValuePerItem;
+    }
 
 	private List<SelfCreditComplaintReason> collectComplaintReasons(
 			Map<String, List<SelfCreditComplaintReason>> complaintReasonMap, String department) {
@@ -187,7 +212,7 @@ public class SelfCreditOrderDetailsService {
 
     private boolean isItemMealBundle(ProductModel product) {
     	final boolean mealBundle = CartDataService.defaultService().isMealBundle(product);
-    	final boolean componentGroupMeal = null == product.getSpecialLayout() ? false : EnumProductLayout.COMPONENTGROUP_MEAL.equals(product.getSpecialLayout());
+        final boolean componentGroupMeal = null != product.getSpecialLayout() && EnumProductLayout.COMPONENTGROUP_MEAL == product.getSpecialLayout();
         return  mealBundle || componentGroupMeal;
     }
 

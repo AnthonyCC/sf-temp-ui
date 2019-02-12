@@ -204,48 +204,7 @@ public interface CrmManagerSB extends EJBObject {
      */
     @Deprecated 
 	public CrmCustomerHeaderInfo getCustomerHeaderInfo(String customerId) throws FDResourceException, RemoteException;
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    @Deprecated 
-	public void incrDeliveryCount(DeliveryPassModel model, 
-			CrmAgentModel agentmodel, 
-			int delta, 
-			String note, 
-			String reasonCode, 
-			String saleId)  throws FDResourceException, CrmAuthorizationException, RemoteException;
-    
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    @Deprecated 
-	public void incrExpirationPeriod(DeliveryPassModel model, 
-			CrmAgentModel agentmodel, 
-			int noOfDays, 
-			String note, 
-			String reasonCode, 
-			String saleId)  throws FDResourceException, CrmAuthorizationException, RemoteException;
-	
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    @Deprecated 
-	public void cancelDeliveryPass(DeliveryPassModel model, 
-			CrmAgentModel agentmodel, 
-			String note, 
-			String reasonCode, 
-			String saleId) throws FDResourceException, RemoteException;
-    
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    @Deprecated 
-	public void reactivateDeliveryPass(DeliveryPassModel model) throws FDResourceException, RemoteException;
-	
+   
     /**
      *@deprecated This method is moved to backoffice project.
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
@@ -350,24 +309,14 @@ public interface CrmManagerSB extends EJBObject {
      */
     @Deprecated 
 	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException, RemoteException;
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    @Deprecated 
-	public DeliveryPassModel getDeliveryPassInfoById(String dlvPassId) throws FDResourceException, RemoteException;
+    
     /**
      *@deprecated This method is moved to backoffice project.
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
      */
     @Deprecated 
 	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException, RemoteException;
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    @Deprecated
-	public DeliveryPassModel getActiveDP(String custId, EnumEStoreId estore) throws FDResourceException, RemoteException;
+    
     /**
      *@deprecated This method is moved to backoffice project.
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk

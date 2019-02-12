@@ -35,12 +35,10 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
-import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -59,16 +57,9 @@ import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.deliverypass.ejb.DeliveryPassDAO;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerSessionBean;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDPayPalServiceException;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -79,15 +70,9 @@ import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
-import com.freshdirect.payment.ejb.PaymentManagerSessionBean;
-import com.freshdirect.payment.ejb.PaymentSB;
-import com.freshdirect.payment.ejb.PaymentSessionBean;
 import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.routing.ejb.ErpRoutingGatewayHome;
-import com.freshdirect.routing.ejb.ErpRoutingGatewaySB;
 import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.sap.command.SapCancelSalesOrder;
 import com.freshdirect.sap.command.SapChangeSalesOrder;
@@ -305,60 +290,27 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							list.add(new SapOrderPickEligibleInfo(saleEB.getCurrentOrder().getRequestedDate(),
 									((SapCreateSalesOrder) command).getSapOrderNumber(), saleId));
 							
-							if (FDStoreProperties
-									.isSF2_0_AndServiceEnabled(FDEcommProperties.FDXOrderPickEligibleSB)) {
-								try {
-									FDECommerceService.getInstance().sendFDXEligibleOrdersToSap(list);
-								} catch (RemoteException re) {
-									LOGGER.warn(
-											"FAILED TO SEND SapOrderPickEligibleInfo LIST TO remote service sendFDXEligibleOrdersToSap",
-											re);
-								}
-
-							} else {
-								FDXOrderPickEligibleCronSB pickEligiblesb = getFDXOrderPickEligibleHome().create();
-								try {
-									pickEligiblesb.sendOrdersToSAP(list);
-								} catch (SapException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
+							try {
+								FDECommerceService.getInstance().sendFDXEligibleOrdersToSap(list);
+							} catch (RemoteException re) {
+								LOGGER.warn(
+										"FAILED TO SEND SapOrderPickEligibleInfo LIST TO remote service sendFDXEligibleOrdersToSap",
+										re);
 							}
 
+							
 							LOGGER.info(list);
 						}
 
-						ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-								.ErpRoutingGatewaySB)) {/*
-																 * instead of a
-																 * string
-																 * "routing.ejb.ErpRoutingGatewaySB"
-																 */
+						FDECommerceService.getInstance().sendReservationUpdateRequest(
+								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
+								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
+								saleEB.getSapOrderNumber());
 
-							FDECommerceService.getInstance().sendReservationUpdateRequest(
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
-									saleEB.getSapOrderNumber());
-
-						} else {
-							LOGGER.info("sending sendReservationUpdateRequest ..."
-									+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-							erpRoutingGateway.sendReservationUpdateRequest(
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
-									((SapCreateSalesOrder) command).getSapOrderNumber());
-						}
-
+						
 						if (((ErpSaleModel) saleEB.getModel()).geteStoreId() != null && EnumEStoreId.FDX.name()
 								.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).geteStoreId().name())) {
-							if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-									.ErpRoutingGatewaySB)) { /*
-																	 * instead of
-																	 * a string
-																	 * "routing.ejb.ErpRoutingGatewaySB"
-													
-																	 */
+							
 								FDECommerceService.getInstance().sendSubmitOrderRequest(saleId,
 										(((ErpSaleModel) saleEB.getModel()).getCurrentOrder() != null
 										&& ((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
@@ -388,92 +340,28 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 														.getOrderMobileNumber().getPhone())
 												: null,
 										((SapCreateSalesOrder) command).getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-							} else {
-								LOGGER.info("sending sendSubmitOrderRequest ..."
-										+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-								erpRoutingGateway.sendSubmitOrderRequest(saleId,
-										(((ErpSaleModel) saleEB.getModel()).getCurrentOrder() != null
-												&& ((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
-														.getPaymentMethod() != null && (EnumPaymentType.ADD_ON_ORDER.getName()
-														.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
-																.getPaymentMethod().getPaymentType().getName())))
-																? ((ErpSaleModel) saleEB.getModel())
-																		.getCurrentOrder().getPaymentMethod()
-																		.getReferencedOrder()
-																: null,
-										saleEB.getCurrentOrder().getTip(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-												.getInstructions(),
-										saleEB.getCurrentOrder().getDeliveryInfo().getServiceType() != null
-												? saleEB.getCurrentOrder().getDeliveryInfo().getServiceType().getName()
-												: null,
-										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-												.getAltDelivery() != null
-														? saleEB.getCurrentOrder().getDeliveryInfo()
-																.getDeliveryAddress().getAltDelivery().getName()
-														: "none",
-										(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber() != null)
-												? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
-														.getOrderMobileNumber().getPhone())
-												: null,
-										((SapCreateSalesOrder) command).getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-
-							}
+							
 						}
 					}
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
-					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 					if (EnumEStoreId.FDX.name()
 							.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).geteStoreId().name())) {
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-								.ErpRoutingGatewaySB)) { /*
-																 * instead of a
-																 * string
-																 * "routing.ejb.ErpRoutingGatewaySB"
-																 */
-							FDECommerceService.getInstance().sendCancelOrderRequest(saleId);
-						} else {
-							LOGGER.info("sending sendCancelOrderRequest ...Sale ID: " + saleId + " Reservation ID: "
-									+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-							erpRoutingGateway.sendCancelOrderRequest(saleId);
-						}
+						
+						FDECommerceService.getInstance().sendCancelOrderRequest(saleId);
+						
 					}
 				} else if (command instanceof SapChangeSalesOrder) {
 					saleEB.modifyOrderComplete();
-					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-							.ErpRoutingGatewaySB)) { /*
-															 * instead of a string
-															 * "routing.ejb.ErpRoutingGatewaySB"
-															 */
-
-						FDECommerceService.getInstance().sendReservationUpdateRequest(
+					FDECommerceService.getInstance().sendReservationUpdateRequest(
 								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
 								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
 								saleEB.getSapOrderNumber());
 
-					} else {
-						LOGGER.info("sending sendReservationUpdateRequest ..."
-								+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-						erpRoutingGateway.sendReservationUpdateRequest(
-								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
-								saleEB.getSapOrderNumber());
-					}
-
+					
 					if (((ErpSaleModel) saleEB.getModel()).geteStoreId() != null && EnumEStoreId.FDX.name()
 							.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).geteStoreId().name())) {
-						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties
-								.ErpRoutingGatewaySB)) { /*
-																 * instead of a
-																 * string
-																 * "routing.ejb.ErpRuTingGatewaysB"
-																 */
-							FDECommerceService.getInstance().sendModifyOrderRequest(saleId, null,
+						FDECommerceService.getInstance().sendModifyOrderRequest(saleId, null,
 									saleEB.getCurrentOrder().getTip(),
 									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
 									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
@@ -496,32 +384,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 													.getOrderMobileNumber().getPhone())
 											: null,
 									saleEB.getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-						} else {
-							LOGGER.info("sending sendModifyOrderRequest ..."
-									+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
-							erpRoutingGateway.sendModifyOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName(),
-									(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-											.getInstructions() != null)
-													? saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-															.getInstructions()
-													: "none",
-									saleEB.getCurrentOrder().getDeliveryInfo().getServiceType() != null
-											? saleEB.getCurrentOrder().getDeliveryInfo().getServiceType().getName()
-											: null,
-									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-											.getAltDelivery() != null
-													? saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
-															.getAltDelivery().getName()
-													: "none",
-									(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber() != null)
-											? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
-													.getOrderMobileNumber().getPhone())
-											: null,
-									saleEB.getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
-						}
+						
 					}
 				}
 
@@ -607,22 +470,6 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	private GCGatewayHome getGCGatewayHome() {
 		try {
 			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private FDXOrderPickEligibleCronHome getFDXOrderPickEligibleHome() {
-		try {
-			return (FDXOrderPickEligibleCronHome) LOCATOR.getRemoteHome("freshdirect.erp.FDXOrderPickEligibleCron");
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private ErpRoutingGatewayHome getErpRoutingGatewayHome() {
-		try {
-			return (ErpRoutingGatewayHome) ROUTING_LOCATOR.getRemoteHome("freshdirect.routing.ErpRoutingGateway");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

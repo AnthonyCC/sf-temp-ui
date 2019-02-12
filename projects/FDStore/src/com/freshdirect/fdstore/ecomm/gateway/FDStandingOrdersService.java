@@ -42,8 +42,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 
 	private final static Category LOGGER = LoggerFactory.getInstance(FDStandingOrdersService.class);
 
-	private static final String CREATE_STANDING_ORDER = "fdstandingOrder/create";
-	private static final String LOAD_ACTIVE_SO = "fdstandingOrder/active/load/isNewSo/";
 	private static final String LOAD_CUSTOMER_SO = "fdstandingOrder/load/customerId/";
 	private static final String LOAD = "fdstandingOrder/load/id/";
 	private static final String DELETE = "fdstandingOrder/delete";
@@ -51,16 +49,9 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 	private static final String ASSIGN_SO_TO_ORDER = "fdstandingOrder/assign/order/saleId/";
 	private static final String MARK_SALE_ALT_DATE_MOVEMENT = "fdstandingOrder/altDelivery/date/saleid/";
 	private static final String LOG_ACTIVITY = "fdstandingOrder/logActivity";
-	private static final String GET_ACTIVE_SO_CUST_INFO = "fdstandingOrder/active/customerInfo";
-	private static final String CLEAR_SO_ERRORS = "fdstandingOrder/errors/clear";
 	private static final String GET_FAILED_SO_CUST_INFO = "fdstandingOrder/failed/custInfo";
 	private static final String GET_MACHANICAL_SO = "fdstandingOrder/mechanicalFailed/custInfo";
-	private static final String GET_SO_ALT_DELIVERY_DATES = "fdstandingOrder/alternateDelivery/dates";
-	private static final String GET_SO_DATES = "fdstandingOrder/alternateDelivery";
 
-	private static final String ADD_SO_ALT_DLV_DATE = "fdstandingOrder/altDeliveryDate/add";
-	private static final String UPDATE_SO_ALT_DLV_DATE = "fdstandingOrder/altDeliveryDate/update";
-	private static final String DELETE_SO_ALT_DLV_DATE = "fdstandingOrder/altDeliveryDate/delete";
 	private static final String LOCK = "fdstandingOrder/lock/lockId/";
 	private static final String UNLOCK = "fdstandingOrder/unlock/unlockId/";
 	private static final String GET_LOCK_ID = "fdstandingOrder/lockId/";
@@ -68,23 +59,14 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 	private static final String INSERT_INTO_COREMETRICS = "fdstandingOrder/coremetricsInfo/insert/fdUserId/";
 	private static final String GET_COREMETRICS_INFO = "fdstandingOrder/coremetricsUserInfo/fdUserId/";
 	private static final String GET_SO_ORDERS_GLOBAL = "fdstandingOrder/altDlvDates/global";
-	private static final String GET_SO_ALT_DLV_DATE_BY_ID = "fdstandingOrder/altDlvdate/id/";
-	private static final String DELETE_SO_ALT_DLV_DATE_BY_ID = "fdstandingOrder/altDlvdate/id/delete";
-	private static final String ADD_SO_ORDERS_ALT_DLV_DATE = "fdstandingOrder/altDlvdate/add";
-	private static final String CHECK_IF_EXISTS = "fdstandingOrder/altDlvdate/checkIfExists";
-	private static final String IS_VALID_SO = "fdstandingOrder/soId/";
 
-	private static final String REPLACE_SKU_CODE = "fdstandingOrder/userId/";
-	private static final String VALIDATE_SKU_CODE = "fdstandingOrder/skuValidate/existingSku/";
 	private static final String PERSIST_UNAV_TO_DB = "fdstandingOrder/unavlDetails/save";
 	private static final String GET_DET_FOR_REPORT_GEN = "fdstandingOrder/report/details";
-	private static final String GET_SO_DETAILS = "fdstandingOrder/details";
 	private static final String GET_VALID_SO_DETAILS = "fdstandingOrder/valid";
 	private static final String ACTIVATE_STANDING_ORDER = "fdstandingOrder/isActive";
 	private static final String CHECK_IF_CUST_HAS_SO = "fdstandingOrder/customer/check";
 	private static final String UPDATE_DEFAULT_SO = "fdstandingOrder/default/update/listId/";
 	private static final String LOAD_NEW_SO = "fdstandingOrder/new/load";
-	private static final String LOAD_SO_CRON = "fdstandingOrder/cron/id/";
 	private static final String TURN_OFF_REMINDER = "fdstandingOrder/id/";
 	private static final String UPDATE_SO_CART_OVERLAY = "fdstandingOrder/cartOverlay/update/";
 	private static final String UPDATE_NEW_SO_FEATURES = "fdstandingOrder/newFaetures/update/";
@@ -104,23 +86,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 		return INSTANCE;
 	}
 	
-
-	@Override
-	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo)
-			throws FDResourceException, RemoteException {
-		Response<Collection<FDStandingOrderData>> response = new Response<Collection<FDStandingOrderData>>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ACTIVE_SO +isNewSo),  new TypeReference<Response<Collection<FDStandingOrderData>>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildStandingOrderList( response.getData());
-	}
-
 	@Override
 	public Collection<FDStandingOrder> loadCustomerStandingOrders(
 			FDIdentity identity) throws FDResourceException,
@@ -626,21 +591,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-	}
-
-	@Override
-	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException, RemoteException {
-		Response<Collection<FDStandingOrderData>> response = new Response<Collection<FDStandingOrderData>>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ACTIVE_SO_FOR_WEEK +isNewSo+"/active/week"),  new TypeReference<Response<Collection<FDStandingOrderData>>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildStandingOrderList(response.getData());
 	}
 
 			

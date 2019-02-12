@@ -12,6 +12,8 @@ public class Timezone extends Message {
     private String timezone;
     
     private boolean excludeaddr;
+    
+    private String timeslotId;
 
     public boolean getExcludeaddr() {
 		return excludeaddr;
@@ -28,5 +30,13 @@ public class Timezone extends Message {
     public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
+
+	public String getTimeslotId() {
+		return timeslotId;
+	}
+
+	public void setTimeslotId(String timeslotId) {
+		this.timeslotId = timeslotId;
+	}
 
 }

@@ -398,7 +398,12 @@ public class AddToCartServlet extends BaseJsonServlet {
             ModifyOrderHelper.handleModificationCutoff(order, sessionUser, request.getSession(), new ActionResult());
     		
             FDModifyCartModel modifycart = new FDModifyCartModel(order);
-
+            
+            // adding previous session modified cart line item's to 'Modify_cart'
+    		List<FDCartLineI> modifiedCartlines = FDCustomerManager.getModifiedCartlines(modifycart.getOriginalOrder().getSale().getId(), user.getUserContext());
+    		if(user.getMasqueradeContext() == null && (null != modifiedCartlines && modifiedCartlines.size() > 0)){
+    			modifycart.addOrderLines(modifiedCartlines);
+    		}
             // this is added because the delivery pass is false when you modify the order though original order has delivery pass applied. This will fix any rules that use
             // dlvpassapplied flag for applying charge
             ModifyOrderHelper.handleDlvPass(modifycart, user);

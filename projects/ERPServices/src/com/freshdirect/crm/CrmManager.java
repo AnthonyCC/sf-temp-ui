@@ -370,52 +370,6 @@ public class CrmManager {
 		}
 	}
 
-	public void incrDeliveryCount(DeliveryPassModel model, 
-								CrmAgentModel agentModel, 
-								int delta, 
-								String note, 
-								String reasonCode, 
-								String saleId) throws FDResourceException, CrmAuthorizationException {
-		try {
-				this.getCrmManagerSB().incrDeliveryCount(model, agentModel, delta, note, reasonCode, saleId);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB while incrementing delivery count.");
-		}
-	}	
-	
-	public void incrExpirationPeriod(DeliveryPassModel model, 
-									CrmAgentModel agentModel, 
-									int noOfDays, 
-									String note, 
-									String reasonCode, 
-									String saleId) throws FDResourceException, CrmAuthorizationException{
-		try {
-				this.getCrmManagerSB().incrExpirationPeriod(model, agentModel, noOfDays, note, reasonCode, saleId);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB while incrementing expiration period.");
-		}
-	}	
-	
-	public void cancelDeliveryPass(DeliveryPassModel model,
-								CrmAgentModel agentModel,
-								String note, 
-								String reasonCode, 
-								String saleId) throws FDResourceException{
-		try {
-			this.getCrmManagerSB().cancelDeliveryPass(model, agentModel, note, reasonCode, saleId);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB while cancelling delivery pass.");
-		}
-	}	
-
-	public void reactivateDeliveryPass(DeliveryPassModel model) throws FDResourceException{
-		try {
-				this.getCrmManagerSB().reactivateDeliveryPass(model);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB while cancelling delivery pass.");
-		}
-	}
-
 	public String lookupAccount(String accountNum) throws FDResourceException {
 		try {
 				return this.getCrmManagerSB().lookupAccount(accountNum);
@@ -581,14 +535,7 @@ public class CrmManager {
 		}
 	}
 	
-	public DeliveryPassModel getDeliveryPassInfo(String dlvPassId) throws FDResourceException {
-		try {
-				return this.getCrmManagerSB().getDeliveryPassInfoById(dlvPassId);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB while getting getDeliveryPassInfo.");
-		}
-	}
-	
+
 	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {		
 		try {
 				this.getCrmManagerSB().updateAutoLateCredit(autoId, orderId);
@@ -597,13 +544,6 @@ public class CrmManager {
 		}
 	}
 	
-	public DeliveryPassModel getActiveDP(String custId, EnumEStoreId estore) throws FDResourceException {
-		try {
-				return this.getCrmManagerSB().getActiveDP(custId, estore);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
-		}
-	}
 	
 	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException {
 		try {

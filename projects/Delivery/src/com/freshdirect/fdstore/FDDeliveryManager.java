@@ -29,8 +29,6 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
-import com.freshdirect.delivery.ejb.DlvRestrictionManagerSB;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.CompositeRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
@@ -222,16 +220,6 @@ public class FDDeliveryManager {
 		return dlvManager;
 	}
 
-	public DlvRestrictionManagerHome getDlvRestrictionManagerHome() {
-		try {
-			return (DlvRestrictionManagerHome) serviceLocator
-					.getRemoteHome(FDStoreProperties
-							.getDlvRestrictionManagerHome());
-		} catch (NamingException ne) {
-			throw new EJBException(ne);
-		}
-	}
-
 	public DlvManagerHome getDlvManagerHome() {
 		try {
 			return (DlvManagerHome) serviceLocator
@@ -248,21 +236,12 @@ public class FDDeliveryManager {
 			try {
 				LOGGER.info("RESTRICTIONS_CACHE: Refreshing Restrictions Cache #Started#");
 				List<RestrictionI> l = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 					 l = buildRestriction(FDECommerceService.getInstance().getDlvRestrictions());
-				}
-				else
-				{
-					DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
-							.create();
-					l =  sb.getDlvRestrictions();
-				}
+				
 				this.dlvRestrictions = new DlvRestrictionsList(l);
 
 				lastRefresh = System.currentTimeMillis();
 				LOGGER.info("RESTRICTIONS_CACHE: Refreshing Restrictions Cache #Ended#");
-			} catch (CreateException e) {
-				throw new FDResourceException(e, "Cannot create SessionBean");
 			} catch (RemoteException e) {
 				throw new FDResourceException(e,
 						"Cannot talk to the SessionBean");
@@ -569,16 +548,9 @@ public class FDDeliveryManager {
 			if (muni != null && muni.isAlcoholRestricted()) {
 				return false;
 			}
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
 				return FDECommerceService.getInstance().checkForAlcoholDelivery(address.getScrubbedStreet(),
 						address.getZipCode(), address.getApartment());
-			}else{
-			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome().create();
-			return sb.checkForAlcoholDelivery(address.getScrubbedStreet(),
-					address.getZipCode(), address.getApartment());
-			}
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
+			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
@@ -591,15 +563,8 @@ public class FDDeliveryManager {
 			((ErpAddressModel)address).setScrubbedStreet(address.getAddressInfo().getScrubbedStreet());
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
-				return EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address)));
-			}else{
-			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
-					.create();
-			return sb.checkAddressForRestrictions(address);
-			}
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
+			return EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address)));
+			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
@@ -850,23 +815,16 @@ public class FDDeliveryManager {
 			FDDeliveryServiceSelectionResult result = LogisticsDataDecoder
 					.decodeDeliveryServices(response);
 
-			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
-					.create();
 			
 			if(address instanceof ErpAddressModel && address.getAddressInfo()!=null){
 				((ErpAddressModel)address).setScrubbedStreet(address.getAddressInfo().getScrubbedStreet());
 			}
 			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
-				result.setRestrictionReason(EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address))));
-			}else{
-				result.setRestrictionReason(sb.checkAddressForRestrictions(address));
-			}
+			result.setRestrictionReason(EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address))));
+			
 			return result;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		}

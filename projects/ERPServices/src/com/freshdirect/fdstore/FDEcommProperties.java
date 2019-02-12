@@ -31,59 +31,33 @@ public class FDEcommProperties {
     private final static long REFRESH_PERIOD = 5 * 60 * 1000;
     
     private final static String FALSE="false";
-    public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
     public static final String EnumManagerSB = "enums.ejb.EnumManagerSB";
-    public final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
     public final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
-    public final static String FDBrandProductsAdManagerSB = "fdstore.brandads.FDBrandProductsAdManagerSB";
     public final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
     public final static String SAPProductFamilyLoaderSB = "sap.ejb.SAPProductFamilyLoaderSB";
-    public final static String SmsAlertsSB = "sms.ejb.SmsAlertsSB";
     public final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
-    public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
     public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
-    public final static String FDCouponActivityLogSB = "fdstore.ecoupon.FDCouponActivityLogSB";
-    public final static String EwalletActivityLogSB = "ewallet.ejb.EwalletActivityLogSB";
     public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
-    public final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
-    public final static String FDSurveySB = "survey.ejb.FDSurveySB";
     public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
-    public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
-    public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
-    public final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
     public final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
+    public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
     public final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
-	public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
-	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String PayPalServiceSB = "ewallet.ejb.PayPalServiceSB";
 	public static final String MasterpassServiceSB = "ewallet.ejb.MasterpassServiceSB";
 	public static final String CrmManagerSB = "crm.ejb.CrmManagerSB";
 	public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
 	public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
-	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB"; 
-	public static final String PaypalReconciliationSB = "payment.gateway.ewallet.impl.PaypalReconciliationSB";
-	public static final String SitemapSB = "fdstore.sitemap.SitemapSB";
-	public static final String GiftCardManagerSB = "giftcard.ejb.GiftCardManagerSB";
+	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB";
 	public final static String PostSettlementNotifySB ="payment.ejb.PostSettlementNotifySB";
 	
-	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
-	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
-	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
 	public static final String StandingOrdersServiceSB = "com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB";
-	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
-	public static final String FDCustomerAddress = "com.freshdirect.customer.address";
-	public static final String FDCustomerPayment = "com.freshdirect.customer.payment";
-	public static final String FDCustomerPreference = "com.freshdirect.customer.preference";
-	public static final String FDCustomerGiftCard = "com.freshdirect.customer.giftCard";
 	public static final String FDCustomerComplaint = "com.freshdirect.customer.complaint";
-	public static final String FDCustomerReport = "com.freshdirect.customer.report";
-	public static final String FDCustomerInfo = "com.freshdirect.customer.info";
-	public static final String FDCustomer = "com.freshdirect.customer";
 	public static final String FDCustomerMisc1 = "com.freshdirect.customer.misc1";
+	public static final String FDCustomerMisc2 = "com.freshdirect.customer.misc2";
 	public static final String FDCustomerFactory = "com.freshdirect.fdstore.customer.FDCustomerFactory";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
@@ -99,44 +73,26 @@ public class FDEcommProperties {
 
    
     static {
-
-        defaults.put(FDMonitorSB,FALSE);
-        defaults.put(ProductFeedSB,FALSE);
         defaults.put(SaleCronSB,FALSE);
         defaults.put(EnumManagerSB,FALSE);
-        defaults.put(ErpInventoryManagerSB ,FALSE);
         defaults.put(DlvManagerSB ,FALSE);
-        defaults.put(FDBrandProductsAdManagerSB ,FALSE);
         defaults.put(GCGatewaySB,FALSE);
         defaults.put(SAPProductFamilyLoaderSB,FALSE);
-        defaults.put(SmsAlertsSB ,FALSE);
         defaults.put(SAPZoneInfoLoaderSB,FALSE);
-        defaults.put(BatchManagerSB,FALSE);
         defaults.put(AttributeFacadeSB ,FALSE);
         defaults.put(FDFactorySB_WarmUp ,FALSE);
-        defaults.put(FDCouponActivityLogSB,FALSE);
-        defaults.put(EwalletActivityLogSB ,FALSE);
         defaults.put(FDExtoleManagerSB ,FALSE);
-        defaults.put(ErpEWalletSB ,FALSE);
-        defaults.put(FDSurveySB ,FALSE);
-        defaults.put(RulesManagerSB ,FALSE);
-        defaults.put(ErpRoutingGatewaySB ,FALSE);
-        defaults.put(FDXOrderPickEligibleSB, FALSE);
         defaults.put(SAPLoaderSB, FALSE);
         defaults.put(CmsFeedmanagerSB, FALSE);
         defaults.put(RestrictedPaymentMethodSB,FALSE);
         defaults.put(ErpComplaintManagerSB,FALSE);
-        defaults.put(DlvPassManagerSB, FALSE);
         defaults.put(PayPalServiceSB, FALSE);
         defaults.put(MasterpassServiceSB, FALSE);
         defaults.put(CrmManagerSB, FALSE);
         defaults.put(FDPromotionManagerNewSB, FALSE);
         defaults.put(CallCenterManagerSB, FALSE);
         defaults.put(TEmailInfoSB, FALSE);
-        defaults.put(ProfileCreatorSB, FALSE);
         defaults.put(FDStandingOrderSB, FALSE);
-        defaults.put(StandingOrder3CronSB, FALSE);
-        defaults.put(FDCustomerManagerSB, FALSE);
         defaults.put(StandingOrdersServiceSB, FALSE);
         
         

@@ -972,11 +972,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public boolean isReferrerRestricted() throws FDResourceException {
-        return (user != null) ? user.isReferrerRestricted() : false;
-    }
-
-    @Override
     public boolean isReferrerEligible() throws FDResourceException {
         return (user != null) ? user.isReferrerEligible() : false;
     }
@@ -1570,11 +1565,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     public UserContext getUserContext(boolean override) {
         return user.getUserContext(override);
-    }
-
-    @Override
-    public SortedSet<IgnoreCaseString> getClientCodesHistory() {
-        return user.getClientCodesHistory();
     }
 
     @Override

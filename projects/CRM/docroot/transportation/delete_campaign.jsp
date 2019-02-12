@@ -23,12 +23,7 @@
 	CrmVSCampaignModel cModel = null;
 	String id = request.getParameter("cid");
 	boolean processed = false;
-	if("done".equals(request.getParameter("submission"))) {
-		CallCenterServices.deleteCampaign(id);
-		processed = true;
-	} else {		
-		cModel = CallCenterServices.getCampaignDetails(id);			
-	}
+	
 %>
 
 <form method="post" name="addcampaign">

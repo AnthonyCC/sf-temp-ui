@@ -5476,34 +5476,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return activityRecord;
 	}
 
-	public void storeProductRequest(List<FDProductRequest> productRequest, FDSurveyResponse survey)
-			throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			String id = "";
-			for (int i = 0; i < productRequest.size(); i++) {
-				id = this.getNextId(conn, "CUST");
-				FDProductRequest prodReq = productRequest.get(i);
-				prodReq.setId(id);
-			}
-			if (productRequest.size() > 0) {
-				FDProductRequestDAO.storeRequest(conn, productRequest);
-			}
-
-			if (survey != null && !survey.getAnswers().isEmpty()) {
-				LOCATOR.getSurveySessionBean().storeSurvey(survey);
-			}
-
-		} catch (SQLException se) {
-			throw new FDResourceException(se, "Could not store product request");
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Could not store product request");
-		} finally {
-			close(conn);
-		}
-	}
-
 	public void storeProductRequest(List<FDProductRequest> productRequest) throws FDResourceException {
 		Connection conn = null;
 		try {

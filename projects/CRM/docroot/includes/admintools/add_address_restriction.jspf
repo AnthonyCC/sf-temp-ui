@@ -4,7 +4,6 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
-<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
 <%@ page import="com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason"%>
 <%@ page import="com.freshdirect.delivery.model.RestrictedAddressModel"%>
 <%@ taglib uri='logic' prefix='logic' %>

@@ -26,7 +26,7 @@ final int W_QUICKSHOP_INDEX_TOTAL = 755;
 // Load YUI dependencies for smartstore tabs
 %>
 
-<fd:SmartSavingsUpdate promoConflictMode="false"/>
+
 <tmpl:insert template='/common/template/quick_shop.jsp'>
 <%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Reorder</tmpl:put> --%>
 	  <tmpl:put name="seoMetaTag" direct="true">

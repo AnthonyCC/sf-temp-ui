@@ -530,14 +530,12 @@ public class SubmitOrderAction extends WebActionSupport {
 		
         if (!(user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled())) {
             ErpAddressModel address = cart.getDeliveryAddress();
-            if (address instanceof ErpDepotAddressModel) {
-                FDCustomerManager.setDefaultDepotLocationPK(user.getIdentity(), ((ErpDepotAddressModel) address).getLocationId());
-            } else {
-                // get the address pk and set the default address
-				if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null) && address.getPK() !=null){
-					FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
-				}
-            }
+
+            // get the address pk and set the default address
+			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null) && address.getPK() !=null){
+				FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
+			}
+            
         }
 		
 		boolean sendEmail = true;

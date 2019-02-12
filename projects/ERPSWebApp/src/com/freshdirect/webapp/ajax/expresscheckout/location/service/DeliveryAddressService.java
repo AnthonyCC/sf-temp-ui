@@ -226,7 +226,6 @@ public class DeliveryAddressService {
                     selectedAddressInCart = null;
                 }
                 if (selectedAddressInCart == null) {
-//                    selectedDeliveryAddressId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());
                 	selectedDeliveryAddressId = user.getFDCustomer().getDefaultDepotLocationPK();
                     if (selectedDeliveryAddressId != null) {
                         addressSelectionErrors
@@ -243,7 +242,6 @@ public class DeliveryAddressService {
 
             if (selectedDeliveryAddressId == null) {
                 if (selectedAddressInCart == null) {
-//                    selectedDeliveryAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
                 	selectedDeliveryAddressId = user.getFDCustomer().getDefaultShipToAddressPK();
                     if (selectedDeliveryAddressId != null) {
                         addressSelectionErrors.addAll(selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user));
