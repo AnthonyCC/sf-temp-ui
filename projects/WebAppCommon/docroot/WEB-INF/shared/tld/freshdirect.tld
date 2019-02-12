@@ -2047,33 +2047,7 @@
 		</attribute>
 	</tag>
 
-	<tag>
-		<name>redeliveryController</name>
-		<tagclass>com.freshdirect.webapp.taglib.callcenter.RedeliveryControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.callcenter.RedeliveryControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>actionName</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>orderNumber</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
+
 
 	<tag>
 		<name>CheckAvailableTimeslots</name>
