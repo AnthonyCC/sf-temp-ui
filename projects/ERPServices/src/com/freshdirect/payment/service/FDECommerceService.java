@@ -3972,7 +3972,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			LOGGER.info("Sitemap generation calling SF2.0 Servies");
 			Response<String> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SITEMAP_GENERATE),
-					new TypeReference<Response<Boolean>>() {});
+					new TypeReference<Response<String>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
