@@ -225,7 +225,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			}
 		}
 
-		
+		this.setOrderActivityPermissions(results);		
 		pageContext.setAttribute(result, results);
 		
 		//

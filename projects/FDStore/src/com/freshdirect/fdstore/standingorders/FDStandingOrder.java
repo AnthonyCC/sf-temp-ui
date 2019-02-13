@@ -86,8 +86,6 @@ public class FDStandingOrder extends ModelSupport {
 
 	String oldAddressId;
 	
-	private FDUserI fdUser;
-	
 	public FDStandingOrder() {
 		super();
 	}
@@ -432,10 +430,7 @@ public class FDStandingOrder extends ModelSupport {
 	
 	@ExcludeFromXmlSerializer
 	public FDUserI getUser() throws FDResourceException, FDAuthenticationException {
-		if(null == fdUser) {
-			fdUser =  FDCustomerManager.recognize( getCustomerIdentity() );
-		}
-		return fdUser;
+		return FDCustomerManager.recognize( getCustomerIdentity() );
 	}
 	
 	@ExcludeFromXmlSerializer
