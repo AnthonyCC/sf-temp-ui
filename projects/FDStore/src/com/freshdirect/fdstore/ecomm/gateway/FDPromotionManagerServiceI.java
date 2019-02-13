@@ -78,4 +78,6 @@ public interface FDPromotionManagerServiceI {
 	public int getRedemptionCount(String promoID, Date date) throws FDResourceException;
 	public String getRedemptionPromotionId(String redemptionCode) throws FDResourceException;	
 	public String getRedemptionCode(String tsaCode) throws FDResourceException;
+	
+	public FDPromotionNewModel getPromotion(String promoId) throws FDResourceException;
 }

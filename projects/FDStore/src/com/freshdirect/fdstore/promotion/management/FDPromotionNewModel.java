@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
@@ -21,6 +22,8 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDPromotionNewModel extends ModelSupport {
 
+	
+	private static final long serialVersionUID = -2839952774343517449L;
 	private Set<String> assignedCustomerUserIds = new HashSet<String>();
 	private TreeMap<Date, FDPromoZipRestriction> zipRestrictions = new TreeMap<Date, FDPromoZipRestriction>();
 	private List<FDPromotionAttributeParam> attributeList = new ArrayList<FDPromotionAttributeParam>();
@@ -374,6 +377,7 @@ public class FDPromotionNewModel extends ModelSupport {
 		return false;
 	}
 
+	@JsonSetter
 	public void setAssignedCustomerUserIds(String assignedCustomerUserIds) {
 		this.assignedCustomerUserIds.clear();
 		this.assignedCustomerUserIds.addAll(Arrays.asList(StringUtils.split(

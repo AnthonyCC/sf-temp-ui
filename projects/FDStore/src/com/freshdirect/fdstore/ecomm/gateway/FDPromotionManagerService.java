@@ -35,7 +35,7 @@ import com.metaparadigm.jsonrpc.JSONSerializer;
 import com.metaparadigm.jsonrpc.UnmarshallException;
 
 public class FDPromotionManagerService extends AbstractEcommService implements FDPromotionManagerServiceI {
-	private final static Category LOGGER = LoggerFactory.getInstance(FDPromotionManagerService.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(FDPromotionManagerService.class);
 
 	private static FDPromotionManagerService INSTANCE = null;
 	// this dateformat matches the one in
@@ -44,6 +44,7 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	final DateFormat dateTimeFormat =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private final String SLASH = "/";
 
+	private static final String GET_PROMOTION = "promotionmanagement/getPromotion/";
 	/**
 	 * @param args
 	 */
@@ -204,9 +205,25 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 		}
 	}
 	
+	@Override
+	public FDPromotionNewModel getPromotion(String promoId) throws FDResourceException {
+		Response<FDPromotionNewModel> response = null;
+
+		response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_PROMOTION + promoId),
+				new TypeReference<Response<FDPromotionNewModel>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in FDPromotionNewModel: promoId=" + promoId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
+
+	
 
 }
