@@ -9,9 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,12 +32,9 @@ public class NavigationTreeRepository {
     private static final String PARENTS_OF_KEY = "select PARENT_CONTENTNODE_ID as parent_key from navtree where CHILD_CONTENTNODE_ID = :key";
     private static final String CHILDREN_OF_KEYS = "select CHILD_CONTENTNODE_ID as child_key from navtree where PARENT_CONTENTNODE_ID IN (:keys)";
 
-    private JdbcTemplate jdbcTemplate;
-
     @Autowired
-    private void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    @Qualifier("cmsJdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
 
     public Map<ContentKey, Set<ContentKey>> fetchParentKeysMap() {
 
