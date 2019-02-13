@@ -238,7 +238,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 						// The main processing occurs here.
 						lookupMailerHome();
 						StandingOrderUtil.sendNotification(so, mailerHome);
-					} catch (FDResourceException re) {
+					} catch (Exception re) {
 						LOGGER.error("2days notification for SO failed with FDResourceException!", re);
 						SOResult.createTechnicalError(so, "2days notification for SO failed with FDResourceException!");
 					} finally {
