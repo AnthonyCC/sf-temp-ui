@@ -120,11 +120,16 @@ public class FDPromotionNewManager {
 	}
 
 	public static FDPromotionNewModel loadPromotion(String promotionId) throws FDResourceException {
-		lookupManagerHome();
 
 		try {
-			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getPromotion(promotionId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
+				return FDPromotionManagerService.getInstance().getPromotion(promotionId);				
+			} else {
+				lookupManagerHome();
+				FDPromotionManagerNewSB sb = managerHome.create();
+				return sb.getPromotion(promotionId);
+			}
+			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
