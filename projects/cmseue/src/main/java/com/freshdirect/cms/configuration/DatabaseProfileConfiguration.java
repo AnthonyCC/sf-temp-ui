@@ -286,7 +286,7 @@ public class DatabaseProfileConfiguration {
      * @return transactionManager
      */
     @Bean(name = "cmsTransactionManager")
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager transactionManager(@Qualifier("cmsEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
