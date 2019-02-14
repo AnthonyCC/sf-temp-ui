@@ -268,12 +268,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 return;
             }
         } else if (mobile_number != null && mobile_number.length() != 0) {
-            if ("Y".equalsIgnoreCase(order_notices) || "Y".equalsIgnoreCase(order_exceptions) || "Y".equalsIgnoreCase(offers) || "Y".equalsIgnoreCase(partner_messages)) {
-
-                if (!phone.isValid()) {
+            if (!phone.isValid()) {
                     actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
                     return;
-                }
             }
             // commenting this logic as per ponnu based on the FDX mobile save requirements without checking notification preferences
             /*
