@@ -4,9 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Repository;
@@ -65,12 +64,9 @@ public class VirtualAttributeRepository {
     @Autowired
     private ContentKeyRowMapper contentKeyRowMapper;
 
-    private JdbcTemplate jdbcTemplate;
-
     @Autowired
-    private void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    @Qualifier("cmsJdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
 
     public List<ContentKey> queryConsumedByVirtualCategory(final ContentKey categoryKey) {
         PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {

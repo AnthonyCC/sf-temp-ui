@@ -12,7 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @Configuration
-@EnableJpaRepositories({ "com.freshdirect.cms.ui.editor.reports.repository", "com.freshdirect.cms.ui.editor.publish.repository",
+@EnableJpaRepositories(entityManagerFactoryRef = "cmsEntityManagerFactory", transactionManagerRef = "cmsTransactionManager", basePackages = {
+        "com.freshdirect.cms.ui.editor.reports.repository", "com.freshdirect.cms.ui.editor.publish.repository",
         "com.freshdirect.cms.ui.editor.publish.feed.repository" })
 @ComponentScan({ "com.freshdirect.cms.ui.serviceimpl", "com.freshdirect.cms.ui.editor" })
 @EnableAsync

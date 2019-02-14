@@ -232,19 +232,23 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					return null;
 				}
 			}
-			if (null !=soListEmailNotification && !soListEmailNotification.isEmpty()) {
-				for (FDStandingOrder so : soListEmailNotification) {
-					try {
-						// The main processing occurs here.
-						lookupMailerHome();
-						StandingOrderUtil.sendNotification(so, mailerHome);
-					} catch (Exception re) {
-						LOGGER.error("2days notification for SO failed with FDResourceException!", re);
-						SOResult.createTechnicalError(so, "2days notification for SO failed with FDResourceException!");
-					} finally {
-						invalidateMailerHome();
-					}
-				}LOGGER.info("2days email notification has been exicuted.");
+			try {
+				if (null !=soListEmailNotification && !soListEmailNotification.isEmpty()) {
+					for (FDStandingOrder so : soListEmailNotification) {
+						try {
+							// The main processing occurs here.
+							lookupMailerHome();
+							StandingOrderUtil.sendNotification(so, mailerHome);
+						} catch (FDResourceException re) {
+							LOGGER.error("2days notification for SO failed with FDResourceException!", re);
+							SOResult.createTechnicalError(so, "2days notification for SO failed with FDResourceException!");
+						} finally {
+							invalidateMailerHome();
+						}
+					}LOGGER.info("2days email notification has been exicuted.");
+				}
+			} catch (Exception e) {
+				LOGGER.error("2days notification for SOs failed with Exception!", e);
 			}
 		}
 		

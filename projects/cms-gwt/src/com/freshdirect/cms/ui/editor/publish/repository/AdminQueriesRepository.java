@@ -1,8 +1,7 @@
 package com.freshdirect.cms.ui.editor.publish.repository;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -45,12 +44,9 @@ public class AdminQueriesRepository {
             "  where dmins > 60 " +
             ") ";
 
-    private JdbcTemplate jdbcTemplate;
-
     @Autowired
-    private void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    @Qualifier("cmsJdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
 
     public void updateStuckPublishStatus(PublishType type) {
         switch (type) {
