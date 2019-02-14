@@ -98,7 +98,7 @@ public class SelfCreditOrderDetailsService {
                 double taxDepositSumPerItem = collectTaxAndDepositPerItem(fdCartLine, finalPricePerItem, deliveredQuantity);
                 item.setFinalPrice(finalPricePerItem + taxDepositSumPerItem);
                 item.setTaxDepositSum(taxDepositSumPerItem);
-                item.setSavedAmount(fdCartLine.getSaveAmount() / deliveredQuantity);
+                item.setSavedAmount(calculateSavedAmount(fdCartLine, deliveredQuantity));
 
                 orderLines.add(item);
 			}
@@ -173,6 +173,17 @@ public class SelfCreditOrderDetailsService {
         final double depositValuePerItem = fdCartLine.getDepositValue() / deliveredQuantity;
 
         return taxValuePerItem + depositValuePerItem;
+    }
+
+    private double calculateSavedAmount(FDCartLineI fdCartLine, double deliveredQuantity) {
+        double savedAmount = fdCartLine.getSaveAmount() / deliveredQuantity;
+        if (fdCartLine.getGroupQuantity() > 0) {
+            double savings = fdCartLine.getGroupScaleSavings();
+            if (savings > 0) {
+                savedAmount += savings / deliveredQuantity;
+            }
+        }
+        return savedAmount;
     }
 
 	private List<SelfCreditComplaintReason> collectComplaintReasons(
