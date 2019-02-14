@@ -252,12 +252,14 @@ public class UnavailabilityPopulator {
 					replacements.add(ProductDetailPopulator.createProductData(user, replacementProduct));
 				
 				} catch (FDSkuNotFoundException e){
-					LOG.error("Cannot process cart line " + cartLine.getRandomId(), e);
+					LOG.warn("Cannot process cart line " + cartLine.getRandomId(), e);
 				} catch (FDResourceException e) {
-					LOG.error("Cannot process cart line " + cartLine.getRandomId(), e);
+					LOG.warn("Cannot process cart line " + cartLine.getRandomId(), e);
 				} catch (HttpErrorResponse e) {
-					LOG.error("Cannot process cart line " + cartLine.getRandomId(), e);
-				}	
+					LOG.warn("Cannot process cart line " + cartLine.getRandomId(), e);
+				} catch (Exception e){
+					LOG.warn("Cannot process cart line " + cartLine.getRandomId(), e);
+				}
 			}
 		}
 		return replacements;
