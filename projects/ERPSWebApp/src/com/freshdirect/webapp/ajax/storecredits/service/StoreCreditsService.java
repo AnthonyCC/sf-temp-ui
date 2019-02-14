@@ -74,16 +74,17 @@ public class StoreCreditsService {
         List<StoreCreditData> pendingCredits = new ArrayList<StoreCreditData>();
         DateFormat pendingCreditDateFormatter = new SimpleDateFormat("MM/dd/yyyy");
         List<FDCustomerCreditModel> creditHistory = null == pendingCreditHistory ? new ArrayList<FDCustomerCreditModel>() : pendingCreditHistory.getCreditHistory();
-        for (FDCustomerCreditModel credit : creditHistory) {
-                StoreCreditData storeCreditData = new StoreCreditData();
-                storeCreditData.setDate(pendingCreditDateFormatter.format(credit.getCreateDate()));
-            storeCreditData.setStore(collectStoreName(credit.geteStore()));
-                storeCreditData.setStatus(PENDING_CREDIT_STATUS);
-            storeCreditData.setAmount(FormatterUtil.formatToTwoDecimal(credit.getAmount()));
-                storeCreditData.setType(credit.getMethod().getName());
-                storeCreditData.setOrder(credit.getSaleId());
-                pendingCredits.add(storeCreditData);
-        }
+		for (FDCustomerCreditModel credit : creditHistory) {
+			StoreCreditData storeCreditData = new StoreCreditData();
+			storeCreditData.setDate(pendingCreditDateFormatter.format(credit.getCreateDate()));
+			storeCreditData.setStore(collectStoreName(credit.geteStore()));
+			storeCreditData.setStatus(PENDING_CREDIT_STATUS);
+			storeCreditData.setAmount(FormatterUtil.formatToTwoDecimal(credit.getAmount()));
+			if (credit.getMethod() != null)
+				storeCreditData.setType(credit.getMethod().getName());
+			storeCreditData.setOrder(credit.getSaleId());
+			pendingCredits.add(storeCreditData);
+		}
         storeCredits.setPendingCredits(pendingCredits);
 
         return storeCredits;
