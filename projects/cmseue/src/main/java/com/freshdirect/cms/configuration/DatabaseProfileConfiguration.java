@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -47,7 +48,9 @@ import com.zaxxer.hikari.HikariDataSource;
 @Profile("database")
 @EnableCaching
 @EnableAsync
-@EnableJpaRepositories({ "com.freshdirect.cms.persistence.repository", "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
+@EnableJpaRepositories(entityManagerFactoryRef = "cmsEntityManagerFactory", transactionManagerRef = "cmsTransactionManager", basePackages = {
+        "com.freshdirect.cms.persistence.repository",
+        "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
 @EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan(basePackages = {"com.freshdirect.cms"},
     excludeFilters = {
@@ -67,7 +70,7 @@ public class DatabaseProfileConfiguration {
         return new EhCacheCacheManager(ehCacheCacheManager().getObject());
     }
 
-    @Bean
+    @Bean(name = "cmsDataSource")
     @Primary
     public DataSource dataSource(@Value("${spring.datasource.driverClassName}") String driverClassName, @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.user}") String user, @Value("${spring.datasource.password}") String password, @Value("${spring.datasource.pool}") String pool,
@@ -133,7 +136,7 @@ public class DatabaseProfileConfiguration {
      *
      * @return entityManagerFactory
      */
-    @Bean
+    @Bean(name = "cmsEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Properties jpaProperties) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
@@ -264,7 +267,7 @@ public class DatabaseProfileConfiguration {
 
     private JndiTemplate jndiTempate(@Value("${jndi.provider.url}") String providerUrl) {
         JndiTemplate template = new JndiTemplate();
-
+        
         Properties environment = new Properties();
 
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -282,8 +285,8 @@ public class DatabaseProfileConfiguration {
      *            EntityManagerFactory entityManagerFactory
      * @return transactionManager
      */
-    @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    @Bean(name = "cmsTransactionManager")
+    public PlatformTransactionManager transactionManager(@Qualifier("cmsEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
@@ -302,8 +305,8 @@ public class DatabaseProfileConfiguration {
         return configurer;
     }
 
-    @Bean
-    public JdbcTemplate getJdbcTemplate(DataSource dataSource) {
+    @Bean(name = "cmsJdbcTemplate")
+    public JdbcTemplate getJdbcTemplate(@Qualifier("cmsDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 

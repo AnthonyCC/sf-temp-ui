@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -275,12 +276,9 @@ public class ReportsRepository {
     @Autowired
     private ContentKeyRowMapper contentKeyRowMapper;
 
-    private JdbcTemplate jdbcTemplate;
-
     @Autowired
-    private void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    @Qualifier("cmsJdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
 
     public List<ContentKey> fetchUnreachableStoreObjects() {
         List<ContentKey> result = jdbcTemplate.query(QUERY_UNREACHABLE, contentKeyRowMapper);
