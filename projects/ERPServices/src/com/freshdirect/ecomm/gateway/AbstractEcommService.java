@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Category;
@@ -90,12 +91,17 @@ public abstract class AbstractEcommService {
 				.setSocketTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
 				.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
 				.setConnectionRequestTimeout(FDStoreProperties.getLogisticsConnectionRequestTimeout() * 1000).build();
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).evictExpiredConnections()
-				.setConnectionManager(cManager).build();
+		
+		HttpClientBuilder httpClientBuilder = HttpClients.custom()
+				.setDefaultRequestConfig(requestConfig)
+				.evictExpiredConnections()
+				.disableCookieManagement()
+				.setConnectionManager(cManager);
+		if(!FDStoreProperties.isRetryEnabled()){
+			httpClientBuilder.disableAutomaticRetries();
+		}
+		CloseableHttpClient httpClient = httpClientBuilder.build();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
-
-		requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout() * 1000);
-		requestFactory.setConnectTimeout(1000);
 		restTemplate.setRequestFactory(requestFactory);
 	
 	}

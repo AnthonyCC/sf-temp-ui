@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Category;
@@ -68,16 +69,24 @@ public abstract class ExtTimeAbstractEcommService {
 		cManager.setMaxTotal(FDEcommProperties.getEcomServiceConnectionPool());
 		cManager.setDefaultMaxPerRoute(FDEcommProperties.getEcomServiceConnectionPool());
 		
+		
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(FDEcommProperties.getEcomServiceConnectionTimeout() * 1000)
 				.setConnectTimeout(FDEcommProperties.getEcomServiceConnectionTimeout() * 1000)
 				.setConnectionRequestTimeout(FDEcommProperties.getEcomServiceConnectionRequestTimeout() * 1000).build();
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).evictExpiredConnections()
-				.setConnectionManager(cManager).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+		
+		HttpClientBuilder httpClientBuilder = HttpClients.custom()
+				.setDefaultRequestConfig(requestConfig)
+				.evictExpiredConnections()
+				.disableCookieManagement()
+				.setConnectionManager(cManager);
+		if(!FDStoreProperties.isRetryEnabled()){
+			httpClientBuilder.disableAutomaticRetries();
+		}
 
-		requestFactory.setReadTimeout(FDEcommProperties.getEcomServiceConnectionReadTimeout() * 1000);
-		requestFactory.setConnectTimeout(FDEcommProperties.getEcomServiceConnectionTimeout() * 1000);
+		CloseableHttpClient httpClient = httpClientBuilder.build();
+		
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		restTemplate.setRequestFactory(requestFactory);
 		
 	}

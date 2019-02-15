@@ -1101,6 +1101,7 @@ public class FDStoreProperties {
     private static final String PROP_API_INVALID_SKU_CHECK_ORDER_MOD_ENABLED = "fdstore.api.invalid.sku.check.order.mod.enabled";
     /*APPDEV-7702*/
     private static final String RESTRICTIONS_LOG_ENABLED="fdstore.restrictions.log.enabled";
+    private static final String HTTP_RETRY_ENABLED="http.retry.enabled";
     
     private static Map<Long, Integer> METHODS_IN_EJB_SCOPE = new ConcurrentHashMap<Long,Integer>();
 
@@ -5429,6 +5430,10 @@ public class FDStoreProperties {
 
 	public static boolean isRestrictionsLogEnabled() {
 		return (Boolean.valueOf(get(RESTRICTIONS_LOG_ENABLED))).booleanValue();
+	}
+
+	public static boolean isRetryEnabled() {
+		return (Boolean.valueOf(get(HTTP_RETRY_ENABLED))).booleanValue();
 	}
     
 }
