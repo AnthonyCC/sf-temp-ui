@@ -509,13 +509,12 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	public void sendSettlementReconToSap(InputStream is , String fileName, String workingFolder)
 			throws SapException, RemoteException {
 		Response<String> response = null;
-System.out.println("asdf");
 		MultiValueMap<String, Object> body  = new LinkedMultiValueMap<String, Object>();
 			body.add("file", new FileSystemResource(new File(workingFolder+fileName))); 
 			body.add("fileName", fileName); 
 		try{	
 			response = this.postMFormDataTypeMap(body, getFdCommerceEndPoint(UPLOAD_SAP_FILE_TO_BAPI),
-					new TypeReference<String>() {
+					new TypeReference<Response<String>>() {
 					});
 
 			if (!response.getResponseCode().equals("OK")) {

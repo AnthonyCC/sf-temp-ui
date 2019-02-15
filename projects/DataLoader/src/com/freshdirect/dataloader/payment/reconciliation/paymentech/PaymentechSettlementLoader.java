@@ -251,11 +251,6 @@ public class PaymentechSettlementLoader {
 			if(isFin != null) isFin.close();
 			if(isPde != null) isPde.close();
 			builder.writeTo(f);
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-				InputStream  is = new FileInputStream(f);
-				ReconciliationService.getInstance().sendFile(is, fileName);
-				is.close();
-			}
 			
 		}
 		return fileName;
