@@ -24,8 +24,10 @@ import com.freshdirect.crm.CrmManager;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.delivery.ejb.AirclicManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.ecomm.gateway.CrmManagerService;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -127,7 +129,13 @@ public class DeliveryCaseCreateCron {
 	}
 
 	private static CrmAgentModel getLoginAgent() throws CrmAuthenticationException, FDResourceException {
-		return CrmManager.getInstance().loginAgent(ErpServicesProperties.getCrmSystemDriverUserName(), ErpServicesProperties.getCrmSystemDriverUserPassword());
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled("CrmManager_LoginAgent")) {
+			return CrmManagerService.getInstance().loginAgent(ErpServicesProperties.getCrmSystemDriverUserName(), ErpServicesProperties.getCrmSystemDriverUserPassword());
+		}
+		else {
+			return CrmManager.getInstance().loginAgent(ErpServicesProperties.getCrmSystemDriverUserName(), ErpServicesProperties.getCrmSystemDriverUserPassword());
+		}
+		
 	}
 	
 	static public Context getInitialContext() throws NamingException {
