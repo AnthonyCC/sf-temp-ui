@@ -1,8 +1,0 @@
--- Grant default STORE user to access these tables
-GRANT SELECT ON "SYSTEM_SEQ" TO ${grant.user};
-GRANT SELECT, INSERT, UPDATE, DELETE ON "MEDIA" TO ${grant.user};
-GRANT SELECT, INSERT, UPDATE, DELETE ON "RELATIONSHIP" TO ${grant.user};
-GRANT SELECT, INSERT, UPDATE, DELETE ON "ATTRIBUTE" TO ${grant.user};
-GRANT SELECT, INSERT, UPDATE, DELETE ON "CONTENTNODE" TO ${grant.user};
-
-GRANT SELECT ON NAVTREE to ${grant.user};

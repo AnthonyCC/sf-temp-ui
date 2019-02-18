@@ -1,6 +1,0 @@
--- Insert new Holiday Meal Bundle product layout type
-INSERT INTO CMS.LOOKUP (LOOKUPTYPE_CODE,CODE,LABEL,DESCRIPTION,ORDINAL) VALUES ('Product.PRODUCT_LAYOUT','10','Holiday Meal Bundle','Holiday Meal Bundle',7);
-
--- Insert meal include products of side box product
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES ('MEAL_INCLUDE_PRODUCTS','Product.MEAL_INCLUDE_PRODUCTS','Product','F','F','F','F','Meal Include Products','Many');
-INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES ('Product.MEAL_INCLUDE_PRODUCTS.Product','Product.MEAL_INCLUDE_PRODUCTS','Product',NULL,NULL);

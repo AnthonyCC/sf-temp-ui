@@ -1,7 +1,0 @@
-<%@page import="com.freshdirect.webapp.util.JspMethods"%>
-<%@taglib uri="freshdirect" prefix="fd"%>
-<% if ("USQ".equalsIgnoreCase(JspMethods.getWineAssociateId())) { %>
-	<span class="text14"><a href="JavaScript:pop(&quot;/request_wine.jsp?department=wine&quot;,400,585);"><b>Request A Wine</b></a> | <a href="JavaScript:pop(&quot;/shared/brandpop.jsp?brandId=bd_usq&quot;,400,585);"><b>About USQ</b></a></span>
-<% } else { %>
-	<fd:IncludeMedia name="/media/editorial/win_fdw/bottom/about_winestore.html" />
-<% } %>

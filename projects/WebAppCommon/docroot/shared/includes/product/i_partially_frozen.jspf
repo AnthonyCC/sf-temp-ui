@@ -1,8 +1,0 @@
-<%
-	{
-    Html partiallyFrozen = productNode.getPartallyFrozen();
-	if (partiallyFrozen!=null) {
-		String parFrozen = partiallyFrozen.getPath();
-	%>	<fd:IncludeMedia name='<%= parFrozen %>' />
-<%	}
-}%>

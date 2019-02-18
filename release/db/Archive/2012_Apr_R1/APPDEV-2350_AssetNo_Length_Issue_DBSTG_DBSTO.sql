@@ -1,1 +1,0 @@
-alter table transp.asset modify asset_no varchar2(6 byte);

@@ -1,6 +1,0 @@
-delete from TRANSP.MENU_ROLE mr where mr.role_id='8' and mr.menu_id not in ('GEO009','MNM002','MNM004','MNM006','OPR007','OPR009','OPR011','OPR012')
-
-Insert into TRANSP.MENU_ROLE
-   (MENU_ID, ROLE_ID)
- Values
-   ('ADO026', 8); 

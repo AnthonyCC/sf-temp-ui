@@ -1,1 +1,0 @@
-INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE) VALUES ('maxItemsPerColumn','Department.maxItemsPerColumn','Department','I','F','F','Preference Categories Max Items In Column In Flyout','One',NULL);

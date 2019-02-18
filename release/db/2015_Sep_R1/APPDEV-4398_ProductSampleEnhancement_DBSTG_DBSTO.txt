@@ -1,2 +1,0 @@
-Alter table CUST.ORDERLINE add source varchar2(50);
-Alter table CUST.FDCARTLINE add source varchar2(50); 

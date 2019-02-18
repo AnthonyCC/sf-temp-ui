@@ -1,1 +1,0 @@
-alter table dlv.reservation add (IS_STEERING_DISCOUNT   VARCHAR2(1 BYTE));

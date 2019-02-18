@@ -1,6 +1,0 @@
--- staffPicksPageSortOptions
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES ('staffPicksPageSortOptions','Store.staffPicksPageSortOptions','Store','F','F','F','F','Staff''s Picks Page Sort Options','Many');
-INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES ('Store.staffPicksPageSortOptions.SortOption','Store.staffPicksPageSortOptions','SortOption',NULL,NULL);
--- staffPicksPageTopMediaBanner
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES ('staffPicksPageTopMediaBanner','Store.staffPicksPageTopMediaBanner','Store','F','F','F','F','Staff Picks Page Top Media Banner','One');
-INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES ('Store.staffPicksPageTopMediaBanner.Html','Store.staffPicksPageTopMediaBanner','Html',NULL,NULL);

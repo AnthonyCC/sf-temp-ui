@@ -1,6 +1,0 @@
-        <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
-        <!-- Content start -->
-        <%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-        <%@ include file="/shared/includes/product/i_product_brand_category_link.jspf" %>
-        <%@ include file="/shared/includes/product/i_product_image.jspf" %>
-        <%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>

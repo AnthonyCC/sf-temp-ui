@@ -1,2 +1,0 @@
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES ('welcomeCarouselImageBanners','Store.welcomeCarouselImageBanners','Store','F','F','F','F','Welcome Carousel Image Banners','Many');
-INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES ('Store.welcomeCarouselImageBanners.ImageBanner','Store.welcomeCarouselImageBanners','ImageBanner',NULL,NULL);

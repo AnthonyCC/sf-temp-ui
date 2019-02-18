@@ -1,5 +1,0 @@
-#use this template if you want to create the domain dir within the FD source dir
-weblogic.home=/home/csongor/FreshDirect/bea/10.3
-domain.home=/home/csongor/FreshDirect/src/labor
-domain.name=domain2
-server.port=7003

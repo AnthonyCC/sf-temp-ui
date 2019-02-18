@@ -1,1 +1,0 @@
-alter table "CUST"."FDCARTLINE" add "ADDED_FROM_SEARCH" CHAR(1 BYTE);

@@ -1,2 +1,0 @@
-alter table cust.promotion_new add(rolling_from_first_order varchar2(1 char),sap_condition_type varchar2(6 char));
-alter table cust.promo_cust_strategy add(fdx_tier_type varchar2(20 char));

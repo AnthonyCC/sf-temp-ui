@@ -1,9 +1,0 @@
-# Edit JDBC parameters
-jdbc.url=<JDBC URL>
-#jdbc.url=jdbc:oracle:thin:@kazan:1521:DBEU02
-cms.user=<CMS USER PASSWORD>
-#cms.user=cms_01
-cms.password=<CMS USER PASSWORD>
-#cms.password=cms_01
-grant.user=<USER1>,<USER2>,...
-#grant.user=fdstore_prda,fdstore_prdb

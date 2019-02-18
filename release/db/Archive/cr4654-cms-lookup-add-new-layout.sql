@@ -1,1 +1,0 @@
-insert into lookup (LOOKUPTYPE_CODE, CODE, LABEL) values ('layout_type', '27', 'Featured Menu');

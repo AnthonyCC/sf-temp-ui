@@ -1,4 +1,0 @@
-alter table TRANSP.MAINTENANCEISSUE add
-(
-  TRUCKLOCATION         VARCHAR2(55 BYTE)  
-);

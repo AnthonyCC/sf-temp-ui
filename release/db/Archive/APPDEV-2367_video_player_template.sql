@@ -1,6 +1,0 @@
-INSERT INTO cms.contenttype (ID,NAME,DESCRIPTION,GENERATE_ID) VALUES ('YoutubeVideo','YoutubeVideo','Definition of type YoutubeVideo','F');
-INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE) VALUES ('YOUTUBE_VIDEO_ID','YoutubeVideo.YOUTUBE_VIDEO_ID','YoutubeVideo','S','F','F','YouTube Video Id','One',NULL);
-INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE) VALUES ('TITLE','YoutubeVideo.TITLE','YoutubeVideo','S','F','F','Title','One',NULL);
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,LABEL,CARDINALITY_CODE,READONLY) VALUES ('CONTENT','YoutubeVideo.CONTENT','YoutubeVideo','F','F','F','Content','One',NULL);
-INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,ID) VALUES ('FDFolder.children','YoutubeVideo','FDFolder.children.YoutubeVideo');
-INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,ID) VALUES ('YoutubeVideo.CONTENT','Html','YoutubeVideo.CONTENT.Html');

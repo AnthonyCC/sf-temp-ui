@@ -1,5 +1,0 @@
-INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE)
-	VALUES ('HIDE_FEATURED_ITEMS','Category.HIDE_FEATURED_ITEMS','Category','B','T','F','Hide featured items','One',NULL);
-	
--- rollback
--- DELETE FROM cms.attributedefinition WHERE ID = 'Category.HIDE_FEATURED_ITEMS';

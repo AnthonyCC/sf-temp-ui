@@ -1,9 +1,0 @@
-<%
-	List<ProductModel> products = productNode.getProductBundle();
-    if(products != null && products.size() > 0){
-        String prodSku = ((SkuModel)productNode.getSku(0)).getSkuCode();
-        
-%>
-<br>
-<a href="javascript:popup('/bundled_product_popup.jsp?catId=<%=catId%>&parent=<%=prodSku%>&title=<%=productNode.getFullName()%>', 'large');">More information about these products</a>
-<%}%>

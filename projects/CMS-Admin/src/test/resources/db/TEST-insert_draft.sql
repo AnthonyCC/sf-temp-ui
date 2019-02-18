@@ -1,1 +1,0 @@
-insert into draft values(888,'2016-04-01 08:00:00.000','CREATED','2016-04-01 08:00:00.000','testdraft');

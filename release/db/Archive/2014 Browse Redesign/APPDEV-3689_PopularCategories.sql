@@ -1,5 +1,0 @@
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES ('popularCategories','Category.popularCategories','Category','F','F','F','F','Popular Categories','Many');
-INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES ('Category.popularCategories.Category','Category.popularCategories','Category',NULL,NULL);
-
-INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE) VALUES ('showPopularCategories','Category.showPopularCategories','Category','B','F','F','Show Popular Categories','One',NULL);
-INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE) VALUES ('showPopularCategories','Department.showPopularCategories','Department','B','F','F','Show Popular Categories','One',NULL);

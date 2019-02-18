@@ -1,5 +1,0 @@
-var reg = com.freshdirect.framework.conf.FDRegistry.getInstance();
-var cc = reg.getService("com.freshdirect.cms.StoreCache",com.freshdirect.framework.cache.CacheI.class);
-print(cc.size());
-cc.clear();
-

@@ -1,4 +1,0 @@
-alter table ERPS.MATERIAL_SALES_AREA add (DAYPART_VALUE varchar2(20 byte)); 
-alter table ERPS.PLANT_MATERIAL add (HIDE_OOS varchar2(1 byte));
-
-

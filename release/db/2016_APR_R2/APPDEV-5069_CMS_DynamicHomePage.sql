@@ -1,2 +1,0 @@
-insert into cms.attributedefinition values ('PrimaryText', 'Category.PrimaryText', 'Category', 'S', 'F', 'F', 'Primary Text', 'One', null);
-insert into cms.attributedefinition values ('SecondaryText', 'Category.SecondaryText', 'Category', 'S', 'F', 'F', 'Secondary Text', 'One', null); 
